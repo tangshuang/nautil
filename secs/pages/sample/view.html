@@ -1,6 +1,6 @@
 <div id="{{ id }}">
   <p>{{ text }}</p>
-  <p><a href="javascript:" onclick="{{ click($event) }}">click me to refresh content</a></p>
+  <p><link href="route.child?id={{ id }}" onclick="{{ click($event) }}">click me to refresh content</link></p>
   <p><input onkeyup="{{ input($event) }}" value=""></p>
   <ul>
     <foreach data="{{ cats }}" key="name" value="color">
@@ -9,7 +9,7 @@
   </ul>
   <if condition="{{ isShow }}">
     <p>this will show.</p>
-    <else />
+  <else />
     <p>this will not show.</p>
   </if>
   <p><a href="javascript:" onclick="{{ toggle(isShow) }}">toggle</a></p>
