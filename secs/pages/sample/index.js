@@ -10,4 +10,10 @@ export default class SamplePage extends Component {
   static components = {
     Box,
   }
+  
+  onParse(e, template) {}
+  onCompile(e, contents, model) {}
+  onMount(e, $element, model) {}
+  onUpdate(e, $element, model) {}
+  onDestory(e, $element, model) {}
 }
