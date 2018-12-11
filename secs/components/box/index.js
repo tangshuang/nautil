@@ -1,11 +1,11 @@
 import { Component } from 'nautil'
 
 export default class Box extends Component {
-  controller = import('./controller')
-  model = import('./model')
-  template = import('./view.html')
-  preload = import('../../pages/loading.html')
-  stylesheet = import('./style.scss')
+  static controller = import('./controller')
+  static model = import('./model')
+  static template = import('./view.html')
+  static preload = import('../../pages/loading.html')
+  static stylesheet = import('./style.scss')
 
   onClickItem(item) {
     this.$emit('select', item)

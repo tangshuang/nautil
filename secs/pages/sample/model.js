@@ -27,4 +27,5 @@ export default class DefaultModel extends Model {
       return data
     }))
   }
+
 }
