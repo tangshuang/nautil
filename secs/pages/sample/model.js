@@ -1,6 +1,6 @@
 import { Model, Ajax } from 'nautil'
 
-export default class DefaultModel extends Model {
+export default class SampleModel extends Model {
 
   cats$ = new Ajax({
     mode: 'switch',
@@ -53,7 +53,7 @@ export default class DefaultModel extends Model {
 
   // 数据出去的流，无论是controller中的$set还是$emit，所有的事件交互对数据的修改都会合并为一个最终的结果，而这个最终的结果会经过pipe流到视图层
   consume(observable) {
-    return observable.flatMap(data => data).switchMap(data => this.cats$.get().then(cats => {
+    return observable.switchMap(data => this.cats$.get().map(cats => {
       data.cats = cats
       return data
     }))

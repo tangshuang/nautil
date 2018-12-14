@@ -1,4 +1,4 @@
-import { Router, Render } from 'nautil'
+import { Router, Nautil } from 'nautil'
 
 const router = new Router({
   mode: 'history',
@@ -11,8 +11,7 @@ const router = new Router({
   ],
 })
 
-const app = new Render({
+const app = new Nautil({
   el: '#app',
   router,
 })
-
