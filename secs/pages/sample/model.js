@@ -38,25 +38,23 @@ export default class SampleModel extends Model {
   // 不存在于data、state和form中的props会被本组件直接忽略
   // 但前提是，计算属性无法被赋值，因此，如果props中传入的属性包含data上的计算属性，也会无效
   inherit(observable) {
-    return observable.map(props => props)
-  }
-
-  // 接收到子作用域传来的反写数据
-  tribute(observable) {
     return observable.map(data => data)
   }
 
-  // 数据进来的流，在controller中调用this.$set的时候被触发
-  reactive(observable) {
-    return observable.flatMap(data => data.id)
+  // 接收到子作用域传来的反写数据
+  // 当子作用域的react执行完毕，数据被更改之后，父级作用域这个时候会收集自己和子作用域之间相互绑定好的数据，并调用admit去更改自己的数据
+  admit(observable) {
+    return observable.map(data => data)
+  }
+
+  // 数据进来的流，在接收到controller流来的数据时被调用
+  react(observable) {
+    return observable.map(data => ({ id: data.id }))
   }
 
   // 数据出去的流，无论是controller中的$set还是$emit，所有的事件交互对数据的修改都会合并为一个最终的结果，而这个最终的结果会经过pipe流到视图层
   consume(observable) {
-    return observable.switchMap(data => this.cats$.get().map(cats => {
-      data.cats = cats
-      return data
-    }))
+    return observable.switchMap(data => this.cats$.get().map(cats => ({ cats })))
   }
 
 }

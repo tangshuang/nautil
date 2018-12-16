@@ -28,6 +28,6 @@ export default class SamplePage extends Component {
   onEmit(observable) {}
 
   // 从controller流向model的过程中间
-  onReactive(observable) {}
+  onReact(observable) {}
 
 }
