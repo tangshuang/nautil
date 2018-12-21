@@ -1,7 +1,15 @@
 import { Controller } from 'nautil'
 
 export default class BoxController extends Controller {
-  onClickItem(observable) {
-    return observable.switchMap(item => this.$emit('select', item))
+
+  /**
+   * $handlers指接收外部传进来的指令
+   */
+  $handlers = {
+    onToggle() {},
+  }
+
+  onSelectOption(stream) {
+    return stream.map(item => ({ selected: item.id }))
   }
 }
