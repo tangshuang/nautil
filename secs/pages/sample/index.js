@@ -4,7 +4,7 @@ export default class SamplePage extends Component {
   static controller = import('./controller')
   static model = import('./model')
   static template = import('./view.jsx')
-  static preload = import('../loading.jsx')
+  static loading = import('../loading.jsx')
   static stylesheet = import('./style.scss')
 
 
@@ -20,14 +20,5 @@ export default class SamplePage extends Component {
 
   // dom被销毁，组件被销毁之前执行，只执行一次
   onDestory($element) {}
-
-  // 数据从model流行界面渲染过程中的拦截，可以用来做全局的插件处理
-  onConsume(observable) {}
-
-  // 发生事件响应时，即从视图界面到controller的过程中间
-  onEmit(observable) {}
-
-  // 从controller流向model的过程中间
-  onReact(observable) {}
 
 }

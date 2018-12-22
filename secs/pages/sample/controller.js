@@ -7,17 +7,17 @@ export default class SampleController extends Controller {
     header: 'xxx'
   })
 
-  input(observable) {
-    return observable.map(e => ({ id: e.target.value }))
+  input(stream) {
+    return stream.map(e => ({ id: e.target.value }))
   }
 
-  click(observable) {
-    return observable.map(e => ({ pageX: e.target.pageX, pageY: e.target.pageY }))
+  click(stream) {
+    return stream.map(e => ({ pageX: e.target.pageX, pageY: e.target.pageY }))
       .switchMap(({ pageX, pageY }) => this.calling$.post({ pageX, pageY }))
   }
 
-  toggle(observable) {
-    return observable.switchMap(isShow => this.calling$.post({ isShow }))
+  toggle(stream) {
+    return stream.switchMap(isShow => this.calling$.post({ isShow }))
   }
 
 }
