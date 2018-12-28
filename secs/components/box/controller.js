@@ -14,4 +14,9 @@ export default class BoxController extends Controller {
   select(stream) {
     return stream.map(item => ({ selected: item.id }))
   }
+
+  // 多选，选中某一个时
+  multiselect(stream) {
+    return stream.map((item) => ({ multiselect: item.id }))
+  }
 }

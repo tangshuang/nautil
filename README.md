@@ -48,6 +48,6 @@ Nautil就是一个不同的声音，它基于RxJS的理念去对待前端编程�
 
 对于在Nautil中进行编程而言，开发者主要要处理的是流的三个环节：如何在Model中声明数据、控制数据流入流出规则，如何在View中创建视图规则，如何在Conroller中控制事件映射到数据的规则，其他事情，完全交给Nautil去做。
 
-![](resources/parttern.png)
+![](resources/nautilidea.png)
 
 综上所述，Nautil是一个将应用的数据、视图的状态统一到流中的一个框架。

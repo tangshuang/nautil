@@ -2,6 +2,9 @@ import { Controller, Ajax } from 'nautil'
 
 export default class SampleController extends Controller {
 
+
+  // 其实，在controller里面也可以通过this.data$()获取数据，但是这样的话，就会让controller和model的耦合度变高，因此，要杜绝这种做法
+
   calling$ = new Ajax({
     url: 'xxx',
     header: 'xxx'
