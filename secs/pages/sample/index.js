@@ -72,21 +72,29 @@ export default class SamplePage extends Component {
 
   // 生成真实的dom之后，只执行一次
   onMounted($element) {
-    this.data$().subscribe((data) => {
-      $element.find('.test').append('<div class="name">' + data.name + '</div>') // 修改了原始的DOM结构，同时会修改virtual dom，但是由于它是静态的，所以不会有任何跟model的互动
-      $element.find('.test').on('click', this._click) // 完全是jquery的编程思维
-      // 这里绑定的事件和controller中的响应式程序不冲突，它们都是基于DOM的原生事件系统
-    })
+    // 得到当前模型，可以对模型进行读写操作，每一个读写操作，都会触发视图更新，和vue编程一摸一样
+    const model = this.model
+    const data = model.$data()
+
+    $element.find('.test').append('<div class="name">' + data.name + '</div>') // 修改了原始的DOM结构，同时会修改virtual dom，但是由于它是静态的，所以不会有任何跟model的互动
+    $element.find('.test').on('click', this._click) // 完全是jquery的编程思维
+    // 这里绑定的事件和controller中的响应式程序不冲突，它们都是基于DOM的原生事件系统
   }
 
-  _click = (e) => {}
+  _click = (e) => {
+    let pageX = e.pageX
+
+    // 当改动模型的时候，是对模型的直接写入，而不经过model中的方法去处理
+    // 这里的编程更像vue的编程，而不是nautil的元编程
+    this.model.pageX = pageX
+    // 如果模型上原始数据中绑定了pageX，那么这里会触发界面的改动，为了让模型上增加这个属性，可以使用this.model.$set('pageX', pageX)
+  }
 
   // 当model变化，dom更新之后执行。会执行多次。
   onUpdated($element) {
-    this.data$().subscribe((data) => {
-      $element.find('.test name').text(data.name) // 和onMounted中不同，onUpdated会在每次更新完DOM之后执行，而且，不会修改virtual dom，也就是说
-      // 这里的代码会反复执行，因此，如果你在这里操作了dom，一定要特别小心
-    })
+    const data = this.model.$data()
+    $element.find('.test name').text(data.name) // 和onMounted中不同，onUpdated会在每次更新完DOM之后执行，而且，不会修改virtual dom，也就是说
+    // 这里的代码会反复执行，因此，如果你在这里操作了dom，一定要特别小心
   }
 
   // dom被销毁，组件被销毁之前执行，只执行一次

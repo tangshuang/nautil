@@ -4,13 +4,17 @@ export default class SampleModel extends Model {
 
   // model中没有任何地方暴露当前model的完整状态，这样保证了model的干净，所有的stream只能完成自己的纯逻辑，而不能依赖model，这使得nautil更函数式编程
   // 这样的设计，还让开发者无法通过直接修改model来实现自己的目的，这样可以保证无状态的贯彻执行
-  // 在组件的任何地方，都可以使用this.data$()创建一个只运行一次的获取模型上的数据的流，但是得到的是一个深拷贝，不允许用户直接通过赋值的方式修改模型上的数据
+  // 在模型中，可以使用this.data$()创建一个只运行一次的获取模型上的数据的流，但是得到的是一个深拷贝，不允许用户直接通过赋值的方式修改模型上的数据
 
   // 规定当前组件中可以使用的数据，通过属性传进来的数据会覆盖这里的值，但是，如果不在这里事先声明，那么传进来的值无效
   // 对data的修改，如果通过props传进来，还会反写给父级，实现双向绑定
   data = {
     id: '',
     text: '',
+    obj: {
+      title: '',
+      children: [],
+    },
   }
 
   // 当前组件的状态，基本和data用法一致，唯一不同的是，声明在state里面的数据，不会与父级作用域实现双向绑定，它只会在第一次实例化的时候使用一次props值
@@ -56,6 +60,14 @@ export default class SampleModel extends Model {
    */
   isShow(stream) {
     return stream.map(v => v === '' ? 'xx' : v).as(v => ({ id: v }))
+  }
+
+  /**
+   * 定义深层级的属性的响应方法
+   * @param {*} stream
+   */
+  'obj.title'(stream) {
+    return stream
   }
 
 }

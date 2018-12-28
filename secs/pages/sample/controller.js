@@ -2,12 +2,13 @@ import { Controller, Ajax } from 'nautil'
 
 export default class SampleController extends Controller {
 
-
-  // 其实，在controller里面也可以通过this.data$()获取数据，但是这样的话，就会让controller和model的耦合度变高，因此，要杜绝这种做法
-
   calling$ = new Ajax({
     url: 'xxx',
-    header: 'xxx'
+    header: 'xxx',
+
+    // Ajax的钩子函数能独立触发model的变化
+    onRequest: stream => stream.map(() => ({ showLoading: true })),
+    onCompleted: stream => stream.map(() => ({ showLoading: false })),
   })
 
   input(stream) {
@@ -20,7 +21,15 @@ export default class SampleController extends Controller {
   }
 
   toggle(stream) {
+    // Ajax.post方法返回null，因此，不会更新model，也不会触发视图更新
     return stream.switchMap(isShow => this.calling$.post({ isShow }))
+  }
+
+  changeTitle(stream) {
+    return stream.map(title => ({
+      // 触发深层级属性变化的方法
+      'obj.title': title
+    }))
   }
 
 }
