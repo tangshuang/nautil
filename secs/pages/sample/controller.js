@@ -5,10 +5,6 @@ export default class SampleController extends Controller {
   calling$ = new Ajax({
     url: 'xxx',
     header: 'xxx',
-
-    // Ajax的钩子函数能独立触发model的变化
-    onRequest: stream => stream.map(() => ({ showLoading: true })),
-    onCompleted: stream => stream.map(() => ({ showLoading: false })),
   })
 
   input(stream) {
@@ -22,7 +18,10 @@ export default class SampleController extends Controller {
 
   toggle(stream) {
     // Ajax.post方法返回null，因此，不会更新model，也不会触发视图更新
-    return stream.switchMap(isShow => this.calling$.post({ isShow }))
+    // this.fork$发起一个新的控制流，它将脱离原始控制流单独运行，它的运行结果和所有控制流是一致的
+    return stream.do(() => this.fork$(stream => stream.map(() => ({ showLoading: true }))))
+      .switchMap(isShow => this.calling$.post({ isShow }))
+      .do(() => this.fork$(stream => stream.map(() => ({ showLoading: false }))))
   }
 
   changeTitle(stream) {

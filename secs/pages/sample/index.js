@@ -76,7 +76,7 @@ export default class SamplePage extends Component {
     const model = this.model
     const data = model.$data()
 
-    $element.find('.test').append('<div class="name">' + data.name + '</div>') // 修改了原始的DOM结构，同时会修改virtual dom，但是由于它是静态的，所以不会有任何跟model的互动
+    $element.find('.test').append('<div class="pageX">' + data.pageX + '</div>') // 修改了原始的DOM结构，同时会修改virtual dom，但是由于它是静态的，所以不会有任何跟model的互动
     $element.find('.test').on('click', this._click) // 完全是jquery的编程思维
     // 这里绑定的事件和controller中的响应式程序不冲突，它们都是基于DOM的原生事件系统
   }
@@ -92,8 +92,8 @@ export default class SamplePage extends Component {
 
   // 当model变化，dom更新之后执行。会执行多次。
   onUpdated($element) {
-    const data = this.model.$data()
-    $element.find('.test name').text(data.name) // 和onMounted中不同，onUpdated会在每次更新完DOM之后执行，而且，不会修改virtual dom，也就是说
+    const data = this.model
+    $element.find('.test .pageX').text(data.pageX) // 和onMounted中不同，onUpdated会在每次更新完DOM之后执行，而且，不会修改virtual dom，也就是说
     // 这里的代码会反复执行，因此，如果你在这里操作了dom，一定要特别小心
   }
 
