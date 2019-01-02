@@ -52,14 +52,16 @@ export default class SampleModel extends Model {
    * isShow不是model上的属性，因此，它不代表一个属性的修改，它的作用是在流循环中，接收来自controller的一个isShow请求
    * 它仅响应controller的通知
    * nautil内部会自己去判断这个方法是否是model上的数据属性，不是的话，只会执行流循环逻辑，但是不会patch到model上，因为model上根本没有这个属性
-   * 但是，这种情况下，stream会多出来一个as方法，as方法会终止当前的stream，并将它切换为一个新的stream，as的结果将作为更新model整体的一个patch，去调用对应的属性的方法去执行下一步
-   * 例如下面的例子中，id(stream)会被调用。
-   * as方法有点像controller中stream的结果
-   * 注意：as方法仅那些不存在于model上的属性的同名方法才会有，model上同名属性的方法中的stream没有as
+   * 正因为如此，在这种属性的结尾，必须调用this.fork$()来发起一个新的stream用以更新真正需要更新的属性值
+   * this.fork$()返回结果为null的stream，所以，当前的这个stream不会产生任何效果。
+   * this.fork$()会调起一个新的stream，它的结果会被认为是对model的修改，因此，它就像controller的一个操作一样，会重新触发model上的方法
    * @param {*} stream
    */
   isShow(stream) {
-    return stream.map(v => v === '' ? 'xx' : v).as(v => ({ id: v }))
+    return stream.map(v => v === '' ? 'xx' : v)
+      .switchMap(v =>
+        this.fork$(stream => stream.map(() => ({ id: v })))
+      )
   }
 
   /**

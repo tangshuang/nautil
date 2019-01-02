@@ -1,5 +1,6 @@
 import { View, Link } from 'nautil'
 import Box from '../../components/box'
+import SomeView from './some-view'
 
 export default ({ model, controller }) => (
   <div id={ model.id }>
@@ -13,6 +14,6 @@ export default ({ model, controller }) => (
     <p><a href="javascript:" onClick={ () => controller.toggle(isShow) }>toggle</a></p>
     <Box id={ model.id } onToggle={ (e) => controller.click(e) }></Box>
 
-    <View name="view1"></View>
+    <View component={SomeView} match={uri => uri.indexOf('show-some') > -1} props={{}}></View>
   </div>
 )
