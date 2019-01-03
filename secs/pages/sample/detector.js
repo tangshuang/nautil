@@ -1,6 +1,6 @@
-import { Controller, Ajax } from 'nautil'
+import { Detector, Ajax } from 'nautil'
 
-export default class SampleController extends Controller {
+export default class SampleDetector extends Detector {
 
   calling$ = new Ajax({
     url: 'xxx',

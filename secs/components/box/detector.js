@@ -1,10 +1,10 @@
-import { Controller } from 'nautil'
+import { Detector } from 'nautil'
 
-export default class BoxController extends Controller {
+export default class BoxDetector extends Detector {
 
   /**
-   * controller上的所有方法都支持外部传进来覆盖
-   * 但是如果没有在controller中，在组件上传无效果
+   * detector上的所有方法都支持外部传进来覆盖
+   * 但是如果没有在detector中，在组件上传无效果
    * 外部传的时候为onToggle或on-toggle
    */
 
