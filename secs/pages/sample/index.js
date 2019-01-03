@@ -3,7 +3,7 @@ import { Component, Ajax } from 'nautil'
 export default class SamplePage extends Component {
   static detector = import('./detector')
   static model = import('./model')
-  static template = import('./view.jsx')
+  static view = import('./view.jsx')
   static loading = import('../loading.jsx')
   static stylesheet = import('./style.scss')
 

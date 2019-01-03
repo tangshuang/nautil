@@ -1,4 +1,5 @@
 import { Model } from 'nautil'
+import { mapAssign } from 'nautil/operators'
 
 export default class BoxModel extends Model {
 
@@ -17,12 +18,22 @@ export default class BoxModel extends Model {
    * @param {*} stream
    */
   selected(stream) {
-    return stream.switchMap((id) => this.data$('options').map(options => ({ options: options.map(item => Object.assign({}, item, { selected: item.id !== id })) })))
+    return stream.switchMap((id) =>
+      this.data$('options')
+        .map(options => ({
+          options: mapAssign(options, item => ({ selected: item.id !== id })) // options.map(item => Object.assign({}, item, { selected: item.id !== id }))
+        }))
+    )
   }
 
   // 通过multiselect的操作，使得只选中其中某一个而不产生其他副作用
-  multiselect(stream) {
-    return stream.switchMap((id) => this.data$('options').map(options => ({ options: options.map(item => item.id === id ? Object.assign({}, item, { selected: !item.selected }) : item) })))
+  multiselected(stream) {
+    return stream.switchMap((id) =>
+      this.data$('options')
+        .map(options => ({
+          options: options.map(item => item.id === id ? Object.assign({}, item, { selected: !item.selected }) : item)
+        }))
+    )
   }
 
 }
