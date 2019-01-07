@@ -8,7 +8,7 @@ export default class SampleModel extends Model {
 
   // 规定当前组件中可以使用的数据，通过属性传进来的数据会覆盖这里的值，但是，如果不在这里事先声明，那么传进来的值无效
   // 对data的修改，如果通过props传进来，还会反写给父级，实现双向绑定
-  data = {
+  static data = {
     id: '',
     text: '',
     obj: {
@@ -19,17 +19,17 @@ export default class SampleModel extends Model {
 
   // 当前组件的状态，基本和data用法一致，唯一不同的是，声明在state里面的数据，不会与父级作用域实现双向绑定，它只会在第一次实例化的时候使用一次props值
   // 也就是说通过props传进来的属性如果不存在于data中，而是存在于state，就不能被反写，只会在本组件实例化的时候被使用一次
-  state = {
+  static state = {
     cats: [],
   }
 
   // 表单模型，可以设置字段的默认值，类型，校验器等信息
   // 将合并data，优先级最高
-  form = {}
+  static form = {}
 
   // 计算属性
   // 计算属性无法被修改，即使在props中传入，也不会覆盖，和state一样
-  computed = {
+  static computed = {
     count() {
       // 这里直接用this.cats而非this.data.cats，是因为这里的this并非指向当前实例，而是指向数据，
       // 由于data和state最终会被合并，因此this其实是指向最终合并后的对象model，因此，model上是有cats的

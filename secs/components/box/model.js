@@ -3,11 +3,11 @@ import { mapAssign } from 'nautil/operators'
 
 export default class BoxModel extends Model {
 
-  data = {
+  static data = {
     title: '',
   }
 
-  state = {
+  static state = {
     options: [
       { id: 'xxx', label: 'test1', selected: false },
     ],

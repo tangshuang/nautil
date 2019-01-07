@@ -20,8 +20,9 @@ export default class SampleDetector extends Detector {
     // Ajax.post方法返回null，因此，不会更新model，也不会触发视图更新
     // this.fork$发起一个新的控制流，它将脱离原始控制流单独运行，它的运行结果和所有控制流是一致的
     return stream.do(() => this.fork$(stream => stream.map(() => ({ showLoading: true }))))
-      .switchMap(isShow => this.calling$.post({ isShow }))
+      .switchMap(isShow => this.calling$.post({ isShow }).map(res => res.data))
       .do(() => this.fork$(stream => stream.map(() => ({ showLoading: false }))))
+      .map(data => ({ id: data.id }))
   }
 
   changeTitle(stream) {
