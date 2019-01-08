@@ -31,7 +31,7 @@ export default class SampleModel extends Model {
   // 计算属性无法被修改，即使在props中传入，也不会覆盖，和state一样
   static computed = {
     count() {
-      // 这里直接用this.cats而非this.data.cats，是因为这里的this并非指向当前实例，而是指向数据，
+      // 这里直接用this.cats而非this.data.cats，是因为这里的this并非指向当前实例，而是指向模型，
       // 由于data和state最终会被合并，因此this其实是指向最终合并后的对象model，因此，model上是有cats的
       return this.cats.length
     }
