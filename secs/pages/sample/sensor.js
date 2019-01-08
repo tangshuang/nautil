@@ -1,6 +1,6 @@
-import { Detector, Ajax } from 'nautil'
+import { Sensor, Ajax } from 'nautil'
 
-export default class SampleDetector extends Detector {
+export default class SampleSensor extends Sensor {
 
   calling$ = new Ajax({
     url: 'xxx',
