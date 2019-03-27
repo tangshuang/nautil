@@ -38,9 +38,9 @@ export default class SampleModel extends Model {
   }
 
   /**
-   * 接收到sensor发来的修改id属性的请求时，可以进行二次修复，本质上也算是钩子函数
+   * 接收到action发来的修改id属性的请求时，可以进行二次修复，本质上也算是钩子函数
    * 它在全局钩子函数（除consume外）被调用之后执行
-   * 任何对id发出更改请求的，都会走到这个钩子，包括props的变化，子作用域的反写，sensor的通知
+   * 任何对id发出更改请求的，都会走到这个钩子，包括props的变化，子作用域的反写，action的通知
    * 它的输出结果会被assign给model，因此，返回的stream的结果是id属性的新值
    * @param {*} stream
    */
@@ -49,12 +49,12 @@ export default class SampleModel extends Model {
   }
 
   /**
-   * isShow不是model上的属性，因此，它不代表一个属性的修改，它的作用是在流循环中，接收来自sensor的一个isShow请求
-   * 它仅响应sensor的通知
+   * isShow不是model上的属性，因此，它不代表一个属性的修改，它的作用是在流循环中，接收来自action的一个isShow请求
+   * 它仅响应action的通知
    * nautil内部会自己去判断这个方法是否是model上的数据属性，不是的话，只会执行流循环逻辑，但是不会patch到model上，因为model上根本没有这个属性
    * 正因为如此，在这种属性的结尾，必须调用this.fork$()来发起一个新的stream用以更新真正需要更新的属性值
    * this.fork$()返回结果为null的stream，所以，当前的这个stream不会产生任何效果。
-   * this.fork$()会调起一个新的stream，它的结果会被认为是对model的修改，因此，它就像sensor的一个操作一样，会重新触发model上的方法
+   * this.fork$()会调起一个新的stream，它的结果会被认为是对model的修改，因此，它就像action的一个操作一样，会重新触发model上的方法
    * @param {*} stream
    */
   isShow(stream) {
@@ -68,7 +68,7 @@ export default class SampleModel extends Model {
    * 定义深层级的属性的响应方法
    * @param {*} stream
    */
-  'obj.title'(stream) {
+  ['obj.title'](stream) {
     return stream
   }
 

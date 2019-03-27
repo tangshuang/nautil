@@ -1,8 +1,8 @@
 import { Component } from 'nautil'
 
 export default class Box extends Component {
-  static sensor = import('./sensor')
+  static action = import('./action')
   static model = import('./model')
   static view = import('./view.jsx')
-  static stylesheet = import('./style.scss')
+  static style = import('./style.scss')
 }

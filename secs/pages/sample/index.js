@@ -1,11 +1,11 @@
 import { Component, Ajax } from 'nautil'
 
 export default class SamplePage extends Component {
-  static sensor = import('./sensor')
+  static action = import('./action')
   static model = import('./model')
   static view = import('./view.jsx')
+  static style = import('./style.jcss')
   static loading = import('../loading.jsx')
-  static stylesheet = import('./style.scss')
 
   // 准备一个ajax请求流管理器
   cats$ = new Ajax({
@@ -66,7 +66,7 @@ export default class SamplePage extends Component {
 
 
   // 下面的生命周期函数里面支持jquery编程
-  // 但不能获取任何和model、sensor相关的信息，它和nautil的响应式编程是完全隔绝的两套逻辑
+  // 但不能获取任何和model、action相关的信息，它和nautil的响应式编程是完全隔绝的两套逻辑
   // 但是，任何对真实DOM的操作、修改，都会反馈到系统内部，实现对虚拟DOM的自动更新，当然，这样做很可能会丢失元编程的响应式效果
 
   // 生成真实的dom之后，只执行一次
@@ -77,7 +77,7 @@ export default class SamplePage extends Component {
 
     this.$element.find('.test').append('<div class="pageX">' + data.pageX + '</div>') // 修改了原始的DOM结构，同时会修改virtual dom，但是由于它是静态的，所以不会有任何跟model的互动
     this.$element.find('.test').on('click', this._click) // 完全是jquery的编程思维
-    // 这里绑定的事件和sensor中的响应式程序不冲突，它们都是基于DOM的原生事件系统
+    // 这里绑定的事件和action中的响应式程序不冲突，它们都是基于DOM的原生事件系统
   }
 
   _click = (e) => {
