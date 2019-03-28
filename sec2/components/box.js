@@ -12,7 +12,7 @@ export class Box extends Component {
 
   // 规定this.state的初始值。也可以不规定。
   // 当对应的属性不存在于props中的时候，使用该值。
-  static defaults = {
+  static state = {
     size: 10,
     weight: 20,
   }

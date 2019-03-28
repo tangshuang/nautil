@@ -14,7 +14,7 @@ export class App extends Component {
     size: Number,
     color: Enum('red', 'blue', 'yellow'),
   }
-  static defaults = {
+  static state = {
     weight: 10,
     size: 10,
     color: 'red',
