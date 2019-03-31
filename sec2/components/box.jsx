@@ -7,7 +7,7 @@ export class Box extends Component {
   static props = {
     size: Number,
     weight: Number,
-    onTouch: Function,
+    onTouchStart: Function,
   }
 
   // 规定this.state的初始值。也可以不规定。
@@ -24,9 +24,9 @@ export class Box extends Component {
   handleClick = this.handleClick.bind(this)
   handleStream = this.handleStream.bind(this)
 
-  handleClick(event) {
+  onTouchStart(event) {
     this.state.size ++
-    this.state.onTouch(event) // 来自props的属性
+    this.state.onTouchStart(event) // 来自props的属性
   }
 
   updateBatch() {
@@ -38,7 +38,7 @@ export class Box extends Component {
   }
 
   render() {
-    return <div onClick={this.handleClick}>
+    return <div onTouchStart={this.onTouchStart}>
       {this.state.name}
       {this.state.size}
       {this.state.weight}

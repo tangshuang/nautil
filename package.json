@@ -1,0 +1,24 @@
+{
+  "name": "nautil",
+  "version": "0.0.1",
+  "description": "A javascript application framework.",
+  "main": "index.js",
+  "scripts": {
+    "test": "''"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tangshuang/nautil.git"
+  },
+  "keywords": [
+    "javascript",
+    "framework"
+  ],
+  "author": "tangshuang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tangshuang/nautil/issues"
+  },
+  "homepage": "https://github.com/tangshuang/nautil#readme",
+  "dependencies": {}
+}

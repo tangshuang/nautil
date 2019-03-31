@@ -1,7 +1,7 @@
 import { Component, View } from 'nautil'
 import { Enum } from 'nautil/types'
 import { Router, Switch } from 'nautil/router'
-import Box from './components/Box.js'
+import Box from './components/box.jsx'
 
 // 纯函数式组件
 function Home(props) {
@@ -36,7 +36,7 @@ export class App extends Component {
           <p>Color: {this.state.color}</p>
         </Switch>
         <Switch path="/box">
-          <Box size={this.state.size} weight={this.state.weight} onTouch={this.handleFn}></Box>
+          <Box size={this.state.size} weight={this.state.weight} onTouchStart={this.handleFn}></Box>
         </Switch>
       </Router>
     </View>
