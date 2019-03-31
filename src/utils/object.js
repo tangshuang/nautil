@@ -107,12 +107,35 @@ export function clone(obj) {
 
 /**
  * 浅遍历对象
- * @param {*} data
+ * @param {*} obj
  * @param {*} fn
  */
-export function each(data, fn) {
-  let keys = Object.keys(data)
-  keys.forEach(key => fn(data[key], key, data))
+export function each(obj, fn) {
+  let keys = Object.keys(obj)
+  keys.forEach(key => fn(obj[key], key, obj))
+}
+
+/**
+ * 浅遍历对象，并返回一个浅备份
+ * @param {*} obj
+ * @param {*} fn
+ */
+export function map(obj, fn) {
+  if (!isObject(obj) || !isArray(obj)) {
+    return obj
+  }
+
+  if (!isFunction(fn)) {
+    return isArray(obj) ? [ ...obj ] : { ...obj }
+  }
+
+  let result = isArray(obj) ? [] : {}
+  let keys = Object.keys(obj)
+  keys.forEach((key) => {
+    let value = obj[key]
+    result[key] = isFunction(fn) ? fn(value, key, obj) || value : value
+  })
+  return result
 }
 
 /**

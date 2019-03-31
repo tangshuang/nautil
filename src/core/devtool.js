@@ -5,8 +5,18 @@ export const DevTool = {
   error(...args) {
     console.error(...args)
   },
-  run(fn, context, ...args) {
-    fn.apply(context, args)
+  test(fn, args = [], context) {
+    try {
+      fn.apply(context, args)
+      return true
+    }
+    catch (e) {
+      DevTool.error(e)
+      return false
+    }
+  },
+  throw(msg) {
+    throw new Error(msg)
   },
 }
 
@@ -19,5 +29,3 @@ export function makeCodeStack() {
   stack = stacks.join('\n')
   return stack
 }
-
-export default DevTool

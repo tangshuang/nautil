@@ -1,7 +1,7 @@
 import { Dict } from '../types/index.js'
-import DevTool from './devtool.js'
-import Store from './store.js'
-import { isObject, isArray, clone, isEqual, isEmpty } from '../utils/index.js'
+import { DevTool } from './devtool.js'
+import { Store } from './store.js'
+import { isObject, isArray, clone, isEqual } from '../utils/index.js'
 
 export class Component {
   constructor(props) {
@@ -28,9 +28,9 @@ export class Component {
 
     // 双向绑定
     supportedPropKeys.forEach((key) => {
-      state.$watch(key, ({ newValue, oldValue }) => {
+      state.$watch(key, ({ newValue, oldValue, path }) => {
         if (!isEqual(newValue, oldValue)) {
-          props.$set(key, newValue)
+          props.$set(path, newValue)
         }
       }, true)
       props.$watch(key, ({ newValue, oldValue, path }) => {
@@ -40,19 +40,18 @@ export class Component {
       }, true)
     })
 
-    let timer = null
-    state.$watch('*', () => {
-      clearTimeout(timer)
-      timer = setTimeout(() => {
+    state.$watch('*', ({ newValue, oldValue }) => {
+      if (!isEqual(newValue, oldValue)) {
         this.update()
-      })
+      }
     })
 
     this.state = state
+    this.updating = false
   }
 
   render() {
-    throw new Error('Component.render should must be override.')
+    DevTool.throw('Component.render should must be override.')
   }
 
   update(state) {
@@ -62,17 +61,16 @@ export class Component {
       this.state.$silent(false)
     }
 
-    const vdom = this.render()
-    const patches = this.diff(vdom)
-    this.patch(patches)
-    this.vdom = vdom
+    clearTimeout(this.updating)
+    this.updating = setTimeout(() => {
+      const vdom = this.render()
+      const patches = this.diff(vdom)
+      this.patch(patches)
+      this.vdom = vdom
+    })
   }
 
   diff(vdom) {}
 
   patch(patches) {}
-
-  static h() {}
 }
-
-export default Component

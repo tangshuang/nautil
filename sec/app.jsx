@@ -1,4 +1,4 @@
-import { Component, View } from 'nautil'
+import { Component, Section } from 'nautil'
 import { Enum } from 'nautil/types'
 import { Router, Switch } from 'nautil/router'
 import Box from './components/box.jsx'
@@ -24,10 +24,10 @@ export class App extends Component {
     // 被传入Box内部使用
   }
 
-  // View创建一个空标签区域
+  // Section创建一个空标签区域
   // 使用路由
   render() {
-    return <View>
+    return <Section>
       <Router mode="history" base="/app">
         <Switch path="/" exact>
           <Home text="Home"></Home>
@@ -39,7 +39,7 @@ export class App extends Component {
           <Box size={this.state.size} weight={this.state.weight} onTouchStart={this.handleFn}></Box>
         </Switch>
       </Router>
-    </View>
+    </Section>
   }
 }
 
