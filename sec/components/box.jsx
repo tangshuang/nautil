@@ -1,4 +1,18 @@
 import { Component } from 'nautil'
+import { StyleSheet } from 'nautil/style-sheet'
+
+// 创建样式表
+// 样式表可以通过工具提炼出CSS文件，也可以通过其他方式实现热更新
+const BoxStyle = new StyleSheet({
+  myClass: {
+    color: 'red',
+    textAlign: 'left',
+
+    myChildrenClass: new StyleSheet({
+      lineHeight: '12px',
+    }),
+  },
+})
 
 export class Box extends Component {
 
@@ -42,6 +56,8 @@ export class Box extends Component {
       {this.state.name}
       {this.state.size}
       {this.state.weight}
+
+      <p style={BoxStyle.myClass.myChildrenClass}>My name is ok</p>
     </div>
   }
 

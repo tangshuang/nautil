@@ -3,9 +3,12 @@ import { Enum } from 'nautil/types'
 import { Router, Switch } from 'nautil/router'
 import Box from './components/box.jsx'
 
-// 纯函数式组件
-function Home(props) {
-  return <h1>{props.text}</h1>
+class Home extends Component {
+  static props = ['text']
+
+  render() {
+    return <h1>{this.state.text}</h1>
+  }
 }
 
 export class App extends Component {
