@@ -1,13 +1,11 @@
-import { Component, Section } from 'nautil'
+import { Component, View } from 'nautil'
 import { Enum } from 'nautil/types'
 import { Router, Switch } from 'nautil/router'
 import Box from './components/box.jsx'
 
 class Home extends Component {
-  static props = ['text']
-
   render() {
-    return <h1>{this.state.text}</h1>
+    return <h1>{this.children}</h1>
   }
 }
 
@@ -27,13 +25,13 @@ export class App extends Component {
     // 被传入Box内部使用
   }
 
-  // Section创建一个空标签区域
+  // View创建一个空标签区域，View不会产生任何html标签，但是又可以作为一个容器
   // 使用路由
   render() {
-    return <Section>
+    return <View>
       <Router mode="history" base="/app">
         <Switch path="/" exact>
-          <Home text="Home"></Home>
+          <Home>Title</Home>
         </Switch>
         <Switch path="/color" animation-enter="slideLeft fadeIn" animation-leave="slideLeft fadeOut">
           <p>Color: {this.state.color}</p>
@@ -42,7 +40,7 @@ export class App extends Component {
           <Box size={this.state.size} weight={this.state.weight} onTouchStart={this.handleFn}></Box>
         </Switch>
       </Router>
-    </Section>
+    </View>
   }
 }
 

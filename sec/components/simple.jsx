@@ -16,7 +16,7 @@ export class Simple extends Component {
   handleStream() {
     // 基于stream更新数据，用于异步数据修改的情况
     this.calling$
-      .request()
+      .get()
       .map((data) => ({
         size: data.size,
       }))

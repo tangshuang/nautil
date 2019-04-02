@@ -1,18 +1,5 @@
 import { Component } from 'nautil'
-import { StyleSheet } from 'nautil/style-sheet'
-
-// 创建样式表
-// 样式表可以通过工具提炼出CSS文件，也可以通过其他方式实现热更新
-const BoxStyle = new StyleSheet({
-  myClass: {
-    color: 'red',
-    textAlign: 'left',
-
-    myChildrenClass: new StyleSheet({
-      lineHeight: '12px',
-    }),
-  },
-})
+import { BoxStyle } from './box.jss'
 
 export class Box extends Component {
 
@@ -35,8 +22,8 @@ export class Box extends Component {
   // 当执行this.state.size ++之后，不仅this.state.size发生了变化，外层传入的size属性所绑定的值也发生了变化
   // 当外层传入的size属性的值发生变化之后，这里的this.state.size也会发生变化，并更新界面
 
-  handleClick = this.handleClick.bind(this)
-  handleStream = this.handleStream.bind(this)
+  onTouchStart = this.onTouchStart.bind(this)
+  updateBatch = this.updateBatch.bind(this)
 
   onTouchStart(event) {
     this.state.size ++
