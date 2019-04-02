@@ -23,7 +23,7 @@ const store = new Store({ // Store实例是响应式的
   color: 'red',
 })
 const app3 = new NautilDOM(App, store).mount('#app3')
-// 当Nautil发现use对象是Store实例时，会自动执行 store.$watch('*', () => app3.update()) 通过监听store的变化，触发app3的重新渲染
+// 当Nautil发现参数是Store实例时，会自动执行 store.$watch('*', () => app3.update()) 通过监听store的变化，触发app3的重新渲染
 store.color = 'blue' // 会触发app3.update()
 
 // 如果不使用Store：
