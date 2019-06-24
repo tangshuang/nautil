@@ -2,11 +2,12 @@ import React from 'react'
 import {
   makeKeyChainByPath,
   createProxy,
+  each,
 } from './utils'
 
 export class Component extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor(...args) {
+    super(...args)
 
     var isSetingState = false
     const setState = this.setState.bind(this)
@@ -76,8 +77,29 @@ export class Component extends React.Component {
         return true
       },
     })
-  }
-  render(...args) {
-    super.render(...args)
+
+    var props = { ...this.props }
+    const modify = (props) => {
+      each(props, (value, key) => {
+        if (key.indexOf('$') === 0) {
+          delete props[key]
+          this[key] = value
+        }
+      })
+
+      this.children = props.children
+      delete props.children
+    }
+    modify(props)
+    Object.defineProperty(this, 'props', {
+      enumerable: false,
+      configurable: false,
+      get: () => props,
+      set: (v) => {
+        const p = { ...v }
+        modify(p)
+        props = p
+      },
+    })
   }
 }
