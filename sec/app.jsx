@@ -1,5 +1,5 @@
 import { Component, View } from 'nautil'
-import { Enum } from 'nautil/types'
+import { enumerate } from 'nautil/types'
 import { Router, Switch } from 'nautil/router'
 import Box from './components/box.jsx'
 
@@ -13,7 +13,7 @@ export class App extends Component {
   static props = {
     weight: Number,
     size: Number,
-    color: Enum('red', 'blue', 'yellow'),
+    color: enumerate(['red', 'blue', 'yellow']),
   }
   static state = {
     weight: 10,

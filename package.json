@@ -20,5 +20,10 @@
     "url": "https://github.com/tangshuang/nautil/issues"
   },
   "homepage": "https://github.com/tangshuang/nautil#readme",
-  "dependencies": {}
+  "dependencies": {
+    "react": "^16.8.6",
+    "rxjs": "^6.5.2",
+    "ts-fns": "0.0.4",
+    "tyshemo": "^1.4.2"
+  }
 }

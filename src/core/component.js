@@ -1,76 +1,83 @@
-import { Dict } from '../types/index.js'
-import { DevTool } from './devtool.js'
-import { Store } from './store.js'
-import { isObject, isArray, clone, isEqual } from '../utils/index.js'
+import React from 'react'
+import {
+  makeKeyChainByPath,
+  createProxy,
+} from './utils'
 
-export class Component {
+export class Component extends React.Component {
   constructor(props) {
-    const TargetComponent = new.target
-    const supportedProps = TargetComponent.props
-    const defaultState = TargetComponent.state
+    super(props)
 
-    const supportedPropKeys = isArray(supportedProps) ? supportedProps : isObject(supportedProps) ? Object.keys(supportedProps) : []
+    var isSetingState = false
+    const setState = this.setState.bind(this)
+    Object.defineProperty(this, 'setState', {
+      enumerable: false,
+      configurable: false,
+      value: (...args) => {
+        isSetingState = true
+        setState(...args)
+        isSetingState = false
+      },
+    })
 
-    // 数据类型检查
-    if (supportedProps && isObject(supportedProps)) {
-      const PropsType = Dict(supportedProps)
-      PropsType.trace(props).with((error) => {
-        DevTool.error(error)
+    var state = createState({})
+    const createState = (v) => {
+      return createProxy(v, {
+        set: (keyPath, target, key, value) => {
+          if (isSetingState) {
+            return
+          }
+          const chain = makeKeyChainByPath(keyPath)
+          const root = chain[0]
+          if (keyPath === root) {
+            setState({
+              [root]: value,
+            })
+          }
+          else {
+            const current = state[root]
+
+            target[key] = value
+            setState({
+              [root]: { ...current },
+            })
+          }
+        },
+        get: (keyPath) => {},
+        del: (keyPath, target, key, obj) => {
+          if (target === state) {
+            throw new Error('[nautil component]: state property should not be deleted.')
+          }
+          if (isSetingState) {
+            return
+          }
+          const chain = makeKeyChainByPath(keyPath)
+          const root = chain[0]
+          const current = state[root]
+
+          delete target[key]
+          setState({
+            [root]: { ...current },
+          })
+        },
       })
     }
-
-    const prepareState = clone(defaultState)
-    supportedPropKeys.forEach((key) => {
-      let value = props[key]
-      prepareState[key] = value
-    })
-    const state = new Store(prepareState)
-
-    // 双向绑定
-    supportedPropKeys.forEach((key) => {
-      state.$watch(key, ({ newValue, oldValue, path }) => {
-        if (!isEqual(newValue, oldValue)) {
-          props.$set(path, newValue)
+    Object.defineProperty(this, 'state', {
+      enumerable: false,
+      configurable: false,
+      get: () => {
+        return state
+      },
+      set: (v) => {
+        if (!isObject(v)) {
+          throw new Error('[nautil component]: state should be an object.')
         }
-      }, true)
-      props.$watch(key, ({ newValue, oldValue, path }) => {
-        if (!isEqual(newValue, oldValue)) {
-          state.$set(path, newValue)
-        }
-      }, true)
-    })
-
-    state.$watch('*', ({ newValue, oldValue }) => {
-      if (!isEqual(newValue, oldValue)) {
-        this.update()
-      }
-    })
-
-    this.state = state
-    this.updating = false
-  }
-
-  render() {
-    DevTool.throw('Component.render should must be override.')
-  }
-
-  update(state) {
-    if (state) {
-      this.state.$silent(true)
-      this.state.$update(state)
-      this.state.$silent(false)
-    }
-
-    clearTimeout(this.updating)
-    this.updating = setTimeout(() => {
-      const vdom = this.render()
-      const patches = this.diff(vdom)
-      this.patch(patches)
-      this.vdom = vdom
+        state = createState(v)
+        return true
+      },
     })
   }
-
-  diff(vdom) {}
-
-  patch(patches) {}
+  render(...args) {
+    super.render(...args)
+  }
 }

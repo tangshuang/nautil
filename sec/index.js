@@ -1,6 +1,7 @@
 import { Store } from 'nautil'
 import DevTool from 'nautil/devtool'
 import NautilDOM from 'nautil/dom'
+
 import App from './app.jsx'
 
 // 先创建实例，稍后mount
