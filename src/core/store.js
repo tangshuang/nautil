@@ -76,3 +76,24 @@ export class Store {
     assign(this[cache], keyPath, clone(newValue))
   }
 }
+
+
+export class Provider extends React.Component {
+  constructor(props) {
+    super(props)
+
+    const { store } = props
+    const { state } = store
+
+    const context = React.createContext(state)
+    this.context = context
+
+    this.state = { state }
+
+    store.watch('*', state => this.setState({ state }))
+  }
+  render() {
+    const { Provider } = this.context
+    return <Provider value={this.state.state}>{this.props.children}</Provider>
+  }
+}
