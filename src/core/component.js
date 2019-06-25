@@ -24,7 +24,7 @@ export class Component extends React.Component {
     var state = createState({})
     const createState = (v) => {
       return createProxy(v, {
-        set: (keyPath, target, key, value) => {
+        set: (keyPath, value, key, target) => {
           if (isSetingState) {
             return
           }
@@ -44,8 +44,8 @@ export class Component extends React.Component {
             })
           }
         },
-        get: (keyPath) => {},
-        del: (keyPath, target, key, obj) => {
+        get: () => {},
+        del: (keyPath, key, target) => {
           if (target === state) {
             throw new Error('[nautil component]: state property should not be deleted.')
           }
@@ -83,7 +83,8 @@ export class Component extends React.Component {
       each(props, (value, key) => {
         if (key.indexOf('$') === 0) {
           delete props[key]
-          this[key] = value
+          const attr = key.substr(1)
+          this[attr] = value
         }
       })
 
