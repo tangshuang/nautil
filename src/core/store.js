@@ -3,14 +3,12 @@ import { createProxy, assign, parse, remove, clone, isEqual } from 'ts-fns'
 const dispatch = Symbol('dispatch')
 const listeners = Symbol('listeners')
 const cache = Symbol('cache')
-const debounce = Symbol('debounce')
 
 export class Store {
   constructor(data = {}) {
     this[listeners] = []
     this.data = data
     this[cache] = clone(data)
-    this[debounce] = null
 
     this.init(data)
   }
@@ -48,6 +46,10 @@ export class Store {
     return this
   }
   [dispatch](keyPath, newValue, oldValue) {
+    if (!isEqual(newValue, oldValue)) {
+      return
+    }
+
     const items = this[listeners]
 
     const callbacks = items.filter((item) => {
@@ -63,21 +65,14 @@ export class Store {
       fn.call(this, newValue, oldValue)
     })
 
-    clearTimeout(this[debounce])
-    this[debounce] = setTimeout(() => {
-      const newData = this.data
-      const oldData = this[cache]
+    const newData = this.data
+    const oldData = this[cache]
 
-      if (isEqual(newData, oldData)) {
-        return
-      }
-
-      const emitters = items.filter(item => item.keyPath === '*')
-      emitters.forEach(({ fn }) => {
-        fn.call(this, newData, oldData)
-      })
-
-      this[cache] = clone(newData)
+    const emitters = items.filter(item => item.keyPath === '*')
+    emitters.forEach(({ fn }) => {
+      fn.call(this, newData, oldData, [keyPath, newValue, oldValue])
     })
+
+    assign(this[cache], keyPath, clone(newValue))
   }
 }
