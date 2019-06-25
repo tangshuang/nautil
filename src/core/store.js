@@ -1,23 +1,23 @@
-import { createProxy, assign, parse, remove, clone, each } from 'ts-fns'
+import { createProxy, assign, parse, remove, clone, isEqual } from 'ts-fns'
 
-const digest = Symbol('digest')
 const dispatch = Symbol('dispatch')
 const listeners = Symbol('listeners')
 const cache = Symbol('cache')
+const debounce = Symbol('debounce')
 
 export class Store {
   constructor(data = {}) {
     this[listeners] = []
-    this.data = {}
+    this.data = data
+    this[cache] = clone(data)
+    this[debounce] = null
+
     this.init(data)
-    this[cache] = clone(this.data)
   }
   init(data) {
-    const keys = Object.keys(data)
-    const computed = []
-    const statable = {}
-    keys.forEach((key) => {
-
+    this.state = createProxy(data, {
+      set: ([data, keyPath, value]) => this.set(keyPath, value),
+      del: ([data, keyPath]) => this.del(keyPath),
     })
   }
   set(keyPath, value) {
@@ -63,14 +63,21 @@ export class Store {
       fn.call(this, newValue, oldValue)
     })
 
-    const emitters = items.filter(item => item.keyPath === '*')
-    const newData = this.data
-    const oldData = this[cache]
-    emitters.forEach(({ fn }) => {
-      fn.call(this, newData, oldData)
-    })
+    clearTimeout(this[debounce])
+    this[debounce] = setTimeout(() => {
+      const newData = this.data
+      const oldData = this[cache]
 
-    this[cache] = clone(newData)
+      if (isEqual(newData, oldData)) {
+        return
+      }
+
+      const emitters = items.filter(item => item.keyPath === '*')
+      emitters.forEach(({ fn }) => {
+        fn.call(this, newData, oldData)
+      })
+
+      this[cache] = clone(newData)
+    })
   }
-  [digest]() {}
 }
