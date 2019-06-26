@@ -1,11 +1,18 @@
 import React from 'react'
-import { each } from './utils'
+import { each, getConstructor } from './utils'
+import { Ty } from './types'
 
 const hoist = Symbol('hoist')
 
 export class Component extends React.Component {
   constructor(...args) {
     super(...args)
+
+    const Constructor = getConstructor(this)
+    const { PropTypes } = Constructor
+    if (PropTypes) {
+      Ty.expect(this.props).to.be(PropTypes)
+    }
 
     this[hoist](this.props)
   }

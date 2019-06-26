@@ -1,6 +1,11 @@
 import React, { Fragment } from 'react'
 
 export class Observer extends React.Component {
+
+  static PropTypes = {
+    subscribe: Function,
+  }
+
   constructor(props) {
     super(props)
 

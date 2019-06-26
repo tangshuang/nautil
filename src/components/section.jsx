@@ -1,9 +1,9 @@
-import { Component } from '../core/component.js'
-import { enumerate, list } from '../core/types.js'
-import { Style } from '../core/stylesheet.js'
+import { Component } from '../core/component'
+import { enumerate, list } from '../core/types'
+import { Style } from '../core/stylesheet'
 
 export class Section extends Component {
-  static propTypes = {
+  static PropTypes = {
     stylesheet: enumerate(Style, list(Style)),
     flex: Number,
     onHintEnter: Function,
