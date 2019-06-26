@@ -35,11 +35,13 @@ export class Component extends React.Component {
     this[hoist](nextProps)
   }
   shouldComponentUpdate(...args) {
-    return this.shouldUpdate(...args)
+    return !!this.shouldUpdate(...args)
   }
 
   // Lifecircle
-  shouldUpdate() {}
+  shouldUpdate() {
+    return true
+  }
   onMounted() {}
   onUpdated() {}
 }

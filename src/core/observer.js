@@ -4,14 +4,18 @@ export class Observer extends React.Component {
   constructor(props) {
     super(props)
 
-    const dispatch = () => this.forceUpdate()
+    this.state = { ...props }
+
+    const dispatch = () => {
+      this.forceUpdate()
+    }
     const { subscribe } = props
 
     subscribe(dispatch)
   }
   render() {
     return <Fragment>
-      {this.props.children}
+      {React.Children.map(this.props.children, child => React.cloneElement(child))}
     </Fragment>
   }
 }

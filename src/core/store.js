@@ -46,7 +46,7 @@ export class Store {
     return this
   }
   [dispatch](keyPath, newValue, oldValue) {
-    if (!isEqual(newValue, oldValue)) {
+    if (isEqual(newValue, oldValue)) {
       return
     }
 
