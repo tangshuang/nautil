@@ -23,7 +23,7 @@
   "dependencies": {
     "react": "^16.8.6",
     "rxjs": "^6.5.2",
-    "ts-fns": "0.0.6",
+    "ts-fns": "0.0.7",
     "tyshemo": "^1.4.2"
   }
 }

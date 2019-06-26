@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 export class Observer extends React.Component {
   constructor(props) {
@@ -10,6 +10,8 @@ export class Observer extends React.Component {
     subscribe(dispatch)
   }
   render() {
-    return this.props.children
+    return <Fragment>
+      {this.props.children}
+    </Fragment>
   }
 }

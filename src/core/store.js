@@ -76,3 +76,5 @@ export class Store {
     assign(this[cache], keyPath, clone(newValue))
   }
 }
+
+export default Store
