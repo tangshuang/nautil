@@ -1,5 +1,4 @@
 import Component from '../core/component'
-import { Any } from '../core/types'
 import Fragment from './fragment'
 import React from 'react'
 

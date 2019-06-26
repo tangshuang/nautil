@@ -15,6 +15,12 @@ export class Audio extends Component {
     onReset: Function,
     onReload: Function,
     onLoad: Function,
+    onTick: Function,
+    onChangeVolume: Function,
+  }
+  static defaultProps = {
+    width: Infinity,
+    height: 30,
   }
 }
 export default Audio

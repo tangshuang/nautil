@@ -1,6 +1,10 @@
 import { React, Component } from 'nautil'
 
 export class Page1 extends Component {
+  static AcceptableProps = {
+    $state: true,
+  }
+
   change() {
     // change the sepcial prop directly, which will trigger rerender
     this.$state.age = parseInt(Math.random() * 100, 10)

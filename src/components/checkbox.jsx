@@ -2,9 +2,16 @@ import Component from '../core/component'
 import { Any } from '../core/types'
 
 export class Checkbox extends Component {
+  static AcceptableProps = {
+    $state: true,
+  }
   static PropTypes = {
-    value: Any,
+    checkedValue: Any,
+    uncheckedValue: Any,
+
     checked: Boolean,
+
+    model: String,
 
     onCheck: Function,
     onUncheck: Function,

@@ -1,48 +1,51 @@
 import React from 'react'
-import { each, getConstructor } from './utils'
+import { each, getConstructor, inObject } from './utils'
 import { Ty } from './types'
 
-const hoist = Symbol('hoist')
+const digest = Symbol('digest')
 
 export class Component extends React.Component {
   constructor(...args) {
     super(...args)
 
-    const Constructor = getConstructor(this)
-    const { PropTypes } = Constructor
-    if (PropTypes) {
-      Ty.expect(this.props).to.be(PropTypes)
-    }
-
-    this[hoist](this.props)
+    this[digest](this.props)
   }
 
-  [hoist](props) {
-    each(this, (value, key) => {
-      if (key.indexOf('$') === 0) {
+  [digest](props) {
+    const Constructor = getConstructor(this)
+    const { PropTypes, AcceptableProps } = Constructor
+
+    if (PropTypes) {
+      Ty.track(props).by(PropTypes)
+    }
+
+    if (AcceptableProps) {
+      each(AcceptableProps, (value, key) => {
+        if (!value) {
+          return
+        }
         delete this[key]
-      }
-    })
-    each(props, (value, key) => {
-      if (key.indexOf('$') === 0) {
-        this[key] = value
-      }
-    })
+        if (inObject(key, props)) {
+          this[key] = props[key]
+        }
+      })
+    }
+
     this.children = props.children
   }
 
   // Should not rewrite following methods
-  componentDidMount() {
-    this.onMounted()
+  componentDidMount(...args) {
+    this.onMounted(...args)
   }
-  componentDidUpdate() {
-    this.onUpdated()
+  componentDidUpdate(...args) {
+    this.onUpdated(...args)
   }
   componentWillReceiveProps(nextProps) {
-    this[hoist](nextProps)
+    this[digest](nextProps)
   }
   shouldComponentUpdate(...args) {
-    return !!this.shouldUpdate(...args)
+    return this.shouldUpdate(...args)
   }
 
   // Lifecircle
