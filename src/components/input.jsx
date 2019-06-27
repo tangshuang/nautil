@@ -16,19 +16,17 @@ export class Input extends Component {
     // 2. when you typing in the input, $state[modelKeyPath] will be updated automaticly
     model: ifexist(String),
 
-    onInput: Function,
     onChange: Function,
     onFocus: Function,
     onBlur: Function,
-    onRangeSelect: Function,
+    onSelect: Function,
   }
   static defaultProps = {
     type: 'text',
-    onInput: noop,
     onChange: noop,
     onFocus: noop,
     onBlur: noop,
-    onRangeSelect: noop,
+    onSelect: noop,
   }
 }
 export default Input

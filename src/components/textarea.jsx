@@ -1,5 +1,5 @@
 import Component from '../core/component'
-import { enumerate, ifexist } from '../core/types'
+import { ifexist } from '../core/types'
 import { noop } from '../core/utils'
 
 export class Textarea extends Component {
@@ -7,25 +7,23 @@ export class Textarea extends Component {
     $state: true,
   }
   static checkProps = {
-    value: enumerate(String, Number),
+    value: ifexist(String),
     model: ifexist(String),
 
     line: Number,
     placeholder: ifexist(String),
 
-    onInput: Function,
     onChange: Function,
     onFocus: Function,
     onBlur: Function,
-    onRangeSelect: Function,
+    onSelect: Function,
   }
   static defualtProps = {
     line: 3,
-    onInput: noop,
     onChange: noop,
     onFocus: noop,
     onBlur: noop,
-    onRangeSelect: noop,
+    onSelect: noop,
   }
 }
 export default Textarea

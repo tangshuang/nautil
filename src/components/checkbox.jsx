@@ -7,9 +7,10 @@ export class Checkbox extends Component {
     $state: true,
   }
   static checkProps = {
+    value: ifexist(Any),
+
     checkedValue: ifexist(Any),
     uncheckedValue: ifexist(Any),
-    value: ifexist(Any),
     model: ifexist(String),
 
     checked: Boolean,

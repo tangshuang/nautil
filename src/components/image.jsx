@@ -1,11 +1,13 @@
 import Component from '../core/component'
-import { enumerate } from '../core/types'
+import { enumerate, ifexist } from '../core/types'
 
 export class Image extends Component {
   static checkProps = {
     source: enumerate(String, Object),
     width: Number,
     height: Number,
+    maxWidth: ifexist(Number),
+    maxHeight: ifexist(Number),
   }
   static defaultProps = {
     width: Infinity,

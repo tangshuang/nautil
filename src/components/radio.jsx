@@ -6,8 +6,6 @@ export class Radio extends Component {
     $state: true,
   }
   static checkProps = {
-    checkedValue: ifexist(Any),
-    uncheckedValue: ifexist(Any),
     value: ifexist(Any),
     model: ifexist(String),
 
