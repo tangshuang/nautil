@@ -1,6 +1,7 @@
 import React from 'react'
 import { each, getConstructor, inObject } from './utils'
 import { Ty } from './types'
+import { createStream } from './stream'
 
 const digest = Symbol('digest')
 
@@ -9,29 +10,48 @@ export class Component extends React.Component {
     super(...args)
 
     this[digest](this.props)
+    this.init()
   }
 
   [digest](props) {
     const Constructor = getConstructor(this)
-    const { PropTypes, AcceptableProps } = Constructor
+    const { checkProps, injectProps } = Constructor
 
-    if (PropTypes) {
-      Ty.track(props).by(PropTypes)
+    this.streams = {}
+    this.children = props.children
+    this.attrs = { ...props }
+
+    // data type checking
+    if (checkProps) {
+      Ty.track(props).by(checkProps)
     }
 
-    if (AcceptableProps) {
-      each(AcceptableProps, (value, key) => {
+    // injection
+    if (injectProps) {
+      each(injectProps, (value, key) => {
         if (!value) {
           return
         }
         delete this[key]
+        delete this.attrs[key]
         if (inObject(key, props)) {
           this[key] = props[key]
         }
       })
     }
 
-    this.children = props.children
+    // streams
+    each(this, (value, key) => {
+      if (/^on[A-Z].*\$$/.test(key)) {
+        delete this[key]
+      }
+    })
+    each(this.attrs, (value, key) => {
+      if (/^on[A-Z]/.test(key)) {
+        delete this.attrs[key]
+        this[key + '$'] = createStream(value)
+      }
+    })
   }
 
   // Should not rewrite following methods
@@ -48,6 +68,7 @@ export class Component extends React.Component {
     return this.shouldUpdate(...args)
   }
 
+  init() {}
   // Lifecircle
   shouldUpdate() {
     return true
@@ -55,3 +76,4 @@ export class Component extends React.Component {
   onMounted() {}
   onUpdated() {}
 }
+export default Component

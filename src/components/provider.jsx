@@ -9,11 +9,11 @@ function inject(children, injection) {
       return React.cloneElement(child)
     }
 
-    const { AcceptableProps } = Constructor
+    const { injectProps } = Constructor
 
     const attrs = {}
-    if (AcceptableProps) {
-      each(AcceptableProps, (value, key) => {
+    if (injectProps) {
+      each(injectProps, (value, key) => {
         if (!value) {
           return
         }

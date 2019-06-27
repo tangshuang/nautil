@@ -2,7 +2,7 @@ import Component from '../core/component'
 import { enumerate } from '../core/types'
 
 export class Video extends Component {
-  static PropTypes = {
+  static checkProps = {
     source: enumerate(String, Object),
     width: Number,
     height: Number,
@@ -16,11 +16,21 @@ export class Video extends Component {
     onReload: Function,
     onLoad: Function,
     onTick: Function,
-    onChangeVolume: Function,
+    onVolumeChange: Function,
   }
   static defaultProps = {
     width: Infinity,
     height: Infinity,
+
+    onPlay: noop,
+    onPause: noop,
+    onStop: noop,
+    onDrag: noop,
+    onResume: noop,
+    onReload: noop,
+    onLoad: noop,
+    onTick: noop,
+    onVolumeChange: noop,
   }
 }
 export default Video

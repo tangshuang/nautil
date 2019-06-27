@@ -4,7 +4,7 @@ import Fragment from './fragment'
 import { isArray, isObject, each } from 'ts-fns'
 
 export class For extends Component {
-  static PropTypes = {
+  static checkProps = {
     start: Number,
     end: Number,
     step: Number,
@@ -28,7 +28,7 @@ export class For extends Component {
 }
 
 export class Each extends Component {
-  static PropTypes = {
+  static checkProps = {
     of: enumerate(Array, Object),
     map: Function,
   }

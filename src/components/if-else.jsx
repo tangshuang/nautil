@@ -9,7 +9,7 @@ export class Else extends Component {
 }
 
 export class ElseIf extends Component {
-  static PropTypes = {
+  static checkProps = {
     condition: Boolean,
   }
 
@@ -19,7 +19,7 @@ export class ElseIf extends Component {
 }
 
 export class If extends Component {
-  static PropTypes = {
+  static checkProps = {
     condition: Boolean,
   }
 

@@ -1,26 +1,31 @@
 import Component from '../core/component'
 import { enumerate, ifexist } from '../core/types'
+import { noop } from '../core/utils'
 
 export class Textarea extends Component {
-  static AcceptableProps = {
+  static injectProps = {
     $state: true,
   }
-  static PropTypes = {
+  static checkProps = {
     value: enumerate(String, Number),
-    line: Number,
-
-    // how to use model?
-    // 1. you should accept a `$state` prop
-    // 2. when you typing in the input, $state[modelKeyPath] will be updated automaticly
     model: ifexist(String),
+
+    line: Number,
+    placeholder: ifexist(String),
 
     onInput: Function,
     onChange: Function,
     onFocus: Function,
     onBlur: Function,
+    onRangeSelect: Function,
   }
   static defualtProps = {
     line: 3,
+    onInput: noop,
+    onChange: noop,
+    onFocus: noop,
+    onBlur: noop,
+    onRangeSelect: noop,
   }
 }
 export default Textarea

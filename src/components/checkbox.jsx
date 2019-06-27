@@ -1,20 +1,26 @@
 import Component from '../core/component'
-import { Any } from '../core/types'
+import { Any, ifexist } from '../core/types'
+import { noop } from '../core/utils'
 
 export class Checkbox extends Component {
-  static AcceptableProps = {
+  static injectProps = {
     $state: true,
   }
-  static PropTypes = {
-    checkedValue: Any,
-    uncheckedValue: Any,
+  static checkProps = {
+    checkedValue: ifexist(Any),
+    uncheckedValue: ifexist(Any),
+    value: ifexist(Any),
+    model: ifexist(String),
 
     checked: Boolean,
 
-    model: String,
-
     onCheck: Function,
     onUncheck: Function,
+  }
+  static defaultProps = {
+    checked: false,
+    onCheck: noop,
+    onUncheck: noop,
   }
 }
 export default Checkbox

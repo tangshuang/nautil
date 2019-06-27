@@ -4,7 +4,7 @@ import React from 'react'
 import { Any } from '../core/types'
 
 export class Case extends Component {
-  static PropTypes = {
+  static checkProps = {
     value: Any,
     default: Boolean
   }
@@ -15,7 +15,7 @@ export class Case extends Component {
 }
 
 export class Switch extends Component {
-  static PropTypes = {
+  static checkProps = {
     of: Any,
   }
 
