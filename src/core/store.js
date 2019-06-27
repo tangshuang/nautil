@@ -1,4 +1,4 @@
-import { createProxy, assign, parse, remove, clone, isEqual } from 'ts-fns'
+import { createProxy, assign, parse, remove, clone, isEqual } from '../core/utils'
 
 const dispatch = Symbol('dispatch')
 const listeners = Symbol('listeners')

@@ -1,5 +1,5 @@
 import React from 'react'
-import { each, getConstructor, inObject } from './utils'
+import { each, getConstructor, inObject, isArray, isString, isObject } from './utils'
 import { Ty } from './types'
 import { createStream } from './stream'
 
@@ -16,10 +16,32 @@ export class Component extends React.Component {
   [digest](props) {
     const Constructor = getConstructor(this)
     const { checkProps, injectProps } = Constructor
+    const { children, stylesheet, ...attrs } = props
 
-    this.streams = {}
-    this.children = props.children
-    this.attrs = { ...props }
+    this.children = children
+    this.attrs = attrs
+
+    // stylesheet
+    const classNames = []
+    const styles = {}
+    if (isArray(stylesheet)) {
+      stylesheet.forEach((item) => {
+        if (isString(item)) {
+          classNames.push(item)
+        }
+        else if (isObject(item)) {
+          Object.assign(styles, item)
+        }
+      })
+    }
+    else if (isObject(stylesheet)) {
+      Object.assign(styles, stylesheet)
+    }
+    else if (isString(stylesheet)) {
+      classNames.push(stylesheet)
+    }
+    this.className = classNames.join(' ').split(' ').filter(item => !!item).join(' ')
+    this.style = styles
 
     // data type checking
     if (checkProps) {
@@ -61,15 +83,16 @@ export class Component extends React.Component {
   componentDidUpdate(...args) {
     this.onUpdated(...args)
   }
-  componentWillReceiveProps(nextProps) {
-    this[digest](nextProps)
-  }
-  shouldComponentUpdate(...args) {
-    return this.shouldUpdate(...args)
+  shouldComponentUpdate(nextProps, ...args) {
+    const bool = this.shouldUpdate(nextProps, ...args)
+    if (bool) {
+      this[digest](nextProps)
+    }
+    return bool
   }
 
+  // Lifecircle Hooks
   init() {}
-  // Lifecircle
   shouldUpdate() {
     return true
   }

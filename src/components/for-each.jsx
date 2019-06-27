@@ -1,7 +1,7 @@
 import Component from '../core/component'
 import { enumerate } from '../core/types'
 import Fragment from './fragment'
-import { isArray, isObject, each } from 'ts-fns'
+import { isArray, isObject, each } from '../core/utils'
 
 export class For extends Component {
   static checkProps = {

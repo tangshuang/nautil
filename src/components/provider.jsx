@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { each, inObject } from 'ts-fns'
+import { each, inObject } from '../core/utils'
 
 function inject(children, injection) {
   return React.Children.map(children, (child) => {
