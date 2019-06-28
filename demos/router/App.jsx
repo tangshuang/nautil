@@ -3,7 +3,7 @@
  */
 
 import { React, Component, Observer, Switch, Case } from 'nautil'
-import { Router } from 'nautil-dom'
+import { Router } from 'nautil/dom'
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
 
