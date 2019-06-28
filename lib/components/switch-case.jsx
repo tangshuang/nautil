@@ -1,7 +1,8 @@
 import Component from '../core/component.js'
 import Fragment from './fragment.jsx'
-import React from '../../node_modules/react/umd/react.production.min.js'
+import React from 'react'
 import { Any } from '../core/types.js'
+import { isFunction } from '../core/utils.js'
 
 export class Case extends Component {
   static checkProps = {
@@ -41,6 +42,10 @@ export class Switch extends Component {
     for (let block of blocks) {
       const { value, children } = block
       if (value === target) {
+        use = <Fragment>{children}</Fragment>
+        break
+      }
+      else if (isFunction(value) && value()) {
         use = <Fragment>{children}</Fragment>
         break
       }

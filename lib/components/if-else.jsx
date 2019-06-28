@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import Fragment from './fragment.jsx'
-import React from '../../node_modules/react/umd/react.production.min.js'
+import React from 'react'
 
 export class Else extends Component {
   render() {

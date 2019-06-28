@@ -1,3 +1,3 @@
-import { Fragment } from '../../node_modules/react/umd/react.production.min.js'
+import { Fragment } from 'react'
 export { Fragment }
 export default Fragment

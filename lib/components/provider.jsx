@@ -1,4 +1,4 @@
-import React, { Fragment } from '../../node_modules/react/umd/react.production.min.js'
+import React, { Fragment } from 'react'
 import { each, inObject } from '../core/utils.js'
 
 function inject(children, injection) {

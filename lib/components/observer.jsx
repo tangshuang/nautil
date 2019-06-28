@@ -1,4 +1,4 @@
-import React, { Fragment } from '../../node_modules/react/umd/react.production.min.js'
+import React, { Fragment } from 'react'
 
 export class Observer extends React.Component {
   static checkProps = {
