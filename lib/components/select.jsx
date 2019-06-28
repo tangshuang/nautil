@@ -17,12 +17,10 @@ export class Select extends Component {
     }),
     placeholder: ifexist(String),
 
-    onCheck: Function,
-    onUncheck: Function,
+    onChange: Function,
   }
   static defaultProps = {
-    onCheck: noop,
-    onUncheck: noop,
+    onChange: noop,
   }
 }
 export default Select
