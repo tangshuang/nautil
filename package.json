@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/tangshuang/nautil#readme",
   "dependencies": {
+    "axios": "^0.19.0",
     "react": "^16.8.6",
     "rxjs": "^6.5.2",
+    "storagex": "^1.0.0",
     "ts-fns": "0.0.7",
     "tyshemo": "^1.4.2"
   }
