@@ -39,7 +39,7 @@ export class App extends Component {
   render() {
     return (
       <Observer subscribe={dispatch => router.watch('*', dispatch)}>
-        <Switch of={router.asknown}>
+        <Switch of={router.status}>
           <Case value="page1">
             <Page1></Page1>
           </Case>
