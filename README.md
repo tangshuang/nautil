@@ -27,7 +27,7 @@ Nautil 基于 React 的 UI 编程能力，在此基础上，提供独立而简�
 ### 多端开发
 
 ```js
-import { React, Component } from 'nautil'
+import { Component } from 'nautil'
 import { Section, Text } from 'nautil/components'
 import { mount } from 'nautil/dom'
 
@@ -48,7 +48,7 @@ mount('#app', App)
 ### 状态管理
 
 ```js
-import { React, Component, Store, Observer, Provider } from 'nautil'
+import { Component, Store, Observer, Provider } from 'nautil'
 import { Section, Text } from 'nautil/components'
 import { mount } from 'nautil/dom'
 
@@ -86,7 +86,7 @@ mount('#app', App)
 ### 路由管理
 
 ```js
-import { React, Component, Router, Observer, Switch, Case } from 'nautil'
+import { Component, Router, Observer, Switch, Case } from 'nautil'
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
 import { mount } from 'nautil/dom'
@@ -148,7 +148,7 @@ mount('#app', App)
 ### 数据仓库
 
 ```js
-import { React, Component, Provider, Observer, Depository, Prepare } from 'nautil'
+import { Component, Provider, Observer, Depository, Prepare } from 'nautil'
 import { Text } from 'nautil/components'
 import { mount } from 'nautil/dom'
 
@@ -202,6 +202,16 @@ mount('#app', App)
 
 数据仓库是一个订阅/发布模式的设计，而在使用时，只需要从仓库中读取数据即可，不需要发出请求。这些操作是同步的，这意味着在 nautil 中你没有异步操作。
 上面的实例代码中，你需要借助 `Observer` 来订阅仓库中的数据变化，通过 `Prepare` 来解决当数据还没有从后端拉取回来时应该怎么显示界面。
+
+## 开发者言
+
+当你在使用 nautil 进行开发时，我希望你保持下面的心态：
+
+- 忘掉 react，就当 nautil 是完全遵循 react 语法的另外一套框架
+- 时刻记住自己在进行多端开发（很多 css 不能用）
+- 使用 nautil 内置基础组件，而非使用 react 或 react-native 的内置组件（除非你确定你打算用 nautil 做单端开发）
+- 使用 css module 的方式使用样式，在构建 react-native 应用时，使用 react-native-css-loader 对 css 进行转化
+- 使用 babel-plugin-react-require 插件自动插入对 react 的引用
 
 ## MIT License
 
