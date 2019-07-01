@@ -141,3 +141,64 @@ class App extends Component {
 
 mount('#app', App)
 ```
+
+我们提供统一的路由接口。它用于创建和监听路由状态，并通过 `on` 方法对路由状态变化作出反馈。但是，从编程上，它仅仅是一个库的功能，你需要配合 `Observer` `Switch` `Case` 才能完成整个页面的路由规则。
+在 native 开发时，我们会在系统内部模拟一套类似 web 一样的路径系统，从而用于抹平路由在不同端的表现。
+
+### 数据仓库
+
+```js
+import { React, Component, Provider, Observer, Depository, Prepare } from 'nautil'
+import { Text } from 'nautil/components'
+import { mount } from 'nautil/dom'
+
+const datasources = [
+   // 数据源配置
+]
+
+const depo = new Depository({
+  expire: 10000,
+})
+
+depo.register(datasources)
+
+class Page1 extends Component {
+  static validateProps = {
+    $depo: Depository,
+  }
+
+  static injectProps = {
+    $depo: true,
+  }
+
+  render() {
+    const depo = this.$depo
+    const some = depo.get('some')
+    return (
+      <Prepare isReady={some} loadingComponent={<Text>loading...</Text>}>
+        <Text>{some}</Text>
+      </Prepare>
+    )
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Observer subscribe={dispatch => depo.subscribe('some', dispatch).subscribe('tag', dispatch)}>
+        <Provider $depo={depo}>
+          <Page1 />
+        </Provider>
+      </Observer>
+    )
+  }
+}
+
+mount('#app', App)
+```
+
+我们发明了一套新的数据管理理论——数据仓库，用以解决前端应用中从后台拉取数据和推送数据的逻辑。传统数据拉取和推送靠业务层代码发起 ajax 请求来解决。这样做的好处是便于新手理解。但是坏处是要解决不同组件之间发起同一个请求的浪费问题。
+要改变这种思维，我们通过数据仓库统一管理后台数据，我们在业务层和后台之间创建了数据仓库，业务层逻辑不和后台直接打交道，而是和数据仓库打交道，业务层代码通过订阅仓库中的数据，从而不需要关心如何从后台拿数据的问题。
+
+数据仓库是一个订阅/发布模式的设计，而在使用时，只需要从仓库中读取数据即可，不需要发出请求。这些操作是同步的，这意味着在 nautil 中你没有异步操作。
+上面的实例代码中，你需要借助 `Observer` 来订阅仓库中的数据变化，通过 `Prepare` 来解决当数据还没有从后端拉取回来时应该怎么显示界面。
