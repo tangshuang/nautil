@@ -6,7 +6,7 @@ export class Textarea extends Component {
   static injectProps = {
     $state: true,
   }
-  static checkProps = {
+  static validateProps = {
     value: ifexist(String),
     model: ifexist(String),
 

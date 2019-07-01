@@ -1,9 +1,4 @@
-/**
- * This file only works in web
- */
-
-import { React, Component, Observer, Switch, Case } from 'nautil'
-import { Router } from 'nautil/dom'
+import { React, Component, Router, Observer, Switch, Case } from 'nautil'
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
 
@@ -38,7 +33,7 @@ function NotFound() {
 export class App extends Component {
   render() {
     return (
-      <Observer subscribe={dispatch => router.watch('*', dispatch)}>
+      <Observer subscribe={dispatch => router.on('*', dispatch)}>
         <Switch of={router.status}>
           <Case value="page1">
             <Page1></Page1>

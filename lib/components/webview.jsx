@@ -3,7 +3,7 @@ import { enumerate } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Webview extends Component {
-  static checkProps = {
+  static validateProps = {
     source: enumerate(String, Object),
     width: Number,
     height: Number,

@@ -4,7 +4,7 @@ import Fragment from './fragment.jsx'
 import { isArray, isObject, each } from '../core/utils.js'
 
 export class For extends Component {
-  static checkProps = {
+  static validateProps = {
     start: Number,
     end: Number,
     step: Number,
@@ -28,7 +28,7 @@ export class For extends Component {
 }
 
 export class Each extends Component {
-  static checkProps = {
+  static validateProps = {
     of: enumerate(Array, Object),
     map: Function,
   }

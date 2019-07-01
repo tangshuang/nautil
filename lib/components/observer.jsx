@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 
 export class Observer extends React.Component {
-  static checkProps = {
+  static validateProps = {
     subscribe: Function,
   }
 

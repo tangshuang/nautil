@@ -5,7 +5,7 @@ import { Any } from '../core/types.js'
 import { isFunction } from '../core/utils.js'
 
 export class Case extends Component {
-  static checkProps = {
+  static validateProps = {
     value: Any,
     default: Boolean
   }
@@ -16,7 +16,7 @@ export class Case extends Component {
 }
 
 export class Switch extends Component {
-  static checkProps = {
+  static validateProps = {
     of: Any,
   }
 

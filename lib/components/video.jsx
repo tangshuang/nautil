@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import { enumerate } from '../core/types.js'
 
 export class Video extends Component {
-  static checkProps = {
+  static validateProps = {
     source: enumerate(String, Object),
     width: Number,
     height: Number,

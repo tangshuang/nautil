@@ -1,7 +1,14 @@
 import { React, Component } from 'nautil'
 
 export class Page1 extends Component {
-  static AcceptableProps = {
+  static validateProps = {
+    $state: {
+      name: String,
+      age: Number,
+    },
+  }
+
+  static injectProps = {
     $state: true,
   }
 

@@ -5,7 +5,7 @@ export class Radio extends Component {
   static injectProps = {
     $state: true,
   }
-  static checkProps = {
+  static validateProps = {
     value: ifexist(Any),
     model: ifexist(String),
 

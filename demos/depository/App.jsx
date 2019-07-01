@@ -1,4 +1,4 @@
-import { React, Component, Provider, Depository } from 'nautil'
+import { React, Component, Provider, Observer, Depository } from 'nautil'
 import Page1 from './pages/page1.jsx'
 
 const datasources = []
@@ -11,9 +11,13 @@ depo.register(datasources)
 
 export class App extends Component {
   render() {
-    return <Provider $depo={depo}>
-      <Page1 />
-    </Provider>
+    return (
+      <Observer subscribe={dispatch => depo.subscribe('some', dispatch).subscribe('tag', dispatch)}>
+        <Provider $depo={depo}>
+          <Page1 />
+        </Provider>
+      </Observer>
+    )
   }
 }
 
