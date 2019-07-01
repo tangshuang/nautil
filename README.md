@@ -24,9 +24,12 @@ Nautil 基于 React 的 UI 编程能力，在此基础上，提供独立而简�
 
 在 React 的编程中，你需要引入一大堆包来解决各种问题，而在 Nautil 中，你不需要很多包，只需要两个。
 
+### 多端开发
+
 ```js
-import { React, Component, Section, Text } from 'nautil'
-import { render } from 'nautil-dom'
+import { React, Component } from 'nautil'
+import { Section, Text } from 'nautil/components'
+import { mount } from 'nautil/dom'
 
 class App extends Component {
    render() {
@@ -36,16 +39,18 @@ class App extends Component {
    }
 }
 
-render(document.querySelector('#app'), App)
+mount('#app', App)
 ```
 
-使用全局的状态管理：
+上面我们使用了 nautil/dom, 此外我们可以使用 nautil/native 来获得 react-native 的开发能力。
+在原理上，我们要求开发者在开发时，必须使用 nautil 的基础组件完成 UI 界面的渲染。在实际运行时，通过 js 原型链方法重写的方式，在不同端重写基础组件的底层渲染逻辑，比如在 web 端，调用 react 对 html 组件的支持，在 native 端调用 react-native 提供的内置组件。这样，我们通过一套自己的组件，抹平各端开发的差异。（当然，在实际运行中，这种差异还是会有细节上的不同。）
+
+### 状态管理
 
 ```js
-import { React, Component,
-   Store, Observer, Provider,
-   Section, Text } from 'nautil'
-import { render } from 'nautil-dom'
+import { React, Component, Store, Observer, Provider } from 'nautil'
+import { Section, Text } from 'nautil/components'
+import { mount } from 'nautil/dom'
 
 const store = new Store({
    name: 'tomy',
@@ -73,5 +78,66 @@ class App extends Component {
    }
 }
 
-render(document.querySelector('#app'), App)
+mount('#app', App)
+```
+
+我们提供了更方便的全局状态管理工具 `Store` 来帮助开发者管理应用的全局状态。它是一个可以独立运行的状态管理工具。要让状态的变化出发界面重绘，还需要使用 `Observer` 这个内置组件，它可以通过订阅来触发内部组件的更新。`Provider` 组件则向内部组件提供注入 props 的能力，这样，在 `Page1` 组件内就可以更快捷的获得被注入的 prop，当然，你也可以选择不使用 `Provider` 而直接通过 props 传递。
+
+### 路由管理
+
+```js
+import { React, Component, Router, Observer, Switch, Case } from 'nautil'
+import Page1 from './pages/Page1.jsx'
+import Page2 from './pages/Page2.jsx'
+import { mount } from 'nautil/dom'
+
+const router = new Router({
+  base: '/app',
+  mode: 'history',
+  routes: [
+    {
+      name: 'home',
+      url: '/',
+      redirect: 'page1',
+    },
+    {
+      name: 'page1',
+      url: '/page1',
+    },
+    {
+      name: 'page2',
+      url: '/page2/:type/:id',
+      // default params
+      params: {
+        type: 'animal',
+      },
+    },
+  ],
+})
+
+function NotFound() {
+  return <div>Not Found!</div>
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Observer subscribe={dispatch => router.on('*', dispatch)}>
+        <Switch of={router.status}>
+          <Case value="page1">
+            <Page1></Page1>
+          </Case>
+          <Case value="page2">
+            <Page2 type={router.state.params.type} id={router.state.params.id}></Page2>
+          </Case>
+          <Case default>
+            <NotFound></NotFound>
+          </Case>
+        </Switch>
+      </Observer>
+    )
+  }
+}
+
+mount('#app', App)
 ```
