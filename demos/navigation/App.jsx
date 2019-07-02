@@ -14,6 +14,9 @@ const navigation = new Navigation({
     {
       name: 'page1',
       url: '/page1',
+      params: {
+        name: 'tomy',
+      },
     },
     {
       name: 'page2',

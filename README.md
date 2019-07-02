@@ -88,12 +88,12 @@ mount('#app', App)
 ### 路由管理
 
 ```js
-import { Component, Router, Observer, Switch, Case } from 'nautil'
+import { Component, Navigation, Navigator, Switch, Case } from 'nautil'
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
 import { mount } from 'nautil/dom'
 
-const router = new Router({
+const navigation = new Navigation({
   base: '/app',
   mode: 'history',
   routes: [
@@ -124,13 +124,13 @@ function NotFound() {
 class App extends Component {
   render() {
     return (
-      <Observer subscribe={dispatch => router.on('*', dispatch)}>
-        <Switch of={router.status}>
+      <Navigator navigation={navigation}>
+        <Switch of={navigation.status}>
           <Case value="page1">
             <Page1></Page1>
           </Case>
           <Case value="page2">
-            <Page2 type={router.state.params.type} id={router.state.params.id}></Page2>
+            <Page2 type={navigation.state.params.type} id={navigation.state.params.id}></Page2>
           </Case>
           <Case default>
             <NotFound></NotFound>
