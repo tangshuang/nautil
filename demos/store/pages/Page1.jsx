@@ -1,4 +1,5 @@
 import { Component } from 'nautil'
+import { Section, Text, Button } from 'nautil/components'
 
 export class Page1 extends Component {
   static validateProps = {
@@ -19,11 +20,11 @@ export class Page1 extends Component {
   render() {
     const state = this.$state
     return (
-      <div>
-        <p><span>name: {state.name}</span></p>
-        <p><span>age: {state.age}</span></p>
-        <p><button onClick={() => this.change()}>change</button></p>
-      </div>
+      <Section>
+        <Section><Text>name: {state.name}</Text></Section>
+        <Section><Text>age: {state.age}</Text></Section>
+        <Section><Button onHintEnd={() => this.change()}>change</Button></Section>
+      </Section>
     )
   }
 }

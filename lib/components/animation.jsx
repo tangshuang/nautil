@@ -307,6 +307,8 @@ export class Animation extends Component {
   render() {
     const { show, style } = this.state
     const { ease, duration, loop, ...props } = this.attrs
+    delete props.show
+
     return <If condition={show}>
       <Section style={{ ...this.style, ...style }} {...props}>{this.children}</Section>
     </If>

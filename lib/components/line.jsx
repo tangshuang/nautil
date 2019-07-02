@@ -2,12 +2,12 @@ import { Component } from '../core/component.js'
 
 export class Line extends Component {
   static validateProps = {
-    width: Number,
+    length: Number,
     thickness: Number,
     color: String,
   }
   static defaultProps = {
-    width: Infinity,
+    length: Infinity,
     thickness: 1,
     color: '#888888',
   }
