@@ -12,3 +12,5 @@ export * from './lib/components/prepare.jsx'
 export * from './lib/components/if-else.jsx'
 export * from './lib/components/for-each.jsx'
 export * from './lib/components/switch-case.jsx'
+
+export * from './lib/components/link.jsx'

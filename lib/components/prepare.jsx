@@ -1,4 +1,3 @@
-import React from 'react'
 import Component from '../core/component.js'
 import Fragment from './fragment.jsx'
 
