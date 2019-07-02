@@ -1,4 +1,4 @@
-import { React, Component, Provider, Observer, Depository } from 'nautil'
+import { Component, Provider, Observer, Depository } from 'nautil'
 import Page1 from './pages/page1.jsx'
 
 const datasources = []

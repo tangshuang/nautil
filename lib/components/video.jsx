@@ -16,7 +16,7 @@ export class Video extends Component {
     onReload: Function,
     onLoad: Function,
     onTick: Function,
-    onVolumeChange: Function,
+    onVolume: Function,
   }
   static defaultProps = {
     width: Infinity,
@@ -30,7 +30,7 @@ export class Video extends Component {
     onReload: noop,
     onLoad: noop,
     onTick: noop,
-    onVolumeChange: noop,
+    onVolume: noop,
   }
 }
 export default Video

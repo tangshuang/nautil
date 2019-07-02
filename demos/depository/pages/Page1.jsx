@@ -1,4 +1,4 @@
-import { React, Component, Prepare, Text, Depository } from 'nautil'
+import { Component, Prepare, Text, Depository } from 'nautil'
 import Loading from '../components/Loading.jsx'
 
 export class Page1 extends Component {

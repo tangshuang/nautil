@@ -1,4 +1,4 @@
-import { React, Component, Store, Provider, Observer } from 'nautil'
+import { Component, Store, Provider, Observer } from 'nautil'
 import Page1 from './pages/Page1.jsx'
 
 const store = new Store({

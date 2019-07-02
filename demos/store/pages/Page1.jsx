@@ -1,4 +1,4 @@
-import { React, Component } from 'nautil'
+import { Component } from 'nautil'
 
 export class Page1 extends Component {
   static validateProps = {

@@ -19,14 +19,14 @@ export class Animation extends Component {
   }
 
   static defaultProps = {
-    type: 'none',
-    duration: 0,
+    type: 'linear',
+    duration: 0.5,
     loop: false,
     show: false,
 
     onStart: noop,
-    onDuring: noop,
-    onEnd: noop,
+    onUpdate: noop,
+    onStop: noop,
   }
 
   state = {
@@ -56,12 +56,15 @@ export class Animation extends Component {
           this[method](params)
         }
       })
+      this.onUpdate$.next()
     })
     this.transition.on('start', () => {
       this.setState({ show: true })
+      this.onStart$.next()
     })
     this.transition.on('stop', () => {
       this.setState({ show: false })
+      this.onStop$.next()
     })
   }
 

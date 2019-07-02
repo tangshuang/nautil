@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react'
+import React from 'react'
+import Fragment from './fragment.jsx'
 
 export class Observer extends React.Component {
   static validateProps = {

@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { each, inObject } from '../core/utils.js'
+import Fragment from './fragment.jsx'
 
 function inject(children, injection) {
   return React.Children.map(children, (child) => {
