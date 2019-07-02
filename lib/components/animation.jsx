@@ -2,12 +2,155 @@ import Component from '../core/component.js'
 import { noop, groupArray } from '../core/utils.js'
 import Section from './section.js'
 import Etx from 'etx'
+import { If } from './if-else.jsx'
+
+// https://gist.github.com/gre/1650294
+// https://easings.net/
+const easings = {
+  // no easing, no acceleration
+  linear: t => t,
+  // accelerating from zero velocity
+  easeInQuad: t => t*t,
+  // decelerating to zero velocity
+  easeOutQuad: t => t*(2-t),
+  // acceleration until halfway, then deceleration
+  easeInOutQuad: t => t<.5 ? 2*t*t : -1+(4-2*t)*t,
+  // accelerating from zero velocity
+  easeInCubic: t => t*t*t,
+  // decelerating to zero velocity
+  easeOutCubic: t => (--t)*t*t+1,
+  // acceleration until halfway, then deceleration
+  easeInOutCubic: t => t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1,
+  // accelerating from zero velocity
+  easeInQuart: t => t*t*t*t,
+  // decelerating to zero velocity
+  easeOutQuart: t => 1-(--t)*t*t*t,
+  // acceleration until halfway, then deceleration
+  easeInOutQuart: t => t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t,
+  // accelerating from zero velocity
+  easeInQuint: t => t*t*t*t*t,
+  // decelerating to zero velocity
+  easeOutQuint: t => 1+(--t)*t*t*t*t,
+  // acceleration until halfway, then deceleration
+  easeInOutQuint: t => t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t,
+  // elastic bounce effect at the beginning
+  easeInElastic: t => (.04 - .04 / t) * Math.sin(25 * t) + 1,
+  // elastic bounce effect at the end
+  easeOutElastic: t => .04 * t / (--t) * Math.sin(25 * t),
+  // elastic bounce effect at the beginning and end
+  easeInOutElastic: t => (t -= .5) < 0 ? (.02 + .01 / t) * Math.sin(50 * t) : (.02 - .01 / t) * Math.sin(50 * t) + 1,
+  easeInSin: t => 1 + Math.sin(Math.PI / 2 * t - Math.PI / 2),
+  easeOutSin: t => Math.sin(Math.PI / 2 * t),
+  easeInOutSin: t => (1 + Math.sin(Math.PI * t - Math.PI / 2)) / 2,
+}
+
+class Transition extends Etx {
+  constructor(options = {}) {
+    super()
+
+    const { ease = 'linear', start = 0, end = 1, duration = 0, loop = false } = options
+
+    this.ease = ease
+    this.start = start
+    this.end = end
+    this.duration = duration
+    this.loop = loop
+    this.current = start
+
+    this.status = -1
+    this.time = 0
+  }
+  animate() {
+    if (this.status < 1) {
+      return
+    }
+
+    const currentTime = Date.now()
+    const t = (currentTime - this.time) / this.duration
+    const tw = t > 1 ? 1 : t < 0 ? 0 : t
+    const easing = easings[this.ease]
+    const scale = easing(tw)
+    const end = this.end
+    const start = this.start
+    const value = (end - start) * scale + start
+    this.current = value
+    this.emit('update', value)
+
+    if (tw === 1 && this.loop) {
+      this.time = currentTime
+    }
+    else if (tw === 1) {
+      this.stop()
+      return
+    }
+
+    requestAnimationFrame(() => {
+      this.animate()
+    })
+  }
+  start() {
+    if (!easings[this.ease] || this.duration <= 0) {
+      const value = this.end
+      this.current = value
+      this.emit('update', value)
+      this.stop()
+      return
+    }
+
+    if (this.status > 0) {
+      return
+    }
+    if (this.status < 0) {
+      this.time = Date.now()
+    }
+
+    this.status = 1
+    this.emit('start')
+    this.animate()
+  }
+  pause() {
+    if (this.status <= 0) {
+      return
+    }
+
+    this.status = 0
+    this.emit('pause')
+  }
+  stop() {
+    if (this.status < 0) {
+      return
+    }
+
+    this.status = -1
+    this.emit('stop')
+  }
+
+  static tween(start, end, factor) {
+    const value = (end - start) * factor + start
+    return value
+  }
+
+  static tweenColor(start, end, factor) {
+    const [sr, sg, sb, sa] = start.indexOf('#') === 0 ? parseHex(start) : parseRgba(start)
+    const [er, eg, eb, ea] = end.indexOf('#') === 0 ? parseHex(end) : parseRgba(end)
+
+    const cr = Transition.tween(sr, er, factor)
+    const cg = Transition.tween(sg, eg, factor)
+    const cb = Transition.tween(sb, eb, factor)
+    const ca = sa === undefined && ea === undefined ? undefined : Transition.tween(sa === undefined ? 1 : sa, ea === undefined ? 1 : ea, factor)
+
+    const color = end.indexOf('#') === 0 ? createHex(cr, cg, cb, ca) : createRgba(cr, cg, cb, ca)
+    return color
+  }
+
+  static easings = easings
+}
 
 export class Animation extends Component {
   static validateProps = {
     duration: Number,
     loop: Number,
-    type: String,
+    ease: String,
 
     enter: String,
     leave: String,
@@ -19,7 +162,7 @@ export class Animation extends Component {
   }
 
   static defaultProps = {
-    type: 'linear',
+    ease: 'linear',
     duration: 0.5,
     loop: false,
     show: false,
@@ -35,8 +178,8 @@ export class Animation extends Component {
   }
 
   create() {
-    const { type, duration, loop } = this.attrs
-    this.transition = new Transition({ type, duration, loop })
+    const { ease, duration, loop } = this.attrs
+    this.transition = new Transition({ ease, duration, loop })
   }
 
   listen() {
@@ -46,12 +189,12 @@ export class Animation extends Component {
     const types = show ? enterTypes : leaveTypes
 
     this.transition.on('update', () => {
-      types.forEach((type) => {
-        if (!type) {
+      types.forEach((ease) => {
+        if (!ease) {
           return
         }
 
-        const [method, params] = type.split(':')
+        const [method, params] = ease.split(':')
         if (this[method]) {
           this[method](params)
         }
@@ -163,151 +306,13 @@ export class Animation extends Component {
 
   render() {
     const { show, style } = this.state
-    const { type, duration, loop, ...props } = this.attrs
-    return <Section style={{ ...this.style, ...style }} {...props}>{show ? this.children : null}</Section>
+    const { ease, duration, loop, ...props } = this.attrs
+    return <If condition={show}>
+      <Section style={{ ...this.style, ...style }} {...props}>{this.children}</Section>
+    </If>
   }
 
   static Transition = Transition
-}
-
-class Transition extends Etx {
-  constructor(options = {}) {
-    super()
-
-    const { type = 'linear', start = 0, end = 1, duration = 0, loop = false } = options
-
-    this.type = type
-    this.start = start
-    this.end = end
-    this.duration = duration
-    this.loop = loop
-    this.current = start
-
-    this.status = -1
-    this.time = 0
-  }
-  animate() {
-    if (this.status < 1) {
-      return
-    }
-
-    const currentTime = Date.now()
-    const t = (currentTime - this.time) / this.duration
-    const tw = t > 1 ? 1 : t < 0 ? 0 : t
-    const easing = Transition.easings[this.type]
-    const scale = easing(tw)
-    const end = this.end
-    const start = this.start
-    const value = (end - start) * scale + start
-    this.current = value
-    this.emit('update', value)
-
-    if (tw === 1 && this.loop) {
-      this.time = currentTime
-    }
-    else if (tw === 1) {
-      this.stop()
-      return
-    }
-
-    requestAnimationFrame(() => {
-      this.animate()
-    })
-  }
-  start() {
-    if (!easings[this.type] || this.duration <= 0) {
-      const value = this.end
-      this.current = value
-      this.emit('update', value)
-      this.stop()
-      return
-    }
-
-    if (this.status > 0) {
-      return
-    }
-    if (this.status < 0) {
-      this.time = Date.now()
-    }
-
-    this.status = 1
-    this.emit('start')
-    this.animate()
-  }
-  pause() {
-    if (this.status <= 0) {
-      return
-    }
-
-    this.status = 0
-    this.emit('pause')
-  }
-  stop() {
-    if (this.status < 0) {
-      return
-    }
-
-    this.status = -1
-    this.emit('stop')
-  }
-
-  static tween(start, end, factor) {
-    const value = (end - start) * factor + start
-    return value
-  }
-
-  static tweenColor(start, end, factor) {
-    const [sr, sg, sb, sa] = start.indexOf('#') === 0 ? parseHex(start) : parseRgba(start)
-    const [er, eg, eb, ea] = end.indexOf('#') === 0 ? parseHex(end) : parseRgba(end)
-
-    const cr = Transition.tween(sr, er, factor)
-    const cg = Transition.tween(sg, eg, factor)
-    const cb = Transition.tween(sb, eb, factor)
-    const ca = sa === undefined && ea === undefined ? undefined : Transition.tween(sa === undefined ? 1 : sa, ea === undefined ? 1 : ea, factor)
-
-    const color = end.indexOf('#') === 0 ? createHex(cr, cg, cb, ca) : createRgba(cr, cg, cb, ca)
-    return color
-  }
-}
-
-// https://gist.github.com/gre/1650294
-// https://easings.net/
-Transition.easings = {
-  // no easing, no acceleration
-  linear: t => t,
-  // accelerating from zero velocity
-  easeInQuad: t => t*t,
-  // decelerating to zero velocity
-  easeOutQuad: t => t*(2-t),
-  // acceleration until halfway, then deceleration
-  easeInOutQuad: t => t<.5 ? 2*t*t : -1+(4-2*t)*t,
-  // accelerating from zero velocity
-  easeInCubic: t => t*t*t,
-  // decelerating to zero velocity
-  easeOutCubic: t => (--t)*t*t+1,
-  // acceleration until halfway, then deceleration
-  easeInOutCubic: t => t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1,
-  // accelerating from zero velocity
-  easeInQuart: t => t*t*t*t,
-  // decelerating to zero velocity
-  easeOutQuart: t => 1-(--t)*t*t*t,
-  // acceleration until halfway, then deceleration
-  easeInOutQuart: t => t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t,
-  // accelerating from zero velocity
-  easeInQuint: t => t*t*t*t*t,
-  // decelerating to zero velocity
-  easeOutQuint: t => 1+(--t)*t*t*t*t,
-  // acceleration until halfway, then deceleration
-  easeInOutQuint: t => t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t,
-  // elastic bounce effect at the beginning
-  easeInElastic: t => (.04 - .04 / t) * Math.sin(25 * t) + 1,
-  // elastic bounce effect at the end
-  easeOutElastic: t => .04 * t / (--t) * Math.sin(25 * t),
-  // elastic bounce effect at the beginning and end
-  easeInOutElastic: t => (t -= .5) < 0 ? (.02 + .01 / t) * Math.sin(50 * t) : (.02 - .01 / t) * Math.sin(50 * t) + 1,
-  easeInSin: t => 1 + Math.sin(Math.PI / 2 * t - Math.PI / 2),
-  easeOutSin: t => Math.sin(Math.PI / 2 * t),
-  easeInOutSin: t => (1 + Math.sin(Math.PI * t - Math.PI / 2)) / 2,
 }
 
 function parseRgba(rgba) {
