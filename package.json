@@ -23,6 +23,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "etx": "^1.1.0",
+    "i18next": "^17.0.6",
     "react": "^16.8.6",
     "rxjs": "^6.5.2",
     "storagex": "^1.0.0",
