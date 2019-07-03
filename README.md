@@ -100,16 +100,16 @@ const navigation = new Navigation({
   routes: [
     {
       name: 'home',
-      url: '/',
+      path: '/',
       redirect: 'page1',
     },
     {
       name: 'page1',
-      url: '/page1',
+      path: '/page1',
     },
     {
       name: 'page2',
-      url: '/page2/:type/:id',
+      path: '/page2/:type/:id',
       // default params
       params: {
         type: 'animal',
