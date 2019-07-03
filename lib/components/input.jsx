@@ -7,10 +7,10 @@ export class Input extends Component {
     $state: true,
   }
   static validateProps = {
-    type: enumerate('text', 'number', 'email', 'tel', 'url'),
+    type: enumerate([ 'text', 'number', 'email', 'tel', 'url' ]),
     placeholder: ifexist(String),
 
-    value: ifexist(enumerate(String, Number)),
+    value: ifexist(enumerate([ String, Number ])),
     // how to use model?
     // 1. you should accept a `$state` prop
     // 2. when you typing in the input, $state[modelKeyPath] will be updated automaticly

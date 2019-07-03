@@ -1,4 +1,4 @@
-import { mount } from '../demo.js'
+import { mount } from '../dom.js'
 import App from './App.jsx'
 
 mount('#app', App)

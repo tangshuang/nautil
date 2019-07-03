@@ -10,11 +10,11 @@ export class Select extends Component {
     value: ifexist(Any),
     model: ifexist(String),
 
-    options: list({
+    options: list([{
       text: String,
       value: Any,
       disabled: ifexist(Boolean),
-    }),
+    }]),
     placeholder: ifexist(String),
 
     onChange: Function,

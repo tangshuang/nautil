@@ -4,7 +4,7 @@ import { noop } from '../core/utils.js'
 
 export class Webview extends Component {
   static validateProps = {
-    source: enumerate(String, Object),
+    source: enumerate([ String, Object ]),
     width: Number,
     height: Number,
 

@@ -1,9 +1,10 @@
 import Component from '../core/component.js'
 import { enumerate } from '../core/types.js'
+import { noop } from '../core/utils.js'
 
 export class Video extends Component {
   static validateProps = {
-    source: enumerate(String, Object),
+    source: enumerate([ String, Object ]),
     width: Number,
     height: Number,
 

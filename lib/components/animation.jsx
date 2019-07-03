@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { noop, groupArray } from '../core/utils.js'
-import Section from './section.js'
+import Section from './section.jsx'
 import Etx from 'etx'
 import { If } from './if-else.jsx'
 

@@ -29,7 +29,7 @@ export class For extends Component {
 
 export class Each extends Component {
   static validateProps = {
-    of: enumerate(Array, Object),
+    of: enumerate([ Array, Object ]),
     map: Function,
   }
 

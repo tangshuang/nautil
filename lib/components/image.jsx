@@ -3,7 +3,7 @@ import { enumerate, ifexist } from '../core/types.js'
 
 export class Image extends Component {
   static validateProps = {
-    source: enumerate(String, Object),
+    source: enumerate([ String, Object ]),
     width: Number,
     height: Number,
     maxWidth: ifexist(Number),
