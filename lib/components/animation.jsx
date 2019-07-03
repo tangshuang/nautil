@@ -149,7 +149,6 @@ class Transition extends Etx {
 export class Animation extends Component {
   static validateProps = {
     duration: Number,
-    loop: Number,
     ease: String,
 
     enter: String,
@@ -164,7 +163,6 @@ export class Animation extends Component {
   static defaultProps = {
     ease: 'linear',
     duration: 0.5,
-    loop: false,
     show: false,
 
     onStart: noop,
@@ -178,8 +176,8 @@ export class Animation extends Component {
   }
 
   create() {
-    const { ease, duration, loop } = this.attrs
-    this.transition = new Transition({ ease, duration, loop })
+    const { ease, duration } = this.attrs
+    this.transition = new Transition({ ease, duration })
   }
 
   listen() {
@@ -306,7 +304,7 @@ export class Animation extends Component {
 
   render() {
     const { show, style } = this.state
-    const { ease, duration, loop, ...props } = this.attrs
+    const { ease, duration, ...props } = this.attrs
     delete props.show
 
     return <If condition={show}>

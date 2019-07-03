@@ -24,3 +24,4 @@ export class Observer extends React.Component {
     </Fragment>
   }
 }
+export default Observer

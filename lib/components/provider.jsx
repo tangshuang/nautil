@@ -38,3 +38,4 @@ export class Provider extends React.Component {
     </Fragment>
   }
 }
+export default Provider
