@@ -19,6 +19,7 @@ Nautil 因此而生，它基于 React，为开发者提供一套完整统一的�
 - 异步数据处理（例如 AJAX）
 - 数据类型检查（可选，但在前后端耦合的情况下非常有必要）
 - 跨端开发方案（例如 taro）
+- 国际化方案（可基于 i18next 去做）
 
 Nautil 基于 React 的 UI 编程能力，在此基础上，提供独立而简单的其他部件，从而形成完整的开发框架。它包含了独立的路由、状态管理、异步数据处理、类型检查等模块。并且基于 React Native，提供有限的原生应用支持能力。
 
@@ -144,7 +145,7 @@ class App extends Component {
 mount('#app', App)
 ```
 
-我们提供统一的路由接口。它用于创建和监听路由状态，并通过 `on` 方法对路由状态变化作出反馈。但是，从编程上，它仅仅是一个库的功能，你需要配合 `Observer` `Switch` `Case` 才能完成整个页面的路由规则。
+我们提供统一的路由接口。它用于创建和监听路由状态，并通过 `on` 方法对路由状态变化作出反馈。但是，从编程上，它仅仅是一个库的功能，你需要配合 `Switch` `Case` 才能完成整个页面的路由规则。`Navigator` 是一个 Observer 和 Provider 的合体，它会向内部子组件注入 $navigation 来让开发者获取。在内部，你可以使用 `Navigate` 组件实现导航跳转，也可以通过接口方法来跳转。
 在 native 开发时，我们会在系统内部模拟一套类似 web 一样的路径系统，从而用于抹平路由在不同端的表现。
 
 ### 数据仓库
@@ -204,6 +205,52 @@ mount('#app', App)
 
 数据仓库是一个订阅/发布模式的设计，而在使用时，只需要从仓库中读取数据即可，不需要发出请求。这些操作是同步的，这意味着在 nautil 中你没有异步操作。
 上面的实例代码中，你需要借助 `Observer` 来订阅仓库中的数据变化，通过 `Prepare` 来解决当数据还没有从后端拉取回来时应该怎么显示界面。
+
+## Internationalization
+
+```js
+import { Component, Observer, Provider } from 'nautil'
+import I18n from 'nautil/i18n'
+import { Section, Text, Button } from 'nautil/components'
+
+// https://www.i18next.com/overview/configuration-options
+const i18n = new I18n(options)
+
+export class Page1 extends Component {
+  static injectProps = {
+    $i18n: true,
+  }
+
+  static validateProps = {
+    $i18n: I18n,
+  }
+
+  render() {
+    const { t, changeLanguage } = this.$i18n
+    return (
+      <Section>
+        <Text>{t('ILoveTheWorld')}</Text>
+        <Button onHintEnd={() => changeLanguage('zh-HK')}>change language</Button>
+      </Section>
+    )
+  }
+}
+
+export class App extends Component {
+  render() {
+    return (
+      <Observer subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}>
+        <Provider $i18n={i18n}>
+          <Page1 />
+        </Provider>
+      </Observer>
+    )
+  }
+}
+```
+
+通过内置的 I18n 类来实现国际化。这里借助 Observer 和 Provider 来实现在整个应用中可以快速取到对应的方法进行语言操作。
+其中最重要的两个方法莫过于 `t` 和 `changeLanguage`。它内部完全依赖 i18next，如果你对这个框架比较熟悉，那么会对你很有帮助。
 
 ## 开发者言
 
