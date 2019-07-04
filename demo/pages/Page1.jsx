@@ -2,6 +2,10 @@ import { Component, Navigate, Consumer } from '../../index.js'
 import { Section, Button, Text } from '../../components.js'
 
 class Page1 extends Component {
+  static injectProviders = {
+    $navigation: true,
+  }
+
   render() {
     return (
       <Consumer name="$state">

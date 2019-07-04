@@ -3,6 +3,7 @@ import Navigation from './navigation.js'
 import Observer from './observer.jsx'
 import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
+import { ifexist } from './types.js'
 
 export class Navigator extends Component {
   static validateProps = {
@@ -28,15 +29,15 @@ export class Navigate extends Component {
     to: String,
     params: Object,
     replace: Boolean,
-    open: String,
+    open: ifexist(String),
   }
   static defaultProps = {
-    open: false,
     params: {},
     replace: false,
   }
 
   render() {
+    const { to, params, replace, open } = this.attrs
     return (
       <Consumer name="$navigation">
         {(navigation) => {

@@ -1,12 +1,12 @@
 /**
- * a demo for using consumeProviders to inject '$state' provided by Provider
+ * a demo for using injectProviders to inject '$state' provided by Provider
  */
 
 import { Component } from 'nautil'
 import { Section, Text, Button } from 'nautil/components'
 
 export class Page2 extends Component {
-  static consumeProviders = {
+  static injectProviders = {
     $state: true,
   }
 
