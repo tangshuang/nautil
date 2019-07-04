@@ -4,14 +4,15 @@ export { Model, Schema } from './lib/core/model.js'
 export { Depository } from './lib/core/depository.js'
 export { Navigation } from './lib/core/navigation.js'
 
-export * from './lib/components/fragment.jsx'
-export * from './lib/components/observer.jsx'
-export * from './lib/components/provider.jsx'
-export * from './lib/components/prepare.jsx'
+export * from './lib/core/fragment.jsx'
 
-export * from './lib/components/if-else.jsx'
-export * from './lib/components/for-each.jsx'
-export * from './lib/components/switch-case.jsx'
+export * from './lib/core/observer.jsx'
+export * from './lib/core/provider.jsx'
 
-export * from './lib/components/navigate.jsx'
-export * from './lib/components/navigator.jsx'
+export * from './lib/core/prepare.jsx'
+
+export * from './lib/core/if-else.jsx'
+export * from './lib/core/for-each.jsx'
+export * from './lib/core/switch-case.jsx'
+
+export * from './lib/core/navigator.jsx'

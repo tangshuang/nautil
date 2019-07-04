@@ -28,8 +28,8 @@
     "react-dom": "^16.8.6",
     "rxjs": "^6.5.2",
     "storagex": "^1.0.0",
-    "ts-fns": "0.0.9",
-    "tyshemo": "^1.4.2"
+    "ts-fns": "0.0.10",
+    "tyshemo": "^1.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

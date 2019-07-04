@@ -1,4 +1,4 @@
-import Component from '../core/component.js'
+import Component from './component.js'
 import Fragment from './fragment.jsx'
 
 export class Prepare extends Component {
@@ -7,3 +7,4 @@ export class Prepare extends Component {
     return isReady ? <Fragment>{children}</Fragment> : loadingComponent
   }
 }
+export default Prepare

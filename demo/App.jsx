@@ -73,8 +73,8 @@ class App extends Component {
   render() {
     return (
       <Navigator navigation={navigation}>
-        <Observer subscribe={dispatch => store.watch('*', dispatch)}>
-          <Provider $state={store.state}>
+        <Observer subscribe={dispatch => store.watch('*', dispatch)} dispatch={() => this.forceUpdate()}>
+          <Provider name="$state" value={store.state}>
             <Switch of={navigation.status}>
               <Case value="home">
                 <Home />
@@ -86,7 +86,7 @@ class App extends Component {
                 <Page2 />
               </Case>
               <Case default>
-                <NotFound />
+                <Page1 />
               </Case>
             </Switch>
           </Provider>

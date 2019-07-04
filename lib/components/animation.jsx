@@ -2,7 +2,6 @@ import Component from '../core/component.js'
 import { noop, groupArray } from '../core/utils.js'
 import Section from './section.jsx'
 import Etx from 'etx'
-import { If } from './if-else.jsx'
 
 // https://gist.github.com/gre/1650294
 // https://easings.net/
@@ -166,7 +165,7 @@ export class Animation extends Component {
     show: false,
 
     onStart: noop,
-    onUpdate: noop,
+    onDuring: noop,
     onStop: noop,
   }
 
@@ -307,9 +306,7 @@ export class Animation extends Component {
     const { ease, duration, ...props } = this.attrs
     delete props.show
 
-    return <If condition={show}>
-      <Section style={{ ...this.style, ...style }} {...props}>{this.children}</Section>
-    </If>
+    return (show ? <Section style={{ ...this.style, ...style }} {...props}>{this.children}</Section> : null)
   }
 
   static Transition = Transition

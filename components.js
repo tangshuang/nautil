@@ -13,3 +13,5 @@ export * from './lib/components/select.jsx'
 export * from './lib/components/audio.jsx'
 export * from './lib/components/video.jsx'
 export * from './lib/components/webview.jsx'
+
+export * from './lib/components/animation.jsx'

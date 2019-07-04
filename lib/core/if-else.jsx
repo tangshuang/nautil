@@ -1,4 +1,4 @@
-import Component from '../core/component.js'
+import Component from './component.js'
 import Fragment from './fragment.jsx'
 import React from 'react'
 
@@ -34,8 +34,7 @@ export class If extends Component {
       children: [],
     }
     React.Children.forEach(children, (child) => {
-      const cloned = React.cloneElement(child)
-      const { type, props } = cloned
+      const { type, props } = child
       const { condition } = props
       if ([ElseIf, Else].includes(type)) {
         blocks.push(block)
@@ -46,7 +45,7 @@ export class If extends Component {
         }
       }
       else {
-        block.children.push(cloned)
+        block.children.push(child)
       }
     })
     if (block.children.length) {
@@ -70,3 +69,5 @@ export class If extends Component {
     return use
   }
 }
+
+export default If

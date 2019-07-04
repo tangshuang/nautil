@@ -1,8 +1,8 @@
-import Component from '../core/component.js'
+import Component from './component.js'
 import Fragment from './fragment.jsx'
 import React from 'react'
-import { Any, ifexist } from '../core/types.js'
-import { isFunction } from '../core/utils.js'
+import { Any, ifexist } from './types.js'
+import { isFunction } from './utils.js'
 
 export class Case extends Component {
   static validateProps = {
@@ -26,8 +26,7 @@ export class Switch extends Component {
     const blocks = []
 
     React.Children.forEach(children, (child) => {
-      const cloned = React.cloneElement(child)
-      const { type, props } = cloned
+      const { type, props } = child
       const { value, children } = props
       if (type === Case) {
         blocks.push({
