@@ -56,12 +56,17 @@ function Home() {
   )
 }
 
-function NotFound() {
-  return (
-    <Section>
-      <Text>Not found!</Text>
-    </Section>
-  )
+class NotFound extends Component {
+  static injectProps = {
+    $navigation: true,
+  }
+  render() {
+    return (
+      <Section>
+        <Text>Not found! {this.$navigation.status}</Text>
+      </Section>
+    )
+  }
 }
 
 class App extends Component {

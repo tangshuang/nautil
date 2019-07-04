@@ -18,6 +18,9 @@ export class Observer extends React.Component {
 
     subscribe(dispatch)
   }
+  shouldComponentUpdate() {
+    return false
+  }
   render() {
     return <Fragment>
       {React.Children.map(this.props.children, child => React.cloneElement(child))}
