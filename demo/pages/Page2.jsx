@@ -2,7 +2,7 @@ import { Component, Navigate } from '../../index.js'
 import { Section, Button, Text } from '../../components.js'
 
 class Page2 extends Component {
-  static injectProps = {
+  static injectProviders = {
     $navigation: true,
   }
 

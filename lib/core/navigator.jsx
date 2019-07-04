@@ -9,18 +9,13 @@ import { ifexist } from './types.js'
 export class Navigator extends Component {
   static validateProps = {
     navigation: Navigation,
-
-    onChange: Function,
-  }
-
-  static defaultProps = {
-    onChange: noop,
+    dispatch: Function,
   }
 
   render() {
-    const { navigation } = this.attrs
+    const { navigation, dispatch } = this.attrs
     return (
-      <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={() => this.onChange$.next()}>
+      <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={dispatch}>
         <Provider name="$navigation" value={navigation}>
           {this.children}
         </Provider>

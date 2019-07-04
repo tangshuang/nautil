@@ -76,8 +76,8 @@ class NotFound extends Component {
 class App extends Component {
   render() {
     return (
-      <Navigator navigation={navigation} onChange={() => this.forceUpdate()}>
-        <Observer subscribe={dispatch => store.watch('*', dispatch)} dispatch={() => this.forceUpdate()}>
+      <Navigator navigation={navigation} dispatch={this.update}>
+        <Observer subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}>
           <Provider name="$state" value={store.state}>
             <Provider name="$depo" value={depo}>
               <Prepare isReady={navigation.status !== '' && store.state.info.time} loadingComponent={<Text>loading...</Text>}>
