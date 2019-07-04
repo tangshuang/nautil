@@ -1,4 +1,4 @@
-import { Component, Navigation, Navigator, Navigate, Observer, Provider, Store, Depository, Switch, Case, Prepare } from '../index.js'
+import { Component, Navigation, Navigator, Navigate, Observer, Provider, Store, Depository, Switch, Case, Prepare, ObservableProvider } from '../index.js'
 import { Section, Text, Button } from '../components.js'
 
 import Page1 from './pages/Page1.jsx'
@@ -77,28 +77,29 @@ class App extends Component {
   render() {
     return (
       <Navigator navigation={navigation} dispatch={this.update}>
-        <Observer subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}>
-          <Provider name="$state" value={store.state}>
-            <Provider name="$depo" value={depo}>
-              <Prepare isReady={navigation.status !== '' && store.state.info.time} loadingComponent={<Text>loading...</Text>}>
-                <Switch of={navigation.status}>
-                  <Case value="home">
-                    <Home />
-                  </Case>
-                  <Case value="page1">
-                    <Page1 />
-                  </Case>
-                  <Case value="page2">
-                    <Page2 />
-                  </Case>
-                  <Case default>
-                    <NotFound />
-                  </Case>
-                </Switch>
-              </Prepare>
-            </Provider>
+        <ObservableProvider
+          name="$state" value={store.state}
+          subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}
+        >
+          <Provider name="$depo" value={depo}>
+            <Prepare isReady={navigation.status !== '' && store.state.info.time} loadingComponent={<Text>loading...</Text>}>
+              <Switch of={navigation.status}>
+                <Case value="home">
+                  <Home />
+                </Case>
+                <Case value="page1">
+                  <Page1 />
+                </Case>
+                <Case value="page2">
+                  <Page2 />
+                </Case>
+                <Case default>
+                  <NotFound />
+                </Case>
+              </Switch>
+            </Prepare>
           </Provider>
-        </Observer>
+        </ObservableProvider>
       </Navigator>
     )
   }

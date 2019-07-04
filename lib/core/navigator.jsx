@@ -8,15 +8,16 @@ import { ifexist } from './types.js'
 
 export class Navigator extends Component {
   static validateProps = {
+    name: ifexist(String),
     navigation: Navigation,
     dispatch: Function,
   }
 
   render() {
-    const { navigation, dispatch } = this.attrs
+    const { name, navigation, dispatch } = this.attrs
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={dispatch}>
-        <Provider name="$navigation" value={navigation}>
+        <Provider name={name || '$navigation'} value={navigation}>
           {this.children}
         </Provider>
       </Observer>

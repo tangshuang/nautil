@@ -7,7 +7,7 @@ export { Navigation } from './lib/core/navigation.js'
 export * from './lib/core/fragment.jsx'
 
 export * from './lib/core/observer.jsx'
-export { Provider, Consumer } from './lib/core/provider.jsx'
+export * from './lib/core/provider.jsx'
 
 export * from './lib/core/prepare.jsx'
 
