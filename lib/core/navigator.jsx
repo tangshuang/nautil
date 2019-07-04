@@ -3,7 +3,6 @@ import Navigation from './navigation.js'
 import Observer from './observer.jsx'
 import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
-import Fragment from './fragment.jsx'
 
 export class Navigator extends Component {
   static validateProps = {
@@ -14,7 +13,7 @@ export class Navigator extends Component {
     const { navigation } = this.attrs
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={() => this.forceUpdate()}>
-        <Provider name="navigation" value={navigation}>
+        <Provider name="$navigation" value={navigation}>
           {this.children}
         </Provider>
       </Observer>
@@ -36,26 +35,30 @@ export class Navigate extends Component {
     params: {},
     replace: false,
   }
-  static comsumeProviders = {
-    navigation: true,
+
+  render() {
+    return (
+      <Consumer name="$navigation">
+        {(navigation) => {
+          const go = () => {
+            if (open) {
+              navigation.open(open, params)
+            }
+            else {
+              navigation.go(to, params, replace)
+            }
+          }
+          return React.Children.map(this.children, (child) => {
+            if (!child.type) {
+              return <Text onHintEnd={() => go()}>{child}</Text>
+            }
+            else {
+              return React.cloneElement(child, { onHintEnd: () => go() })
+            }
+          })
+        }}
+      </Consumer>
+    )
   }
 
-  consumeRender({ navigation }) {
-    const go = () => {
-      if (open) {
-        navigation.open(open, params)
-      }
-      else {
-        navigation.go(to, params, replace)
-      }
-    }
-    return React.Children.map(this.children, (child) => {
-      if (!child.type) {
-        return <Text onHintEnd={() => go()}>{child}</Text>
-      }
-      else {
-        return React.cloneElement(child, { onHintEnd: () => go() })
-      }
-    })
-  }
 }

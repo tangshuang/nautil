@@ -11,7 +11,7 @@ export class App extends Component {
   render() {
     return (
       <Observer subscribe={dispatch => store.watch('*', dispatch)} dispatch={() => this.forceUpdate()}>
-        <Provider name="state" value={store.state}>
+        <Provider name="$state" value={store.state}>
           <Page1 />
           <Page2 />
         </Provider>

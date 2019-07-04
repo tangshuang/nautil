@@ -10,7 +10,7 @@ export class Page1 extends Component {
   render() {
     return (
       <Section>
-        <Consumer name="state">
+        <Consumer name="$state">
           {(state) => {
             const change = () => {
               state.age ++

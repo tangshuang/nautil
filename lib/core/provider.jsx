@@ -1,7 +1,7 @@
 import React from 'react'
 import { Any } from './types.js'
 
-const providers = {}
+const resources = {}
 
 export class Provider extends React.Component {
   static validateProps = {
@@ -14,24 +14,26 @@ export class Provider extends React.Component {
 
     const { name, value } = this.props
     const context = React.createContext(value)
-    providers[name] = {
+    resources[name] = {
       context,
       value,
     }
   }
   componentWillUnmount() {
     const { name } = this.props
-    delete providers[name]
+    delete resources[name]
   }
   render() {
     const { name, children } = this.props
-    const { value, context } = providers[name]
+    const { value, context } = resources[name]
     const { Provider } = context
     return <Provider value={value}>
       {children}
     </Provider>
   }
 }
+
+Provider.resources = resources
 
 export default Provider
 
@@ -44,14 +46,14 @@ export class Consumer extends React.Component {
     super(props)
 
     const { name } = this.props
-    if (!providers[name]) {
+    if (!resources[name]) {
       throw new Error(`Consumer '${name}' has not been registerd.`)
     }
   }
 
   render() {
     const { name, children } = this.props
-    const { context } = providers[name]
+    const { context } = resources[name]
     const { Consumer } = context
     return <Consumer>
       {children}
