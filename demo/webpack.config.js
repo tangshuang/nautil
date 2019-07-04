@@ -35,5 +35,10 @@ module.exports = {
     contentBase: __dirname,
     compress: true,
     port: 9000,
+    before(app, server) {
+      app.get('/api', function(req, res) {
+        res.json({ time: Date.now() })
+      })
+    },
   },
 }

@@ -3,17 +3,24 @@ import Navigation from './navigation.js'
 import Observer from './observer.jsx'
 import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
+import { noop } from './utils.js'
 import { ifexist } from './types.js'
 
 export class Navigator extends Component {
   static validateProps = {
     navigation: Navigation,
+
+    onChange: Function,
+  }
+
+  static defaultProps = {
+    onChange: noop,
   }
 
   render() {
     const { navigation } = this.attrs
     return (
-      <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={() => this.forceUpdate()}>
+      <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={() => this.onChange$.next()}>
         <Provider name="$navigation" value={navigation}>
           {this.children}
         </Provider>
