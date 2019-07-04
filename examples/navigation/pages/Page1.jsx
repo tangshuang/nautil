@@ -2,11 +2,7 @@ import { Component, Navigation, Navigate } from 'nautil'
 import { Section, Text, Button } from 'nautil/components'
 
 export class Page1 extends Component {
-  static validateProps = {
-    $navigation: Navigation,
-  }
-
-  static injectProps = {
+  static injectProviders = {
     $navigation: true,
   }
 

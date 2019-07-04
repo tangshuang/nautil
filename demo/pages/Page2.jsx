@@ -15,6 +15,9 @@ class Page2 extends Component {
           <Navigate to="home">
             <Button>Home</Button>
           </Navigate>
+          <Navigate to={-1}>
+            <Button>Back</Button>
+          </Navigate>
         </Section>
         <Section>
           <Text>id: {id}</Text>

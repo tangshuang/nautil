@@ -1,4 +1,4 @@
-import { Component, Observer, Provider } from 'nautil'
+import { Component, ObservableProvider } from 'nautil'
 import I18n from 'nautil/i18n'
 import Page1 from './pages/Page1.jsx'
 
@@ -8,11 +8,13 @@ const i18n = new I18n(options)
 export class App extends Component {
   render() {
     return (
-      <Observer subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}>
-        <Provider $i18n={i18n}>
-          <Page1 />
-        </Provider>
-      </Observer>
+      <ObservableProvider
+        name="$i18n" value={i18n}
+        subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}
+        dispatch={this.update}
+      >
+        <Page1 />
+      </ObservableProvider>
     )
   }
 }

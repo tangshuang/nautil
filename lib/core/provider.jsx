@@ -14,6 +14,11 @@ export class Provider extends Component {
     super(props)
 
     const { name, value } = this.props
+
+    if (PROVIDER_RECORDS[name]) {
+      throw new Error(`Provider '${name}' has been registered.`)
+    }
+
     const context = React.createContext(value)
     PROVIDER_RECORDS[name] = {
       context,

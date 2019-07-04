@@ -1,4 +1,4 @@
-import { Component, Navigation, Navigator, Observer, Switch, Case } from 'nautil'
+import { Component, Navigation, Navigator, Switch, Case } from 'nautil'
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
 
@@ -27,6 +27,7 @@ const navigation = new Navigation({
       },
     },
   ],
+  defaultIndex: 'home',
 })
 
 function NotFound() {
@@ -36,7 +37,7 @@ function NotFound() {
 export class App extends Component {
   render() {
     return (
-      <Navigator navigation={navigation}>
+      <Navigator navigation={navigation} dispatch={this.update}>
         <Switch of={navigation.status}>
           <Case value="page1">
             <Page1></Page1>

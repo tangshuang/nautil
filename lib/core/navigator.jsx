@@ -3,21 +3,20 @@ import Navigation from './navigation.js'
 import Observer from './observer.jsx'
 import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
-import { noop } from './utils.js'
-import { ifexist } from './types.js'
+import { ifexist, enumerate } from './types.js'
+import { isNumber } from './utils.js'
 
 export class Navigator extends Component {
   static validateProps = {
-    name: ifexist(String),
     navigation: Navigation,
     dispatch: Function,
   }
 
   render() {
-    const { name, navigation, dispatch } = this.attrs
+    const { navigation, dispatch } = this.attrs
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={dispatch}>
-        <Provider name={name || '$navigation'} value={navigation}>
+        <Provider name={'$navigation'} value={navigation}>
           {this.children}
         </Provider>
       </Observer>
@@ -29,14 +28,15 @@ export default Navigator
 
 export class Navigate extends Component {
   static validateProps = {
-    to: String,
+    to: enumerate([String, Number]),
     params: Object,
     replace: Boolean,
-    open: ifexist(String),
+    open: Boolean,
   }
   static defaultProps = {
     params: {},
     replace: false,
+    open: false,
   }
 
   render() {
@@ -45,8 +45,11 @@ export class Navigate extends Component {
       <Consumer name="$navigation">
         {(navigation) => {
           const go = () => {
-            if (open) {
-              navigation.open(open, params)
+            if (isNumber(to) && to < 0) {
+              navigation.back(to)
+            }
+            else if (open) {
+              navigation.open(to, params)
             }
             else {
               navigation.go(to, params, replace)

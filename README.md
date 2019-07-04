@@ -51,7 +51,7 @@ mount('#app', App)
 ### 状态管理
 
 ```js
-import { Component, Store, Observer, Provider } from 'nautil'
+import { Component, Store, ObservableProvider } from 'nautil'
 import { Section, Text } from 'nautil/components'
 import { mount } from 'nautil/dom'
 
@@ -61,7 +61,7 @@ const store = new Store({
 })
 
 class Page1 extends Component {
-   static injectProps = {
+   static injectProviders = {
       $state: true,
    }
    render() {
@@ -73,26 +73,30 @@ class Page1 extends Component {
 
 class App extends Component {
    render() {
-      return <Observer subscribe={dispatch => store.watch('*', dispatch)}>
-         <Provider $state={store.state}>
+      return (
+         <ObservableProvider
+            name="$state" value="store.state"
+            subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}
+         >
             <Page1></Page1>
-         </Provider>
-      </Observer>
+         </ObservableProvider>
+      )
    }
 }
 
 mount('#app', App)
 ```
 
-我们提供了更方便的全局状态管理工具 `Store` 来帮助开发者管理应用的全局状态。它是一个可以独立运行的状态管理工具。要让状态的变化出发界面重绘，还需要使用 `Observer` 这个内置组件，它可以通过订阅来触发内部组件的更新。`Provider` 组件则向内部组件提供注入 props 的能力，这样，在 `Page1` 组件内就可以更快捷的获得被注入的 prop，当然，你也可以选择不使用 `Provider` 而直接通过 props 传递。
+我们提供了更方便的全局状态管理工具 `Store` 来帮助开发者管理应用的全局状态。它是一个可以独立运行的状态管理工具。要让状态的变化出发界面重绘，还需要使用 `ObservableProvider` 这个内置组件，它可以通过订阅来触发内部组件的更新。
 
 ### 路由管理
 
 ```js
+import { mount } from 'nautil/dom'
 import { Component, Navigation, Navigator, Switch, Case } from 'nautil'
+
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
-import { mount } from 'nautil/dom'
 
 const navigation = new Navigation({
   base: '/app',
@@ -125,7 +129,7 @@ function NotFound() {
 class App extends Component {
   render() {
     return (
-      <Navigator navigation={navigation}>
+      <Navigator navigation={navigation} dispatch={this.update}>
         <Switch of={navigation.status}>
           <Case value="page1">
             <Page1></Page1>
@@ -145,13 +149,13 @@ class App extends Component {
 mount('#app', App)
 ```
 
-我们提供统一的路由接口。它用于创建和监听路由状态，并通过 `on` 方法对路由状态变化作出反馈。但是，从编程上，它仅仅是一个库的功能，你需要配合 `Switch` `Case` 才能完成整个页面的路由规则。`Navigator` 是一个 Observer 和 Provider 的合体，它会向内部子组件注入 $navigation 来让开发者获取。在内部，你可以使用 `Navigate` 组件实现导航跳转，也可以通过接口方法来跳转。
+我们提供统一的路由接口，它用于创建和监听路由状态。你需要使用 `Navigator` 来将使用路由的内容包在内部。（一个应用只能调用一次 `Navigator`。）同时，你需要配合 `Switch` `Case` 才能完成整个页面的路由规则。在内部，你可以使用 `Navigate` 组件实现导航跳转，也可以通过接口方法来跳转。
 在 native 开发时，我们会在系统内部模拟一套类似 web 一样的路径系统，从而用于抹平路由在不同端的表现。
 
 ### 数据仓库
 
 ```js
-import { Component, Provider, Observer, Depository, Prepare } from 'nautil'
+import { Component, ObservableProvider, Depository, Prepare } from 'nautil'
 import { Text } from 'nautil/components'
 import { mount } from 'nautil/dom'
 
@@ -166,17 +170,14 @@ const depo = new Depository({
 depo.register(datasources)
 
 class Page1 extends Component {
-  static validateProps = {
-    $depo: Depository,
-  }
-
-  static injectProps = {
+  static injectProviders = {
     $depo: true,
   }
 
   render() {
     const depo = this.$depo
     const some = depo.get('some')
+
     return (
       <Prepare isReady={some} loadingComponent={<Text>loading...</Text>}>
         <Text>{some}</Text>
@@ -188,11 +189,13 @@ class Page1 extends Component {
 class App extends Component {
   render() {
     return (
-      <Observer subscribe={dispatch => depo.subscribe('some', dispatch).subscribe('tag', dispatch)}>
-        <Provider $depo={depo}>
-          <Page1 />
-        </Provider>
-      </Observer>
+      <ObservableProvider
+         name="$depo" value={depo}
+         subscribe={dispatch => depo.subscribe('some', dispatch).subscribe('tag', dispatch)}
+         dispatch={this.update}
+      >
+         <Page1 />
+      </ObservableProvider>
     )
   }
 }
@@ -200,8 +203,8 @@ class App extends Component {
 mount('#app', App)
 ```
 
-我们发明了一套新的数据管理理论——数据仓库，用以解决前端应用中从后台拉取数据和推送数据的逻辑。传统数据拉取和推送靠业务层代码发起 ajax 请求来解决。这样做的好处是便于新手理解。但是坏处是要解决不同组件之间发起同一个请求的浪费问题。
-要改变这种思维，我们通过数据仓库统一管理后台数据，我们在业务层和后台之间创建了数据仓库，业务层逻辑不和后台直接打交道，而是和数据仓库打交道，业务层代码通过订阅仓库中的数据，从而不需要关心如何从后台拿数据的问题。
+我们发明了一套新的数据管理理论——数据仓库，用以解决前端应用中从后台拉取数据和推送数据的逻辑。传统数据拉取和推送靠业务层代码发起 ajax 请求来解决。
+现在需要改变这种思维，我们通过数据仓库统一管理从 api 获取的数据，我们在业务层和后台之间创建了数据仓库，业务层逻辑不和后台直接打交道，而是和数据仓库打交道，业务层代码通过订阅仓库中的数据，从而不需要关心如何从后台拿数据的问题。
 
 数据仓库是一个订阅/发布模式的设计，而在使用时，只需要从仓库中读取数据即可，不需要发出请求。这些操作是同步的，这意味着在 nautil 中你没有异步操作。
 上面的实例代码中，你需要借助 `Observer` 来订阅仓库中的数据变化，通过 `Prepare` 来解决当数据还没有从后端拉取回来时应该怎么显示界面。
@@ -209,7 +212,7 @@ mount('#app', App)
 ## Internationalization
 
 ```js
-import { Component, Observer, Provider } from 'nautil'
+import { Component, ObservableProvider } from 'nautil'
 import I18n from 'nautil/i18n'
 import { Section, Text, Button } from 'nautil/components'
 
@@ -217,12 +220,8 @@ import { Section, Text, Button } from 'nautil/components'
 const i18n = new I18n(options)
 
 export class Page1 extends Component {
-  static injectProps = {
+  static injectProviders = {
     $i18n: true,
-  }
-
-  static validateProps = {
-    $i18n: I18n,
   }
 
   render() {
@@ -239,17 +238,19 @@ export class Page1 extends Component {
 export class App extends Component {
   render() {
     return (
-      <Observer subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}>
-        <Provider $i18n={i18n}>
-          <Page1 />
-        </Provider>
-      </Observer>
+      <ObservableProvider
+         name="$i18n" value={i18n}
+         subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}
+         dispatch={this.update}
+      >
+         <Page1 />
+      </ObservableProvider>
     )
   }
 }
 ```
 
-通过内置的 I18n 类来实现国际化。这里借助 Observer 和 Provider 来实现在整个应用中可以快速取到对应的方法进行语言操作。
+通过内置的 I18n 类来实现国际化。这里借助 ObservableProvider 来实现响应应用中的语言切换。
 其中最重要的两个方法莫过于 `t` 和 `changeLanguage`。它内部完全依赖 i18next，如果你对这个框架比较熟悉，那么会对你很有帮助。
 
 ## 开发者言

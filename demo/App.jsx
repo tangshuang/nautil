@@ -21,6 +21,8 @@ const navigation = new Navigation({
       path: '/page2/:id/:action?',
     },
   ],
+  maxHistoryLength: 20,
+  defaultIndex: 'home',
 })
 
 const store = new Store({
