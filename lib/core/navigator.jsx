@@ -25,9 +25,6 @@ export class Navigator extends Component {
 export default Navigator
 
 export class Navigate extends Component {
-  static injectProps = {
-    $navigation: true,
-  }
   static validateProps = {
     to: String,
     params: Object,
