@@ -40,6 +40,15 @@ export class Consumer extends React.Component {
     name: String,
   }
 
+  constructor(props) {
+    super(props)
+
+    const { name } = this.props
+    if (!providers[name]) {
+      throw new Error(`Consumer '${name}' has not been registerd.`)
+    }
+  }
+
   render() {
     const { name, children } = this.props
     const { context } = providers[name]

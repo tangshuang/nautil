@@ -16,3 +16,5 @@ export * from './lib/core/for-each.jsx'
 export * from './lib/core/switch-case.jsx'
 
 export * from './lib/core/navigator.jsx'
+
+export { createClassName } from './lib/core/utils.js'

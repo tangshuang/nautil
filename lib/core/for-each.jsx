@@ -8,17 +8,17 @@ export class For extends Component {
     start: Number,
     end: Number,
     step: Number,
-    map: Function,
+    children: Function,
   }
   static defaultProps = {
     step: 1,
   }
 
   render() {
-    const { start, end, step, map } = this.props
+    const { start, end, step, children } = this.props
     const blocks = []
     for (let i = start; i <= end; i += step) {
-      const block = map(i)
+      const block = children(i)
       blocks.push(block)
     }
     return <Fragment>
@@ -30,20 +30,20 @@ export class For extends Component {
 export class Each extends Component {
   static validateProps = {
     of: enumerate([ Array, Object ]),
-    map: Function,
+    children: Function,
   }
 
   render() {
-    const { map } = this.props
+    const { children } = this.props
     const data = this.props.of
     const blocks = []
 
     if (isArray(data)) {
-      blocks.push(...data.map(map))
+      blocks.push(...data.map(children))
     }
     else if (isObject(data)) {
       each(data, (value, key) => {
-        blocks.push(map(value, key))
+        blocks.push(children(value, key))
       })
     }
 
