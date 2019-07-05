@@ -4,7 +4,6 @@ module.exports = {
   mode: 'none',
   entry: __dirname + '/index.js',
   output: {
-    path: __dirname + '/dist',
     filename: 'index.js',
   },
   module: {
