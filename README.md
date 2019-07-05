@@ -13,13 +13,13 @@ Nautil 因此而生，它基于 React，为开发者提供一套完整统一的�
 
 在我们看来，一个前端框架，需要为开发者一次性提供：
 
-- 基本的 UI 渲染模式（例如“模板”或“Virtual DOM”）
+- UI 渲染
 - 前端路由
-- 数据/状态管理（例如 redux）
-- 异步数据处理（例如 AJAX）
-- 数据类型检查（可选，但在前后端耦合的情况下非常有必要）
-- 跨端开发方案（例如 taro）
-- 国际化方案（可基于 i18next 去做）
+- 状态管理
+- 数据请求
+- 数据类型检查
+- 跨端开发方案
+- 多语言国际化
 
 Nautil 基于 React 的 UI 编程能力，在此基础上，提供独立而简单的其他部件，从而形成完整的开发框架。它包含了独立的路由、状态管理、异步数据处理、类型检查等模块。并且基于 React Native，提供有限的原生应用支持能力。
 
@@ -32,9 +32,8 @@ Nautil 基于 React 的 UI 编程能力，在此基础上，提供独立而简�
 ```js
 import { Component } from 'nautil'
 import { Section, Text } from 'nautil/components'
-import { mount } from 'nautil/dom'
 
-class App extends Component {
+export class App extends Component {
    render() {
       return <Section>
          <Text>This is an app.</Text>
@@ -42,18 +41,24 @@ class App extends Component {
    }
 }
 
+export default App
+```
+
+```js
+import { mount } from 'nautil/dom'
+import App from './App.jsx'
+
 mount('#app', App)
 ```
 
-上面我们使用了 nautil/dom, 此外我们可以使用 nautil/native 来获得 react-native 的开发能力。
-在原理上，我们要求开发者在开发时，必须使用 nautil 的基础组件完成 UI 界面的渲染。在实际运行时，通过 js 原型链方法重写的方式，在不同端重写基础组件的底层渲染逻辑，比如在 web 端，调用 react 对 html 组件的支持，在 native 端调用 react-native 提供的内置组件。这样，我们通过一套自己的组件，抹平各端开发的差异。（当然，在实际运行中，这种差异还是会有细节上的不同。）
+我们使用 nautil/dom 来实现 web 端渲染, 此外我们可以使用 nautil/native 来获得 react-native 的开发能力。
+在原理上，我们要求开发者在开发时，必须使用 nautil 的基础组件完成 UI 界面的渲染。在实际运行时，通过 js 原型链方法重写的方式，在不同端重写基础组件的底层渲染逻辑，比如在 web 端，调用 react 对 html 组件的支持，在 native 端调用 react-native 提供的内置组件。这样，我们通过一套自己的组件，抹平各端开发的差异。
 
 ### 状态管理
 
 ```js
 import { Component, Store, ObservableProvider } from 'nautil'
 import { Section, Text } from 'nautil/components'
-import { mount } from 'nautil/dom'
 
 const store = new Store({
    name: 'tomy',
@@ -83,8 +88,6 @@ class App extends Component {
       )
    }
 }
-
-mount('#app', App)
 ```
 
 我们提供了更方便的全局状态管理工具 `Store` 来帮助开发者管理应用的全局状态。它是一个可以独立运行的状态管理工具。要让状态的变化出发界面重绘，还需要使用 `ObservableProvider` 这个内置组件，它可以通过订阅来触发内部组件的更新。
@@ -92,7 +95,6 @@ mount('#app', App)
 ### 路由管理
 
 ```js
-import { mount } from 'nautil/dom'
 import { Component, Navigation, Navigator, Switch, Case } from 'nautil'
 
 import Page1 from './pages/Page1.jsx'
@@ -145,8 +147,6 @@ class App extends Component {
     )
   }
 }
-
-mount('#app', App)
 ```
 
 我们提供统一的路由接口，它用于创建和监听路由状态。你需要使用 `Navigator` 来将使用路由的内容包在内部。（一个应用只能调用一次 `Navigator`。）同时，你需要配合 `Switch` `Case` 才能完成整个页面的路由规则。在内部，你可以使用 `Navigate` 组件实现导航跳转，也可以通过接口方法来跳转。
@@ -157,7 +157,6 @@ mount('#app', App)
 ```js
 import { Component, ObservableProvider, Depository, Prepare } from 'nautil'
 import { Text } from 'nautil/components'
-import { mount } from 'nautil/dom'
 
 const datasources = [
    // 数据源配置
@@ -194,20 +193,18 @@ class App extends Component {
          subscribe={dispatch => depo.subscribe('some', dispatch).subscribe('tag', dispatch)}
          dispatch={this.update}
       >
-         <Page1 />
+         <Page1></Page1>
       </ObservableProvider>
     )
   }
 }
-
-mount('#app', App)
 ```
 
 我们发明了一套新的数据管理理论——数据仓库，（这里的数据指从后台 api 拉取的数据，）用以解决前端应用中从后台拉取数据和推送数据的逻辑。传统数据拉取和推送靠业务层代码发起 ajax 请求来解决。
 现在需要改变这种思维，我们通过数据仓库统一管理从 api 获取的数据，我们在业务层和后台之间创建了数据仓库，业务层逻辑不和后台直接打交道，而是和数据仓库打交道，业务层代码通过订阅仓库中的数据，从而不需要关心如何从后台拿数据的问题。
 
 数据仓库是一个订阅/发布模式的设计，而在使用时，只需要从仓库中读取数据即可，不需要发出请求。这些操作是同步的，这意味着在 nautil 中你没有异步操作。
-上面的实例代码中，你需要借助 `Observer` 来订阅仓库中的数据变化，通过 `Prepare` 来解决当数据还没有从后端拉取回来时应该怎么显示界面。
+上面的实例代码中，你需要借助 `ObservableProvider` 来订阅仓库中的数据变化，通过 `Prepare` 来解决当数据还没有从后端拉取回来时应该怎么显示界面。
 
 ## Internationalization
 
