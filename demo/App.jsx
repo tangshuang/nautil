@@ -55,7 +55,7 @@ function Home() {
   return (
     <Section>
       <Section>
-        <Text>Welcome to Nautil's world!</Text>
+        <Text>Welcome to Nautil's world! 😊</Text>
       </Section>
       <Section>
         <Navigate to="page1">

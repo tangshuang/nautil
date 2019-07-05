@@ -19,9 +19,17 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
-        exclude: [
-          path.resolve(__dirname, '../node_modules/react'),
-          path.resolve(__dirname, '../node_modules/react-dom'),
+        include: [
+          path.resolve(__dirname, '../animation.js'),
+          path.resolve(__dirname, '../components.js'),
+          path.resolve(__dirname, '../dom.js'),
+          path.resolve(__dirname, '../i18n.js'),
+          path.resolve(__dirname, '../index.js'),
+          path.resolve(__dirname, '../stream.js'),
+          path.resolve(__dirname, '../types.js'),
+          path.resolve(__dirname, '../lib'),
+          path.resolve(__dirname, '../demo'),
+          path.resolve(__dirname, '../node_modules/ts-fns'),
         ],
         options: {
           presets: [
