@@ -203,7 +203,7 @@ class App extends Component {
 mount('#app', App)
 ```
 
-我们发明了一套新的数据管理理论——数据仓库，用以解决前端应用中从后台拉取数据和推送数据的逻辑。传统数据拉取和推送靠业务层代码发起 ajax 请求来解决。
+我们发明了一套新的数据管理理论——数据仓库，（这里的数据指从后台 api 拉取的数据，）用以解决前端应用中从后台拉取数据和推送数据的逻辑。传统数据拉取和推送靠业务层代码发起 ajax 请求来解决。
 现在需要改变这种思维，我们通过数据仓库统一管理从 api 获取的数据，我们在业务层和后台之间创建了数据仓库，业务层逻辑不和后台直接打交道，而是和数据仓库打交道，业务层代码通过订阅仓库中的数据，从而不需要关心如何从后台拿数据的问题。
 
 数据仓库是一个订阅/发布模式的设计，而在使用时，只需要从仓库中读取数据即可，不需要发出请求。这些操作是同步的，这意味着在 nautil 中你没有异步操作。
@@ -225,7 +225,10 @@ export class Page1 extends Component {
   }
 
   render() {
-    const { t, changeLanguage } = this.$i18n
+    const i18n = this.$i18n
+    const t = i18n.t.bind(i18n)
+    const changeLanguage = i18n.changeLanguage.bind(i18n)
+
     return (
       <Section>
         <Text>{t('ILoveTheWorld')}</Text>
