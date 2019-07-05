@@ -9,7 +9,7 @@ import styles from './App.css'
 
 const navigation = new Navigation({
   base: '/',
-  mode: 'hash',
+  mode: 'history',
   routes: [
     {
       name: 'home',

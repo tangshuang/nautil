@@ -16,7 +16,7 @@ export class Page3 extends Component {
           <Button onHint={() => this.setState({ show: true })}>show</Button>
           <Button onHint={() => this.setState({ show: false })}>hide</Button>
         </Section>
-        <Animation enter="fade:in moveto:left-top" leave="fade:out moveto:right-bottom" show={this.state.show} duration={500}>
+        <Animation enter="fade:in moveto:left" leave="fade:out moveto:right" show={this.state.show} duration={500}>
           <Text>This is a demo for animation.</Text>
         </Animation>
       </Section>
