@@ -4,6 +4,8 @@ import { Section, Text, Button } from '../components.js'
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
 
+import styles from './App.css'
+
 const navigation = new Navigation({
   base: '/',
   mode: 'hash',
@@ -84,22 +86,26 @@ class App extends Component {
           subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}
         >
           <Provider name="$depo" value={depo}>
-            <Prepare isReady={navigation.status !== '' && store.state.info.time} loadingComponent={<Text>loading...</Text>}>
-              <Switch of={navigation.status}>
-                <Case value="home">
-                  <Home />
-                </Case>
-                <Case value="page1">
-                  <Page1 />
-                </Case>
-                <Case value="page2">
-                  <Page2 />
-                </Case>
-                <Case default>
-                  <NotFound />
-                </Case>
-              </Switch>
-            </Prepare>
+            <Section stylesheet={styles.app}>
+              <Section stylesheet={styles.container}>
+                <Prepare isReady={navigation.status !== '' && store.state.info.time} loadingComponent={<Text>loading...</Text>}>
+                  <Switch of={navigation.status}>
+                    <Case value="home">
+                      <Home />
+                    </Case>
+                    <Case value="page1">
+                      <Page1 />
+                    </Case>
+                    <Case value="page2">
+                      <Page2 />
+                    </Case>
+                    <Case default>
+                      <NotFound />
+                    </Case>
+                  </Switch>
+                </Prepare>
+              </Section>
+            </Section>
           </Provider>
         </ObservableProvider>
       </Navigator>

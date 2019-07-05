@@ -1,0 +1,13 @@
+.app {
+  width: 400px;
+  height: 200px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-top: -200px;
+  margin-left: -150px;
+  background-color: #f1f1f1;
+}
+.container {
+  margin: 20px;
+}
