@@ -2,6 +2,7 @@ module.exports = {
   mode: 'none',
   entry: __dirname + '/index.js',
   output: {
+    path: __dirname + '/dist',
     filename: 'index.js',
   },
   module: {
@@ -22,6 +23,20 @@ module.exports = {
             '@babel/plugin-proposal-class-properties',
           ],
         },
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+            },
+          },
+        ],
       },
     ],
   },
