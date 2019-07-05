@@ -10,13 +10,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /.*/,
-        loader: 'cache-loader',
-        include: [
-          path.resolve(__dirname, '../node_modules'),
-        ],
-      },
-      {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         include: [
