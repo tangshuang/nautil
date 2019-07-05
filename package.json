@@ -4,7 +4,7 @@
   "description": "A javascript application framework.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --config demo/webpack.config.js --hot"
+    "start": "webpack-dev-server --config demo/webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-react-require": "^3.1.1",
+    "cache-loader": "^4.0.1",
     "css-loader": "^3.0.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.35.2",

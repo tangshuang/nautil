@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   mode: 'none',
   entry: __dirname + '/index.js',
@@ -8,10 +10,18 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /.*/,
+        loader: 'cache-loader',
+        include: [
+          path.resolve(__dirname, '../node_modules'),
+        ],
+      },
+      {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         exclude: [
-          /node_modules\/react\-dom/,
+          path.resolve(__dirname, '../node_modules/react'),
+          path.resolve(__dirname, '../node_modules/react-dom'),
         ],
         options: {
           presets: [

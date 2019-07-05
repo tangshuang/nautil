@@ -1,7 +1,9 @@
 import Component from '../core/component.js'
 import { noop } from '../core/utils.js'
-import Section from './section.jsx'
-import { Transition, tween } from './transition.js'
+import Section from '../components/section.jsx'
+import { Transition } from './transition.js'
+import { tween } from './tween.js'
+import Transform from './transform.js'
 
 export class Animation extends Component {
   static validateProps = {
@@ -12,19 +14,31 @@ export class Animation extends Component {
     leave: String,
     show: Boolean,
 
-    onStart: Function,
-    onDuring: Function,
-    onEnd: Function,
+    onEnterStart: Function,
+    onEnterUpdate: Function,
+    onEnterStop: Function,
+
+    onLeaveStart: Function,
+    onLeaveUpdate: Function,
+    onLeaveStop: Function,
   }
 
   static defaultProps = {
     ease: 'linear',
     duration: 0.5,
+
+    enter: '',
+    leave: '',
+
     show: false,
 
-    onStart: noop,
-    onDuring: noop,
-    onStop: noop,
+    onEnterStart: noop,
+    onEnterUpdate: noop,
+    onEnterStop: noop,
+
+    onLeaveStart: noop,
+    onLeaveUpdate: noop,
+    onLeaveStop: noop,
   }
 
   state = {
@@ -32,42 +46,55 @@ export class Animation extends Component {
     style: {},
   }
 
-  create() {
-    const { ease, duration } = this.attrs
-    this.transition = new Transition({ ease, duration })
-  }
-
-  listen() {
-    const { enter, leave, show } = this.attrs
+  init() {
+    const { enter, leave, ease, duration } = this.attrs
     const enterTypes = enter.split(' ')
     const leaveTypes = leave.split(' ')
-    const types = show ? enterTypes : leaveTypes
 
-    this.transition.on('update', () => {
-      types.forEach((ease) => {
-        if (!ease) {
+    this.transform = new Transform()
+    this.enterTransition = new Transition({ ease, duration })
+    this.leaveTransition = new Transition({ ease, duration })
+
+    const update = (transition, types) => {
+      types.forEach((type) => {
+        if (!type) {
           return
         }
 
-        const [method, params] = ease.split(':')
+        const [method, params] = type.split(':')
         if (this[method]) {
-          this[method](params)
+          const factor = transition.current
+          this[method](params, factor)
         }
       })
-      this.onUpdate$.next()
-    })
-    this.transition.on('start', () => {
+    }
+
+    this.enterTransition.on('start', () => {
       this.setState({ show: true })
-      this.onStart$.next()
+      this.onEnterStart$.next()
     })
-    this.transition.on('stop', () => {
+    this.enterTransition.on('update', () => {
+      update(this.enterTransition, enterTypes)
+      this.onEnterUpdate$.next()
+    })
+    this.enterTransition.on('stop', () => {
+      this.onEnterStop$.next()
+    })
+
+    this.leaveTransition.on('start', () => {
+      this.onLeaveStart$.next()
+    })
+    this.leaveTransition.on('update', () => {
+      update(this.leaveTransition, leaveTypes)
+      this.onLeaveUpdate$.next()
+    })
+    this.leaveTransition.on('stop', () => {
       this.setState({ show: false })
-      this.onStop$.next()
+      this.onLeaveStop$.next()
     })
   }
 
-  fade(params) {
-    const factor = this.transition.current
+  fade(params, factor) {
     const opacity = params === 'in' ? tween(0, 1, factor) : params === 'out' ? tween(1, 0, factor) : undefined
 
     if (opacity === undefined) {
@@ -81,8 +108,7 @@ export class Animation extends Component {
       },
     })
   }
-  moveto(params) {
-    const factor = this.transition.current
+  moveto(params, factor) {
     const direction = params.split('-')
 
     let translateX = 0
@@ -101,61 +127,54 @@ export class Animation extends Component {
       translateY = tween(0, 50, factor)
     }
 
+    this.transform.set({ translateX, translateY })
+
     this.setState({
       style: {
         ...this.state.style,
-        transform: [
-          ...(this.state.style.transform || []).filter(item => item.translateX === undefined && item.translateY === undefined),
-          { translateX },
-          { translateY },
-        ],
+        transform: this.transform.get(),
       },
     })
   }
-  rotate(params) {
-    const factor = this.transition.current
+  rotate(params, factor) {
     const num = parseFloat(params)
     const unit = params.substr(num.toString().length)
     const value = tween(0, num, factor)
     const rotate = value + unit
 
-    this.setState({
-      style: {
-        ...this.state.style,
-        transform: [
-          ...(this.state.style.transform || []).filter(item => item.rotate === undefined),
-          { rotate },
-        ],
-      },
-    })
-  }
-  scale(params) {
-    const factor = this.transition.current
-    const scale = tween(params, 1, factor)
+    this.transform.set({ rotate })
 
     this.setState({
       style: {
         ...this.state.style,
-        transform: [
-          ...(this.state.style.transform || []).filter(item => item.scale === undefined),
-          { scale },
-        ],
+        transform: this.transform.get(),
+      },
+    })
+  }
+  scale(params, factor) {
+    const scale = tween(params, 1, factor)
+
+    this.transform.set({ scale })
+
+    this.setState({
+      style: {
+        ...this.state.style,
+        transform: this.transform.get(),
       },
     })
   }
 
   updated() {
+    // `show` is what visibale state want to be next
+    // `state` is current visible state
     const { show } = this.attrs
-    if (show && !this.state.show) {
-      this.create()
-      this.listen()
-      this.transition.start()
+    const state = this.state.show
+
+    if (show && !state) {
+      this.enterTransition.start()
     }
-    else if (!show && this.state.show) {
-      this.transition.stop()
-      this.create()
-      this.listen()
-      this.transition.start()
+    else if (!show && state) {
+      this.leaveTransition.start()
     }
   }
 

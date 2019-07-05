@@ -1,5 +1,6 @@
 import { Component } from 'nautil'
-import { Animation, Text } from 'nautil/components'
+import { Text } from 'nautil/components'
+import { Animation } from 'nautil/animation'
 
 export class Page1 extends Component {
   render() {

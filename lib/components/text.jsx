@@ -3,6 +3,7 @@ import { noop } from '../core/utils.js'
 
 export class Text extends Component {
   static validateProps = {
+    onHint: Function,
     onHintEnter: Function,
     onHintStart: Function,
     onHintMove: Function,
@@ -10,6 +11,7 @@ export class Text extends Component {
     onHintLeave: Function,
   }
   static defaultProps = {
+    onHint: noop,
     onHintEnter: noop,
     onHintStart: noop,
     onHintMove: noop,

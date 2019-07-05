@@ -17,7 +17,7 @@ export class Page1 extends Component {
         {/* use Navigate */}
         <Section><Navigate to="page2" params={{ type: 'cat', id: '22' }}><Text>go</Text></Navigate></Section>
         {/* use Navigation method */}
-        <Section><Button onHintEnd={() => this.$navigation.go('page2', { type: 'dog', id: '123' })}>go</Button></Section>
+        <Section><Button onHint={() => this.$navigation.go('page2', { type: 'dog', id: '123' })}>go</Button></Section>
       </Section>
     )
   }

@@ -1,8 +1,9 @@
-import { Component, Navigation, Navigator, Navigate, Observer, Provider, Store, Depository, Switch, Case, Prepare, ObservableProvider } from '../index.js'
+import { Component, Navigation, Navigator, Navigate, Provider, Store, Depository, Switch, Case, Prepare, ObservableProvider } from '../index.js'
 import { Section, Text, Button } from '../components.js'
 
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
+import Page3 from './pages/Page3.jsx'
 
 import styles from './App.css'
 
@@ -21,6 +22,10 @@ const navigation = new Navigation({
     {
       name: 'page2',
       path: '/page2/:id/:action?',
+    },
+    {
+      name: 'page3',
+      path: '/page3',
     },
   ],
   maxHistoryLength: 20,
@@ -58,6 +63,9 @@ function Home() {
         </Navigate>
         <Navigate to="page2" params={{ id: '123' }}>
           <Button>Page2</Button>
+        </Navigate>
+        <Navigate to="page3">
+          <Button>Page3</Button>
         </Navigate>
       </Section>
     </Section>
@@ -98,6 +106,9 @@ class App extends Component {
                     </Case>
                     <Case value="page2">
                       <Page2 />
+                    </Case>
+                    <Case value="page3">
+                      <Page3 />
                     </Case>
                     <Case default>
                       <NotFound />

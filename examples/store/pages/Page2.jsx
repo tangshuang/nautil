@@ -20,7 +20,7 @@ export class Page2 extends Component {
       <Section>
         <Section><Text>name: {state.name}</Text></Section>
         <Section><Text>age: {state.age}</Text></Section>
-        <Section><Button onHintEnd={() => this.change()}>change</Button></Section>
+        <Section><Button onHint={() => this.change()}>change</Button></Section>
       </Section>
     )
   }

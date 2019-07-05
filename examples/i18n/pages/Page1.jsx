@@ -14,7 +14,7 @@ export class Page1 extends Component {
     return (
       <Section>
         <Text>{t('ILoveTheWorld')}</Text>
-        <Button onHintEnd={() => changeLanguage('zh-HK')}>change language</Button>
+        <Button onHint={() => changeLanguage('zh-HK')}>change language</Button>
       </Section>
     )
   }

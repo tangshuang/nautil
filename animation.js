@@ -1,4 +1,4 @@
-import Animation from './lib/components/animation.jsx'
+import Animation from './lib/animation/animation.jsx'
 
 export { Animation }
 export * from './lib/animation/transition.js'

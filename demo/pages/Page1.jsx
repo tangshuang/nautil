@@ -24,7 +24,7 @@ class Page1 extends Component {
                       <Navigate to="home">
                         <Button>Home</Button>
                       </Navigate>
-                      <Button onHintEnd={() => this.$navigation.go('page2', { id: '123', action: 'edit' })}>Page2</Button>
+                      <Button onHint={() => this.$navigation.go('page2', { id: '123', action: 'edit' })}>Page2</Button>
                     </Section>
                     <Section>
                       <Section><Text>name: {name}</Text></Section>
@@ -32,9 +32,9 @@ class Page1 extends Component {
                       <Section><Text>time: {info.time}</Text></Section>
                     </Section>
                     <Section>
-                      <Button onHintEnd={() => grow()}>grow</Button>
-                      <Button onHintEnd={() => $depo.request('info')}>request</Button>
-                      <Button onHintEnd={() => $depo.get('info')}>get</Button>
+                      <Button onHint={() => grow()}>grow</Button>
+                      <Button onHint={() => $depo.request('info')}>request</Button>
+                      <Button onHint={() => $depo.get('info')}>get</Button>
                     </Section>
                   </Section>
                 )

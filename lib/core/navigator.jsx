@@ -57,7 +57,7 @@ export class Navigate extends Component {
           }
           return React.Children.map(this.children, (child) => {
             if (!child.type) {
-              return <Text onHintEnd={() => go()}>{child}</Text>
+              return <Text onHint={() => go()}>{child}</Text>
             }
             else {
               return React.cloneElement(child, { onHintEnd: () => go() })
