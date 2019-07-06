@@ -43,7 +43,7 @@
     "webpack-cli": "^3.3.5",
     "webpack-dev-server": "^3.7.2"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "react-dom": "^16.8.6",
     "react-native": "^0.60.0"
   }
