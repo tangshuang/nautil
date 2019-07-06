@@ -281,6 +281,17 @@ class Page1 extends Component {
 }
 ```
 
+## Have a try
+
+To taste the feel, clone this repository, and run in CLI:
+
+```
+npm i
+npm start
+```
+
+Open your brower to visit localhost:9000 and read the demo code in `demo` directory.
+
 ## For Developers
 
 If you are going to work with Nautil, keep in mind:
