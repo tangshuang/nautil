@@ -233,7 +233,7 @@ In the example code, we use `depo.get` to get `some` from depository. When some 
 Maybe, at first you do not approbate `depo.get`, why don't I send an ajax? why don't I need to create an asynchronous task?
 Finally, you will find it is interesting and genius with observer pattern.
 
-## Internationalization
+### Internationalization
 
 Don't waste time to think about whether or which library to include internationalization in your application. From my experience, do it, at the begining of your project early period.
 
