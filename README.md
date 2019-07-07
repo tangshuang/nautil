@@ -7,7 +7,7 @@ Nautil is a responsive, efficient, and flexible JavaScript framework for buildin
 ## Background
 
 Frontend technology come up with new things day by day. React and Vue conquer the world.
-I love react which provide a very excellent development experience. However, it only provide a UI lirary, if you want to build an application with it, you have to think of many different proposal on different point.
+I love react which provide a very excellent development experience. However, it only provide a UI library, if you want to build an application with it, you have to think of many different proposals on different points.
 
 To resolve this, I developed Nautil to provide developers a framework to be able to build a cross-platform application conveniently.
 It is based on react, so you do not need to worry about the ecosystem.
