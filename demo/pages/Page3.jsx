@@ -1,6 +1,6 @@
-import { Component, Navigate } from '../../index.js'
-import { Text, Section, Button } from '../../components.js'
-import { Animation } from '../../animation.js'
+import { Component } from 'nautil'
+import { Navigate, Text, Section, Button } from 'nautil/components'
+import { Animation } from 'nautil/animation'
 
 export class Page3 extends Component {
   state = {

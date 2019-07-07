@@ -1,5 +1,8 @@
-import { Component, Navigation, Navigator, Navigate, Provider, Store, Depository, Switch, Case, Prepare, ObservableProvider } from '../index.js'
-import { Section, Text, Button } from '../components.js'
+import { Component, Navigation, Store, Depository } from 'nautil'
+import {
+  Navigator, Navigate, Provider, Switch, Case, Prepare, ObservableProvider,
+  Section, Text, Button,
+} from 'nautil/components'
 
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'

@@ -19,6 +19,11 @@ module.exports = {
     path: __dirname + '/dist',
     filename: 'index.js',
   },
+  resolve: {
+    alias: {
+      nautil: path.resolve(__dirname, '..'),
+    },
+  },
   module: {
     rules: [
       {

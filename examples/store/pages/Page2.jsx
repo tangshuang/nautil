@@ -7,15 +7,15 @@ import { Section, Text, Button } from 'nautil/components'
 
 export class Page2 extends Component {
   static injectProviders = {
-    $state: true,
+    $store: true,
   }
 
   change() {
-    this.$state.age ++
+    this.$store.state.age ++
   }
 
   render() {
-    const state = this.$state
+    const { state } = this.$store
     return (
       <Section>
         <Section><Text>name: {state.name}</Text></Section>
