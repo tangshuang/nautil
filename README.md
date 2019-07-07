@@ -58,7 +58,7 @@ In deep, we override the prototype to make these basic components to act differe
 
 ### State
 
-We do not advocate redux, it is to complex. We provide a inside-included library which is easy to understand to manage your applation level state. It is called `Store` which is a observable data container.
+We do not advocate redux, it is too complex. We provide a inside-included library which is easy to understand to manage your application level state. It is called `Store` which is a observable data container.
 
 ```js
 import { Component, Store, ObservableProvider } from 'nautil'
@@ -96,7 +96,7 @@ class Page1 extends Component {
 }
 ```
 
-Here, we use a `ObservableProvider` component which can share data amoung cross-level components. And it has the ability to observe data changes and trigger UI changes.
+Here, we use a `ObservableProvider` component which can share data among cross-level components. And it has the ability to observe data changes and trigger UI changes.
 
 `Store` is a independent library, you can even use it in other system.
 
@@ -169,8 +169,8 @@ At the same time, you can use `Switch` and `Case` to choose which sub-components
 
 In other system, developers should write many ajax services to request data from backend api. But in Nautil, you should not. You are recommended to follow a new idea of data manangement style: depository.
 
-A data depository is in the middle of frontend business and backend api. For business code, developers do not care when and how to get data from backend api, just need to get data from depository.
-Yeah, one action, get from depository.
+A data depository is in the middle of frontend business and backend api. For business code, developers do not care when and how to get data from backend api, just need to *get* data from depository.
+Yeah, one action, *get* from depository.
 
 ```js
 import { Component, ObservableProvider, Depository, Prepare } from 'nautil'
@@ -228,9 +228,9 @@ class Page1 extends Component {
 }
 ```
 
-In the example code, we use `depo.get` to get `some` from depository. When some does not exist in depository, it will return undefined, so we use `Prepare` component to provide a loading effect. And because we have subscirbe to `depo` and update when it change, after the data of `some` come back from backend api, `render` will be run again, and this time `some` has value.
+In the example code, we use `depo.get` to get `some` from depository. When some does not exist in depository, it will return `undefined`, so we use `Prepare` component to provide a loading effect. And because we have subscirbe to `depo` and update when it change, after the data of `some` come back from backend api, `render` will be run again, and this time `some` has value.
 
-Maybe, at first you do not approbate `depo.get`, why don't I send an ajax? why don't I need to create an asynchronous task?
+Maybe, at first, you do not approbate `depo.get`, why don't I send an ajax? why don't I need to create an asynchronous task?
 Finally, you will find it is interesting and genius with observer pattern.
 
 ### Internationalization
