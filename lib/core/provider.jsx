@@ -51,12 +51,17 @@ export class Consumer extends Component {
 
     const { name } = this.props
     if (!PROVIDER_RECORDS[name]) {
-      throw new Error(`Consumer '${name}' has not been registerd.`)
+      console.warn(`Provider '${name}' called by Consumer has not been registerd.`)
     }
   }
 
   render() {
     const { name, children } = this.props
+    // return null when there is no named provider
+    if (!PROVIDER_RECORDS[name]) {
+      return null
+    }
+
     const { context } = PROVIDER_RECORDS[name]
     const { Consumer } = context
     return <Consumer>

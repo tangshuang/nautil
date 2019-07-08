@@ -1,5 +1,8 @@
-import { Component, Navigate, Consumer } from '../../index.js'
-import { Section, Button, Text } from '../../components.js'
+import { Component } from 'nautil'
+import {
+  Navigate, Consumer,
+  Section, Button, Text,
+} from 'nautil/components'
 
 class Page1 extends Component {
   static injectProviders = {

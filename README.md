@@ -1,40 +1,41 @@
 # Nautil
 
-充满创意的 JS 前端框架。
-Nautil 为“鹦鹉螺”的英文单词前段，鹦鹉螺是一种古老的生物，是一种奇异的生长生物，在腾讯内代表“创新”。
+Nautil is a responsive, efficient, and flexible JavaScript framework for building cross-platform applications.
 
-【项目状态】nautil 还在开发中，还未在生产环境验证。欢迎广大开发者在此基础上贡献代码。
+⚠️ In development, welcome to contribute!
 
-## 项目背景
+## Background
 
-前端框架的发展非常迅速，但是随着主流框架在架构层面越来越趋于一致，以React、Vue为主的编程生态各有优劣。
-React 是近些年来最为优秀的前端开发工具。然而，它仅仅是一个库，需要用一个庞大的生态来解决应用开发中的问题。
-Nautil 因此而生，它基于 React，为开发者提供一套完整统一的解决方案——框架。
+Frontend technology come up with new things day by day. React and Vue conquer the world.
+I love react which provide a very excellent development experience. However, it only provide a UI library, if you want to build an application with it, you have to think of many different proposals on different points.
 
-在我们看来，一个前端框架，需要为开发者一次性提供：
+To resolve this, I developed Nautil to provide developers a framework to be able to build a cross-platform application conveniently.
+It is based on react, so you do not need to worry about the ecosystem.
+And one of the purposes is to cross platform, so when you use it, you do not need to write two set of code, just one!
 
-- 基本的 UI 渲染模式（例如“模板”或“Virtual DOM”）
-- 前端路由
-- 数据/状态管理（例如 redux）
-- 异步数据处理（例如 AJAX）
-- 数据类型检查（可选，但在前后端耦合的情况下非常有必要）
-- 跨端开发方案（例如 taro）
-- 国际化方案（可基于 i18next 去做）
+Nautil contains:
 
-Nautil 基于 React 的 UI 编程能力，在此基础上，提供独立而简单的其他部件，从而形成完整的开发框架。它包含了独立的路由、状态管理、异步数据处理、类型检查等模块。并且基于 React Native，提供有限的原生应用支持能力。
+- UI rendering based on react
+- router/navigation
+- state management with observable store library
+- data management and requesting with observable data library
+- data type checker
+- cross-platform development proposal with react-dom and react-native
+- internationalization with i18next, and date/number/currency locale formatters
 
-## 快速预览
+## Overview
 
-在 React 的编程中，你需要引入一大堆包来解决各种问题，而在 Nautil 中，你不需要很多包，只需要 1 个。
+With Nautil, you do not need to include other packages such as redux, router and ajax library. We have provided our own proposal which included inside. And later, you will find them amazing and interesting.
 
-### 多端开发
+### Cross-platform
+
+Import `nautil/dom` to render in web, and use `nautil/native` to build a react-native app.
 
 ```js
 import { Component } from 'nautil'
 import { Section, Text } from 'nautil/components'
-import { mount } from 'nautil/dom'
 
-class App extends Component {
+export class App extends Component {
    render() {
       return <Section>
          <Text>This is an app.</Text>
@@ -42,62 +43,76 @@ class App extends Component {
    }
 }
 
+export default App
+```
+
+```js
+import { mount } from 'nautil/dom'
+import App from './App.jsx'
+
 mount('#app', App)
 ```
 
-上面我们使用了 nautil/dom, 此外我们可以使用 nautil/native 来获得 react-native 的开发能力。
-在原理上，我们要求开发者在开发时，必须使用 nautil 的基础组件完成 UI 界面的渲染。在实际运行时，通过 js 原型链方法重写的方式，在不同端重写基础组件的底层渲染逻辑，比如在 web 端，调用 react 对 html 组件的支持，在 native 端调用 react-native 提供的内置组件。这样，我们通过一套自己的组件，抹平各端开发的差异。（当然，在实际运行中，这种差异还是会有细节上的不同。）
+Developers should use inside basic components which imported from `nautil/components`.
+In deep, we override the prototype to make these basic components to act different ways in different platform.
 
-### 状态管理
+### State
+
+We do not advocate redux, it is too complex. We provide a inside-included library which is easy to understand to manage your application level state. It is called `Store` which is a observable data container.
 
 ```js
 import { Component, Store, ObservableProvider } from 'nautil'
 import { Section, Text } from 'nautil/components'
-import { mount } from 'nautil/dom'
 
+// create a store
 const store = new Store({
    name: 'tomy',
    age: 10,
 })
 
-class Page1 extends Component {
-   static injectProviders = {
-      $state: true,
-   }
-   render() {
-      return <Section>
-         <Text>Hi, I am {this.$state.name}, and I am {this.$state.age} years old.</Text>
-      </Section>
-   }
-}
-
 class App extends Component {
-   render() {
-      return (
-         <ObservableProvider
-            name="$state" value="store.state"
-            subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}
-         >
-            <Page1></Page1>
-         </ObservableProvider>
-      )
-   }
+  render() {
+    return (
+      <ObservableProvider
+        name="$store" value={store}
+        subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}
+      >
+        <Page1></Page1>
+      </ObservableProvider>
+    )
+  }
 }
 
-mount('#app', App)
+class Page1 extends Component {
+  static injectProviders = {
+    $store: true,
+  }
+  render() {
+    const { state } = this.$store
+    return <Section>
+      <Text>Hi, I am {state.name}, and I am {state.age} years old.</Text>
+    </Section>
+  }
+}
 ```
 
-我们提供了更方便的全局状态管理工具 `Store` 来帮助开发者管理应用的全局状态。它是一个可以独立运行的状态管理工具。要让状态的变化出发界面重绘，还需要使用 `ObservableProvider` 这个内置组件，它可以通过订阅来触发内部组件的更新。
+Here, we use a `ObservableProvider` component which can share data among cross-level components. And it has the ability to observe data changes and trigger UI changes.
 
-### 路由管理
+`Store` is a independent library, you can even use it in other system.
+
+### Navigation
+
+We often call this part router, but here we call it navigation.
+It is implemented inside, and is cross-platform. A navigation is observable, so that you can change the UI when navigation changes.
+`Navigator` is to provide navigation, and `Navigate` is to jump between routes.
 
 ```js
-import { mount } from 'nautil/dom'
 import { Component, Navigation, Navigator, Switch, Case } from 'nautil'
 
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
 
+// create a navigation
 const navigation = new Navigation({
   base: '/app',
   mode: 'history',
@@ -122,10 +137,6 @@ const navigation = new Navigation({
   ],
 })
 
-function NotFound() {
-  return <div>Not Found!</div>
-}
-
 class App extends Component {
   render() {
     return (
@@ -141,33 +152,63 @@ class App extends Component {
             <NotFound></NotFound>
           </Case>
         </Switch>
-      </Observer>
+      </Navigator>
     )
   }
 }
 
-mount('#app', App)
+function NotFound() {
+  return <div>Not Found!</div>
+}
 ```
 
-我们提供统一的路由接口，它用于创建和监听路由状态。你需要使用 `Navigator` 来将使用路由的内容包在内部。（一个应用只能调用一次 `Navigator`。）同时，你需要配合 `Switch` `Case` 才能完成整个页面的路由规则。在内部，你可以使用 `Navigate` 组件实现导航跳转，也可以通过接口方法来跳转。
-在 native 开发时，我们会在系统内部模拟一套类似 web 一样的路径系统，从而用于抹平路由在不同端的表现。
+One application can call `Navigator` only once.
+At the same time, you can use `Switch` and `Case` to choose which sub-components to render in navigator.
 
-### 数据仓库
+### Data Depository
+
+In other system, developers should write many ajax services to request data from backend api. But in Nautil, you should not. You are recommended to follow a new idea of data manangement style: depository.
+
+A data depository is in the middle of frontend business and backend api. For business code, developers do not care when and how to get data from backend api, just need to *get* data from depository.
+Yeah, one action, *get* from depository.
 
 ```js
 import { Component, ObservableProvider, Depository, Prepare } from 'nautil'
 import { Text } from 'nautil/components'
-import { mount } from 'nautil/dom'
 
+// set data sources information
 const datasources = [
-   // 数据源配置
+  {
+    id: 'articles',
+    url: '/api/articles',
+  },
+  {
+    id: 'tag',
+    url: '/api/tags/{tag}',
+  },
 ]
 
+// create a data depository
 const depo = new Depository({
-  expire: 10000,
+   expire: 10000,
 })
 
+// register data sources into depository
 depo.register(datasources)
+
+class App extends Component {
+  render() {
+    return (
+      <ObservableProvider
+        name="$depo" value={depo}
+        subscribe={dispatch => depo.subscribe('articles', dispatch).subscribe('tag', dispatch)}
+        dispatch={this.update}
+      >
+        <Page1></Page1>
+      </ObservableProvider>
+    )
+  }
+}
 
 class Page1 extends Component {
   static injectProviders = {
@@ -176,40 +217,27 @@ class Page1 extends Component {
 
   render() {
     const depo = this.$depo
-    const some = depo.get('some')
+    const some = depo.get('tag', { tag: 'some name' })
 
     return (
       <Prepare isReady={some} loadingComponent={<Text>loading...</Text>}>
-        <Text>{some}</Text>
+        <Text>{some.name}</Text>
       </Prepare>
     )
   }
 }
-
-class App extends Component {
-  render() {
-    return (
-      <ObservableProvider
-         name="$depo" value={depo}
-         subscribe={dispatch => depo.subscribe('some', dispatch).subscribe('tag', dispatch)}
-         dispatch={this.update}
-      >
-         <Page1 />
-      </ObservableProvider>
-    )
-  }
-}
-
-mount('#app', App)
 ```
 
-我们发明了一套新的数据管理理论——数据仓库，（这里的数据指从后台 api 拉取的数据，）用以解决前端应用中从后台拉取数据和推送数据的逻辑。传统数据拉取和推送靠业务层代码发起 ajax 请求来解决。
-现在需要改变这种思维，我们通过数据仓库统一管理从 api 获取的数据，我们在业务层和后台之间创建了数据仓库，业务层逻辑不和后台直接打交道，而是和数据仓库打交道，业务层代码通过订阅仓库中的数据，从而不需要关心如何从后台拿数据的问题。
+In the example code, we use `depo.get` to get `some` from depository. When some does not exist in depository, it will return `undefined`, so we use `Prepare` component to provide a loading effect. And because we have subscirbe to `depo` and update when it change, after the data of `some` come back from backend api, `render` will be run again, and this time `some` has value.
 
-数据仓库是一个订阅/发布模式的设计，而在使用时，只需要从仓库中读取数据即可，不需要发出请求。这些操作是同步的，这意味着在 nautil 中你没有异步操作。
-上面的实例代码中，你需要借助 `Observer` 来订阅仓库中的数据变化，通过 `Prepare` 来解决当数据还没有从后端拉取回来时应该怎么显示界面。
+Maybe, at first, you do not approbate `depo.get`, why don't I send an ajax? why don't I need to create an asynchronous task?
+Finally, you will find it is interesting and genius with observer pattern.
 
-## Internationalization
+### Internationalization
+
+Don't waste time to think about whether or which library to include internationalization in your application. From my experience, do it, at the begining of your project early period.
+
+To implement internationalization is very easy with nautil after you have tried the previous parts. We provide a i18n library inside, and it is also observable, the some way to use as others.
 
 ```js
 import { Component, ObservableProvider } from 'nautil'
@@ -219,7 +247,21 @@ import { Section, Text, Button } from 'nautil/components'
 // https://www.i18next.com/overview/configuration-options
 const i18n = new I18n(options)
 
-export class Page1 extends Component {
+class App extends Component {
+  render() {
+    return (
+      <ObservableProvider
+         name="$i18n" value={i18n}
+         subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}
+         dispatch={this.update}
+      >
+         <Page1></Page1>
+      </ObservableProvider>
+    )
+  }
+}
+
+class Page1 extends Component {
   static injectProviders = {
     $i18n: true,
   }
@@ -237,34 +279,28 @@ export class Page1 extends Component {
     )
   }
 }
-
-export class App extends Component {
-  render() {
-    return (
-      <ObservableProvider
-         name="$i18n" value={i18n}
-         subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}
-         dispatch={this.update}
-      >
-         <Page1 />
-      </ObservableProvider>
-    )
-  }
-}
 ```
 
-通过内置的 I18n 类来实现国际化。这里借助 ObservableProvider 来实现响应应用中的语言切换。
-其中最重要的两个方法莫过于 `t` 和 `changeLanguage`。它内部完全依赖 i18next，如果你对这个框架比较熟悉，那么会对你很有帮助。
+## Have a try
 
-## 开发者言
+To taste the feel, clone this repository, and run in CLI:
 
-当你在使用 nautil 进行开发时，我希望你保持下面的心态：
+```
+npm i
+npm start
+```
 
-- 忘掉 react，就当 nautil 是完全遵循 react 语法的另外一套框架
-- 时刻记住自己在进行多端开发（很多 css 不能用）
-- 使用 nautil 内置基础组件，而非使用 react 或 react-native 的内置组件（除非你确定你打算用 nautil 做单端开发）
-- 使用 css module 的方式使用样式，在构建 react-native 应用时，使用 react-native-css-loader 对 css 进行转化
-- 使用 babel-plugin-react-require 插件自动插入对 react 的引用
+Open your brower to visit localhost:9000 and read the demo code in `demo` directory.
+
+## For Developers
+
+If you are going to work with Nautil, keep in mind:
+
+- forget react, nautil is a new framework
+- never forget you are build cross-platform application, so don't use abilities which only works for web
+- use inside basic component from `nautil/components`, never use html components or react-native components
+- use css module to import stylesheets, when build react-native appliction, install react-native-css-loader to transform css files
+- install babel-plugin-react-require to import React automaticly
 
 ## MIT License
 

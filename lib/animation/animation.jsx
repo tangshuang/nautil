@@ -180,10 +180,12 @@ export class Animation extends Component {
 
   render() {
     const { show, style } = this.state
-    const { ease, duration, ...props } = this.attrs
+    const { ease, duration, component, ...props } = this.attrs
     delete props.show
 
-    return (show ? <Section style={{ ...this.style, ...style }} {...props}>{this.children}</Section> : null)
+    const Component = component ? component : Section
+
+    return (show ? <Component style={{ ...this.style, ...style }} {...props}>{this.children}</Component> : null)
   }
 }
 
