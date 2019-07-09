@@ -46,7 +46,7 @@ export class Animation extends Component {
     style: {},
   }
 
-  init() {
+  onInit() {
     const { enter, leave, ease, duration } = this.attrs
     const enterTypes = enter.split(' ')
     const leaveTypes = leave.split(' ')
@@ -164,7 +164,7 @@ export class Animation extends Component {
     })
   }
 
-  updated() {
+  onUpdated() {
     // `show` is what visibale state want to be next
     // `state` is current visible state
     const { show } = this.attrs
