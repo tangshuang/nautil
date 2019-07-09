@@ -1,7 +1,7 @@
 
 export * from './lib/core/fragment.jsx'
 export * from './lib/core/observer.jsx'
-export * from './lib/core/provider.jsx'
+export { Provider, Consumer, ObservableProvider } from './lib/core/provider.jsx'
 export * from './lib/core/prepare.jsx'
 export * from './lib/core/if-else.jsx'
 export * from './lib/core/for-each.jsx'
