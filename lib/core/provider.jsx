@@ -93,34 +93,31 @@ export class ObservableProvider extends Component {
 
 export function connect(givenProviders = {}, mergeAndMapProps) {
   const pipe = []
-
   each(givenProviders, (value, name) => {
     if (isString(value) && !value) {
       return
     }
 
-    const generate = (fn) => <Consumer name={name}>{fn}</Consumer>
+    const generate = (children) => <Consumer name={name}>{children}</Consumer>
     pipe.push({
       name: isString(value) ? value : name,
       generate,
     })
   })
 
-  let wrap = null
-  const provideProps = {}
-  pipe.forEach(({ name, generate }) => {
-    wrap = ((wrap) => (fn) => generate((value) => {
-      provideProps[name] = value
-      ;wrap ? wrap(fn)(provideProps) : fn(provideProps)
-    }))(wrap);
-  })
+  const consume = (fn, props) => pipe.reduce((fn, { name, generate }) => () => generate((value) => {
+    props[name] = value
+    return fn()
+  }), fn)
 
   return function(Component) {
     return function(props = {}) {
-      return wrap((provideProps) => {
+      const provideProps = {}
+      const fn = () => {
         const attrs = isFunction(mergeAndMapProps) ? mergeAndMapProps(provideProps, props) : { ...provideProps, ...props }
         return <Component {...attrs}></Component>
-      })
+      }
+      return consume(fn, provideProps)()
     }
   }
 }

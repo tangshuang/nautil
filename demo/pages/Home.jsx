@@ -16,6 +16,9 @@ export function Home() {
         <Navigate to="page3">
           <Button>Page3</Button>
         </Navigate>
+        <Navigate to="page4">
+          <Button>Page4</Button>
+        </Navigate>
       </Section>
     </Section>
   )
