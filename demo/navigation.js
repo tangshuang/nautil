@@ -1,4 +1,4 @@
-import { Navigation } from 'nautil/dom'
+import { Navigation } from 'nautil'
 
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'

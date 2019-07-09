@@ -107,7 +107,7 @@ It is implemented inside, and is cross-platform. A navigation is observable, so 
 `Navigator` is to provide navigation, and `Navigate` is to jump between routes.
 
 ```js
-import { Component, Navigation, Navigator, Switch, Case } from 'nautil'
+import { Navigation, Navigator } from 'nautil'
 
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
@@ -125,36 +125,25 @@ const navigation = new Navigation({
     {
       name: 'page1',
       path: '/page1',
+      component: Page1,
     },
     {
       name: 'page2',
       path: '/page2/:type/:id',
+      component: Page2,
       // default params
       params: {
         type: 'animal',
       },
     },
   ],
+  notFound: NotFound,
 })
 
-class App extends Component {
-  render() {
-    return (
-      <Navigator navigation={navigation} dispatch={this.update}>
-        <Switch of={navigation.status}>
-          <Case value="page1">
-            <Page1></Page1>
-          </Case>
-          <Case value="page2">
-            <Page2 type={navigation.state.params.type} id={navigation.state.params.id}></Page2>
-          </Case>
-          <Case default>
-            <NotFound></NotFound>
-          </Case>
-        </Switch>
-      </Navigator>
-    )
-  }
+function App() {
+  return (
+    <Navigator navigation={navigation}></Navigator>
+  )
 }
 
 function NotFound() {
@@ -163,7 +152,7 @@ function NotFound() {
 ```
 
 One application can call `Navigator` only once.
-At the same time, you can use `Switch` and `Case` to choose which sub-components to render in navigator.
+Look into examples and demo for more usages.
 
 ### Data Depository
 
