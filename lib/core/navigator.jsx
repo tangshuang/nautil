@@ -5,15 +5,31 @@ import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
 import { ifexist, enumerate } from './types.js'
 import { isNumber } from './utils.js'
+import Fragment from './fragment.jsx'
 
 export class Navigator extends Component {
   static validateProps = {
     navigation: Navigation,
-    dispatch: Function,
+    dispatch: ifexist(Function),
   }
 
   render() {
     const { navigation, dispatch } = this.attrs
+
+    // use inside as content
+    if (!dispatch && navigation.options.routes.find(item => item.component)) {
+      const Page = () => navigation.status === '!' ? (navigation.options.notFound ? <navigation.options.notFound /> : null)
+        : navigation.status !== '' ? (navigation.state.route.component ? <navigation.state.route.component /> : null)
+        : this.children
+      return (
+        <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={this.update}>
+          <Provider name={'$navigation'} value={navigation}>
+            {Page()}
+          </Provider>
+        </Observer>
+      )
+    }
+
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={dispatch}>
         <Provider name={'$navigation'} value={navigation}>

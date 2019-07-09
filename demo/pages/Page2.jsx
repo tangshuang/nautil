@@ -1,20 +1,27 @@
+/**
+ * 1. injectProviders
+ * 2. Navigate
+ * 3. store.state.age++
+ * 4. receive navigation.state.params
+ */
+
 import { Component } from 'nautil'
 import { Navigate, Section, Button, Text } from 'nautil/components'
 
 class Page2 extends Component {
   static injectProviders = {
     $navigation: true,
-    $state: true,
+    $store: true,
   }
 
   grow = () => {
-    this.$state.age ++
+    this.$store.state.age ++
   }
 
   render() {
     const { params } = this.$navigation.state
     const { id, action } = params
-    const { age } = this.$state
+    const { age } = this.$store.state
     return (
       <Section>
         <Section>
