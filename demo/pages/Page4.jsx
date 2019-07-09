@@ -7,10 +7,13 @@ import { Navigate, Text, Section, Button } from 'nautil/components'
 
 export class Page4 extends Component {
   render() {
-    const { name, age, info } = this.attrs.$store.state
+    const { name, age } = this.attrs.$store.state
     const grow = () => {
       this.attrs.$store.state.age ++
     }
+
+    const info = this.attrs.$depo.get('info') || {}
+
     return (
       <Section>
         <Section>
@@ -31,9 +34,9 @@ export class Page4 extends Component {
   }
 }
 
-const mapToProps = {
+const injectProvidersToProps = {
   $store: true,
   $navigation: true,
   $depo: true,
 }
-export default connect(mapToProps)(Page4)
+export default connect(injectProvidersToProps)(Page4)

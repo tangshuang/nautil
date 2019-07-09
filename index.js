@@ -5,11 +5,9 @@ export { Depository } from './lib/core/depository.js'
 export { Navigation } from './lib/core/navigation.js'
 
 export * from './lib/core/fragment.jsx'
-
+export * from './lib/core/prepare.jsx'
 export * from './lib/core/observer.jsx'
 export * from './lib/core/provider.jsx'
-
-export * from './lib/core/prepare.jsx'
 
 export * from './lib/core/if-else.jsx'
 export * from './lib/core/for-each.jsx'

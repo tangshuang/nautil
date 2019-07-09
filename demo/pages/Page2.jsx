@@ -33,8 +33,8 @@ class Page2 extends Component {
           </Navigate>
         </Section>
         <Section>
-          <Text>id: {id}</Text>
-          <Text>action: {action}</Text>
+          <Section><Text>id: {id}</Text></Section>
+          <Section><Text>action: {action}</Text></Section>
         </Section>
         <Section>
           <Text>age: {age}</Text>
