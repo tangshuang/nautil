@@ -3,6 +3,7 @@ import { Any } from './types.js'
 import Observer from './observer.jsx'
 import { PROVIDER_RECORDS } from './_shared.js'
 import Component from './component.js'
+import { each, isFunction, isString } from './utils.js'
 
 export class Provider extends Component {
   static validateProps = {
@@ -87,5 +88,39 @@ export class ObservableProvider extends Component {
         </Provider>
       </Observer>
     )
+  }
+}
+
+export function connect(givenProviders = {}, mergeAndMapProps) {
+  const pipe = []
+
+  each(givenProviders, (value, name) => {
+    if (isString(value) && !value) {
+      return
+    }
+
+    const generate = (fn) => <Consumer name={name}>{fn}</Consumer>
+    pipe.push({
+      name: isString(value) ? value : name,
+      generate,
+    })
+  })
+
+  let wrap = null
+  const provideProps = {}
+  pipe.forEach(({ name, generate }) => {
+    wrap = ((wrap) => (fn) => generate((value) => {
+      provideProps[name] = value
+      ;wrap ? wrap(fn)(provideProps) : fn(provideProps)
+    }))(wrap);
+  })
+
+  return function(Component) {
+    return function(props = {}) {
+      return wrap((provideProps) => {
+        const attrs = isFunction(mergeAndMapProps) ? mergeAndMapProps(provideProps, props) : { ...provideProps, ...props }
+        return <Component {...attrs}></Component>
+      })
+    }
   }
 }
