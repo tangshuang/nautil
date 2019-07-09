@@ -1,7 +1,7 @@
-import Component from './component.js'
-import { enumerate } from './types.js'
+import Component from '../core/component.js'
+import { enumerate } from '../core/types.js'
 import Fragment from './fragment.jsx'
-import { isArray, isObject, each } from './utils.js'
+import { isArray, isObject, each } from '../core/utils.js'
 
 export class For extends Component {
   static validateProps = {

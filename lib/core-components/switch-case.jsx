@@ -1,8 +1,8 @@
-import Component from './component.js'
+import Component from '../core/component.js'
 import Fragment from './fragment.jsx'
 import React from 'react'
-import { Any, ifexist } from './types.js'
-import { isFunction } from './utils.js'
+import { Any, ifexist } from '../core/types.js'
+import { isFunction } from '../core/utils.js'
 
 export class Case extends Component {
   static validateProps = {

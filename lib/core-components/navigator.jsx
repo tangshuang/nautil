@@ -1,11 +1,10 @@
-import Component from './component.js'
-import Navigation from './navigation.js'
+import Component from '../core/component.js'
+import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
-import { ifexist, enumerate } from './types.js'
-import { isNumber } from './utils.js'
-import Fragment from './fragment.jsx'
+import { ifexist, enumerate } from '../core/types.js'
+import { isNumber } from '../core/utils.js'
 
 export class Navigator extends Component {
   static validateProps = {

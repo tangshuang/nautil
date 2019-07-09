@@ -1,4 +1,4 @@
-import Component from './component.js'
+import Component from '../core/component.js'
 import Fragment from './fragment.jsx'
 
 export class Prepare extends Component {
