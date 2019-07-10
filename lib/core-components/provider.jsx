@@ -25,7 +25,7 @@ export class Provider extends Component {
       value,
     }
   }
-  componentWillUnmount() {
+  onUnmount() {
     const { name } = this.props
     delete PROVIDER_RECORDS[name]
   }
