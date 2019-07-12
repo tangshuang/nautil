@@ -1,28 +1,39 @@
 import React from 'react'
-import { Any } from '../core/types.js'
+import { Any, ifexist } from '../core/types.js'
 import Observer from './observer.jsx'
 import { PROVIDER_RECORDS } from '../core/_shared.js'
 import Component from '../core/component.js'
+import { each } from '../core/utils.js'
 
 export class Provider extends Component {
   static validateProps = {
-    name: String,
-    value: Any,
+    name: ifexist(String),
+    value: ifexist(Any),
+    multiple: ifexist(Object),
   }
 
   constructor(props) {
     super(props)
 
-    const { name, value } = this.props
+    const { name, value, multiple } = this.props
 
-    if (PROVIDER_RECORDS[name]) {
-      throw new Error(`Provider '${name}' has been registered.`)
+    const create = (name, value) => {
+      if (PROVIDER_RECORDS[name]) {
+        throw new Error(`Provider '${name}' has been registered.`)
+      }
+
+      const context = React.createContext(value)
+      PROVIDER_RECORDS[name] = {
+        context,
+        value,
+      }
     }
 
-    const context = React.createContext(value)
-    PROVIDER_RECORDS[name] = {
-      context,
-      value,
+    if (multiple) {
+      each(multiple, (value, key) => create(key, value))
+    }
+    else {
+      create(name, value)
     }
   }
   onUnmount() {
