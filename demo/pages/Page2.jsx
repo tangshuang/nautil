@@ -1,17 +1,18 @@
 /**
- * 1. injectProviders
+ * 1. connect
  * 2. Navigate
  * 3. store.state.age++
  * 4. receive navigation.state.params
  */
 
-import { Component } from 'nautil'
+import { Component, connect } from 'nautil'
 import { Navigate, Section, Button, Text } from 'nautil/components'
+import { storeContext } from '../contexts.js'
 
 class Page2 extends Component {
-  static injectProviders = {
-    $navigation: true,
+  static injectProps = {
     $store: true,
+    $navigation: true,
   }
 
   grow = () => {
@@ -45,4 +46,9 @@ class Page2 extends Component {
   }
 }
 
-export default Page2
+const ConnectedPage2 = connect({
+  $store: storeContext,
+  $navigation: Navigate.Context,
+})(Page2)
+
+export default ConnectedPage2

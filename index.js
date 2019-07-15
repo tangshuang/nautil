@@ -3,7 +3,6 @@ export { Store } from './lib/core/store.js'
 export { Model, Schema } from './lib/core/model.js'
 export { Depository } from './lib/core/depository.js'
 export { Navigation } from './lib/core/navigation.js'
-export { connect } from './lib/core/connect.js'
 
 export * from './lib/core-components/fragment.jsx'
 export * from './lib/core-components/prepare.jsx'
@@ -16,4 +15,4 @@ export * from './lib/core-components/switch-case.jsx'
 
 export * from './lib/core-components/navigator.jsx'
 
-export { createClassName } from './lib/core/utils.js'
+export { createClassName, createContext } from './lib/core/utils.js'

@@ -3,36 +3,39 @@ import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
-import { ifexist, enumerate } from '../core/types.js'
-import { isNumber } from '../core/utils.js'
+import { enumerate } from '../core/types.js'
+import { isNumber, createContext } from '../core/utils.js'
+
+const context = createContext()
 
 export class Navigator extends Component {
   static validateProps = {
     navigation: Navigation,
-    dispatch: ifexist(Function),
   }
 
   render() {
-    const { navigation, dispatch } = this.attrs
+    const { navigation } = this.attrs
 
-    // use inside as content
-    if (!dispatch && navigation.options.routes.find(item => item.component)) {
-      const Page = () => navigation.status === '!' ? (navigation.options.notFound ? <navigation.options.notFound /> : null)
-        : navigation.status !== '' ? (navigation.state.route.component ? <navigation.state.route.component /> : null)
-        : this.children
-      return (
-        <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={this.update}>
-          <Provider name={'$navigation'} value={navigation}>
-            {Page()}
-          </Provider>
-        </Observer>
-      )
+    const Page = () => {
+      const { options, status, state } = navigation
+      const isInside = options.routes.find(item => item.component)
+      const { notFound } = options
+      const children = React.Children.map(this.children, (child) => React.cloneElement(child))
+
+      if (isInside) {
+        return status === '!' ? notFound ? <notFound /> : null
+          : status !== '' ? state.route.component ? <state.route.component /> : null
+          : children
+      }
+      else {
+        return children
+      }
     }
 
     return (
-      <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={dispatch}>
-        <Provider name={'$navigation'} value={navigation}>
-          {this.children}
+      <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={this.update}>
+        <Provider context={context} value={navigation}>
+          {Page()}
         </Provider>
       </Observer>
     )
@@ -57,7 +60,7 @@ export class Navigate extends Component {
   render() {
     const { to, params, replace, open } = this.attrs
     return (
-      <Consumer name="$navigation">
+      <Consumer context={context}>
         {(navigation) => {
           const go = () => {
             if (isNumber(to) && to < 0) {
@@ -82,5 +85,6 @@ export class Navigate extends Component {
       </Consumer>
     )
   }
-
 }
+
+Navigate.Context = context

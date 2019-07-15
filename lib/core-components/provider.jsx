@@ -1,48 +1,16 @@
 import React from 'react'
-import { Any, ifexist } from '../core/types.js'
+import { Any } from '../core/types.js'
 import Observer from './observer.jsx'
-import { PROVIDER_RECORDS } from '../core/_shared.js'
 import Component from '../core/component.js'
-import { each } from '../core/utils.js'
+import { each, isFunction, isObject } from '../core/utils.js'
 
 export class Provider extends Component {
   static validateProps = {
-    name: ifexist(String),
-    value: ifexist(Any),
-    multiple: ifexist(Object),
-  }
-
-  constructor(props) {
-    super(props)
-
-    const { name, value, multiple } = this.props
-
-    const create = (name, value) => {
-      if (PROVIDER_RECORDS[name]) {
-        throw new Error(`Provider '${name}' has been registered.`)
-      }
-
-      const context = React.createContext(value)
-      PROVIDER_RECORDS[name] = {
-        context,
-        value,
-      }
-    }
-
-    if (multiple) {
-      each(multiple, (value, key) => create(key, value))
-    }
-    else {
-      create(name, value)
-    }
-  }
-  onUnmount() {
-    const { name } = this.props
-    delete PROVIDER_RECORDS[name]
+    context: Object,
+    value: Any,
   }
   render() {
-    const { name, children } = this.props
-    const { value, context } = PROVIDER_RECORDS[name]
+    const { context, value, children } = this.props
     const { Provider } = context
     return <Provider value={value}>
       {children}
@@ -54,26 +22,11 @@ export default Provider
 
 export class Consumer extends Component {
   static validateProps = {
-    name: String,
-  }
-
-  constructor(props) {
-    super(props)
-
-    const { name } = this.props
-    if (!PROVIDER_RECORDS[name]) {
-      console.warn(`Provider '${name}' called by Consumer has not been registerd.`)
-    }
+    context: Object,
   }
 
   render() {
-    const { name, children } = this.props
-    // return null when there is no named provider
-    if (!PROVIDER_RECORDS[name]) {
-      return null
-    }
-
-    const { context } = PROVIDER_RECORDS[name]
+    const { context, children } = this.props
     const { Consumer } = context
     return <Consumer>
       {children}
@@ -83,20 +36,63 @@ export class Consumer extends Component {
 
 export class ObservableProvider extends Component {
   static validateProps = {
-    name: String,
+    context: Object,
     value: Any,
     subscribe: Function,
     dispatch: Function,
   }
 
   render() {
-    const { name, value, subscribe, dispatch } = this.attrs
+    const { context, value, subscribe, dispatch, children } = this.props
     return (
       <Observer subscribe={subscribe} dispatch={dispatch}>
-        <Provider name={name} value={value}>
-          {this.children}
+        <Provider context={context} value={value}>
+          {children}
         </Provider>
       </Observer>
     )
+  }
+}
+
+// export function provide(...given) {
+//   const pipe = []
+//   given.forEach(([context, value]) => {
+//     const generate = (children) => <Provider context={context} value={value}>{children}</Provider>
+//     pipe.push(generate)
+//   })
+
+//   return function(Component) {
+//     return function(props) {
+//       return pipe.reduce((children, generate) => generate(children), <Component {...props} />)
+//     }
+//   }
+// }
+
+export function connect(given = {}, merge) {
+  const pipe = []
+  each(given, (context, prop) => {
+    const generate = (children) => <Consumer context={context}>{children}</Consumer>
+    pipe.push({
+      prop,
+      generate,
+    })
+  })
+
+  const consume = (fn, props) => pipe.reduce((fn, { prop, generate }) => () => generate((value) => {
+    props[prop] = value
+    return fn()
+  }), fn)
+
+  return function(Component) {
+    return function(props = {}) {
+      const provideProps = {}
+      const fn = () => {
+        const attrs = { ...props, ...provideProps }
+        const merged = isFunction(merge) ? merge(attrs) || {} : {}
+        const final = { ...attrs, ...merged }
+        return <Component {...final}></Component>
+      }
+      return consume(fn, provideProps)()
+    }
   }
 }
