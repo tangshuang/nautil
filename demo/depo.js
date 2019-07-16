@@ -1,13 +1,22 @@
-import { Depository } from 'nautil'
+import { Depository, createContext } from 'nautil'
 
-const depo = new Depository({
+export const depo = new Depository({
   expire: 2000,
   sources: [
     {
       id: 'info',
-      url: '/api',
+      url: '/api/info',
+    },
+    {
+      id: 'person',
+      url: '/api/persons',
+      params: {
+        id: '',
+      },
     },
   ],
 })
 
 export default depo
+
+export const depoContext = createContext(depo)

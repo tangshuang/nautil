@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import { enumerate, ifexist } from '../core/types.js'
 
 export class Image extends Component {
-  static validateProps = {
+  static props = {
     source: enumerate([ String, Object ]),
     width: Number,
     height: Number,

@@ -1,24 +1,26 @@
 /**
- * 1. use Consumer to receive Provider providings
- * 2. update with store.state.age++
+ * 1. Consumer
+ * 2. store.state.age++
  * 3. depo.request vs. depo.get
  * 4. navigation.go
  */
 
-import { Component } from 'nautil'
-import { Navigate, Consumer, Section, Button, Text } from 'nautil/components'
-import { storeContext, depoContext } from '../contexts.js'
+import { Component, Navigate, Consumer } from 'nautil'
+import { Section, Button, Text } from 'nautil/components'
+
+import { storeContext } from '../store.js'
+import { depoContext } from '../depo.js'
 
 class Page1 extends Component {
   render() {
     return (
       <Consumer context={Navigate.Context}>
-        {$navigation => <Consumer context={storeContext}>
-          {$store => <Consumer context={depoContext}>
-              {$depo => {
-                const { name, age, info } = $store.state
+        {navigation => <Consumer context={storeContext}>
+          {store => <Consumer context={depoContext}>
+              {depo => {
+                const { name, age, info } = store.state
                 const grow = () => {
-                  $store.state.age ++
+                  store.state.age ++
                 }
                 return (
                   <Section>
@@ -26,7 +28,7 @@ class Page1 extends Component {
                       <Navigate to="home">
                         <Button>Home</Button>
                       </Navigate>
-                      <Button onHint={() => $navigation.go('page2', { id: '123', action: 'edit' })}>Page2</Button>
+                      <Button onHint={() => navigation.go('page2', { id: '123', action: 'edit' })}>Page2</Button>
                     </Section>
                     <Section>
                       <Section><Text>name: {name}</Text></Section>
@@ -35,8 +37,8 @@ class Page1 extends Component {
                     </Section>
                     <Section>
                       <Button onHint={() => grow()}>grow</Button>
-                      <Button onHint={() => $depo.request('info')}>request</Button>
-                      <Button onHint={() => $depo.get('info')}>get</Button>
+                      <Button onHint={() => depo.request('info')}>request</Button>
+                      <Button onHint={() => depo.get('info')}>get</Button>
                     </Section>
                   </Section>
                 )

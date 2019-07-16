@@ -1,5 +1,5 @@
-import { Component } from 'nautil'
-import { Navigate, Text, Section, Button } from 'nautil/components'
+import { Component, Navigate } from 'nautil'
+import { Text, Section, Button } from 'nautil/components'
 import { Animation } from 'nautil/animation'
 
 export class Page3 extends Component {

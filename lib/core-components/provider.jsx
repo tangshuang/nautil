@@ -2,16 +2,15 @@ import React from 'react'
 import { Any } from '../core/types.js'
 import Observer from './observer.jsx'
 import Component from '../core/component.js'
-import { each, isFunction, isObject } from '../core/utils.js'
+import { each, isFunction } from '../core/utils.js'
 
 export class Provider extends Component {
-  static validateProps = {
+  static props = {
     context: Object,
-    value: Any,
   }
   render() {
-    const { context, value, children } = this.props
-    const { Provider } = context
+    const { context, children } = this.props
+    const { Provider, value } = context
     return <Provider value={value}>
       {children}
     </Provider>
@@ -21,7 +20,7 @@ export class Provider extends Component {
 export default Provider
 
 export class Consumer extends Component {
-  static validateProps = {
+  static props = {
     context: Object,
   }
 
@@ -35,38 +34,24 @@ export class Consumer extends Component {
 }
 
 export class ObservableProvider extends Component {
-  static validateProps = {
+  static props = {
     context: Object,
-    value: Any,
     subscribe: Function,
     dispatch: Function,
   }
 
   render() {
-    const { context, value, subscribe, dispatch, children } = this.props
+    const { context, subscribe, dispatch, children } = this.props
+    const { Provider, value } = context
     return (
       <Observer subscribe={subscribe} dispatch={dispatch}>
-        <Provider context={context} value={value}>
+        <Provider value={value}>
           {children}
         </Provider>
       </Observer>
     )
   }
 }
-
-// export function provide(...given) {
-//   const pipe = []
-//   given.forEach(([context, value]) => {
-//     const generate = (children) => <Provider context={context} value={value}>{children}</Provider>
-//     pipe.push(generate)
-//   })
-
-//   return function(Component) {
-//     return function(props) {
-//       return pipe.reduce((children, generate) => generate(children), <Component {...props} />)
-//     }
-//   }
-// }
 
 export function connect(given = {}, merge) {
   const pipe = []

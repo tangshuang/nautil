@@ -33,7 +33,7 @@ const navigation = new Navigation({
     },
     {
       name: 'page4',
-      path: '/page4',
+      path: '/page4/:id?',
       component: Page4,
     },
   ],

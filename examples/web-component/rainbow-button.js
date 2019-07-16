@@ -4,7 +4,7 @@ import { Button } from 'nautil/components'
 
 class RainbowButton extends Component {
 
-  static validateProps = {
+  static props = {
     colors: Array,
     onClick: Function,
   }

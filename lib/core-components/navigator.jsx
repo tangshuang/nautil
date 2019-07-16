@@ -1,7 +1,6 @@
 import Component from '../core/component.js'
 import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
-import { Provider, Consumer } from './provider.jsx'
 import React from 'react'
 import { enumerate } from '../core/types.js'
 import { isNumber, createContext } from '../core/utils.js'
@@ -9,12 +8,13 @@ import { isNumber, createContext } from '../core/utils.js'
 const context = createContext()
 
 export class Navigator extends Component {
-  static validateProps = {
+  static props = {
     navigation: Navigation,
   }
 
   render() {
     const { navigation } = this.attrs
+    const { Provider } = context
 
     const Page = () => {
       const { options, status, state } = navigation
@@ -34,7 +34,7 @@ export class Navigator extends Component {
 
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={this.update}>
-        <Provider context={context} value={navigation}>
+        <Provider value={navigation}>
           {Page()}
         </Provider>
       </Observer>
@@ -45,7 +45,7 @@ export class Navigator extends Component {
 export default Navigator
 
 export class Navigate extends Component {
-  static validateProps = {
+  static props = {
     to: enumerate([String, Number]),
     params: Object,
     replace: Boolean,
@@ -59,8 +59,10 @@ export class Navigate extends Component {
 
   render() {
     const { to, params, replace, open } = this.attrs
+    const { Consumer } = context
+
     return (
-      <Consumer context={context}>
+      <Consumer>
         {(navigation) => {
           const go = () => {
             if (isNumber(to) && to < 0) {

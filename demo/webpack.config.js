@@ -14,7 +14,10 @@ const includeFiles = [
 
 module.exports = {
   mode: 'none',
-  entry: __dirname + '/index.js',
+  entry: [
+    '@babel/polyfill',
+    __dirname + '/index.js'
+  ],
   output: {
     filename: 'index.js',
   },
@@ -68,8 +71,14 @@ module.exports = {
     port: 9000,
     historyApiFallback: true,
     before(app, server) {
-      app.get('/api', function(req, res) {
+      app.get('/api/info', function(req, res) {
         res.json({ time: Date.now() })
+      })
+      app.get('/api/persons', function(req, res) {
+        res.json({ id: req.query.id, name: 'tomy', age: 10, time: Date.now() })
+      })
+      app.post('/api/persons', function(req, res) {
+        res.json(req.body)
       })
     },
   },

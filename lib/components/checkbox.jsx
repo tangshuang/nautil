@@ -6,7 +6,7 @@ export class Checkbox extends Component {
   static injectProps = {
     $state: true,
   }
-  static validateProps = {
+  static props = {
     checkedValue: ifexist(Any),
     uncheckedValue: ifexist(Any),
     model: ifexist(String),

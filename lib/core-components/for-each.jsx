@@ -1,14 +1,14 @@
 import Component from '../core/component.js'
 import { enumerate } from '../core/types.js'
 import Fragment from './fragment.jsx'
-import { isArray, isObject, each } from '../core/utils.js'
+import { isArray, isObject, each, isFunction } from '../core/utils.js'
+import React from 'react'
 
 export class For extends Component {
-  static validateProps = {
+  static props = {
     start: Number,
     end: Number,
     step: Number,
-    children: Function,
   }
   static defaultProps = {
     step: 1,
@@ -18,7 +18,7 @@ export class For extends Component {
     const { start, end, step, children } = this.props
     const blocks = []
     for (let i = start; i <= end; i += step) {
-      const block = children(i)
+      const block = isFunction(children) ? children(i) : React.Children.map(children, child => React.cloneElement(child))
       blocks.push(block)
     }
     return <Fragment>
@@ -28,9 +28,8 @@ export class For extends Component {
 }
 
 export class Each extends Component {
-  static validateProps = {
+  static props = {
     of: enumerate([ Array, Object ]),
-    children: Function,
   }
 
   render() {
@@ -39,11 +38,15 @@ export class Each extends Component {
     const blocks = []
 
     if (isArray(data)) {
-      blocks.push(...data.map(children))
+      data.forEach((item, i) => {
+        const block = isFunction(children) ? children(item, i) : React.Children.map(children, child => React.cloneElement(child))
+        blocks.push(block)
+      })
     }
     else if (isObject(data)) {
       each(data, (value, key) => {
-        blocks.push(children(value, key))
+        const block = isFunction(children) ? children(value, key) : React.Children.map(children, child => React.cloneElement(child))
+        blocks.push(block)
       })
     }
 

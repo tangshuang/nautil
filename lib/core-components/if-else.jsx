@@ -1,6 +1,7 @@
 import Component from '../core/component.js'
 import Fragment from './fragment.jsx'
 import React from 'react'
+import { isFunction } from '../core/utils.js'
 
 export class Else extends Component {
   render() {
@@ -9,7 +10,7 @@ export class Else extends Component {
 }
 
 export class ElseIf extends Component {
-  static validateProps = {
+  static props = {
     condition: Boolean,
   }
 
@@ -19,7 +20,7 @@ export class ElseIf extends Component {
 }
 
 export class If extends Component {
-  static validateProps = {
+  static props = {
     condition: Boolean,
   }
 
@@ -57,11 +58,11 @@ export class If extends Component {
     for (let block of blocks) {
       const { type, condition, children } = block
       if (condition) {
-        use = <Fragment>{children}</Fragment>
+        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
         break
       }
       else if (type === Else) {
-        use = <Fragment>{children}</Fragment>
+        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
         break
       }
     }

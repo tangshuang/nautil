@@ -1,7 +1,7 @@
 import React from 'react'
 
 export class Observer extends React.Component {
-  static validateProps = {
+  static props = {
     subscribe: Function,
     dispatch: Function,
   }

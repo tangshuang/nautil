@@ -5,7 +5,7 @@ import { Any, ifexist } from '../core/types.js'
 import { isFunction } from '../core/utils.js'
 
 export class Case extends Component {
-  static validateProps = {
+  static props = {
     value: Any,
     default: ifexist(Boolean),
   }
@@ -16,7 +16,7 @@ export class Case extends Component {
 }
 
 export class Switch extends Component {
-  static validateProps = {
+  static props = {
     of: Any,
   }
 
@@ -41,15 +41,15 @@ export class Switch extends Component {
     for (let block of blocks) {
       const { value, children } = block
       if (value === target) {
-        use = <Fragment>{children}</Fragment>
+        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
         break
       }
       else if (isFunction(value) && value()) {
-        use = <Fragment>{children}</Fragment>
+        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
         break
       }
       else if (block.default) {
-        use = <Fragment>{children}</Fragment>
+        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
         break
       }
     }

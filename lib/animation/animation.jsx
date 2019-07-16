@@ -6,7 +6,7 @@ import { tween } from './tween.js'
 import Transform from './transform.js'
 
 export class Animation extends Component {
-  static validateProps = {
+  static props = {
     duration: Number,
     ease: String,
 

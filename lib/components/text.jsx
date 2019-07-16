@@ -2,7 +2,7 @@ import { Component } from '../core/component.js'
 import { noop } from '../core/utils.js'
 
 export class Text extends Component {
-  static validateProps = {
+  static props = {
     onHint: Function,
     onHintEnter: Function,
     onHintStart: Function,

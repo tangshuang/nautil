@@ -1,7 +1,7 @@
-import { Store } from 'nautil'
+import { Store, createContext } from 'nautil'
 import depo from './depo.js'
 
-const store = new Store({
+export const store = new Store({
   name: 'tomy',
   age: 10,
   info: {},
@@ -13,3 +13,5 @@ depo.autorun(function() {
 })
 
 export default store
+
+export const storeContext = createContext(store)

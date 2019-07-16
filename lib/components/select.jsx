@@ -6,7 +6,7 @@ export class Select extends Component {
   static injectProps = {
     $state: true,
   }
-  static validateProps = {
+  static props = {
     value: ifexist(Any),
     model: ifexist(String),
 

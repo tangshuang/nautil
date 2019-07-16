@@ -2,27 +2,23 @@
  * 1. connect
  * 2. Navigate
  * 3. store.state.age++
- * 4. receive navigation.state.params
+ * 4. navigation.state.params
  */
 
-import { Component, connect } from 'nautil'
-import { Navigate, Section, Button, Text } from 'nautil/components'
-import { storeContext } from '../contexts.js'
+import { Component, Navigate, connect } from 'nautil'
+import { Section, Button, Text } from 'nautil/components'
+
+import { storeContext } from '../store.js'
 
 class Page2 extends Component {
-  static injectProps = {
-    $store: true,
-    $navigation: true,
-  }
-
   grow = () => {
-    this.$store.state.age ++
+    const { state } = this.attrs.store
+    state.age ++
   }
 
   render() {
-    const { params } = this.$navigation.state
-    const { id, action } = params
-    const { age } = this.$store.state
+    const { id, action } = this.attrs.navigation.state.params
+    const { age } = this.attrs.store.state
     return (
       <Section>
         <Section>
@@ -47,8 +43,8 @@ class Page2 extends Component {
 }
 
 const ConnectedPage2 = connect({
-  $store: storeContext,
-  $navigation: Navigate.Context,
+  store: storeContext,
+  navigation: Navigate.Context,
 })(Page2)
 
 export default ConnectedPage2

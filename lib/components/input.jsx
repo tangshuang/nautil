@@ -6,7 +6,7 @@ export class Input extends Component {
   static injectProps = {
     $state: true,
   }
-  static validateProps = {
+  static props = {
     type: enumerate([ 'text', 'number', 'email', 'tel', 'url' ]),
     placeholder: ifexist(String),
 

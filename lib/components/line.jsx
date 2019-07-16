@@ -1,7 +1,7 @@
 import { Component } from '../core/component.js'
 
 export class Line extends Component {
-  static validateProps = {
+  static props = {
     length: Number,
     thickness: Number,
     color: String,
