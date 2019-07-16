@@ -6,11 +6,11 @@ export class Observer extends Component {
     unsubscribe: Function,
     dispatch: Function,
   }
-  componentDidMount() {
+  onMounted() {
     const { subscribe, dispatch } = this.props
     subscribe(dispatch)
   }
-  componentWillUnmount() {
+  onUnmount() {
     const { unsubscribe, dispatch } = this.props
     unsubscribe(dispatch)
   }
