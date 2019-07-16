@@ -3,7 +3,7 @@ import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import React from 'react'
 import { enumerate } from '../core/types.js'
-import { isNumber, createContext } from '../core/utils.js'
+import { isNumber, createContext, cloneChildren, cloneElement } from '../core/utils.js'
 
 const context = createContext()
 
@@ -20,20 +20,19 @@ export class Navigator extends Component {
       const { options, status, state } = navigation
       const isInside = options.routes.find(item => item.component)
       const { notFound } = options
-      const children = React.Children.map(this.children, (child) => React.cloneElement(child))
 
       if (isInside) {
         return status === '!' ? notFound ? <notFound /> : null
           : status !== '' ? state.route.component ? <state.route.component /> : null
-          : children
+          : cloneChildren(this.children)
       }
       else {
-        return children
+        return cloneChildren(this.children)
       }
     }
 
     return (
-      <Observer subscribe={dispatch => navigation.on('*', dispatch)} dispatch={this.update}>
+      <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={this.update}>
         <Provider value={navigation}>
           {Page()}
         </Provider>
@@ -80,7 +79,7 @@ export class Navigate extends Component {
               return <Text onHint={() => go()}>{child}</Text>
             }
             else {
-              return React.cloneElement(child, { onHintEnd: () => go() })
+              return cloneElement(child, { onHintEnd: () => go() })
             }
           })
         }}

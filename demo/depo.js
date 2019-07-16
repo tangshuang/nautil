@@ -1,4 +1,4 @@
-import { Depository, createContext } from 'nautil'
+import { Depository } from 'nautil'
 
 export const depo = new Depository({
   expire: 2000,
@@ -14,9 +14,12 @@ export const depo = new Depository({
         id: '',
       },
     },
+    {
+      id: 'update_person',
+      url: '/api/persons',
+      method: 'post',
+    }
   ],
 })
 
 export default depo
-
-export const depoContext = createContext(depo)

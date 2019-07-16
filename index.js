@@ -15,4 +15,9 @@ export * from './lib/core-components/switch-case.jsx'
 
 export * from './lib/core-components/navigator.jsx'
 
-export { createClassName, createContext } from './lib/core/utils.js'
+export {
+  createClassName,
+  createContext,
+  cloneElement,
+  cloneChildren,
+} from './lib/core/utils.js'

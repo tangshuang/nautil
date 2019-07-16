@@ -2,10 +2,11 @@
  * form
  */
 
-import { Component, Navigate, Model, connect } from 'nautil'
+import { Component, Navigate, Model, observe } from 'nautil'
 import { Section, Input, Button } from 'nautil/components'
 
-import { depoContext, depo } from '../depo.js'
+import depo from '../depo.js'
+import navigation from '../navigation.js'
 
 class FormModel extends Model {
   schema() {
@@ -34,10 +35,8 @@ export class Page4 extends Component {
   onInit() {
     this.form = new FormModel()
     this.form.watch('*', this.update)
-    this.form.watch('*', () => console.log('changed'))
 
     // edit, request data from backend api
-    const { navigation } = this.attrs
     const filldata = async () => {
       const { id } = navigation.state.params
       if (id) {
@@ -89,9 +88,4 @@ export class Page4 extends Component {
   }
 }
 
-const ConnectedPage4 = connect({
-  depo: depoContext,
-  navigation: Navigate.Context,
-})(Page4)
-
-export default ConnectedPage4
+export default Page4

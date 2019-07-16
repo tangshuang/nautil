@@ -1,5 +1,4 @@
 import React from 'react'
-import { Any } from '../core/types.js'
 import Observer from './observer.jsx'
 import Component from '../core/component.js'
 import { each, isFunction } from '../core/utils.js'

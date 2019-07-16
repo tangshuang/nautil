@@ -11,6 +11,7 @@ const includeFiles = [
   path.resolve(__dirname, '../demo'),
   path.resolve(__dirname, '../node_modules/ts-fns'),
 ]
+const express = require('express')
 
 module.exports = {
   mode: 'none',
@@ -71,14 +72,24 @@ module.exports = {
     port: 9000,
     historyApiFallback: true,
     before(app, server) {
+      const person = {
+        name: 'tomy',
+        age: 10,
+      }
+
       app.get('/api/info', function(req, res) {
         res.json({ time: Date.now() })
       })
       app.get('/api/persons', function(req, res) {
-        res.json({ id: req.query.id, name: 'tomy', age: 10, time: Date.now() })
+        res.json({ ...person, id: req.query.id, time: Date.now() })
       })
+
+
+      app.use(express.json())
       app.post('/api/persons', function(req, res) {
-        res.json(req.body)
+        const { body } = req
+        Object.assign(person, body)
+        res.json(body)
       })
     },
   },
