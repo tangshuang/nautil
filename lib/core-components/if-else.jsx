@@ -1,5 +1,4 @@
 import Component from '../core/component.js'
-import Fragment from './fragment.jsx'
 import React from 'react'
 import { isFunction } from '../core/utils.js'
 
@@ -27,7 +26,7 @@ export class If extends Component {
   render() {
     const children = this.children
     const blocks = []
-    const { condition } = this.props
+    const { condition } = this.attrs
 
     var block = {
       type: If,
@@ -58,11 +57,11 @@ export class If extends Component {
     for (let block of blocks) {
       const { type, condition, children } = block
       if (condition) {
-        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
+        use = children.map(child => isFunction(child) ? child() : child)
         break
       }
       else if (type === Else) {
-        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
+        use = children.map(child => isFunction(child) ? child() : child)
         break
       }
     }

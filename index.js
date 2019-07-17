@@ -7,7 +7,6 @@ export { Navigation } from './lib/core/navigation.js'
 export * from './lib/core-components/fragment.jsx'
 export * from './lib/core-components/prepare.jsx'
 export * from './lib/core-components/observer.jsx'
-export * from './lib/core-components/provider.jsx'
 
 export * from './lib/core-components/if-else.jsx'
 export * from './lib/core-components/for-each.jsx'
@@ -17,7 +16,7 @@ export * from './lib/core-components/navigator.jsx'
 
 export {
   createClassName,
-  createContext,
   cloneElement,
-  cloneChildren,
+  createContext,
+  mapChildren,
 } from './lib/core/utils.js'

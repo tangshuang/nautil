@@ -1,5 +1,4 @@
 import Component from '../core/component.js'
-import Fragment from './fragment.jsx'
 import React from 'react'
 import { Any, ifexist } from '../core/types.js'
 import { isFunction } from '../core/utils.js'
@@ -11,7 +10,7 @@ export class Case extends Component {
   }
 
   render() {
-    return <Fragment>{this.children}</Fragment>
+    return this.children
   }
 }
 
@@ -22,7 +21,7 @@ export class Switch extends Component {
 
   render() {
     const children = this.children
-    const target = this.props.of
+    const target = this.attrs.of
     const blocks = []
 
     React.Children.forEach(children, (child) => {
@@ -41,15 +40,15 @@ export class Switch extends Component {
     for (let block of blocks) {
       const { value, children } = block
       if (value === target) {
-        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
+        use = children.map(child => isFunction(child) ? child() : child)
         break
       }
       else if (isFunction(value) && value()) {
-        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
+        use = children.map(child => isFunction(child) ? child() : child)
         break
       }
       else if (block.default) {
-        use = <Fragment>{children.map(child => isFunction(child) ? child() : child)}</Fragment>
+        use = children.map(child => isFunction(child) ? child() : child)
         break
       }
     }

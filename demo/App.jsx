@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <Section stylesheet={styles.app}>
         <Section stylesheet={styles.container}>
-          <Navigator navigation={navigation}></Navigator>
+          <Navigator navigation={navigation} />
         </Section>
       </Section>
     )

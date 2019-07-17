@@ -1,12 +1,15 @@
-import { Section, Text } from 'nautil/components'
+import { Navigate, Section, Text } from 'nautil/components'
+import { inject } from 'nautil/operators'
+import navigation from '../navigation.js'
 
 export function NotFound() {
+  const Link = inject('navigation', navigation)(Navigate)
   return (
     <Section>
       <Text>Not found!</Text>
-      <Navigate to="home">
+      <Link to="home">
         <Button>Home</Button>
-      </Navigate>
+      </Link>
     </Section>
   )
 }

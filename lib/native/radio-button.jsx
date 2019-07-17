@@ -1,9 +1,9 @@
 import { View } from 'react-native'
-import { PureComponent } from 'react'
+import Component from '../core/component.js'
 
-export class RadioButton extends PureComponent {
+export class RadioButton extends Component {
   render () {
-    const { color = '#333333', checked, onChange, style = {} } = this.props
+    const { color = '#333333', checked, onChange, style = {} } = this.attrs
     return (
         <View style={{
           height: 24,

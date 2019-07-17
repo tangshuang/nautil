@@ -1,8 +1,8 @@
 import Component from '../core/component.js'
 import { noop } from '../core/utils.js'
 import Section from '../components/section.jsx'
-import { Transition } from './transition.js'
-import { tween } from './tween.js'
+import Transition from './transition.js'
+import tween from './tween.js'
 import Transform from './transform.js'
 
 export class Animation extends Component {

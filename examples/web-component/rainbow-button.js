@@ -24,7 +24,7 @@ class RainbowButton extends Component {
     const color = colors[index]
     const onHint = (e) => {
       this.changeColor()
-      this.props.onClick(e)
+      this.attrs.onClick(e)
     }
 
     return (
