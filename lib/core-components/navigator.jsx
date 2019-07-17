@@ -15,6 +15,14 @@ export class Navigator extends Component {
   render() {
     const { navigation, dispatch } = this.attrs
 
+    // const originals = Navigate.defaultProps
+    // const hasuse = originals || {}
+    // const willuse = { ...hasuse, navigation: this }
+    // Navigate.defaultProps = willuse
+
+    // console.log('render')
+    // console.log(Navigate.defaultProps)
+
     const Page = () => {
       const { options, status, state } = navigation
       const isInside = options.routes.find(item => item.component)
@@ -31,13 +39,20 @@ export class Navigator extends Component {
     }
 
     const update = dispatch ? dispatch : this.update
-    const children = Page() || null
+    const page = Page()
+    const children = page || null
 
-    return (
+    const output = (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
         {children}
       </Observer>
     )
+
+    // Navigate.defaultProps = originals
+
+    // console.log(output)
+
+    return output
   }
 }
 

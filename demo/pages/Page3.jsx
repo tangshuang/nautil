@@ -1,21 +1,18 @@
 import { Component, Navigate } from 'nautil'
 import { Text, Section, Button } from 'nautil/components'
 import { Animation } from 'nautil/animation'
-import { inject } from 'nautil/operators'
-import navigation from '../navigation.js'
 
 export class Page3 extends Component {
   state = {
     show: false,
   }
   render() {
-    const Link = inject('navigation', navigation)(Navigate)
     return (
       <Section>
         <Section>
-          <Link to="home">
+          <Navigate to="home">
             <Button>Home</Button>
-          </Link>
+          </Navigate>
           <Button onHint={() => this.setState({ show: true })}>show</Button>
           <Button onHint={() => this.setState({ show: false })}>hide</Button>
         </Section>
@@ -26,4 +23,5 @@ export class Page3 extends Component {
     )
   }
 }
+
 export default Page3

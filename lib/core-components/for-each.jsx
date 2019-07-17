@@ -1,6 +1,5 @@
 import Component from '../core/component.js'
 import { enumerate } from '../core/types.js'
-import Fragment from './fragment.jsx'
 import { isArray, isObject, each, isFunction, cloneElement } from '../core/utils.js'
 import React from 'react'
 
@@ -15,15 +14,13 @@ export class For extends Component {
   }
 
   render() {
-    const { start, end, step, children } = this.props
+    const { start, end, step, children } = this.attrs
     const blocks = []
     for (let i = start; i <= end; i += step) {
       const block = isFunction(children) ? children(i) : React.Children.map(children, child => cloneElement(child))
       blocks.push(block)
     }
-    return <Fragment>
-      {blocks}
-    </Fragment>
+    return blocks
   }
 }
 
@@ -33,8 +30,8 @@ export class Each extends Component {
   }
 
   render() {
-    const { children } = this.props
-    const data = this.props.of
+    const { children } = this.attrs
+    const data = this.attrs.of
     const blocks = []
 
     if (isArray(data)) {
@@ -50,8 +47,6 @@ export class Each extends Component {
       })
     }
 
-    return <Fragment>
-      {blocks}
-    </Fragment>
+    return blocks
   }
 }

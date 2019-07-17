@@ -69,8 +69,6 @@ export class Page4 extends Component {
     }
   }
 
-
-
   render() {
     const Link = inject('navigation', navigation)(Navigate)
     return (
