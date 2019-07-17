@@ -11,7 +11,7 @@ export class Case extends Component {
   }
 
   render() {
-    return <Fragment>{this.children}</Fragment>
+    return this.children
   }
 }
 

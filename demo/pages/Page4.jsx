@@ -2,8 +2,9 @@
  * form
  */
 
-import { Component, Navigate, Model, observe } from 'nautil'
+import { Component, Model, Navigate } from 'nautil'
 import { Section, Input, Button } from 'nautil/components'
+import { inject } from 'nautil/operators'
 
 import depo from '../depo.js'
 import navigation from '../navigation.js'
@@ -33,22 +34,22 @@ class FormModel extends Model {
 
 export class Page4 extends Component {
   onInit() {
+    this.submit = this.submit.bind(this)
+    this.filldata = this.filldata.bind(this)
     this.form = new FormModel()
-    this.form.watch('*', this.update)
-
-    // edit, request data from backend api
-    const filldata = async () => {
-      const { id } = navigation.state.params
-      if (id) {
-        const data = await depo.request('person', { id })
-        this.form.restore(data)
-      }
-    }
-    navigation.on('*', filldata)
-    filldata()
   }
 
-  submit = this.submit.bind(this)
+  onMounted() {
+    this.form.watch('*', this.update)
+    navigation.on('*', this.filldata)
+    this.filldata()
+  }
+
+  onUnmount() {
+    this.form.unwatch('*', this.update)
+    navigation.off('*', this.filldata)
+  }
+
   async submit() {
     const error = this.form.validate()
     if (error) {
@@ -57,20 +58,30 @@ export class Page4 extends Component {
     }
 
     const data = this.form.plaindata()
-    console.log(data)
     await depo.save('update_person', data)
   }
 
+  async filldata() {
+    const { id } = navigation.state.params
+    if (id) {
+      const data = await depo.request('person', { id })
+      this.form.restore(data)
+    }
+  }
+
+
+
   render() {
+    const Link = inject('navigation', navigation)(Navigate)
     return (
       <Section>
         <Section>
-          <Navigate to="home">
+          <Link to="home">
             <Button>Home</Button>
-          </Navigate>
-          <Navigate to="page4" params={{ id: 1 }}>
+          </Link>
+          <Link to="page4" params={{ id: 1 }}>
             <Button>Fill Data</Button>
-          </Navigate>
+          </Link>
         </Section>
         <Section>
           <Section><Input placeholder="Name" value={this.form.get('name')} onChange={e => this.form.set('name', e.target.value)} /></Section>

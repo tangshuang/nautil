@@ -2,19 +2,18 @@ import Component from '../core/component.js'
 import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import React from 'react'
-import { enumerate } from '../core/types.js'
-import { isNumber, createContext, cloneChildren, cloneElement } from '../core/utils.js'
-
-const context = createContext()
+import { enumerate, ifexist } from '../core/types.js'
+import { isNumber, cloneElement } from '../core/utils.js'
+import Text from '../components/text.jsx'
 
 export class Navigator extends Component {
   static props = {
     navigation: Navigation,
+    dispatch: ifexist(Function),
   }
 
   render() {
-    const { navigation } = this.attrs
-    const { Provider } = context
+    const { navigation, dispatch } = this.attrs
 
     const Page = () => {
       const { options, status, state } = navigation
@@ -24,18 +23,19 @@ export class Navigator extends Component {
       if (isInside) {
         return status === '!' ? notFound ? <notFound /> : null
           : status !== '' ? state.route.component ? <state.route.component /> : null
-          : cloneChildren(this.children)
+          : this.children
       }
       else {
-        return cloneChildren(this.children)
+        return this.children
       }
     }
 
+    const update = dispatch ? dispatch : this.update
+    const children = Page() || null
+
     return (
-      <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={this.update}>
-        <Provider value={navigation}>
-          {Page()}
-        </Provider>
+      <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
+        {children}
       </Observer>
     )
   }
@@ -45,6 +45,7 @@ export default Navigator
 
 export class Navigate extends Component {
   static props = {
+    navigation: Navigation,
     to: enumerate([String, Number]),
     params: Object,
     replace: Boolean,
@@ -57,35 +58,27 @@ export class Navigate extends Component {
   }
 
   render() {
-    const { to, params, replace, open } = this.attrs
-    const { Consumer } = context
+    const { to, params, replace, open, navigation } = this.attrs
 
-    return (
-      <Consumer>
-        {(navigation) => {
-          const go = () => {
-            if (isNumber(to) && to < 0) {
-              navigation.back(to)
-            }
-            else if (open) {
-              navigation.open(to, params)
-            }
-            else {
-              navigation.go(to, params, replace)
-            }
-          }
-          return React.Children.map(this.children, (child) => {
-            if (!child.type) {
-              return <Text onHint={() => go()}>{child}</Text>
-            }
-            else {
-              return cloneElement(child, { onHintEnd: () => go() })
-            }
-          })
-        }}
-      </Consumer>
-    )
+    const go = () => {
+      if (isNumber(to) && to < 0) {
+        navigation.back(to)
+      }
+      else if (open) {
+        navigation.open(to, params)
+      }
+      else {
+        navigation.go(to, params, replace)
+      }
+    }
+
+    return React.Children.map(this.children, (child) => {
+      if (!child.type) {
+        return <Text onHint={() => go()}>{child}</Text>
+      }
+      else {
+        return cloneElement(child, { onHintEnd: () => go() })
+      }
+    })
   }
 }
-
-Navigate.Context = context

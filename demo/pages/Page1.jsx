@@ -4,8 +4,9 @@
  * - navigation.go
  */
 
-import { Component, Navigate, observe, pipe } from 'nautil'
+import { Component, Navigate } from 'nautil'
 import { Section, Button, Text } from 'nautil/components'
+import { observe, pipe, inject } from 'nautil/operators'
 
 import store from '../store.js'
 import depo from '../depo.js'
@@ -19,12 +20,13 @@ class Page1 extends Component {
   render() {
     const { name, age } = store.state
     const info = depo.get('info') || {}
+    const Link = inject('navigation', navigation)(Navigate)
     return (
       <Section>
         <Section>
-          <Navigate to="home">
+          <Link to="home">
             <Button>Home</Button>
-          </Navigate>
+          </Link>
           <Button onHint={() => navigation.go('page2', { id: '123', action: 'edit' })}>Page2</Button>
         </Section>
         <Section>

@@ -1,4 +1,5 @@
 import Component from '../core/component.js'
+import { isFunction } from '../core/utils.js'
 
 export class Observer extends Component {
   static props = {
@@ -6,38 +7,18 @@ export class Observer extends Component {
     unsubscribe: Function,
     dispatch: Function,
   }
-  componentDidMount() {
-    const { subscribe, dispatch } = this.props
+  onMounted() {
+    const { subscribe, dispatch } = this.attrs
     subscribe(dispatch)
   }
-  componentWillUnmount() {
-    const { unsubscribe, dispatch } = this.props
-    unsubscribe(dispatch)
+  onUnmount() {
+    const { unsubscribe, dispatch } = this.attrs
+    if (isFunction(unsubscribe)) {
+      unsubscribe(dispatch)
+    }
   }
   render() {
-    return this.props.children
+    return this.children
   }
 }
 export default Observer
-
-export function observe(subscribe, unsubscribe) {
-  return function(C) {
-    return class extends Component {
-      render() {
-        return (
-          <Observer subscribe={subscribe} unsubscribe={unsubscribe} dispatch={this.update}>
-            <C {...this.props} />
-          </Observer>
-        )
-      }
-    }
-  }
-}
-
-export function pipe(observers) {
-  const items = [...observers]
-  items.reverse()
-  return function(Component) {
-    return items.reduce((C, observe) => observe(C), Component)
-  }
-}

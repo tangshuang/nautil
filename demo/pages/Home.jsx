@@ -1,24 +1,27 @@
 import { Navigate, Section, Text, Button } from 'nautil/components'
+import { inject } from 'nautil/operators'
+import navigation from '../navigation.js'
 
 export function Home() {
+  const Link = inject('navigation', navigation)(Navigate)
   return (
     <Section>
       <Section>
         <Text>Welcome to Nautil's world! 😊</Text>
       </Section>
       <Section>
-        <Navigate to="page1">
+        <Link to="page1">
           <Button>Page1</Button>
-        </Navigate>
-        <Navigate to="page2" params={{ id: '123' }}>
+        </Link>
+        <Link to="page2" params={{ id: '123' }}>
           <Button>Page2</Button>
-        </Navigate>
-        <Navigate to="page3">
+        </Link>
+        <Link to="page3">
           <Button>Page3</Button>
-        </Navigate>
-        <Navigate to="page4">
+        </Link>
+        <Link to="page4">
           <Button>Page4</Button>
-        </Navigate>
+        </Link>
       </Section>
     </Section>
   )
