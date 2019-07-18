@@ -6,7 +6,6 @@
 
 import { Component, Observer, Navigate } from 'nautil'
 import { Section, Button, Text } from 'nautil/components'
-import { inject } from 'nautil/operators'
 
 import store from '../store.js'
 import navigation from '../navigation.js'
@@ -19,17 +18,16 @@ class Page2 extends Component {
   render() {
     const { id, action } = navigation.state.params
     const { age } = store.state
-    const Link = inject('navigation', navigation)(Navigate)
     return (
       <Observer subscribe={dispatch => store.watch('age', dispatch)} unsubscribe={dispatch => store.unwatch('age', dispatch)} dispatch={this.update}>
         <Section>
           <Section>
-            <Link to="home">
+            <Navigate to="home">
               <Button>Home</Button>
-            </Link>
-            <Link to={-1}>
+            </Navigate>
+            <Navigate to={-1}>
               <Button>Back</Button>
-            </Link>
+            </Navigate>
           </Section>
           <Section>
             <Section><Text>id: {id}</Text></Section>

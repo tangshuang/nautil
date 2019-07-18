@@ -4,7 +4,6 @@
 
 import { Component, Model, Navigate } from 'nautil'
 import { Section, Input, Button } from 'nautil/components'
-import { inject } from 'nautil/operators'
 
 import depo from '../depo.js'
 import navigation from '../navigation.js'
@@ -70,16 +69,15 @@ export class Page4 extends Component {
   }
 
   render() {
-    const Link = inject('navigation', navigation)(Navigate)
     return (
       <Section>
         <Section>
-          <Link to="home">
+          <Navigate to="home">
             <Button>Home</Button>
-          </Link>
-          <Link to="page4" params={{ id: 1 }}>
+          </Navigate>
+          <Navigate to="page4" params={{ id: 1 }}>
             <Button>Fill Data</Button>
-          </Link>
+          </Navigate>
         </Section>
         <Section>
           <Section><Input placeholder="Name" value={this.form.get('name')} onChange={e => this.form.set('name', e.target.value)} /></Section>
