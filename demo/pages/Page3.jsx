@@ -16,7 +16,11 @@ export class Page3 extends Component {
           <Button onHint={() => this.setState({ show: true })}>show</Button>
           <Button onHint={() => this.setState({ show: false })}>hide</Button>
         </Section>
-        <Animation enter="fade:in move:300,0/0,20 scale:1.2" leave="fade:out move:0,20/-300,0 scale:0.5" show={this.state.show} duration={500}>
+        <Animation
+          show={this.state.show}
+          enter="easeInQuint 500 fade:in move:right scale:1.5 rotate:60deg"
+          leave="easeOutQuint 500 fade:out move:0/-300,-100 scale:1/0.5 rotate:0deg/-20deg"
+        >
           <Text>This is a demo for animation.</Text>
         </Animation>
       </Section>

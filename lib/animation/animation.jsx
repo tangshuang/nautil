@@ -1,19 +1,16 @@
 import Component from '../core/component.js'
-import { noop } from '../core/utils.js'
+import { noop, isNumeric } from '../core/utils.js'
 import Section from '../components/section.jsx'
 import Transition from './transition.js'
 import tween from './tween.js'
 import Transform from './transform.js'
-import { tuple } from '../core/types.js'
 
 export class Animation extends Component {
   static props = {
-    duration: Number,
-    ease: String,
+    show: Boolean,
 
     enter: String,
     leave: String,
-    show: Boolean,
 
     onEnterStart: Function,
     onEnterUpdate: Function,
@@ -25,13 +22,10 @@ export class Animation extends Component {
   }
 
   static defaultProps = {
-    ease: 'linear',
-    duration: 0.5,
-
-    enter: '',
-    leave: '',
-
     show: false,
+
+    enter: 'linear 0',
+    leave: 'linear 0',
 
     onEnterStart: noop,
     onEnterUpdate: noop,
@@ -48,13 +42,39 @@ export class Animation extends Component {
   }
 
   onInit() {
-    const { enter, leave, ease, duration } = this.attrs
-    const enterTypes = enter.split(' ')
-    const leaveTypes = leave.split(' ')
+    const { enter, leave } = this.attrs
+
+    const enterTypes = []
+    const enterOption = {}
+    enter.split(' ').filter(item => !!item).forEach((item) => {
+      if (item.indexOf(':') > 0) {
+        enterTypes.push(item)
+      }
+      else if (isNumeric(item)) {
+        enterOption.duration = +item
+      }
+      else {
+        enterOption.ease = item
+      }
+    })
+
+    const leaveTypes = []
+    const leaveOption = {}
+    leave.split(' ').filter(item => !!item).forEach((item) => {
+      if (item.indexOf(':') > 0) {
+        leaveTypes.push(item)
+      }
+      else if (isNumeric(item)) {
+        leaveOption.duration = +item
+      }
+      else {
+        leaveOption.ease = item
+      }
+    })
 
     this.transform = new Transform()
-    this.enterTransition = new Transition({ ease, duration })
-    this.leaveTransition = new Transition({ ease, duration })
+    this.enterTransition = new Transition(enterOption)
+    this.leaveTransition = new Transition(leaveOption)
 
     const update = (transition, types) => {
       types.forEach((type) => {
@@ -119,43 +139,35 @@ export class Animation extends Component {
       },
     })
   }
-  moveto(params, factor) {
-    const leftOffset = 100
-    const topOffset = 50
-    const direction = params.split(',').filter(item => !!item)
-
-    let translateX = 0
-    let translateY = 0
-
-    if (direction.indexOf('left') > -1) {
-      translateX = tween(leftOffset, 0, factor)
-    }
-    else if (direction.indexOf('right') > -1) {
-      translateX = tween(0, leftOffset, factor)
-    }
-
-    if (direction.indexOf('top') > -1) {
-      translateY = tween(topOffset, 0, factor)
-    }
-    else if (direction.indexOf('bottom') > -1) {
-      translateY = tween(0, topOffset, factor)
-    }
-
-    this.transform.set({ translateX, translateY })
-
-    this.setState({
-      style: {
-        ...this.state.style,
-        transform: this.transform.get(),
-      },
-    })
-  }
   move(params, factor) {
-    const position = params.split('/').filter(item => !!item)
+    const map = (str) => {
+      const items = str.split(',').filter(item => !!item)
 
-    const [from, to] = position
-    const [fromX, fromY] = from.split(',').map(item => +item)
-    const [toX, toY] = to.split(',').map(item => +item)
+      if (items.length === 1) {
+        items[1] = 0
+      }
+
+      return items.map((item) => {
+        if (item === 'left') {
+          return -100
+        }
+        else if (item === 'right') {
+          return 100
+        }
+        else if (item === 'top') {
+          return -50
+        }
+        else if (item === 'bottom') {
+          return 50
+        }
+        else {
+          return +item || 0
+        }
+      })
+    }
+    const [from, to = '0,0'] = params.split('/').filter(item => !!item)
+    const [fromX, fromY] = map(from)
+    const [toX, toY] = map(to)
 
     const translateX = tween(fromX, toX, factor)
     const translateY = tween(fromY, toY, factor)
@@ -170,10 +182,20 @@ export class Animation extends Component {
     })
   }
   rotate(params, factor) {
-    const num = parseFloat(params)
-    const unit = params.substr(num.toString().length)
-    const value = tween(0, num, factor)
-    const rotate = value + unit
+    const [from, to = '0deg'] = params.split('/').filter(item => !!item)
+
+    const fromAngle = parseFloat(from)
+    const fromUnit = from.substr(fromAngle.toString().length)
+
+    const toAngle = parseFloat(to)
+    const toUnit = to.substr(toAngle.toString().length)
+
+    if (fromUnit !== toUnit) {
+      return
+    }
+
+    const value = tween(fromAngle, toAngle, factor)
+    const rotate = value + toUnit
 
     this.transform.set({ rotate })
 
@@ -185,8 +207,8 @@ export class Animation extends Component {
     })
   }
   scale(params, factor) {
-    const num = +params
-    const scale = tween(num, 1, factor) + ''
+    const [from, to = '1'] = params.split('/').filter(item => !!item)
+    const scale = tween(+from, +to, factor) + ''
 
     this.transform.set({ scale })
 
