@@ -12,47 +12,74 @@ export class Navigator extends Component {
     dispatch: ifexist(Function),
   }
 
+  _modifyNavigate() {
+    const { navigation } = this.attrs
+    const originals = Navigate.defaultProps
+    const hasuse = originals || {}
+    const willuse = { ...hasuse, navigation }
+    Navigate.defaultProps = willuse
+    this._NavigateDefaultProps = originals
+  }
+
+  _resetNavigate() {
+    const originals = this._NavigateDefaultProps
+    Navigate.defaultProps = originals
+  }
+
+  onMount() {
+    this._modifyNavigate()
+  }
+
+  onMounted() {
+    this._resetNavigate()
+  }
+
+  onUpdate() {
+    this._modifyNavigate()
+  }
+
+  onUpdated() {
+    this._resetNavigate()
+  }
+
+  onNotUpdated() {
+    this._resetNavigate()
+  }
+
   render() {
     const { navigation, dispatch } = this.attrs
-
-    // const originals = Navigate.defaultProps
-    // const hasuse = originals || {}
-    // const willuse = { ...hasuse, navigation: this }
-    // Navigate.defaultProps = willuse
-
-    // console.log('render')
-    // console.log(Navigate.defaultProps)
 
     const Page = () => {
       const { options, status, state } = navigation
       const isInside = options.routes.find(item => item.component)
       const { notFound } = options
+      let output = null
+
+      this._modifyNavigate()
 
       if (isInside) {
-        return status === '!' ? notFound ? <notFound /> : null
+        output = status === '!' ? notFound ? <notFound /> : null
           : status !== '' ? state.route.component ? <state.route.component /> : null
           : this.children
       }
       else {
-        return this.children
+        output = this.children
       }
+
+      this._resetNavigate()
+
+      return output
     }
 
     const update = dispatch ? dispatch : this.update
     const page = Page()
     const children = page || null
 
-    const output = (
+    return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
         {children}
       </Observer>
     )
-
-    // Navigate.defaultProps = originals
-
-    // console.log(output)
-
-    return output
   }
 }
 
