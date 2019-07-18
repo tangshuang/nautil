@@ -4,6 +4,7 @@ import Section from '../components/section.jsx'
 import Transition from './transition.js'
 import tween from './tween.js'
 import Transform from './transform.js'
+import { tuple } from '../core/types.js'
 
 export class Animation extends Component {
   static props = {
@@ -95,9 +96,19 @@ export class Animation extends Component {
   }
 
   fade(params, factor) {
-    const opacity = params === 'in' ? tween(0, 1, factor) : params === 'out' ? tween(1, 0, factor) : undefined
+    let opacity = 1
 
-    if (opacity === undefined) {
+    if (params === 'in') {
+      opacity = tween(0, 1, factor)
+    }
+    else if (params === 'out') {
+      opacity = tween(1, 0, factor)
+    }
+    else if (params.indexOf('/') > 0) {
+      const [from, to] = params.split('/').map(item => +item)
+      opacity = tween(from, to, factor)
+    }
+    else {
       return
     }
 
@@ -109,23 +120,45 @@ export class Animation extends Component {
     })
   }
   moveto(params, factor) {
-    const direction = params.split('-')
+    const leftOffset = 100
+    const topOffset = 50
+    const direction = params.split(',').filter(item => !!item)
 
     let translateX = 0
+    let translateY = 0
+
     if (direction.indexOf('left') > -1) {
-      translateX = tween(100, 0, factor)
+      translateX = tween(leftOffset, 0, factor)
     }
     else if (direction.indexOf('right') > -1) {
-      translateX = tween(0, 100, factor)
+      translateX = tween(0, leftOffset, factor)
     }
 
-    let translateY = 0
     if (direction.indexOf('top') > -1) {
-      translateY = tween(50, 0, factor)
+      translateY = tween(topOffset, 0, factor)
     }
     else if (direction.indexOf('bottom') > -1) {
-      translateY = tween(0, 50, factor)
+      translateY = tween(0, topOffset, factor)
     }
+
+    this.transform.set({ translateX, translateY })
+
+    this.setState({
+      style: {
+        ...this.state.style,
+        transform: this.transform.get(),
+      },
+    })
+  }
+  move(params, factor) {
+    const position = params.split('/').filter(item => !!item)
+
+    const [from, to] = position
+    const [fromX, fromY] = from.split(',').map(item => +item)
+    const [toX, toY] = to.split(',').map(item => +item)
+
+    const translateX = tween(fromX, toX, factor)
+    const translateY = tween(fromY, toY, factor)
 
     this.transform.set({ translateX, translateY })
 
@@ -152,7 +185,8 @@ export class Animation extends Component {
     })
   }
   scale(params, factor) {
-    const scale = tween(params, 1, factor)
+    const num = +params
+    const scale = tween(num, 1, factor) + ''
 
     this.transform.set({ scale })
 
