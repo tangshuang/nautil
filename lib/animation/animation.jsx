@@ -239,9 +239,9 @@ export class Animation extends Component {
     const { ease, duration, component, ...props } = this.attrs
     delete props.show
 
-    const Component = component ? component : Section
+    const C = component ? component : Section
 
-    return (show ? <Component style={{ ...this.style, ...style }} {...props}>{this.children}</Component> : null)
+    return show ? <C style={{ ...this.style, ...style }} {...props}>{this.children}</C> : null
   }
 }
 

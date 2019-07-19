@@ -1,11 +1,14 @@
 
 export * from './lib/core-components/fragment.jsx'
 export * from './lib/core-components/observer.jsx'
-export * from './lib/core-components/prepare.jsx'
 export * from './lib/core-components/if-else.jsx'
 export * from './lib/core-components/for-each.jsx'
 export * from './lib/core-components/switch-case.jsx'
+
 export * from './lib/core-components/navigator.jsx'
+
+export * from './lib/core-components/prepare.jsx'
+export * from './lib/core-components/show.jsx'
 
 export * from './lib/components/section.jsx'
 export * from './lib/components/text.jsx'

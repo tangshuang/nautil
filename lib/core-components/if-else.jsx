@@ -10,7 +10,7 @@ export class Else extends Component {
 
 export class ElseIf extends Component {
   static props = {
-    condition: Boolean,
+    is: Boolean,
   }
 
   render() {
@@ -20,27 +20,27 @@ export class ElseIf extends Component {
 
 export class If extends Component {
   static props = {
-    condition: Boolean,
+    is: Boolean,
   }
 
   render() {
     const children = this.children
     const blocks = []
-    const { condition } = this.attrs
+    const { is } = this.attrs
 
     var block = {
       type: If,
-      condition,
+      is,
       children: [],
     }
     React.Children.forEach(children, (child) => {
       const { type, props } = child
-      const { condition } = props
+      const { is } = props
       if ([ElseIf, Else].includes(type)) {
         blocks.push(block)
         block = {
           type,
-          condition,
+          is,
           children: [],
         }
       }
@@ -55,8 +55,8 @@ export class If extends Component {
 
     var use = null
     for (let block of blocks) {
-      const { type, condition, children } = block
-      if (condition) {
+      const { type, is, children } = block
+      if (is) {
         use = children.map(child => isFunction(child) ? child() : child)
         break
       }

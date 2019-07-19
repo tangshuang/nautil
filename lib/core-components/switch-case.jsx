@@ -1,7 +1,7 @@
 import Component from '../core/component.js'
 import React from 'react'
 import { Any, ifexist } from '../core/types.js'
-import { isFunction } from '../core/utils.js'
+import { isFunction, mapChildren } from '../core/utils.js'
 
 export class Case extends Component {
   static props = {
@@ -10,7 +10,7 @@ export class Case extends Component {
   }
 
   render() {
-    return this.children
+    return null
   }
 }
 
@@ -24,7 +24,7 @@ export class Switch extends Component {
     const target = this.attrs.of
     const blocks = []
 
-    React.Children.forEach(children, (child) => {
+    mapChildren(children, (child) => {
       const { type, props } = child
       const { value, children } = props
       if (type === Case) {
@@ -40,15 +40,15 @@ export class Switch extends Component {
     for (let block of blocks) {
       const { value, children } = block
       if (value === target) {
-        use = children.map(child => isFunction(child) ? child() : child)
+        use = mapChildren(children, child => isFunction(child) ? child() : child)
         break
       }
       else if (isFunction(value) && value()) {
-        use = children.map(child => isFunction(child) ? child() : child)
+        use = mapChildren(children, child => isFunction(child) ? child() : child)
         break
       }
       else if (block.default) {
-        use = children.map(child => isFunction(child) ? child() : child)
+        use = mapChildren(children, child => isFunction(child) ? child() : child)
         break
       }
     }

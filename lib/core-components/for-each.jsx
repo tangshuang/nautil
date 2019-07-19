@@ -1,7 +1,6 @@
 import Component from '../core/component.js'
 import { enumerate } from '../core/types.js'
-import { isArray, isObject, each, isFunction, cloneElement } from '../core/utils.js'
-import React from 'react'
+import { isArray, isObject, each, isFunction, cloneElement, mapChildren } from '../core/utils.js'
 
 export class For extends Component {
   static props = {
@@ -14,10 +13,12 @@ export class For extends Component {
   }
 
   render() {
-    const { start, end, step, children } = this.attrs
+    const { start, end, step } = this.attrs
+    const children = this.children
     const blocks = []
+
     for (let i = start; i <= end; i += step) {
-      const block = isFunction(children) ? children(i) : React.Children.map(children, child => cloneElement(child))
+      const block = isFunction(children) ? children(i) : mapChildren(children, child => cloneElement(child))
       blocks.push(block)
     }
     return blocks
@@ -30,19 +31,19 @@ export class Each extends Component {
   }
 
   render() {
-    const { children } = this.attrs
     const data = this.attrs.of
+    const children = this.children
     const blocks = []
 
     if (isArray(data)) {
       data.forEach((item, i) => {
-        const block = isFunction(children) ? children(item, i) : React.Children.map(children, child => cloneElement(child))
+        const block = isFunction(children) ? children(item, i) : mapChildren(children, child => cloneElement(child))
         blocks.push(block)
       })
     }
     else if (isObject(data)) {
       each(data, (value, key) => {
-        const block = isFunction(children) ? children(value, key) : React.Children.map(children, child => cloneElement(child))
+        const block = isFunction(children) ? children(value, key) : mapChildren(children, child => cloneElement(child))
         blocks.push(block)
       })
     }
