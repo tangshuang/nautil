@@ -1,6 +1,7 @@
 import { Component, Navigate } from 'nautil'
 import { Text, Section, Button } from 'nautil/components'
 import { Animation } from 'nautil/animation'
+import { T } from 'nautil/i18n'
 
 export class Page3 extends Component {
   state = {
@@ -11,7 +12,7 @@ export class Page3 extends Component {
       <Section>
         <Section>
           <Navigate to="home">
-            <Button>Home</Button>
+            <Button><T>home</T></Button>
           </Navigate>
           <Button onHint={() => this.setState({ show: true })}>show</Button>
           <Button onHint={() => this.setState({ show: false })}>hide</Button>

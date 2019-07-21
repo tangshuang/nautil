@@ -1,10 +1,12 @@
 import { Navigate, Section, Text, Button } from 'nautil/components'
+import { T, Locale } from 'nautil/i18n'
+import i18n from '../i18n.js'
 
 export function Home() {
   return (
     <Section>
       <Section>
-        <Text>Welcome to Nautil's world! 😊</Text>
+        <Text><T>welcome</T></Text>
       </Section>
       <Section>
         <Navigate to="page1">
@@ -22,6 +24,10 @@ export function Home() {
         <Navigate to="page5">
           <Button>Page5</Button>
         </Navigate>
+      </Section>
+      <Section>
+        <Locale to="en-US"><Button>en-US</Button></Locale>
+        <Locale to="zh-CN"><Button>zh-CN</Button></Locale>
       </Section>
     </Section>
   )

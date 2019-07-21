@@ -3,7 +3,7 @@ import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import React from 'react'
 import { enumerate, ifexist } from '../core/types.js'
-import { isNumber, cloneElement } from '../core/utils.js'
+import { isNumber, cloneElement, mapChildren } from '../core/utils.js'
 import Text from '../components/text.jsx'
 
 export class Navigator extends Component {
@@ -12,7 +12,7 @@ export class Navigator extends Component {
     dispatch: ifexist(Function),
   }
 
-  _modifyNavigate() {
+  onRender() {
     const { navigation } = this.attrs
     const originals = Navigate.defaultProps
     const hasuse = originals || {}
@@ -21,29 +21,9 @@ export class Navigator extends Component {
     this._NavigateDefaultProps = originals
   }
 
-  _resetNavigate() {
+  onRendered() {
     const originals = this._NavigateDefaultProps
     Navigate.defaultProps = originals
-  }
-
-  onMount() {
-    this._modifyNavigate()
-  }
-
-  onMounted() {
-    this._resetNavigate()
-  }
-
-  onUpdate() {
-    this._modifyNavigate()
-  }
-
-  onUpdated() {
-    this._resetNavigate()
-  }
-
-  onNotUpdated() {
-    this._resetNavigate()
   }
 
   render() {
@@ -55,8 +35,6 @@ export class Navigator extends Component {
       const { notFound } = options
       let output = null
 
-      this._modifyNavigate()
-
       if (isInside) {
         output = status === '!' ? notFound ? <notFound /> : null
           : status !== '' ? state.route.component ? <state.route.component /> : null
@@ -65,8 +43,6 @@ export class Navigator extends Component {
       else {
         output = this.children
       }
-
-      this._resetNavigate()
 
       return output
     }
@@ -101,6 +77,7 @@ export class Navigate extends Component {
 
   render() {
     const { to, params, replace, open, navigation } = this.attrs
+    const children = this.children
 
     const go = () => {
       if (isNumber(to) && to < 0) {
@@ -114,12 +91,12 @@ export class Navigate extends Component {
       }
     }
 
-    return React.Children.map(this.children, (child) => {
+    return mapChildren(children, (child) => {
       if (!child.type) {
-        return <Text onHint={() => go()}>{child}</Text>
+        return <Text onHintEnd={go}>{child}</Text>
       }
       else {
-        return cloneElement(child, { onHintEnd: () => go() })
+        return cloneElement(child, { onHintEnd: go })
       }
     })
   }

@@ -1,11 +1,12 @@
 import { Navigate, Section, Text } from 'nautil/components'
+import { T } from 'nautil/i18n'
 
 export function NotFound() {
   return (
     <Section>
-      <Text>Not found!</Text>
+      <Text><T>notFound</T></Text>
       <Navigate to="home">
-        <Button>Home</Button>
+        <Button><T>home</T></Button>
       </Navigate>
     </Section>
   )

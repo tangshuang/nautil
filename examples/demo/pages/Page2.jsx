@@ -6,6 +6,7 @@
 
 import { Component, Observer, Navigate } from 'nautil'
 import { Section, Button, Text } from 'nautil/components'
+import { T } from 'nautil/i18n'
 
 import store from '../store.js'
 import navigation from '../navigation.js'
@@ -23,7 +24,7 @@ class Page2 extends Component {
         <Section>
           <Section>
             <Navigate to="home">
-              <Button>Home</Button>
+              <Button><T>home</T></Button>
             </Navigate>
             <Navigate to={-1}>
               <Button>Back</Button>

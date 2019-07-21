@@ -4,6 +4,7 @@
 
 import { Component, Model, Navigate } from 'nautil'
 import { Section, Input, Button } from 'nautil/components'
+import { T } from 'nautil/i18n'
 
 import depo from '../depo.js'
 import navigation from '../navigation.js'
@@ -73,7 +74,7 @@ export class Page4 extends Component {
       <Section>
         <Section>
           <Navigate to="home">
-            <Button>Home</Button>
+            <Button><T>home</T></Button>
           </Navigate>
           <Navigate to="page4" params={{ id: 1 }}>
             <Button>Fill Data</Button>

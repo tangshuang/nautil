@@ -1,4 +1,2 @@
-import I18n from './lib/core/i18n.js'
-
-export { I18n }
-export default I18n
+export * from './lib/i18n/i18n.js'
+export * from './lib/i18n/language.jsx'

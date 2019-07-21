@@ -6,7 +6,7 @@ class RainbowButton extends Component {
 
   static props = {
     colors: Array,
-    onClick: Function,
+    onHint: Function,
   }
 
   state = {
@@ -22,15 +22,17 @@ class RainbowButton extends Component {
     const { colors } = this.attrs
     const { index } = this.state
     const color = colors[index]
+
     const onHint = (e) => {
       this.changeColor()
-      this.attrs.onClick(e)
+      this.onHint$.next(e)
     }
 
     return (
       <Button style={{ backgroundColor: color }} onHint={onHint}>click me</Button>
     )
   }
+
 }
 
 const cssText = `

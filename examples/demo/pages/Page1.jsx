@@ -7,6 +7,7 @@
 import { Component, Navigate } from 'nautil'
 import { Section, Button, Text } from 'nautil/components'
 import { observe, pipe } from 'nautil/operators'
+import { T } from 'nautil/i18n'
 
 import store from '../store.js'
 import depo from '../depo.js'
@@ -24,14 +25,14 @@ class Page1 extends Component {
       <Section>
         <Section>
           <Navigate to="home">
-            <Button>Home</Button>
+            <Button><T>home</T></Button>
           </Navigate>
           <Button onHint={() => navigation.go('page2', { id: '123', action: 'edit' })}>Page2</Button>
         </Section>
         <Section>
-          <Section><Text>name: {name}</Text></Section>
-          <Section><Text>age: {age}</Text></Section>
-          <Section><Text>time: {info.time}</Text></Section>
+          <Section><Text><T>name</T>: {name}</Text></Section>
+          <Section><Text><T>age</T>: {age}</Text></Section>
+          <Section><Text><T>time</T>: {info.time}</Text></Section>
         </Section>
         <Section>
           <Button onHint={() => grow()}>grow</Button>

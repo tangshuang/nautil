@@ -1,15 +1,15 @@
 const path = require('path')
 const includeFiles = [
-  path.resolve(__dirname, '../animation.js'),
-  path.resolve(__dirname, '../components.js'),
-  path.resolve(__dirname, '../dom.js'),
-  path.resolve(__dirname, '../i18n.js'),
-  path.resolve(__dirname, '../index.js'),
-  path.resolve(__dirname, '../stream.js'),
-  path.resolve(__dirname, '../types.js'),
-  path.resolve(__dirname, '../lib'),
-  path.resolve(__dirname, '../demo'),
-  path.resolve(__dirname, '../node_modules/ts-fns'),
+  path.resolve(__dirname, '../../animation.js'),
+  path.resolve(__dirname, '../../components.js'),
+  path.resolve(__dirname, '../../dom.js'),
+  path.resolve(__dirname, '../../i18n.js'),
+  path.resolve(__dirname, '../../index.js'),
+  path.resolve(__dirname, '../../stream.js'),
+  path.resolve(__dirname, '../../types.js'),
+  path.resolve(__dirname, '../../lib'),
+  path.resolve(__dirname, '../../node_modules/ts-fns'),
+  path.resolve(__dirname),
 ]
 const express = require('express')
 
@@ -24,7 +24,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      nautil: path.resolve(__dirname, '..'),
+      nautil: path.resolve(__dirname, '../..'),
     },
   },
   module: {
