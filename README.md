@@ -6,16 +6,15 @@ Nautil is a responsive, efficient, and flexible JavaScript framework for buildin
 
 ## Background
 
-Frontend technology come up with new things day by day. React and Vue conquer the world.
-I love react which provide a very excellent development experience. However, it only provide a UI library, if you want to build an application with it, you have to think of many different proposals on different points.
+I love React which provide a very excellent development experience. However, it only provide a UI library, if you want to build an application with it, you have to think of many different proposals on different points.
 
 To resolve this, I developed Nautil to provide developers a framework to be able to build a cross-platform application conveniently.
-It is based on react, so you do not need to worry about the ecosystem.
+It is based on React, so you do not need to worry about the ecosystem.
 And one of the purposes is to cross platform, so when you use it, you do not need to write two set of code, just one!
 
 Nautil contains:
 
-- UI rendering based on react
+- UI rendering based on React
 - router/navigation
 - state management with observable store library
 - data management and requesting with observable data library
@@ -61,8 +60,8 @@ In deep, we override the prototype to make these basic components to act differe
 We do not advocate redux, it is too complex. We provide a inside-included library which is easy to understand to manage your application level state. It is called `Store` which is a observable data container.
 
 ```js
-import { Component, Store, ObservableProvider } from 'nautil'
-import { Section, Text } from 'nautil/components'
+import { Component, Store, Observer } from 'nautil'
+import { Section, Text, Button } from 'nautil/components'
 
 // create a store
 const store = new Store({
@@ -70,34 +69,31 @@ const store = new Store({
    age: 10,
 })
 
+function Page1() {
+  const { state } = store
+  const grow = () => {
+    state.age ++
+  }
+  return (
+    <Section>
+      <Text>Hi, I am {state.name}, and I am {state.age} years old.</Text>
+      <Button onHint={grow}>grow</Button>
+    </Section>
+  )
+}
+
 class App extends Component {
   render() {
     return (
-      <ObservableProvider
-        name="$store" value={store}
-        subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}
-      >
-        <Page1></Page1>
-      </ObservableProvider>
+      <Observer subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}>
+        <Page1 />
+      </Observer>
     )
-  }
-}
-
-class Page1 extends Component {
-  static injectProviders = {
-    $store: true,
-  }
-  render() {
-    const { state } = this.$store
-    return <Section>
-      <Text>Hi, I am {state.name}, and I am {state.age} years old.</Text>
-    </Section>
   }
 }
 ```
 
-Here, we use a `ObservableProvider` component which can share data among cross-level components. And it has the ability to observe data changes and trigger UI changes.
-
+Here, we use a `Observer` component which will update UI triggered by subscriber.
 `Store` is a independent library, you can even use it in other system.
 
 ### Navigation
@@ -107,7 +103,8 @@ It is implemented inside, and is cross-platform. A navigation is observable, so 
 `Navigator` is to provide navigation, and `Navigate` is to jump between routes.
 
 ```js
-import { Navigation, Navigator } from 'nautil'
+import { Navigation, Navigator, Navigate } from 'nautil'
+import { Section, Text, Button } from 'nautil/components'
 
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
@@ -147,11 +144,16 @@ function App() {
 }
 
 function NotFound() {
-  return <div>Not Found!</div>
+  return (
+    <Section>
+      <Text>Not Found!</Text>
+      <Navigate to="home" component={Button}>Home</Navigate>
+    </Section>
+  )
 }
 ```
 
-One application can call `Navigator` only once.
+`Navigate` which in `Navigator` will be injected with provided navigation automaticly.
 Look into examples and demo for more usages.
 
 ### Data Depository
@@ -162,7 +164,7 @@ A data depository is in the middle of frontend business and backend api. For bus
 Yeah, one action, *get* from depository.
 
 ```js
-import { Component, ObservableProvider, Depository, Prepare } from 'nautil'
+import { Component, Observer, Depository, Prepare } from 'nautil'
 import { Text } from 'nautil/components'
 
 // set data sources information
@@ -185,33 +187,21 @@ const depo = new Depository({
 // register data sources into depository
 depo.register(datasources)
 
+function Page1() {
+  const some = depo.get('tag', { tag: 'some name' })
+  return (
+    <Prepare isReady={some} loadingComponent={<Text>loading...</Text>}>
+      <Text>{some.name}</Text>
+    </Prepare>
+  )
+}
+
 class App extends Component {
   render() {
     return (
-      <ObservableProvider
-        name="$depo" value={depo}
-        subscribe={dispatch => depo.subscribe('articles', dispatch).subscribe('tag', dispatch)}
-        dispatch={this.update}
-      >
-        <Page1></Page1>
-      </ObservableProvider>
-    )
-  }
-}
-
-class Page1 extends Component {
-  static injectProviders = {
-    $depo: true,
-  }
-
-  render() {
-    const depo = this.$depo
-    const some = depo.get('tag', { tag: 'some name' })
-
-    return (
-      <Prepare isReady={some} loadingComponent={<Text>loading...</Text>}>
-        <Text>{some.name}</Text>
-      </Prepare>
+      <Observer subscribe={dispatch => depo.subscribe('articles', dispatch).subscribe('tag', dispatch)} dispatch={this.update}>
+        <Page1 />
+      </Observer>
     )
   }
 }
@@ -229,8 +219,8 @@ Don't waste time to think about whether or which library to include internationa
 To implement internationalization is very easy with nautil after you have tried the previous parts. We provide a i18n library inside, and it is also observable, the some way to use as others.
 
 ```js
-import { Component, ObservableProvider } from 'nautil'
-import I18n from 'nautil/i18n'
+import { Component } from 'nautil'
+import { I18n, Language, T, Locale } from 'nautil/i18n'
 import { Section, Text, Button } from 'nautil/components'
 
 // https://www.i18next.com/overview/configuration-options
@@ -239,34 +229,20 @@ const i18n = new I18n(options)
 class App extends Component {
   render() {
     return (
-      <ObservableProvider
-         name="$i18n" value={i18n}
-         subscribe={dispatch => i18n.on('onLoaded', dispatch).on('onLanguageChanged', dispatch)}
-         dispatch={this.update}
-      >
-         <Page1></Page1>
-      </ObservableProvider>
+      <Language i18n={i18n} dispatch={this.update}>
+        <Page1 />
+      </Language>
     )
   }
 }
 
-class Page1 extends Component {
-  static injectProviders = {
-    $i18n: true,
-  }
-
-  render() {
-    const i18n = this.$i18n
-    const t = i18n.t.bind(i18n)
-    const changeLanguage = i18n.changeLanguage.bind(i18n)
-
-    return (
-      <Section>
-        <Text>{t('ILoveTheWorld')}</Text>
-        <Button onHint={() => changeLanguage('zh-HK')}>change language</Button>
-      </Section>
-    )
-  }
+function Page1() {
+  return (
+    <Section>
+      <T>ILoveThisWorld</T>
+      <Locale to="zh-HK" component={Button}>change language</Locale>
+    </Section>
+  )
 }
 ```
 
@@ -285,7 +261,7 @@ Open your brower to visit localhost:9000 and read the demo code in `demo` direct
 
 If you are going to work with Nautil, keep in mind:
 
-- forget react, nautil is a new framework
+- forget React, nautil is a new framework
 - never forget you are build cross-platform application, so don't use abilities which only works for web
 - use inside basic component from `nautil/components`, never use html components or react-native components
 - use css module to import stylesheets, when build react-native appliction, install react-native-css-loader to transform css files

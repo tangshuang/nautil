@@ -61,9 +61,7 @@ export class T extends Component {
   render() {
     const { i18n, ...props } = this.attrs
     const children = this.children
-    const t = (...args) => i18n.t(...args)
-
-    const text = isFunction(children) ? children(t) : t(children)
+    const text = isFunction(children) ? children(i18n) : i18n.t(children)
 
     return (
       <Text {...props}>{text}</Text>
@@ -78,7 +76,7 @@ export class Locale extends Component {
   }
 
   render() {
-    const { i18n, to } = this.attrs
+    const { i18n, to, component } = this.attrs
     const children = this.children
 
     const change = () => {
@@ -87,7 +85,8 @@ export class Locale extends Component {
 
     return mapChildren(children, (child) => {
       if (!child.type) {
-        return <Text onHintEnd={change}>{child}</Text>
+        const C = component || Text
+        return <C onHintEnd={change}>{child}</C>
       }
       else {
         return cloneElement(child, { onHintEnd: change })

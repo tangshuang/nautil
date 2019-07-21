@@ -4,7 +4,7 @@
   "description": "A javascript application framework.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --config examples/demo/webpack.config.js"
+    "start": "webpack-dev-server --config examples/app/webpack.config.js"
   },
   "repository": {
     "type": "git",

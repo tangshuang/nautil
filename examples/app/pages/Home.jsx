@@ -1,6 +1,5 @@
 import { Navigate, Section, Text, Button } from 'nautil/components'
 import { T, Locale } from 'nautil/i18n'
-import i18n from '../i18n.js'
 
 export function Home() {
   return (
