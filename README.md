@@ -190,7 +190,7 @@ depo.register(datasources)
 function Page1() {
   const some = depo.get('tag', { tag: 'some name' })
   return (
-    <Prepare isReady={some} loadingComponent={<Text>loading...</Text>}>
+    <Prepare isReady={some} loading={<Text>loading...</Text>}>
       <Text>{some.name}</Text>
     </Prepare>
   )

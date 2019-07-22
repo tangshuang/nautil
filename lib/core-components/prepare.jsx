@@ -2,8 +2,8 @@ import Component from '../core/component.js'
 
 export class Prepare extends Component {
   render() {
-    const { isReady, loadingComponent } = this.attrs
-    return isReady ? this.children : loadingComponent ? loadingComponent : null
+    const { isReady, loading } = this.attrs
+    return isReady ? this.children : loading ? loading : null
   }
 }
 export default Prepare
