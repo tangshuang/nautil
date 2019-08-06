@@ -11,7 +11,6 @@ const includeFiles = [
   path.resolve(__dirname, '../../node_modules/ts-fns'),
   path.resolve(__dirname),
 ]
-const express = require('express')
 
 module.exports = {
   mode: 'none',
@@ -84,8 +83,6 @@ module.exports = {
         res.json({ ...person, id: req.query.id, time: Date.now() })
       })
 
-
-      app.use(express.json())
       app.post('/api/persons', function(req, res) {
         const { body } = req
         Object.assign(person, body)
