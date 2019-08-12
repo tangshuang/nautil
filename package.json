@@ -4,7 +4,9 @@
   "description": "A javascript application framework.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --config examples/app/webpack.config.js"
+    "start": "npm run serve:web-app",
+    "serve:web-app": "webpack-dev-server --config examples/web-app/webpack.config.js",
+    "serve:web-component": "webpack-dev-server --config examples/web-component/webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +30,7 @@
     "react": "^16.8.6",
     "rxjs": "^6.5.2",
     "storagex": "^1.0.0",
-    "ts-fns": "0.0.11",
+    "ts-fns": "0.0.13",
     "tyshemo": "^2.1.4"
   },
   "devDependencies": {
@@ -39,7 +41,8 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-react-require": "^3.1.1",
     "css-loader": "^3.0.0",
-    "i18next-browser-languagedetector": "^3.0.1",
+    "css-object-loader": "0.0.7",
+    "i18next-browser-languagedetector": "^3.0.3",
     "react-dom": "^16.8.6",
     "style-loader": "^0.23.1",
     "webpack": "^4.35.2",

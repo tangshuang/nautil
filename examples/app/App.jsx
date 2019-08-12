@@ -4,6 +4,8 @@ import { Language } from 'nautil/i18n'
 
 import styles from './App.css'
 
+console.log(styles)
+
 import navigation from './navigation.js'
 import i18n from './i18n.js'
 

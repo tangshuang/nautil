@@ -1,15 +1,5 @@
 <!DOCTYPE html>
 
-<div id="app">
-  <rainbow-button id="button" colors="[]"></rainbow-button>
-</div>
+<my-app/>
 
-<script type="module">
-import './rainbow-button.js'
-
-const button = document.querySelector('#button')
-button.addEventListener('onClick', () => {
-  const colors = [] // new colors
-  button.setAttribute('colors', JSON.stringify(colors))
-})
-</script>
+<script src="index.js"></script>
