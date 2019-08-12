@@ -4,9 +4,9 @@
   "description": "A javascript application framework.",
   "main": "index.js",
   "scripts": {
-    "start": "npm run serve:web-app",
-    "serve:web-app": "webpack-dev-server --config examples/web-app/webpack.config.js",
-    "serve:web-component": "webpack-dev-server --config examples/web-component/webpack.config.js"
+    "start": "npm run web-app",
+    "web-app": "webpack-dev-server --config examples/web-app/webpack.config.js",
+    "web-component": "webpack-dev-server --config examples/web-component/webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "etx": "^1.1.0",
     "i18next": "^17.0.6",
     "react": "^16.8.6",
+    "react-shadow-dom-retarget-events": "^1.0.10",
     "rxjs": "^6.5.2",
     "storagex": "^1.0.0",
     "ts-fns": "0.0.13",

@@ -6,10 +6,10 @@ module.exports = {
     '@babel/polyfill',
     __dirname + '/index.js'
   ],
-  modules: {
-    ...config.modules,
+  module: {
+    ...config.module,
     rules: [
-      ...config.modules.rules,
+      ...config.module.rules,
       {
         test: /\.css$/,
         use: [
