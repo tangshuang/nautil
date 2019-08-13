@@ -14,16 +14,16 @@ const includeFiles = [
 
 module.exports = {
   mode: 'none',
-  // entry: [
-  //   '@babel/polyfill',
-  //   __dirname + '/index.js'
-  // ],
   output: {
     filename: 'index.js',
   },
   resolve: {
     alias: {
       nautil: path.resolve(rootDir),
+      'ts-fns': 'ts-fns/src/index.js',
+      'storagex': 'storagex/src/index.js',
+      'tyshemo': 'tyshemo/src/index.js',
+      'rxjs': 'rxjs/_esm2015/index.js',
     },
   },
   module: {
@@ -43,20 +43,6 @@ module.exports = {
           ],
         },
       },
-      // {
-      //   test: /\.css$/,
-      //   use: [
-      //     {
-      //       loader: 'style-loader'
-      //     },
-      //     {
-      //       loader: 'css-loader',
-      //       options: {
-      //         modules: true,
-      //       },
-      //     },
-      //   ],
-      // },
     ],
   },
   optimization: {
