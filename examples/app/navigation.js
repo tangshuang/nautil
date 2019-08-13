@@ -11,7 +11,6 @@ import NotFound from './pages/NotFound.jsx'
 
 const navigation = new Navigation({
   base: '/',
-  mode: 'history',
   routes: [
     {
       name: 'home',
@@ -46,7 +45,7 @@ const navigation = new Navigation({
   ],
   notFound: NotFound,
   maxHistoryLength: 20,
-  defaultIndex: 'home',
+  defaultRoute: 'home',
 })
 
 export default navigation

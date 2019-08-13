@@ -30,7 +30,7 @@
     "react": "^16.8.6",
     "react-shadow-dom-retarget-events": "^1.0.10",
     "rxjs": "^6.5.2",
-    "storagex": "^1.0.0",
+    "storagex": "^2.0.0",
     "ts-fns": "0.0.13",
     "tyshemo": "^2.1.4"
   },
