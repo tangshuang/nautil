@@ -6,11 +6,13 @@ Nautil is a responsive, efficient, and flexible JavaScript framework for buildin
 
 ## Background
 
-I love React which provide a very excellent development experience. However, it only provide a UI library, if you want to build an application with it, you have to think of many different proposals on different points.
+React provides a very excellent development experience. However, it only provides a UI library, if you want to build an application with it, you have to think of many different proposals on different points.
 
 To resolve this, I developed Nautil to provide developers a framework to be able to build a cross-platform application conveniently.
+
 It is based on React, so you do not need to worry about the ecosystem.
-And one of the purposes is to cross platform, so when you use it, you do not need to write two set of code, just one!
+
+One of our purposes is to build cross-platform application, so when you use it, you do not need to write two set of code, just one!
 
 Nautil contains:
 
@@ -23,6 +25,8 @@ Nautil contains:
 - internationalization with i18next, and date/number/currency locale formatters
 
 ## Overview
+
+Nautil is following observer pattern. In the development, you will find you often think about how to use observer pattern to trigger UI update. However, don't worry about it, it is easy.
 
 With Nautil, you do not need to include other packages such as redux, router and ajax library. We have provided our own proposal which included inside. And later, you will find them amazing and interesting.
 
