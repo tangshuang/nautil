@@ -21,7 +21,7 @@ module.exports = {
     alias: {
       nautil: path.resolve(rootDir),
       'ts-fns': 'ts-fns/src/index.js',
-      'storagex': 'storagex/src/index.js',
+      'storagex': 'storagex/src/storagex.js',
       'tyshemo': 'tyshemo/src/index.js',
       'rxjs': 'rxjs/_esm2015/index.js',
     },
