@@ -64,17 +64,17 @@ module.exports = {
 
 		styleValueReduce: 5000, // 如果设置 style 属性时存在某个属性的值超过一定值，则进行删减
 		attrValueReduce: 5000, // 如果设置 dom 属性时存在某个属性的值超过一定值，则进行删减
-    },
-    // app 补充配置，主要指 pages、window 等配置外的其他配置，同 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html
-    appExtraConfig: {
-        debug: true,
-    },
-    // 项目配置，会被合并到 project.config.json
-    projectConfig: {
-        appid: process.env.WX_APP_ID,
-    },
-    // 包配置，会被合并到 package.json
-    packageConfig: {
-        author: 'wechat-miniprogram',
-    },
+  },
+  // app 补充配置，主要指 pages、window 等配置外的其他配置，同 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html
+  appExtraConfig: {
+      debug: process.env.NODE_ENV !== 'production',
+  },
+  // 项目配置，会被合并到 project.config.json
+  projectConfig: {
+      appid: process.env.WX_APP_ID,
+  },
+  // 包配置，会被合并到 package.json
+  packageConfig: {
+      author: 'wechat-miniprogram',
+  },
 }
