@@ -1,4 +1,5 @@
 // https://github.com/wechat-miniprogram/kbone/blob/develop/docs/quickstart.md
+require('dotenv').config()
 
 module.exports = {
 	// 页面 origin，默认是 https://miniprogram.default
@@ -70,7 +71,7 @@ module.exports = {
     },
     // 项目配置，会被合并到 project.config.json
     projectConfig: {
-        appid: '',
+        appid: process.env.WX_APP_ID,
     },
     // 包配置，会被合并到 package.json
     packageConfig: {

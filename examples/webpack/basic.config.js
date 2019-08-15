@@ -11,6 +11,7 @@ const includeFiles = [
   path.resolve(rootDir, 'lib'),
   path.resolve(__dirname, '..'),
 ]
+const webpack = require('webpack')
 
 module.exports = {
   mode: 'none',
@@ -87,4 +88,9 @@ module.exports = {
       })
     },
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+  ],
 }

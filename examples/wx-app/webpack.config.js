@@ -3,9 +3,13 @@
 const config = require('../webpack/basic.config')
 const path = require('path')
 const mpconfig = require('./mp-config')
+const child_process = require('child_process')
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const MpPlugin = require('mp-webpack-plugin') // 用于构建小程序代码的 webpack 插件
+
+// 起一个本地服务器，用来作为后台数据请求
+child_process.spawn('node', [path.resolve(__dirname, 'server.js')])
 
 module.exports = {
   ...config,
@@ -52,6 +56,9 @@ module.exports = {
       {
         test: /\.(jsx|js)$/,
         loader: 'babel-loader',
+        exclude: [
+          path.resolve(__dirname, '../../node_modules/react'),
+        ],
         options: {
           presets: [
             '@babel/preset-react',
@@ -80,6 +87,7 @@ module.exports = {
     ],
   },
   plugins: [
+    ...config.plugins,
     new MiniCssExtractPlugin({
       filename: '[name].wxss',
     }),
