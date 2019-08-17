@@ -64,7 +64,7 @@ export class T extends Component {
     const text = isFunction(children) ? children(i18n) : i18n.t(children)
 
     return (
-      <Text {...props}>{text}</Text>
+      <Text stylesheet={[this.style, this.className]} {...props}>{text}</Text>
     )
   }
 }
@@ -86,7 +86,7 @@ export class Locale extends Component {
     return mapChildren(children, (child) => {
       if (!child.type) {
         const C = component || Text
-        return <C onHintEnd={change}>{child}</C>
+        return <C stylesheet={[this.style, this.className]} onHintEnd={change}>{child}</C>
       }
       else {
         return cloneElement(child, { onHintEnd: change })

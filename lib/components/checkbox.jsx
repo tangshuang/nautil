@@ -3,13 +3,10 @@ import { Any, ifexist } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Checkbox extends Component {
-  static injectProps = {
-    $state: true,
-  }
   static props = {
     checkedValue: ifexist(Any),
     uncheckedValue: ifexist(Any),
-    model: ifexist(String),
+    // model: ifexist(String),
 
     checked: Boolean,
 

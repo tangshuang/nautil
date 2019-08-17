@@ -220,7 +220,7 @@ export class Animation extends Component {
     })
   }
 
-  onUpdated() {
+  toggle() {
     // `show` is what visibale state want to be next
     // `state` is current visible state
     const { show } = this.attrs
@@ -234,6 +234,14 @@ export class Animation extends Component {
     }
   }
 
+  onUpdated() {
+    this.toggle()
+  }
+
+  onMounted() {
+    this.toggle()
+  }
+
   render() {
     const { show, style } = this.state
     const { ease, duration, component, ...props } = this.attrs
@@ -241,7 +249,7 @@ export class Animation extends Component {
 
     const C = component ? component : Section
 
-    return show ? <C style={{ ...this.style, ...style }} {...props}>{this.children}</C> : null
+    return show ? <C stylesheet={[{ ...this.style, ...style }, this.className]} {...props}>{this.children}</C> : null
   }
 }
 

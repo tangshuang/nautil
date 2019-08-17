@@ -6,12 +6,12 @@ export class Show extends Component {
     const { is, component, ...attrs } = this.attrs
     const C = component ? component : Section
 
-    const style = this.style
+    const style = { ...this.style }
     if (!is) {
       style.display = 'none'
     }
 
-    return <C {...attrs} style={style}>{this.children}</C>
+    return <C {...attrs} style={style} className={this.className}>{this.children}</C>
   }
 }
 export default Show

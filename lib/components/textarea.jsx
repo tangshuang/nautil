@@ -3,12 +3,9 @@ import { ifexist } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Textarea extends Component {
-  static injectProps = {
-    $state: true,
-  }
   static props = {
     value: ifexist(String),
-    model: ifexist(String),
+    // model: ifexist(String),
 
     line: Number,
     placeholder: ifexist(String),
