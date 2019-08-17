@@ -248,8 +248,13 @@ export class Animation extends Component {
     delete props.show
 
     const C = component ? component : Section
+    const stylesheet = [this.style, this.className]
 
-    return show ? <C stylesheet={[{ ...this.style, ...style }, this.className]} {...props}>{this.children}</C> : null
+    if (show) {
+      stylesheet.push(style)
+    }
+
+    return show ? <C stylesheet={stylesheet} {...props}>{this.children}</C> : null
   }
 }
 
