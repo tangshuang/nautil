@@ -21,4 +21,5 @@ export {
   cloneElement,
   createContext,
   mapChildren,
+  filterChildren,
 } from './lib/core/utils.js'

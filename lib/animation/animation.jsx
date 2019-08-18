@@ -254,7 +254,7 @@ export class Animation extends Component {
       stylesheet.push(style)
     }
 
-    return show ? <C stylesheet={stylesheet} {...props}>{this.children}</C> : null
+    return show ? <C {...props} stylesheet={stylesheet}>{this.children}</C> : null
   }
 }
 

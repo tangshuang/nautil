@@ -3,7 +3,7 @@ import I18n from './i18n.js'
 import Observer from '../core-components/observer.jsx'
 import { ifexist } from '../core/types.js'
 import Text from '../components/text.jsx'
-import { isFunction, mapChildren, cloneElement } from '../core/utils.js'
+import { isFunction, mapChildren, cloneElement, filterChildren } from '../core/utils.js'
 
 export class Language extends Component {
   static props = {
@@ -76,21 +76,26 @@ export class Locale extends Component {
   }
 
   render() {
-    const { i18n, to, component } = this.attrs
-    const children = this.children
+    const { i18n, to, component, children, ...props } = this.props
 
     const change = () => {
       i18n.changeLanguage(to)
     }
 
-    return mapChildren(children, (child) => {
-      if (!child.type) {
-        const C = component || Text
-        return <C stylesheet={[this.style, this.className]} onHintEnd={change}>{child}</C>
-      }
-      else {
-        return cloneElement(child, { onHintEnd: change })
-      }
-    })
+    const nodes = filterChildren(children)
+    if (component || nodes.length > 1) {
+      const C = component || Section
+      return <C {...props} onHintEnd={change}>{nodes}</C>
+    }
+    else {
+      return mapChildren(children, (child) => {
+        if (child.type) {
+          return cloneElement(child, { onHintEnd: change })
+        }
+        else {
+          return <Text {...props} onHintEnd={change}>{child}</Text>
+        }
+      })
+    }
   }
 }

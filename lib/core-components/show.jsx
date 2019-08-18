@@ -3,7 +3,7 @@ import Section from '../components/section.jsx'
 
 export class Show extends Component {
   render() {
-    const { is, component, ...attrs } = this.attrs
+    const { is, component, ...props } = this.attrs
     const C = component ? component : Section
 
     const style = { ...this.style }
@@ -11,7 +11,7 @@ export class Show extends Component {
       style.display = 'none'
     }
 
-    return <C {...attrs} style={style} className={this.className}>{this.children}</C>
+    return <C {...props} style={style} className={this.className}>{this.children}</C>
   }
 }
 export default Show

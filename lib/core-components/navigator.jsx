@@ -3,8 +3,9 @@ import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import React from 'react'
 import { enumerate, ifexist } from '../core/types.js'
-import { isNumber, cloneElement, mapChildren } from '../core/utils.js'
+import { isNumber, cloneElement, mapChildren, filterChildren } from '../core/utils.js'
 import Text from '../components/text.jsx'
+import Section from '../components/section.jsx'
 
 export class Navigator extends Component {
   static props = {
@@ -76,8 +77,7 @@ export class Navigate extends Component {
   }
 
   render() {
-    const { to, params, replace, open, navigation, component } = this.attrs
-    const children = this.children
+    const { to, params, replace, open, navigation, component, children, ...props } = this.props
 
     const go = () => {
       if (isNumber(to) && to < 0) {
@@ -91,14 +91,20 @@ export class Navigate extends Component {
       }
     }
 
-    return mapChildren(children, (child) => {
-      if (!child.type) {
-        const C = component || Text
-        return <C onHintEnd={go}>{child}</C>
-      }
-      else {
-        return cloneElement(child, { onHintEnd: go })
-      }
-    })
+    const nodes = filterChildren(children)
+    if (component || nodes.length > 1) {
+      const C = component || Section
+      return <C {...props} onHintEnd={go}>{nodes}</C>
+    }
+    else {
+      return mapChildren(nodes, (child) => {
+        if (child.type) {
+          return cloneElement(child, { onHintEnd: go })
+        }
+        else {
+          return <Text {...props} onHintEnd={go}>{child}</Text>
+        }
+      })
+    }
   }
 }
