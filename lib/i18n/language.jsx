@@ -59,9 +59,24 @@ export class T extends Component {
   }
 
   render() {
-    const { i18n, ...props } = this.attrs
+    const { i18n, t, s, ...props } = this.attrs
     const children = this.children
-    const text = isFunction(children) ? children(i18n) : i18n.t(children)
+    const namespace = s ? s + ':' : ''
+    const exists = t ? i18n.exists(namespace + t) : false
+
+    let text
+    if (exists) {
+      text = i18n.t(namespace + t)
+    }
+    else if (isFunction(children)) {
+      text = children(i18n)
+    }
+    else if (i18n.exists(namespace + children)) {
+      text = i18n.t(namespace + children)
+    }
+    else {
+      text = children
+    }
 
     return (
       <Text stylesheet={[this.style, this.className]} {...props}>{text}</Text>
