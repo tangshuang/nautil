@@ -1,6 +1,8 @@
 // https://github.com/react-component/m-pull-to-refresh
 
-import { Component } from 'react'
+import { Component } from '../core/component.js'
+import Static from '../core-components/static.jsx'
+import Section from '../components/section.jsx'
 
 const isWebView = typeof navigator !== 'undefined' && /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
 const DOWN = 'down'
@@ -24,7 +26,7 @@ export class PullToRefresh extends Component {
     super(props)
 
     this.state = {
-      currentStatus: 'deactivate',
+      status: 'deactivate',
       dragOnEdge: false,
     }
 
@@ -70,7 +72,7 @@ export class PullToRefresh extends Component {
   triggerPullToRefresh = () => {
     // 在初始化时、用代码 自动 触发 pullToRefresh
     // 注意：当 direction 为 up 时，当 visible length < content length 时、则看不到效果
-    // 添加this._isMounted的判断，否则组建一实例化，currentStatus就会是finish
+    // 添加this._isMounted的判断，否则组建一实例化，status就会是finish
     if (!this.state.dragOnEdge && this._isMounted) {
       if (this.props.refreshing) {
         if (this.props.direction === UP) {
@@ -80,12 +82,12 @@ export class PullToRefresh extends Component {
           this._latestY = this.props.distance + 1
         }
         // change dom need after setState
-        this.setState({ currentStatus: 'release' }, () => {
+        this.setState({ status: 'release' }, () => {
           this.setContentY(this._latestY)
         })
       }
       else {
-        this.setState({ currentStatus: 'finish' }, () => {
+        this.setState({ status: 'finish' }, () => {
           this.reset()
         })
       }
@@ -129,16 +131,6 @@ export class PullToRefresh extends Component {
     this._latestY = this._latestY || 0
   }
 
-  isEdge(direction) {
-    const { containerRef } = this
-    if (direction === UP) {
-      return containerRef.scrollHeight - containerRef.scrollTop === containerRef.clientHeight;
-    }
-    if (direction === DOWN) {
-      return containerRef.scrollTop <= 0;
-    }
-  }
-
   onTouchMove(e) {
     // 使用 pageY 对比有问题
     const _currentY = e.touches[0].screenY;
@@ -170,14 +162,14 @@ export class PullToRefresh extends Component {
       this.setContentY(this._latestY);
 
       if (Math.abs(this._latestY) < this.props.distance) {
-        if (this.state.currentStatus !== 'deactivate') {
+        if (this.state.status !== 'deactivate') {
           // console.log('back to the distance');
-          this.setState({ currentStatus: 'deactivate' });
+          this.setState({ status: 'deactivate' });
         }
       } else {
-        if (this.state.currentStatus === 'deactivate') {
+        if (this.state.status === 'deactivate') {
           // console.log('reach to the distance');
-          this.setState({ currentStatus: 'activate' });
+          this.setState({ status: 'activate' });
         }
       }
 
@@ -193,17 +185,27 @@ export class PullToRefresh extends Component {
     if (this.state.dragOnEdge) {
       this.setState({ dragOnEdge: false });
     }
-    if (this.state.currentStatus === 'activate') {
-      this.setState({ currentStatus: 'release' });
+    if (this.state.status === 'activate') {
+      this.setState({ status: 'release' });
       this._timer = setTimeout(() => {
         if (!this.props.refreshing) {
-          this.setState({ currentStatus: 'finish' }, () => this.reset());
+          this.setState({ status: 'finish' }, () => this.reset());
         }
         this._timer = undefined;
       }, 1000);
       this.props.onRefresh();
     } else {
       this.reset();
+    }
+  }
+
+  isEdge(direction) {
+    const { containerRef } = this
+    if (direction === UP) {
+      return containerRef.scrollHeight - containerRef.scrollTop === containerRef.clientHeight;
+    }
+    if (direction === DOWN) {
+      return containerRef.scrollTop <= 0;
     }
   }
 
@@ -231,44 +233,20 @@ export class PullToRefresh extends Component {
   }
 
   render() {
-    const {
-      damping,
-      children,
-      ...props
-    } = this.props
+    const { indicator, containerStyle = {}, contentStyle = {}, indicatorStyle = {} } = this.attrs
+    const { status } = this.state
+    const childrenComponent = <Static shouldUpdate={this.shouldUpdateChildren}>{() => this.children}</Static>
 
-    const {
-      className, prefixCls, children, getScrollContainer,
-      direction, onRefresh, refreshing, indicator, distance, ...restProps
-    } = props;
-
-    const renderChildren = <StaticRenderer
-      shouldUpdate={this.shouldUpdateChildren} render={() => children} />;
-
-    const renderRefresh = (cls) => {
-      return (
-        <div className={`${prefixCls}-content-wrapper`}>
-          <div className={cla} ref={el => this.contentRef = el}>
-            {direction === UP ? renderChildren : null}
-            <div className={`${prefixCls}-indicator`}>
-              {indicator[this.state.currentStatus] || INDICATOR[this.state.currentStatus]}
-            </div>
-            {direction === DOWN ? renderChildren : null}
-          </div>
-        </div>
-      );
-    };
-
-    if (getScrollContainer()) {
-      return renderRefresh(`${prefixCls}-content ${prefixCls}-${direction}`);
-    }
     return (
-      <div
-        ref={el => this.containerRef = el}
-        {...restProps}
-      >
-        {renderRefresh(`${prefixCls}-content`)}
-      </div>
-    );
+      <Section ref={el => this.containerRef = el} stylesheet={containerStyle}>
+        <Section ref={el => this.contentRef = el} stylesheet={contentStyle}>
+          {direction === UP ? childrenComponent : null}
+          <Section ref={el => this.indicatorRef = el} stylesheet={indicatorStyle}>
+            {indicator[status]}
+          </Section>
+          {direction === DOWN ? childrenComponent : null}
+        </Section>
+      </Section>
+    )
   }
 }

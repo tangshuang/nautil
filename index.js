@@ -15,6 +15,7 @@ export * from './lib/core-components/switch-case.jsx'
 
 export * from './lib/core-components/prepare.jsx'
 export * from './lib/core-components/show.jsx'
+export * from './lib/core-components/static.jsx'
 
 export {
   createClassName,

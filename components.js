@@ -9,6 +9,7 @@ export * from './lib/core-components/navigator.jsx'
 
 export * from './lib/core-components/prepare.jsx'
 export * from './lib/core-components/show.jsx'
+export * from './lib/core-components/static.jsx'
 
 export * from './lib/components/section.jsx'
 export * from './lib/components/text.jsx'
