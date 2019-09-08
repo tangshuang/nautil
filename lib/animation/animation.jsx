@@ -3,7 +3,7 @@ import { noop, isNumeric } from '../core/utils.js'
 import Section from '../components/section.jsx'
 import Transition from './transition.js'
 import tween from './tween.js'
-import Transform from './transform.js'
+import Transform from '../style/transform.js'
 
 export class Animation extends Component {
   static props = {
