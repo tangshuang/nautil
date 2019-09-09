@@ -7,7 +7,8 @@
     "start": "npm run web-app",
     "web-app": "webpack-dev-server --config examples/web-app/webpack.config.js",
     "web-component": "webpack-dev-server --config examples/web-component/webpack.config.js",
-    "wx-app": "webpack --config examples/wx-app/webpack.config.js --watch"
+    "wx-app": "webpack --config examples/wx-app/webpack.config.js --watch",
+    "m-pull-to-load": "webpack-dev-server --config examples/m-pull-to-load/webpack.config.js"
   },
   "repository": {
     "type": "git",
