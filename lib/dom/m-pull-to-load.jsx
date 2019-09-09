@@ -11,28 +11,43 @@ const IS_WEBVIEW = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator
 const DOWN = 'down'
 const UP = 'up'
 const BOTH = 'both'
+const NONE = 'none'
 const ACTIVATE = 'activate'
 const DEACTIVATE = 'deactivate'
 const RELEASE = 'release'
 const FINISH = 'finish'
-const INDICATOR = {
+const LOAD_MORE_INDICATOR = {
   [ACTIVATE]: 'release',
   [DEACTIVATE]: 'pull',
   [RELEASE]: 'loading',
   [FINISH]: 'finish',
 }
+const REFRESH_INDICATOR = {
+  [ACTIVATE]: 'release',
+  [DEACTIVATE]: 'pull',
+  [RELEASE]: 'refreshing',
+  [FINISH]: 'finish',
+}
 
 export class MPullToLoad extends Component {
   static props = {
-    direction: enumerate([UP, DOWN, BOTH]),
+    direction: enumerate([UP, DOWN, BOTH, NONE]),
     distance: Number,
-    damping: range({ min: 0, max: Infinity }),
-    indicator: {
+    damping: range({ min: 0, max: 1 }),
+
+    refreshIndicator: {
       [ACTIVATE]: Any,
       [DEACTIVATE]: Any,
       [RELEASE]: Any,
       [FINISH]: Any,
     },
+    loadMoreIndicator: {
+      [ACTIVATE]: Any,
+      [DEACTIVATE]: Any,
+      [RELEASE]: Any,
+      [FINISH]: Any,
+    },
+
     refreshing: Boolean,
     loading: Boolean,
 
@@ -41,14 +56,18 @@ export class MPullToLoad extends Component {
 
     containerStyle: Object,
     contentStyle: Object,
-    indicatorStyle: Object,
+    refreshIndicatorStyle: Object,
+    loadMoreIndicatorStyle: Object,
   }
 
   static defaultProps = {
-    direction: BOTH,
-    distance: 25,
-    damping: 100,
-    indicator: INDICATOR,
+    direction: NONE,
+    distance: 40,
+    damping: 0.4,
+
+    refreshIndicator: REFRESH_INDICATOR,
+    loadMoreIndicator: LOAD_MORE_INDICATOR,
+
     refreshing: false,
     loading: false,
 
@@ -57,7 +76,8 @@ export class MPullToLoad extends Component {
 
     containerStyle: {},
     contentStyle: {},
-    indicatorStyle: {},
+    refreshIndicatorStyle: {},
+    loadMoreIndicatorStyle: {},
   }
 
   constructor(props) {
@@ -68,14 +88,13 @@ export class MPullToLoad extends Component {
     }
 
     this.containerRef = null
+    this.wrapperRef = null
     this.contentRef = null
 
-    this._listeners = null
     this._currentY = 0
     this._startY = 0
     this._latestY = 0
-    this._directTo = ''
-    this._onEdge = false
+
     this._timer = null
     this._inited = false
 
@@ -86,31 +105,31 @@ export class MPullToLoad extends Component {
     this.onTouchEnd = this.onTouchEnd.bind(this)
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldUpdate(nextProps) {
     this.shouldUpdateChildren = this.props.children !== nextProps.children
     return true
   }
 
-  componentDidUpdate(prevProps) {
-    const { props } = this
-    if (prevProps.refreshing !== props.refreshing || prevProps.loading !== props.loading) {
-      clearTimeout(this._timer)
-      this._timer = setTimeout(() => {
-        this.init()
-        this._triggerImmediately()
-      })
-    }
-  }
-
-  componentDidMount() {
-    clearTimeout(this._timer)
+  onMounted() {
     this._timer = setTimeout(() => {
       this.init()
-      this._triggerImmediately()
+      this.trigger()
     })
   }
 
-  componentWillUnmount() {
+  onUpdated(prevProps) {
+    const { refreshing, loading } = this.attrs
+    if (prevProps.refreshing && !refreshing) {
+      this.setState({ status: FINISH })
+      this.reset()
+    }
+    if (prevProps.loading && !loading) {
+      this.setState({ status: FINISH })
+      this.reset()
+    }
+  }
+
+  onUnmount() {
     clearTimeout(this._timer)
     this.destroy()
   }
@@ -126,16 +145,9 @@ export class MPullToLoad extends Component {
       return
     }
 
-    this._listeners = {
-      touchstart: this.onTouchStart,
-      touchmove: this.onTouchMove,
-      touchend: this.onTouchEnd,
-      touchcancel: this.onTouchEnd,
-    }
-
-    Object.keys(this._listeners).forEach((key) => {
-      containerRef.addEventListener(key, this._listeners[key], { passive: false })
-    })
+    containerRef.addEventListener('touchstart', this.onTouchStart, { passive: false })
+    containerRef.addEventListener('touchmove', this.onTouchMove, { passive: false })
+    containerRef.addEventListener('touchend', this.onTouchEnd, { passive: false })
 
     this._inited = true
   }
@@ -145,65 +157,57 @@ export class MPullToLoad extends Component {
       return
     }
 
-    const { containerRef, _listeners } = this
-    if (!_listeners || !containerRef) {
-      // componentWillUnmount fire before componentDidMount, like forceUpdate ???!!
-      return
-    }
-
-    Object.keys(_listeners).forEach(key => {
-      containerRef.removeEventListener(key, _listeners[key])
-    })
+    containerRef.removeEventListener('touchstart', this.onTouchStart)
+    containerRef.removeEventListener('touchmove', this.onTouchMove)
+    containerRef.removeEventListener('touchend', this.onTouchEnd)
   }
 
-  // trigger refresh immediately when monted
-  _triggerImmediately() {
+  trigger() {
     if (!this._inited) {
-      return
-    }
-
-    if (this._onEdge) {
       return
     }
 
     const { refreshing, loading, direction, distance } = this.attrs
 
-    if (refreshing && [UP, BOTH].includes(direction)) {
+    if (refreshing && [DOWN, BOTH].includes(direction)) {
+      this.setState({ status: RELEASE })
       this._latestY = - distance - 1
-      this.setState({ status: RELEASE }, () => {
-        this.setContentY(this._latestY)
-      })
+      this.setContentY(this._latestY)
       this.onRefresh$.next()
     }
-    else if (loading && [DOWN, BOTH].includes(direction)) {
+    else if (loading && [UP, BOTH].includes(direction)) {
+      this.setState({ status: RELEASE })
       this._latestY = distance + 1
-      this.setState({ status: RELEASE }, () => {
-        this.setContentY(this._latestY)
-      })
+      this.setContentY(this._latestY)
       this.onLoadMore$.next()
-    }
-    else {
-      this.setState({ status: FINISH }, () => {
-        this.reset()
-      })
     }
   }
 
   onTouchStart(e) {
-    this._currentY = this._startY = e.touches[0].clientY
+    const { direction } = this.attrs
+
+    if (direction === NONE) {
+      return
+    }
+
+    const currentY = e.changedTouches[0].clientY
+    this._currentY = currentY
+    this._startY = currentY
     // when refreshing is true, this._latestY has value
     this._latestY = this._latestY || 0
   }
 
+  // only affect when move to the edge, and to translateY to show hidden indicator
   onTouchMove(e) {
     const { direction, distance } = this.attrs
-    const currentY = e.touches[0].clientY
+
+    if (direction === NONE) {
+      return
+    }
+
+    const currentY = e.changedTouches[0].clientY
     const startY = this._startY
-    const directTo = startY < currentY ? DOWN : startY > currentY ? UP : ''
-
-    this._directTo = directTo
-
-    console.log(currentY, startY, direction, directTo, this.isEdge())
+    const directTo = startY < currentY ? DOWN : startY > currentY ? UP : NONE
 
     if (direction === UP && directTo !== UP) {
       return
@@ -212,32 +216,21 @@ export class MPullToLoad extends Component {
       return
     }
 
-    // if (!this.isEdge()) {
-    //   return
-    // }
+    // when not touch the edge, do not translate
+    if (!this.isEdge(directTo)) {
+      return
+    }
 
-    e.preventDefault()
+    // e.preventDefault()
     // add stopPropagation with fastclick will trigger content onClick event. why?
     // ref https://github.com/ant-design/ant-design-mobile/issues/2141
     // e.stopPropagation()
 
-    const { _onEdge } = this
     const { status } = this.state
-
-    if (!_onEdge) {
-      this._currentY = this._startY = e.touches[0].clientY
-      this._onEdge = true
-    }
-
-
-    console.log(this._currentY, currentY)
-
-    const diff = Math.round(currentY - this._currentY)
+    const prevMoveAtY = this._currentY
+    const diff = Math.round(currentY - prevMoveAtY)
     this._currentY = currentY
     this._latestY += this.damping(diff)
-
-    console.log(this._latestY, diff, this._currentY)
-
 
     this.setContentY(this._latestY)
 
@@ -254,58 +247,68 @@ export class MPullToLoad extends Component {
 
     // https://github.com/ant-design/ant-design-mobile/issues/573#issuecomment-339560829
     // iOS UIWebView issue, It seems no problem in WKWebView
-    if (IS_WEBVIEW && e.changedTouches[0].clientY < 0) {
+    if (IS_WEBVIEW && e.changedTouches[0].screenY < 0) {
       this.onTouchEnd()
     }
   }
 
-  onTouchEnd() {
-    const { status } = this.state
-    const { _directTo } = this
+  onTouchEnd(e) {
     const { direction } = this.attrs
+
+    if (direction === NONE) {
+      return
+    }
+
+    const { status } = this.state
+    const currentY = e.changedTouches[0].clientY
+    const startY = this._startY
+    const directTo = startY < currentY ? DOWN : startY > currentY ? UP : NONE
 
     if (status === ACTIVATE) {
       this.setState({ status: RELEASE })
 
       const finish = () => {
-        this.setState({ status: FINISH }, () => {
-          this.reset()
-        })
+        this.setState({ status: FINISH })
+        this.reset()
       }
 
-      if ([UP, BOTH].includes(direction) && _directTo === UP) {
+      if ([DOWN, BOTH].includes(direction) && directTo === DOWN) {
         this.onRefresh$.next()
         this.onRefresh$.subscribe(finish)
       }
-      else if ([DOWN, BOTH].includes(direction) && _directTo === DOWN) {
+      else if ([UP, BOTH].includes(direction) && directTo === UP) {
         this.onLoadMore$.next()
         this.onLoadMore$.subscribe(finish)
       }
     }
-
-    this._onEdge = false
-    this._directTo = ''
+    else {
+      this.reset()
+    }
   }
 
-  isEdge() {
-    const { _directTo, containerRef } = this
-    if (_directTo === UP) {
-      return containerRef.scrollHeight - containerRef.scrollTop === containerRef.clientHeight
+  isEdge(directTo) {
+    const { contentRef } = this
+    if (directTo === UP) {
+      return contentRef.scrollHeight - contentRef.scrollTop === contentRef.clientHeight
     }
-    if (_directTo === DOWN) {
-      return containerRef.scrollTop <= 0
+    else if (directTo === DOWN) {
+      return contentRef.scrollTop <= 0
     }
-    return false
+    else {
+      return false
+    }
   }
 
   damping(dy) {
-    const { damping } = this.attrs
-    if (Math.abs(this._latestY) > damping) {
+    const { damping, distance } = this.attrs
+
+    if (Math.abs(this._latestY) > distance * 2) {
       return 0
     }
 
     const ratio = Math.abs(this._currentY - this._startY) / window.innerHeight
-    dy *= (1 - ratio) * 0.6
+
+    dy *= (1 - ratio) * damping
 
     return dy
   }
@@ -316,31 +319,58 @@ export class MPullToLoad extends Component {
   }
 
   setContentY(ty) {
-    // todos: Why sometimes do not have `this.contentRef` ?
-    const { contentRef } = this
-    if (!contentRef) {
+    // todos: Why sometimes do not have `this.wrapperRef` ?
+    const { wrapperRef } = this
+    if (!wrapperRef) {
       return
     }
-    contentRef.style.transform = `translate3d(0px,${ty}px,0)`
+    wrapperRef.style.transition = `transform ${ty ? '0.1' : '0.5'}s`
+    wrapperRef.style.transform = `translate3d(0px,${ty}px,0)`
   }
 
   render() {
-    const { indicator, containerStyle = {}, contentStyle = {}, indicatorStyle = {}, direction } = this.attrs
+    const { refreshIndicator, loadMoreIndicator, containerStyle = {}, contentStyle = {}, refreshIndicatorStyle = {}, loadMoreIndicatorStyle = {}, direction } = this.attrs
     const { status } = this.state
     const childrenComponent = <Static shouldUpdate={this.shouldUpdateChildren}>{() => this.children}</Static>
 
     return (
-      <div ref={el => this.containerRef = el} style={containerStyle}>
-        <div ref={el => this.contentRef = el} style={contentStyle}>
-          <If is={[UP, BOTH].includes(direction)}>
-            <div style={indicatorStyle}>
-              {indicator[status]}
+      <div ref={el => this.containerRef = el} style={{
+        ...containerStyle,
+        overflow: 'hidden',
+      }}>
+        <div ref={el => this.wrapperRef = el} style={{
+          ...contentStyle,
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+        }}>
+          <If is={[DOWN, BOTH].includes(direction)}>
+            <div style={{
+              ...refreshIndicatorStyle,
+              position: 'absolute',
+              bottom: '100%',
+              width: '100%',
+              left: 0,
+            }}>
+              {refreshIndicator[status]}
             </div>
           </If>
-          {childrenComponent}
-          <If is={[DOWN, BOTH].includes(direction)}>
-            <div style={indicatorStyle}>
-              {indicator[status]}
+          <div ref={el => this.contentRef = el} style={{
+            width: '100%',
+            height: '100%',
+            overflowX: 'hidden',
+          }}>
+            {childrenComponent}
+          </div>
+          <If is={[UP, BOTH].includes(direction)}>
+            <div style={{
+              ...loadMoreIndicatorStyle,
+              position: 'absolute',
+              top: '100%',
+              width: '100%',
+              left: 0,
+            }}>
+              {loadMoreIndicator[status]}
             </div>
           </If>
         </div>

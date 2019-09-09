@@ -20,10 +20,27 @@ const styles = {
 }
 
 class App extends Component {
+  state = {
+    refreshing: false,
+    loading: false,
+  }
   render() {
     return (
       <Section stylesheet={styles.section}>
         <MPullToLoad
+          direction="both"
+          loading={this.state.loading}
+          onLoadMore={() => {
+            console.log('loading')
+            this.setState({ loading: true })
+            setTimeout(() => this.setState({ loading: false }), 2000)
+          }}
+          refreshing={this.state.refreshing}
+          onRefresh={() => {
+            console.log('refreshing')
+            this.setState({ refreshing: true })
+            setTimeout(() => this.setState({ refreshing: false }), 2000)
+          }}
           containerStyle={styles.container}
           contentStyle={styles.content}
         >
