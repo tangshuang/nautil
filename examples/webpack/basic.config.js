@@ -9,6 +9,7 @@ const includeFiles = [
   path.resolve(rootDir, 'stream.js'),
   path.resolve(rootDir, 'types.js'),
   path.resolve(rootDir, 'lib'),
+  path.resolve(rootDir, 'ui.js'),
   path.resolve(__dirname, '..'),
 ]
 const webpack = require('webpack')
@@ -20,7 +21,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      nautil: path.resolve(rootDir),
+      'nautil': path.resolve(rootDir),
       'ts-fns': 'ts-fns/src/index.js',
       'storagex': 'storagex/src/storagex.js',
       'tyshemo': 'tyshemo/src/index.js',

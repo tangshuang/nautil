@@ -1,7 +1,7 @@
 import { mount } from 'nautil/dom'
 import { Component } from 'nautil'
 import { Section, Text } from 'nautil/components'
-import { PullToLoad } from 'nautil/dom-ui'
+import { PullToLoad } from 'nautil/ui'
 
 const styles = {
   section: {
