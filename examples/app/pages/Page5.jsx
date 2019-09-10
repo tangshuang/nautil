@@ -1,5 +1,5 @@
-import { Component, Navigate, Show, If, Switch, Case, For, Each } from 'nautil'
-import { Text, Section, Button } from 'nautil/components'
+import { Component } from 'nautil'
+import { Text, Section, Button, Navigate, Show, If, Switch, Case, For, Each } from 'nautil/components'
 import { T } from 'nautil/i18n'
 
 export class Page3 extends Component {

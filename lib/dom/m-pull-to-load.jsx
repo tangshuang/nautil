@@ -29,7 +29,7 @@ const REFRESH_INDICATOR = {
   [FINISH]: 'finish',
 }
 
-export class PullToLoad extends Component {
+export class MPullToLoad extends Component {
   static props = {
     direction: enumerate([UP, DOWN, BOTH, NONE]),
     distance: Number,
@@ -379,4 +379,4 @@ export class PullToLoad extends Component {
   }
 }
 
-export default PullToLoad
+export default MPullToLoad

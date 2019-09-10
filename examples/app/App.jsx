@@ -1,5 +1,5 @@
-import { Component, Navigator } from 'nautil'
-import { Section } from 'nautil/components'
+import { Component } from 'nautil'
+import { Section, Navigator } from 'nautil/components'
 import { Language } from 'nautil/i18n'
 
 import styles from './App.css'

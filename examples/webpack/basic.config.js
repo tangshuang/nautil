@@ -1,4 +1,6 @@
 const path = require('path')
+
+// files in this list should be es6 module and will be transform by babel
 const rootDir = __dirname + '/../../'
 const includeFiles = [
   path.resolve(rootDir, 'animation.js'),
@@ -11,6 +13,10 @@ const includeFiles = [
   path.resolve(rootDir, 'lib'),
   path.resolve(rootDir, 'ui.js'),
   path.resolve(__dirname, '..'),
+  path.resolve(rootDir, 'node_modules/ts-fns/src'),
+  path.resolve(rootDir, 'node_modules/storagex/src'),
+  path.resolve(rootDir, 'node_modules/tyshemo/src'),
+  path.resolve(rootDir, 'node_modules/rxjs/_esm2015'),
 ]
 const webpack = require('webpack')
 
@@ -21,6 +27,7 @@ module.exports = {
   },
   resolve: {
     alias: {
+      // use es6 source code for tree shaking
       'nautil': path.resolve(rootDir),
       'ts-fns': 'ts-fns/src/index.js',
       'storagex': 'storagex/src/storagex.js',
@@ -38,7 +45,7 @@ module.exports = {
           presets: [
             ['@babel/preset-env', {
               modules: false,
-              exclude: ['@babel/plugin-transform-classes'],
+              // exclude: ['@babel/plugin-transform-classes'],
             }],
             '@babel/preset-react',
           ],

@@ -4,8 +4,8 @@
  * - navigation.state.params
  */
 
-import { Component, Observer, Navigate } from 'nautil'
-import { Section, Button, Text } from 'nautil/components'
+import { Component } from 'nautil'
+import { Section, Button, Text, Observer, Navigate } from 'nautil/components'
 import { T } from 'nautil/i18n'
 
 import store from '../store.js'

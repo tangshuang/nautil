@@ -1,7 +1,6 @@
-import { mount } from 'nautil/dom'
+import { mount } from 'nautil/mobile-dom'
 import { Component } from 'nautil'
-import { Section, Text } from 'nautil/components'
-import { PullToLoad } from 'nautil/ui'
+import { Section, Text, ScrollSection } from 'nautil/mobile'
 
 const styles = {
   section: {
@@ -27,7 +26,7 @@ class App extends Component {
   render() {
     return (
       <Section stylesheet={styles.section}>
-        <PullToLoad
+        <ScrollSection
           direction="both"
           loading={this.state.loading}
           onLoadMore={() => {
@@ -94,7 +93,7 @@ class App extends Component {
           <Section><Text>xxxxxxx</Text></Section>
           <Section><Text>xxxxxxx</Text></Section>
           <Section><Text>xxxxxxx</Text></Section>
-        </PullToLoad>
+        </ScrollSection>
       </Section>
     )
   }

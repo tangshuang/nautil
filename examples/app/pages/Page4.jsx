@@ -2,8 +2,8 @@
  * form
  */
 
-import { Component, Model, Navigate } from 'nautil'
-import { Section, Input, Button } from 'nautil/components'
+import { Component, Model } from 'nautil'
+import { Section, Input, Button, Navigate } from 'nautil/components'
 import { T } from 'nautil/i18n'
 
 import depo from '../depo.js'

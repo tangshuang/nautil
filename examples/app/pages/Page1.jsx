@@ -4,8 +4,8 @@
  * - navigation.go
  */
 
-import { Component, Navigate } from 'nautil'
-import { Section, Button, Text } from 'nautil/components'
+import { Component } from 'nautil'
+import { Section, Button, Text, Navigate } from 'nautil/components'
 import { observe, pipe } from 'nautil/operators'
 import { T } from 'nautil/i18n'
 

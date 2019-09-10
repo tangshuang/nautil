@@ -2,11 +2,7 @@ export { Component } from './lib/core/component.js'
 export { Store } from './lib/core/store.js'
 export { Model, Schema } from './lib/core/model.js'
 export { Depository } from './lib/core/depository.js'
-
 export { Navigation } from './lib/core/navigation.js'
-export * from './lib/core-components/navigator.jsx'
-
-export * from './components.js'
 
 export {
   createClassName,

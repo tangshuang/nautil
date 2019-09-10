@@ -1,5 +1,5 @@
-import { Component, Navigate } from 'nautil'
-import { Text, Section, Button } from 'nautil/components'
+import { Component } from 'nautil'
+import { Text, Section, Button, Navigate } from 'nautil/components'
 import { Animation } from 'nautil/animation'
 import { T } from 'nautil/i18n'
 
