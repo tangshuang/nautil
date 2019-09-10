@@ -267,18 +267,11 @@ export class MPullToLoad extends Component {
     if (status === ACTIVATE) {
       this.setState({ status: RELEASE })
 
-      const finish = () => {
-        this.setState({ status: FINISH })
-        this.reset()
-      }
-
       if ([DOWN, BOTH].includes(direction) && directTo === DOWN) {
         this.onRefresh$.next()
-        this.onRefresh$.subscribe(finish)
       }
       else if ([UP, BOTH].includes(direction) && directTo === UP) {
         this.onLoadMore$.next()
-        this.onLoadMore$.subscribe(finish)
       }
     }
     else {
