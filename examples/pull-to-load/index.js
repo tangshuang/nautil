@@ -1,6 +1,6 @@
 import { mount } from 'nautil/mobile-dom'
 import { Component } from 'nautil'
-import { Section, Text, ScrollSection } from 'nautil/mobile'
+import { Section, Text, ScrollSection } from 'nautil/mobile-components'
 
 const styles = {
   section: {
