@@ -253,7 +253,7 @@ export class MPullToLoad extends Component {
   }
 
   onTouchEnd(e) {
-    const { direction } = this.attrs
+    const { direction, loading, refreshing } = this.attrs
 
     if (direction === NONE) {
       return
@@ -274,7 +274,7 @@ export class MPullToLoad extends Component {
         this.onLoadMore$.next()
       }
     }
-    else {
+    else if (!loading && !refreshing) {
       this.reset()
     }
   }
@@ -282,7 +282,7 @@ export class MPullToLoad extends Component {
   isEdge(directTo) {
     const { contentRef } = this
     if (directTo === UP) {
-      return contentRef.scrollHeight - contentRef.scrollTop === contentRef.clientHeight
+      return contentRef.scrollHeight - contentRef.scrollTop - 1 <= contentRef.offsetHeight
     }
     else if (directTo === DOWN) {
       return contentRef.scrollTop <= 0
@@ -328,9 +328,10 @@ export class MPullToLoad extends Component {
 
     return (
       <div ref={el => this.containerRef = el} style={{
+        ...this.style,
         ...containerStyle,
         overflow: 'hidden',
-      }}>
+      }} className={this.className}>
         <div ref={el => this.wrapperRef = el} style={{
           ...contentStyle,
           position: 'relative',
