@@ -30,7 +30,7 @@
     "axios-miniprogram-adapter": "^0.2.4",
     "etx": "^1.1.0",
     "i18next": "^17.0.6",
-    "react": "^16.8.6",
+    "react": "^16.9.0",
     "react-shadow-dom-retarget-events": "^1.0.10",
     "rxjs": "^6.5.2",
     "storagex": "^2.0.0",
