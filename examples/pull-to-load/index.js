@@ -1,7 +1,7 @@
 import { mount } from 'nautil/dom'
 import { Component } from 'nautil'
 import { Section, Text } from 'nautil/components'
-import MPullToLoad from 'nautil/lib/dom/m-pull-to-load.jsx'
+import { PullToLoad } from 'nautil/dom-ui'
 
 const styles = {
   section: {
@@ -27,7 +27,7 @@ class App extends Component {
   render() {
     return (
       <Section stylesheet={styles.section}>
-        <MPullToLoad
+        <PullToLoad
           direction="both"
           loading={this.state.loading}
           onLoadMore={() => {
@@ -94,7 +94,7 @@ class App extends Component {
           <Section><Text>xxxxxxx</Text></Section>
           <Section><Text>xxxxxxx</Text></Section>
           <Section><Text>xxxxxxx</Text></Section>
-        </MPullToLoad>
+        </PullToLoad>
       </Section>
     )
   }

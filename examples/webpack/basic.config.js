@@ -35,7 +35,10 @@ module.exports = {
         include: includeFiles,
         options: {
           presets: [
-            ['@babel/preset-env', { modules: false }],
+            ['@babel/preset-env', {
+              modules: false,
+              exclude: ['@babel/plugin-transform-classes'],
+            }],
             '@babel/preset-react',
           ],
           plugins: [

@@ -8,7 +8,7 @@
     "web-app": "webpack-dev-server --config examples/web-app/webpack.config.js",
     "web-component": "webpack-dev-server --config examples/web-component/webpack.config.js",
     "wx-app": "webpack --config examples/wx-app/webpack.config.js --watch",
-    "m-pull-to-load": "webpack-dev-server --config examples/m-pull-to-load/webpack.config.js"
+    "pull-to-load": "webpack-dev-server --config examples/pull-to-load/webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "react-shadow-dom-retarget-events": "^1.0.10",
     "rxjs": "^6.5.2",
     "storagex": "^2.0.0",
-    "ts-fns": "0.0.13",
+    "ts-fns": "^0.1.0",
     "tyshemo": "^2.2.1"
   },
   "devDependencies": {

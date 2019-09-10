@@ -1,4 +1,4 @@
-import { Navigate, Section, Text } from 'nautil/components'
+import { Navigate, Section, Text, Button } from 'nautil/components'
 import { T } from 'nautil/i18n'
 
 export function NotFound() {

@@ -34,11 +34,15 @@ export class Navigator extends Component {
       const { options, status, state } = navigation
       const isInside = options.routes.find(item => item.component)
       const { notFound } = options
+      const NotFound = notFound
+      const RouteComponent = (state.route && state.route.component) || null
       let output = null
 
       if (isInside) {
-        output = status === '!' ? notFound ? <notFound /> : null
-          : status !== '' ? state.route.component ? <state.route.component /> : null
+        output = status === '!'
+        ? NotFound ? <NotFound /> : null
+        : status !== ''
+          ? RouteComponent ? <RouteComponent /> : null
           : this.children
       }
       else {
