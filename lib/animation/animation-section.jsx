@@ -5,7 +5,7 @@ import Transition from './transition.js'
 import tween from './tween.js'
 import Transform from '../style/transform.js'
 
-export class Animation extends Component {
+export class AnimationSection extends Component {
   static props = {
     show: Boolean,
 
@@ -258,4 +258,4 @@ export class Animation extends Component {
   }
 }
 
-export default Animation
+export default AnimationSection

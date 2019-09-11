@@ -5,7 +5,7 @@ import { Component } from '../core/component.js'
 import Static from '../core-components/static.jsx'
 import If from '../core-components/if-else.jsx'
 import { range, Any, enumerate } from '../core/types.js'
-import { noop } from '../core/utils.js'
+import { noop, isObject, isString } from '../core/utils.js'
 
 const IS_WEBVIEW = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
 const DOWN = 'down'
@@ -54,10 +54,10 @@ export class MPullToLoad extends Component {
     onRefresh: Function,
     onLoadMore: Function,
 
-    containerStyle: Object,
-    contentStyle: Object,
-    refreshIndicatorStyle: Object,
-    loadMoreIndicatorStyle: Object,
+    containerStyle: enumerate([Object, String]),
+    contentStyle: enumerate([Object, String]),
+    refreshIndicatorStyle: enumerate([Object, String]),
+    loadMoreIndicatorStyle: enumerate([Object, String]),
   }
 
   static defaultProps = {
@@ -254,7 +254,7 @@ export class MPullToLoad extends Component {
   }
 
   onTouchEnd(e) {
-    const { direction, loading, refreshing } = this.attrs
+    const { direction, loading, refreshing, distance } = this.attrs
 
     if (direction === NONE) {
       return
@@ -270,9 +270,11 @@ export class MPullToLoad extends Component {
 
       if ([DOWN, BOTH].includes(direction) && directTo === DOWN) {
         this.onRefresh$.next()
+        this.setContentY(distance)
       }
       else if ([UP, BOTH].includes(direction) && directTo === UP) {
         this.onLoadMore$.next()
+        this.setContentY(-distance)
       }
     }
     else if (!loading && !refreshing) {
@@ -294,12 +296,7 @@ export class MPullToLoad extends Component {
   }
 
   damping(dy) {
-    const { damping, distance } = this.attrs
-
-    if (Math.abs(this._latestY) > distance * 2) {
-      return 0
-    }
-
+    const { damping } = this.attrs
     const ratio = Math.abs(this._currentY - this._startY) / window.innerHeight
 
     dy *= (1 - ratio) * damping
@@ -341,12 +338,17 @@ export class MPullToLoad extends Component {
         }}>
           <If is={[DOWN, BOTH].includes(direction)}>
             <div style={{
-              ...refreshIndicatorStyle,
+              ...(isObject(refreshIndicatorStyle) ? refreshIndicatorStyle : {}),
               position: 'absolute',
               bottom: '100%',
+              zIndex: 0,
               width: '100%',
               left: 0,
-            }}>
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+            }} className={isString(refreshIndicatorStyle) ? refreshIndicatorStyle : undefined}>
               {refreshIndicator[status]}
             </div>
           </If>
@@ -354,6 +356,8 @@ export class MPullToLoad extends Component {
             width: '100%',
             height: '100%',
             overflowX: 'hidden',
+            position: 'relative',
+            zIndex: 1,
           }}>
             {childrenComponent}
           </div>
@@ -362,8 +366,13 @@ export class MPullToLoad extends Component {
               ...loadMoreIndicatorStyle,
               position: 'absolute',
               top: '100%',
+              zIndex: 0,
               width: '100%',
               left: 0,
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
             }}>
               {loadMoreIndicator[status]}
             </div>
