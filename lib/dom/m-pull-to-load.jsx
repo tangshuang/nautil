@@ -153,7 +153,8 @@ export class MPullToLoad extends Component {
   }
 
   destroy() {
-    if (!this._inited) {
+    const { containerRef } = this
+    if (!this._inited || !containerRef) {
       return
     }
 
