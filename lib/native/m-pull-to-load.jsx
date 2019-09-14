@@ -1,5 +1,5 @@
 import { Component } from '../core/component.js'
-import { SectionList, Dimensions, RefreshControl } from 'react-native'
+import { SectionList, Dimensions } from 'react-native'
 
 const DOWN = 'down'
 const UP = 'up'
