@@ -1,4 +1,4 @@
-import { mount } from 'nautil/dom'
+import { mount } from 'nautil/miniapp'
 import App from '../app/App.jsx'
 
 export default function crreateApp() {

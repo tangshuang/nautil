@@ -310,7 +310,7 @@ export class MPullToLoad extends Component {
     const { damping } = this.attrs
     const ratio = Math.abs(this._currentY - this._startY) / window.innerHeight
 
-    dy *= (1 - ratio) * damping
+    dy *= (1 - ratio) * damping * 0.6
 
     return dy
   }
@@ -336,55 +336,62 @@ export class MPullToLoad extends Component {
     const childrenComponent = <Static shouldUpdate={this.shouldUpdateChildren}>{() => this.children}</Static>
 
     return (
-      <div ref={el => this.containerRef = el} style={{
-        ...this.style,
-        ...containerStyle,
-        overflow: 'hidden',
-      }} className={this.className}>
-        <div ref={el => this.wrapperRef = el} style={{
-          ...contentStyle,
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-        }}>
+      <div
+        ref={el => this.containerRef = el}
+        className={[this.className, isString(containerStyle) ? containerStyle : undefined]}
+        style={{
+          overflow: 'hidden',
+          ...this.style,
+          ...(isObject(containerStyle) ? containerStyle : {}),
+        }}
+      >
+        <div
+          ref={el => this.wrapperRef = el}
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+          }}
+        >
           <If is={[DOWN, BOTH].includes(direction)}>
-            <div style={{
-              ...(isObject(refreshIndicatorStyle) ? refreshIndicatorStyle : {}),
-              position: 'absolute',
-              bottom: '100%',
-              zIndex: 0,
-              width: '100%',
-              left: 0,
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-            }} className={isString(refreshIndicatorStyle) ? refreshIndicatorStyle : undefined}>
+            <div
+              className={isString(refreshIndicatorStyle) ? refreshIndicatorStyle : undefined}
+              style={{
+                position: 'absolute',
+                left: 0,
+                bottom: '100%',
+                zIndex: 0,
+                ...(isObject(refreshIndicatorStyle) ? refreshIndicatorStyle : {}),
+              }}
+            >
               {refreshIndicator[status]}
             </div>
           </If>
-          <div ref={el => this.contentRef = el} style={{
-            width: '100%',
-            height: '100%',
-            overflowX: 'hidden',
-            position: 'relative',
-            zIndex: 1,
-          }}>
+          <div
+            ref={el => this.contentRef = el}
+            className={[isString(contentStyle) ? contentStyle : undefined]}
+            style={{
+              width: '100%',
+              height: '100%',
+              overflowX: 'hidden',
+              position: 'relative',
+              zIndex: 1,
+              ...(isObject(contentStyle) ? contentStyle : {}),
+            }}
+          >
             {childrenComponent}
           </div>
           <If is={[UP, BOTH].includes(direction)}>
-            <div style={{
-              ...loadMoreIndicatorStyle,
-              position: 'absolute',
-              top: '100%',
-              zIndex: 0,
-              width: '100%',
-              left: 0,
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-            }}>
+            <div
+              className={isString(loadMoreIndicatorStyle) ? loadMoreIndicatorStyle : undefined}
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: '100%',
+                zIndex: 0,
+                ...(isObject(loadMoreIndicatorStyle) ? loadMoreIndicatorStyle : {}),
+              }}
+            >
               {loadMoreIndicator[status]}
             </div>
           </If>

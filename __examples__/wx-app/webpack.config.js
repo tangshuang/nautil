@@ -14,7 +14,6 @@ child_process.spawn('node', [path.resolve(__dirname, 'server.js')])
 module.exports = {
   ...config,
   entry: [
-    __dirname + '/polyfills.js',
     '@babel/polyfill',
     __dirname + '/index.js'
   ],
