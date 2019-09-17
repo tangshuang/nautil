@@ -6,7 +6,7 @@ import tween from './tween.js'
 import Transform from '../style/transform.js'
 import { Handler } from '../core/types.js'
 
-export class AnimationSection extends Component {
+export class Animation extends Component {
   static props = {
     show: Boolean,
 
@@ -259,4 +259,4 @@ export class AnimationSection extends Component {
   }
 }
 
-export default AnimationSection
+export default Animation

@@ -34,7 +34,7 @@
     "react-shadow-dom-retarget-events": "^1.0.10",
     "rxjs": "^6.5.2",
     "storagex": "^2.0.0",
-    "ts-fns": "^0.1.0",
+    "ts-fns": "^0.1.1",
     "tyshemo": "^2.2.1"
   },
   "devDependencies": {

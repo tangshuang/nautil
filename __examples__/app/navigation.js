@@ -11,6 +11,7 @@ import NotFound from './pages/NotFound.jsx'
 
 const navigation = new Navigation({
   base: '/',
+  mode: 'hash',
   routes: [
     {
       name: 'home',
