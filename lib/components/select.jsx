@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { Any, list, ifexist } from '../core/types.js'
+import { Any, list, ifexist, Handler } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Select extends Component {
@@ -14,7 +14,7 @@ export class Select extends Component {
     }]),
     placeholder: ifexist(String),
 
-    onChange: Function,
+    onChange: Handler,
   }
   static defaultProps = {
     onChange: noop,

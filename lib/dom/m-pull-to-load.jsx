@@ -4,7 +4,7 @@
 import { Component } from '../core/component.js'
 import Static from '../core-components/static.jsx'
 import If from '../core-components/if-else.jsx'
-import { range, Any, enumerate } from '../core/types.js'
+import { range, Any, enumerate, Handler } from '../core/types.js'
 import { noop, isObject, isString } from '../core/utils.js'
 
 const IS_WEBVIEW = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
@@ -51,9 +51,9 @@ export class MPullToLoad extends Component {
     refreshing: Boolean,
     loading: Boolean,
 
-    onRefresh: Function,
-    onLoadMore: Function,
-    onScroll: Function,
+    onRefresh: Handler,
+    onLoadMore: Handler,
+    onScroll: Handler,
 
     containerStyle: enumerate([Object, String]),
     contentStyle: enumerate([Object, String]),

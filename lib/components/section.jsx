@@ -1,14 +1,15 @@
 import { Component } from '../core/component.js'
 import { noop } from '../core/utils.js'
+import { Handler } from '../core/types.js'
 
 export class Section extends Component {
   static props = {
-    onHint: Function,
-    onHintEnter: Function,
-    onHintStart: Function,
-    onHintMove: Function,
-    onHintEnd: Function,
-    onHintLeave: Function,
+    onHint: Handler,
+    onHintEnter: Handler,
+    onHintStart: Handler,
+    onHintMove: Handler,
+    onHintEnd: Handler,
+    onHintLeave: Handler,
   }
   static defaultProps = {
     onHint: noop,

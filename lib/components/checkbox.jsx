@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { Any, ifexist } from '../core/types.js'
+import { Any, ifexist, Handler } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Checkbox extends Component {
@@ -10,8 +10,8 @@ export class Checkbox extends Component {
 
     checked: Boolean,
 
-    onCheck: Function,
-    onUncheck: Function,
+    onCheck: Handler,
+    onUncheck: Handler,
   }
   static defaultProps = {
     checked: false,
