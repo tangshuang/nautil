@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { Any, ifexist, Handler } from '../core/types.js'
+import { Any, ifexist, Handling } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Radio extends Component {
@@ -9,8 +9,8 @@ export class Radio extends Component {
 
     checked: Boolean,
 
-    onCheck: Handler,
-    onUncheck: Handler,
+    onCheck: Handling,
+    onUncheck: Handling,
   }
   static defaultProps = {
     checked: false,

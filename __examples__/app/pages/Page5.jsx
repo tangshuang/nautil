@@ -2,7 +2,7 @@ import { Component } from 'nautil'
 import { Text, Section, Button, Navigate, Show, If, Switch, Case, For, Each } from 'nautil/components'
 import { T } from 'nautil/i18n'
 
-export class Page3 extends Component {
+export class Page5 extends Component {
   state = {
     show: false,
   }
@@ -52,4 +52,4 @@ export class Page3 extends Component {
   }
 }
 
-export default Page3
+export default Page5

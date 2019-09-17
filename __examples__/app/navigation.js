@@ -5,6 +5,7 @@ import Page2 from './pages/Page2.jsx'
 import Page3 from './pages/Page3.jsx'
 import Page4 from './pages/Page4.jsx'
 import Page5 from './pages/Page5.jsx'
+import Page6 from './pages/Page6.jsx'
 
 import Home from './pages/Home.jsx'
 import NotFound from './pages/NotFound.jsx'
@@ -42,6 +43,11 @@ const navigation = new Navigation({
       name: 'page5',
       path: '/page5',
       component: Page5,
+    },
+    {
+      name: 'page6',
+      path: '/page6',
+      component: Page6,
     },
   ],
   notFound: NotFound,

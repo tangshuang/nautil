@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { enumerate, ifexist, Handler } from '../core/types.js'
+import { enumerate, ifexist, Handling } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Input extends Component {
@@ -13,10 +13,10 @@ export class Input extends Component {
     // // 2. when you typing in the input, $state[modelKeyPath] will be updated automaticly
     // model: ifexist(String),
 
-    onChange: Handler,
-    onFocus: Handler,
-    onBlur: Handler,
-    onSelect: Handler,
+    onChange: Handling,
+    onFocus: Handling,
+    onBlur: Handling,
+    onSelect: Handling,
   }
   static defaultProps = {
     type: 'text',

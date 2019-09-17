@@ -23,6 +23,9 @@ export function Home() {
         <Navigate to="page5">
           <Button>Page5</Button>
         </Navigate>
+        <Navigate to="page6">
+          <Button>Page6</Button>
+        </Navigate>
       </Section>
       <Section>
         <Locale to="en-US"><Button>en-US</Button></Locale>

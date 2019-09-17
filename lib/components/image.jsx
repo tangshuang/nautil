@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { enumerate, ifexist, Handler } from '../core/types.js'
+import { enumerate, ifexist, Handling } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Image extends Component {
@@ -10,7 +10,7 @@ export class Image extends Component {
     maxWidth: ifexist(Number),
     maxHeight: ifexist(Number),
 
-    onLoad: Handler,
+    onLoad: Handling,
   }
   static defaultProps = {
     width: Infinity,

@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { enumerate, Handler } from '../core/types.js'
+import { enumerate, Handling } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Video extends Component {
@@ -8,16 +8,16 @@ export class Video extends Component {
     width: Number,
     height: Number,
 
-    onPlay: Handler,
-    onPause: Handler,
-    onStop: Handler,
-    onDrag: Handler,
-    onResume: Handler,
-    onReset: Handler,
-    onReload: Handler,
-    onLoad: Handler,
-    onTick: Handler,
-    onVolume: Handler,
+    onPlay: Handling,
+    onPause: Handling,
+    onStop: Handling,
+    onDrag: Handling,
+    onResume: Handling,
+    onReset: Handling,
+    onReload: Handling,
+    onLoad: Handling,
+    onTick: Handling,
+    onVolume: Handling,
   }
   static defaultProps = {
     width: Infinity,
