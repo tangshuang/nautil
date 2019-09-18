@@ -2,7 +2,6 @@ import { Component, Store } from 'nautil'
 import { Section, Button, Navigate, Show } from 'nautil/components'
 import { T } from 'nautil/i18n'
 import { Binding } from 'nautil/types'
-import { observe, pipe, inject } from 'nautil/operators'
 
 class Sub extends Component {
   static props = {
@@ -19,8 +18,14 @@ class Sub extends Component {
 }
 
 export class Page6 extends Component {
+  onInit() {
+    this.store = new Store({
+      show: false,
+    })
+    this.store.watch('show',this.update)
+  }
   render() {
-    const { state } = this.attrs
+    const { state } = this.store
     return (
       <Section>
         <Section>
@@ -38,11 +43,4 @@ export class Page6 extends Component {
   }
 }
 
-const store = new Store({
-  show: false,
-})
-
-export default pipe([
-  observe(store),
-  inject('state', store.state)
-])(Page6)
+export default Page6
