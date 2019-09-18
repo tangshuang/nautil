@@ -4,7 +4,7 @@ import { T } from 'nautil/i18n'
 
 class Sub extends Component {
   static props = {
-    show: Boolean,
+    $show: Boolean,
   }
   render() {
     const { show } = this.attrs
