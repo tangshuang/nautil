@@ -35,7 +35,7 @@ export class Page6 extends Component {
 
         <Section>
           <Button onHint={() => state.show = true}>show</Button>
-          <Sub $show={[state.show, show => state.show = show]} />
+          <Sub $show={this.store} />
         </Section>
       </Section>
     )
