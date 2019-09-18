@@ -9,9 +9,14 @@ class Sub extends Component {
   render() {
     const { show } = this.attrs
     return (
-      <Show is={show}>
-        <Button onHint={() => this.attrs.show = false}>hide</Button>
-      </Show>
+      <Section>
+        <Show is={!show}>
+          <Button onHint={() => this.attrs.show = true}>show</Button>
+        </Show>
+        <Show is={show}>
+          <Button onHint={() => this.attrs.show = false}>hide</Button>
+        </Show>
+      </Section>
     )
   }
 }
@@ -24,7 +29,6 @@ export class Page6 extends Component {
     this.store.watch('show',this.update)
   }
   render() {
-    const { state } = this.store
     return (
       <Section>
         <Section>
@@ -34,7 +38,6 @@ export class Page6 extends Component {
         </Section>
 
         <Section>
-          <Button onHint={() => state.show = true}>show</Button>
           <Sub $show={this.store} />
         </Section>
       </Section>
