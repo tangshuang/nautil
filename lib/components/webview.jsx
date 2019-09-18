@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { enumerate, Handling } from '../core/types.js'
+import { enumerate } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Webview extends Component {
@@ -7,12 +7,6 @@ export class Webview extends Component {
     source: enumerate([ String, Object ]),
     width: Number,
     height: Number,
-
-    onLoad: Handling,
-    onReload: Handling,
-    onResize: Handling,
-    onScroll: Handling,
-    onMessage: Handling,
   }
   static defaultProps = {
     width: Infinity,

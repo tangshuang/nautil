@@ -4,7 +4,6 @@ import Section from '../components/section.jsx'
 import Transition from './transition.js'
 import tween from './tween.js'
 import Transform from '../style/transform.js'
-import { Handling } from '../core/types.js'
 
 export class Animation extends Component {
   static props = {
@@ -12,14 +11,6 @@ export class Animation extends Component {
 
     enter: String,
     leave: String,
-
-    onEnterStart: Handling,
-    onEnterUpdate: Handling,
-    onEnterStop: Handling,
-
-    onLeaveStart: Handling,
-    onLeaveUpdate: Handling,
-    onLeaveStop: Handling,
   }
 
   static defaultProps = {

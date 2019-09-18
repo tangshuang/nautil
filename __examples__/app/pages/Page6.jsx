@@ -1,11 +1,10 @@
 import { Component, Store } from 'nautil'
 import { Section, Button, Navigate, Show } from 'nautil/components'
 import { T } from 'nautil/i18n'
-import { Binding } from 'nautil/types'
 
 class Sub extends Component {
   static props = {
-    $show: Binding,
+    show: Boolean,
   }
   render() {
     const { show } = this.attrs
@@ -36,7 +35,7 @@ export class Page6 extends Component {
 
         <Section>
           <Button onHint={() => state.show = true}>show</Button>
-          <Sub $show={state} />
+          <Sub $show={[state.show, show => state.show = show]} />
         </Section>
       </Section>
     )

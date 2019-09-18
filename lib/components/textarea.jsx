@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { ifexist, Handling } from '../core/types.js'
+import { ifexist } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Textarea extends Component {
@@ -9,11 +9,6 @@ export class Textarea extends Component {
 
     line: Number,
     placeholder: ifexist(String),
-
-    onChange: Handling,
-    onFocus: Handling,
-    onBlur: Handling,
-    onSelect: Handling,
   }
   static defualtProps = {
     line: 3,

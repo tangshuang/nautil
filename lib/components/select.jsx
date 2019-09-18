@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { Any, list, ifexist, Handling } from '../core/types.js'
+import { Any, list, ifexist } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Select extends Component {
@@ -13,8 +13,6 @@ export class Select extends Component {
       disabled: ifexist(Boolean),
     }]),
     placeholder: ifexist(String),
-
-    onChange: Handling,
   }
   static defaultProps = {
     onChange: noop,

@@ -1,5 +1,6 @@
 import { Component } from '../core/component.js'
 import { SectionList, Dimensions } from 'react-native'
+import { noop } from '../core/utils.js'
 
 const DOWN = 'down'
 const UP = 'up'
@@ -43,9 +44,6 @@ export class MPullToLoad extends Component {
 
     refreshing: Boolean,
     loading: Boolean,
-
-    onRefresh: Function,
-    onLoadMore: Function,
 
     containerStyle: Object,
     contentStyle: Object,
