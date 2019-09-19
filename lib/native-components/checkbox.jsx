@@ -1,13 +1,12 @@
 import Component from '../core/component.js'
 import { Any, ifexist } from '../core/types.js'
 import { noop } from '../core/utils.js'
-import CheckboxButton from '../native/checkbox-button.jsx'
+import { View } from 'react-native'
 
 export class Checkbox extends Component {
   static props = {
     checkedValue: ifexist(Any),
     uncheckedValue: ifexist(Any),
-    // model: ifexist(String),
 
     checked: Boolean,
   }
@@ -25,7 +24,7 @@ export class Checkbox extends Component {
       style,
       attrs,
     } = this
-    const { checkedValue, uncheckedValue, bind, checked, color, ...props } = attrs
+    const { checkedValue, uncheckedValue, bind, checked, color = '#333333', ...props } = attrs
 
     const isChecked = bind ? parse(bind[1], bind[2]) === checkedValue : checked
     const onChange = (e) => {
@@ -42,15 +41,29 @@ export class Checkbox extends Component {
       }
     }
 
-    return <CheckboxButton
-      {...props}
-
-      checked={isChecked}
-      onChange={onChange}
-      color={color}
-
-      className={className}
-      style={style}></CheckboxButton>
+    return (
+      <View
+        style={{
+          height: 24,
+          width: 24,
+          borderWidth: 2,
+          borderColor: color,
+          alignItems: 'center',
+          justifyContent: 'center',
+          ...style,
+        }}
+        onResponderRelease={onChange}
+        {...props}
+      >
+        {
+          checked ? <View style={{
+            height: 12,
+            width: 12,
+            backgroundColor: color,
+          }}/> : null
+        }
+      </View>
+    )
   }
 }
 export default Checkbox

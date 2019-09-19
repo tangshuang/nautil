@@ -26,3 +26,5 @@ export * from './lib/native-components/select.jsx'
 export * from './lib/native-components/audio.jsx'
 export * from './lib/native-components/video.jsx'
 export * from './lib/native-components/webview.jsx'
+
+export * from './lib/native-components/scroll-section.jsx'

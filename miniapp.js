@@ -1,6 +1,5 @@
 import './lib/miniapp/plyfills.js'
-import './lib/dom/components.js'
-import './lib/dom/mobile-components.js'
 import './lib/dom/style.js'
+import './lib/miniapp/storage.js'
 
-export * from './lib/dom/nautil.js'
+export * from './lib/miniapp/nautil.js'
