@@ -1,4 +1,4 @@
-
+// logic components
 export * from './lib/core-components/fragment.jsx'
 export * from './lib/core-components/observer.jsx'
 export * from './lib/core-components/if-else.jsx'
@@ -11,6 +11,7 @@ export * from './lib/core-components/prepare.jsx'
 export * from './lib/core-components/show.jsx'
 export * from './lib/core-components/static.jsx'
 
+// global components
 export * from './lib/components/section.jsx'
 export * from './lib/components/text.jsx'
 export * from './lib/components/image.jsx'
@@ -26,3 +27,6 @@ export * from './lib/components/select.jsx'
 export * from './lib/components/audio.jsx'
 export * from './lib/components/video.jsx'
 export * from './lib/components/webview.jsx'
+
+// mobile components
+export * from './lib/mobile-components/scroll-section.jsx'
