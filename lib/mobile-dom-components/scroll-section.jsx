@@ -29,7 +29,7 @@ const REFRESH_INDICATOR = {
   [FINISH]: 'finish',
 }
 
-export class MPullToLoad extends Component {
+export class ScrollSection extends Component {
   static props = {
     direction: enumerate([UP, DOWN, BOTH, NONE]),
     distance: Number,
@@ -397,4 +397,4 @@ export class MPullToLoad extends Component {
   }
 }
 
-export default MPullToLoad
+export default ScrollSection
