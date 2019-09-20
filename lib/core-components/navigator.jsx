@@ -7,6 +7,29 @@ import { isNumber, cloneElement, mapChildren, filterChildren } from '../core/uti
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
 
+const isMatched = (status, match, exact) => {
+  if (match === '*') {
+    return true
+  }
+  // i.e. on('book', callback)
+  if (match === status) {
+    return true
+  }
+  // i.e. on('parent.child', callback) and current parent.child.subchild
+  if (status.indexOf(match + '.') === 0 && !exact) {
+    return true
+  }
+  // i.e. on(/iii/g, callback)
+  if (match instanceof RegExp && match.test(status)) {
+    return true
+  }
+  // i.e. on(url => url.indexOf('http') === 0, callback)
+  if (typeof match === 'function' && match(status)) {
+    return true
+  }
+  return false
+}
+
 export class Navigator extends Component {
   static props = {
     navigation: Navigation,
@@ -43,10 +66,16 @@ export class Navigator extends Component {
 
     const Page = () => {
       const { options, status, state, routes } = navigation
-      const isInside = routes.find(item => item.component)
       const { notFound } = options
       const NotFound = notFound
       const RouteComponent = (state.route && state.route.component) || null
+      const route = routes.find((item) => {
+        const { name } = item
+        return isMatched(status, name)
+      })
+      const isInside = routes.find((item) => {
+        item.component
+      })
       let output = null
 
       if (isInside) {
@@ -89,32 +118,9 @@ export class Route extends Component {
   }
   render() {
     const { navigation, match, exact, base } = this.props
-    const isMatched = (match, exact) => {
-      const { status } = navigation
-      if (match === '*') {
-        return true
-      }
-      // i.e. on('book', callback)
-      if (match === status) {
-        return true
-      }
-      // i.e. on('parent.child', callback) and current parent.child.subchild
-      if (status.indexOf(match + '.') === 0 && !exact) {
-        return true
-      }
-      // i.e. on(/iii/g, callback)
-      if (match instanceof RegExp && match.test(status)) {
-        return true
-      }
-      // i.e. on(url => url.indexOf('http') === 0, callback)
-      if (typeof match === 'function' && match(status)) {
-        return true
-      }
-      return false
-    }
-
-    const path = base ? base + '.' + match : match
-    if (isMatched(path, exact)) {
+    const name = base ? base + '.' + match : match
+    const { status } = navigation
+    if (isMatched(status, name, exact)) {
       return filterChildren(this.children)
     }
     else {
