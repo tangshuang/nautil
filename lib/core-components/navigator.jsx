@@ -7,29 +7,6 @@ import { isNumber, cloneElement, mapChildren, filterChildren } from '../core/uti
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
 
-const isMatched = (status, match, exact) => {
-  if (match === '*') {
-    return true
-  }
-  // i.e. on('book', callback)
-  if (match === status) {
-    return true
-  }
-  // i.e. on('parent.child', callback) and current parent.child.subchild
-  if (status.indexOf(match + '.') === 0 && !exact) {
-    return true
-  }
-  // i.e. on(/iii/g, callback)
-  if (match instanceof RegExp && match.test(status)) {
-    return true
-  }
-  // i.e. on(url => url.indexOf('http') === 0, callback)
-  if (typeof match === 'function' && match(status)) {
-    return true
-  }
-  return false
-}
-
 export class Navigator extends Component {
   static props = {
     navigation: Navigation,
@@ -56,7 +33,6 @@ export class Navigator extends Component {
       C.defaultProps = originals
     }
 
-
     unpollute(Route)
     unpollute(Navigate)
   }
@@ -65,40 +41,37 @@ export class Navigator extends Component {
     const { navigation, dispatch } = this.attrs
 
     const Page = () => {
-      const { options, status, state, routes } = navigation
-      const { notFound } = options
-      const NotFound = notFound
-      const RouteComponent = (state.route && state.route.component) || null
-      const route = routes.find((item) => {
-        const { name } = item
-        return isMatched(status, name)
-      })
-      const isInside = routes.find((item) => {
-        item.component
-      })
-      let output = null
+      const { options, state, status } = navigation
 
-      if (isInside) {
-        output = status === '!'
-        ? NotFound ? <NotFound /> : null
-        : status !== ''
-          ? RouteComponent ? <RouteComponent /> : null
-          : this.children
-      }
-      else {
-        output = this.children
+      // i.e. current is parent.child.subchild
+      let rootRoute = state.route
+      while (rootRoute && rootRoute.parent) {
+        rootRoute = rootRoute.parent
       }
 
-      return output
+      // use notFoundComponent
+      const { notFoundComponent: NotFound } = options
+      if (!status && NotFound) {
+        return <NotFound />
+      }
+
+      // when use inside component
+      if (rootRoute) {
+        const RouteComponent = rootRoute.component
+        if (status && RouteComponent) {
+          return <RouteComponent />
+        }
+      }
+
+      return filterChildren(this.children)
     }
 
     const update = dispatch ? dispatch : this.update
     const page = Page()
-    const children = page || null
 
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
-        {children}
+        {page}
       </Observer>
     )
   }
@@ -111,17 +84,22 @@ export class Route extends Component {
     navigation: Navigation,
     match: Any,
     exact: Boolean,
-    base: ifexist(String),
   }
   static defaultProps = {
     exact: false,
   }
   render() {
-    const { navigation, match, exact, base } = this.props
-    const name = base ? base + '.' + match : match
-    const { status } = navigation
-    if (isMatched(status, name, exact)) {
-      return filterChildren(this.children)
+    const { navigation, match, exact } = this.attrs
+    if (navigation.test(match, exact)) {
+      const { state } = navigation
+      const { route } = state
+      const RouteComponent = route.component
+      if (RouteComponent) {
+        return <RouteComponent />
+      }
+      else {
+        return filterChildren(this.children)
+      }
     }
     else {
       return null
@@ -136,7 +114,6 @@ export class Navigate extends Component {
     params: Object,
     replace: Boolean,
     open: Boolean,
-    base: ifexist(String),
   }
   static defaultProps = {
     params: {},
@@ -145,18 +122,18 @@ export class Navigate extends Component {
   }
 
   render() {
-    const { to, params, replace, open, navigation, component, children, base, ...props } = this.props
-    const path = base ? base + '.' + to : to
+    const { to, params, replace, open, navigation, component, ...props } = this.attrs
+    const { children } = this
 
     const go = () => {
-      if (isNumber(path) && path < 0) {
-        navigation.back(path)
+      if (isNumber(to) && to < 0) {
+        navigation.back(to)
       }
       else if (open) {
-        navigation.open(path, params)
+        navigation.open(to, params)
       }
       else {
-        navigation.go(path, params, replace)
+        navigation.go(to, params, replace)
       }
     }
 

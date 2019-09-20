@@ -6,7 +6,7 @@ import Page3 from './pages/Page3.jsx'
 import Page4 from './pages/Page4.jsx'
 import Page5 from './pages/Page5.jsx'
 import Page6 from './pages/Page6.jsx'
-import Page7 from './pages/Page7.jsx'
+import { Page7, Child } from './pages/Page7.jsx'
 
 import Home from './pages/Home.jsx'
 import NotFound from './pages/NotFound.jsx'
@@ -56,6 +56,17 @@ const navigation = new Navigation({
       component: Page7,
       children: [
         {
+          name: 'child',
+          path: '/child',
+          children: [
+            {
+              name: 'subchild',
+              path: '/subchild',
+              component: Child,
+            },
+          ],
+        },
+        {
           name: 'child1',
           path: '/child1',
         },
@@ -66,7 +77,7 @@ const navigation = new Navigation({
       ],
     },
   ],
-  notFound: NotFound,
+  notFoundComponent: NotFound,
   maxHistoryLength: 20,
   defaultRoute: 'home',
 })
