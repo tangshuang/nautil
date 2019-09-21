@@ -5,7 +5,7 @@ import Transition from './transition.js'
 import tween from './tween.js'
 import Transform from './transform.js'
 
-export class AnimationView extends Component {
+export class Animation extends Component {
   static props = {
     show: Boolean,
 
@@ -244,7 +244,7 @@ export class AnimationView extends Component {
 
   render() {
     const { show, style } = this.state
-    const { component, ...props } = this.attrs
+    const { ease, duration, component, ...props } = this.attrs
     delete props.show
 
     const C = component ? component : Section
@@ -258,4 +258,4 @@ export class AnimationView extends Component {
   }
 }
 
-export default AnimationView
+export default Animation
