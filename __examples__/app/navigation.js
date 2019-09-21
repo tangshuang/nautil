@@ -62,7 +62,6 @@ const navigation = new Navigation({
             {
               name: 'subchild',
               path: '/subchild',
-              component: Child,
             },
           ],
         },

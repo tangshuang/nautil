@@ -10,7 +10,7 @@ export class Page7 extends Component {
           <Navigate to="home">
             <Button><T>home</T></Button>
           </Navigate>
-          <Navigate to="page7.child.subchild">
+          <Navigate to="page7.child">
             <Button><T>child</T></Button>
           </Navigate>
           <Navigate to="page7.child1">
@@ -29,7 +29,12 @@ export class Page7 extends Component {
           <Text>child2</Text>
         </Route>
 
-        <Route match="page7.child.subchild"></Route>
+        <Route match="page7.child">
+          <Text>child</Text>
+          <Navigate to="page7.child.subchild" component={Button}>subchild</Navigate>
+          <Section>------------------</Section>
+          <Route match="page7.child.subchild" component={Child}></Route>
+        </Route>
       </Section>
     )
   }
@@ -39,7 +44,7 @@ export class Child extends Component {
   render() {
     return (
       <Section>
-        <Text>child</Text>
+        <Text>sub child</Text>
       </Section>
     )
   }

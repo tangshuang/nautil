@@ -52,14 +52,14 @@ export class Navigator extends Component {
       // use notFoundComponent
       const { notFoundComponent: NotFound } = options
       if (!status && NotFound) {
-        return <NotFound />
+        return <NotFound navigation={navigation} />
       }
 
       // when use inside component
       if (rootRoute) {
         const RouteComponent = rootRoute.component
         if (status && RouteComponent) {
-          return <RouteComponent />
+          return <RouteComponent navigation={navigation} />
         }
       }
 
@@ -89,13 +89,11 @@ export class Route extends Component {
     exact: false,
   }
   render() {
-    const { navigation, match, exact } = this.attrs
+    const { navigation, match, exact, component, props = {} } = this.attrs
     if (navigation.test(match, exact)) {
-      const { state } = navigation
-      const { route } = state
-      const RouteComponent = route.component
+      const RouteComponent = component
       if (RouteComponent) {
-        return <RouteComponent />
+        return <RouteComponent navigation={navigation} {...props} />
       }
       else {
         return filterChildren(this.children)
