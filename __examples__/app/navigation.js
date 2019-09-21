@@ -63,6 +63,11 @@ const navigation = new Navigation({
               name: 'subchild',
               path: '/subchild',
             },
+            {
+              name: 'subchild2',
+              path: '/subchild2',
+              component: () => 'subchild2',
+            },
           ],
         },
         {

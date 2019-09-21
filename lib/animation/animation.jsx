@@ -234,6 +234,11 @@ export class Animation extends Component {
     this.toggle()
   }
 
+  onUnmount() {
+    this.enterTransition.stop()
+    this.leaveTransition.stop()
+  }
+
   render() {
     const { show, style } = this.state
     const { ease, duration, component, ...props } = this.attrs
