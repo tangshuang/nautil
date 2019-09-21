@@ -1,5 +1,6 @@
 import Component from '../core/component.js'
 import { enumerate, ifexist } from '../core/types.js'
+import { noop } from '../core/utils.js'
 
 export class Image extends Component {
   static props = {
@@ -12,6 +13,8 @@ export class Image extends Component {
   static defaultProps = {
     width: Infinity,
     height: Infinity,
+
+    onLoad: noop,
   }
 }
 export default Image

@@ -65,6 +65,9 @@ export class T extends Component {
     const exists = t ? i18n.exists(namespace + t) : false
 
     let text
+    if (exists && isFunction(t)) {
+      text = t(i18n)
+    }
     if (exists) {
       text = i18n.t(namespace + t)
     }

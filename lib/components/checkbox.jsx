@@ -9,9 +9,6 @@ export class Checkbox extends Component {
     // model: ifexist(String),
 
     checked: Boolean,
-
-    onCheck: Function,
-    onUncheck: Function,
   }
   static defaultProps = {
     checked: false,

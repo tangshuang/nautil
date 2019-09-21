@@ -7,12 +7,6 @@ export class Webview extends Component {
     source: enumerate([ String, Object ]),
     width: Number,
     height: Number,
-
-    onLoad: Function,
-    onReload: Function,
-    onResize: Function,
-    onScroll: Function,
-    onMessage: Function,
   }
   static defaultProps = {
     width: Infinity,

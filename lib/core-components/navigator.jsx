@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import React from 'react'
-import { enumerate, ifexist } from '../core/types.js'
+import { enumerate, ifexist, Any } from '../core/types.js'
 import { isNumber, cloneElement, mapChildren, filterChildren } from '../core/utils.js'
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
@@ -14,53 +14,96 @@ export class Navigator extends Component {
   }
 
   onRender() {
-    const { navigation } = this.attrs
-    const originals = Navigate.defaultProps
-    const hasuse = originals || {}
-    const willuse = { ...hasuse, navigation }
-    Navigate.defaultProps = willuse
-    this._NavigateDefaultProps = originals
+    const pollute = (C) => {
+      const { navigation } = this.attrs
+      const originals = C.defaultProps
+      const hasuse = originals || {}
+      const willuse = { ...hasuse, navigation }
+      C.defaultProps = willuse
+      this['_' + C.name + 'DefaultProps'] = originals
+    }
+
+    pollute(Route)
+    pollute(Navigate)
   }
 
   onRendered() {
-    const originals = this._NavigateDefaultProps
-    Navigate.defaultProps = originals
+    const unpollute = (C) => {
+      const originals = this['_' + C.name + 'DefaultProps']
+      C.defaultProps = originals
+    }
+
+    unpollute(Route)
+    unpollute(Navigate)
   }
 
   render() {
     const { navigation, dispatch } = this.attrs
 
     const Page = () => {
-      const { options, status, state } = navigation
-      const isInside = options.routes.find(item => item.component)
-      const { notFound } = options
-      let output = null
+      const { options, state, status } = navigation
 
-      if (isInside) {
-        output = status === '!' ? notFound ? <notFound /> : null
-          : status !== '' ? state.route.component ? <state.route.component /> : null
-          : this.children
-      }
-      else {
-        output = this.children
+      // i.e. current is parent.child.subchild
+      let rootRoute = state.route
+      while (rootRoute && rootRoute.parent) {
+        rootRoute = rootRoute.parent
       }
 
-      return output
+      // use notFoundComponent
+      const { notFoundComponent: NotFound } = options
+      if (!status && NotFound) {
+        return <NotFound navigation={navigation} />
+      }
+
+      // when use inside component
+      if (rootRoute) {
+        const RouteComponent = rootRoute.component
+        if (status && RouteComponent) {
+          return <RouteComponent navigation={navigation} />
+        }
+      }
+
+      return filterChildren(this.children)
     }
 
     const update = dispatch ? dispatch : this.update
     const page = Page()
-    const children = page || null
 
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
-        {children}
+        {page}
       </Observer>
     )
   }
 }
 
 export default Navigator
+
+export class Route extends Component {
+  static props = {
+    navigation: Navigation,
+    match: Any,
+    exact: Boolean,
+  }
+  static defaultProps = {
+    exact: false,
+  }
+  render() {
+    const { navigation, match, exact, component, props = {} } = this.attrs
+    if (navigation.test(match, exact)) {
+      const RouteComponent = component
+      if (RouteComponent) {
+        return <RouteComponent navigation={navigation} {...props} />
+      }
+      else {
+        return filterChildren(this.children)
+      }
+    }
+    else {
+      return null
+    }
+  }
+}
 
 export class Navigate extends Component {
   static props = {
@@ -77,7 +120,8 @@ export class Navigate extends Component {
   }
 
   render() {
-    const { to, params, replace, open, navigation, component, children, ...props } = this.props
+    const { to, params, replace, open, navigation, component, ...props } = this.attrs
+    const { children } = this
 
     const go = () => {
       if (isNumber(to) && to < 0) {

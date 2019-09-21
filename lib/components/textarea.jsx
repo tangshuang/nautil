@@ -9,11 +9,6 @@ export class Textarea extends Component {
 
     line: Number,
     placeholder: ifexist(String),
-
-    onChange: Function,
-    onFocus: Function,
-    onBlur: Function,
-    onSelect: Function,
   }
   static defualtProps = {
     line: 3,

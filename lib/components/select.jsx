@@ -13,8 +13,6 @@ export class Select extends Component {
       disabled: ifexist(Boolean),
     }]),
     placeholder: ifexist(String),
-
-    onChange: Function,
   }
   static defaultProps = {
     onChange: noop,
