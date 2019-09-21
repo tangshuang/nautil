@@ -57,9 +57,9 @@ export class Navigator extends Component {
 
       // when use inside component
       if (rootRoute) {
-        const RouteComponent = rootRoute.component
+        const { component: RouteComponent, props = {} } = rootRoute
         if (status && RouteComponent) {
-          return <RouteComponent navigation={navigation} />
+          return <RouteComponent navigation={navigation} {...props} />
         }
       }
 
