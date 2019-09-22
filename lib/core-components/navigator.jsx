@@ -3,7 +3,7 @@ import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import React from 'react'
 import { enumerate, ifexist, Any } from '../core/types.js'
-import { isNumber, cloneElement, mapChildren, filterChildren } from '../core/utils.js'
+import { isNumber, cloneElement, mapChildren, filterChildren, isFunction } from '../core/utils.js'
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
 
@@ -41,9 +41,18 @@ export class Navigator extends Component {
     const { navigation, dispatch } = this.attrs
 
     const Page = () => {
-      const { options, state, status } = navigation
+      if (isFunction(this.children)) {
+        return this.children({ navigation })
+      }
 
-      // i.e. current is parent.child.subchild
+      const { options, state, status } = navigation
+      const children = filterChildren(this.children)
+
+      // use children if exist
+      if (children.length) {
+        return children
+      }
+
       let rootRoute = state.route
       while (rootRoute && rootRoute.parent) {
         rootRoute = rootRoute.parent
@@ -57,13 +66,13 @@ export class Navigator extends Component {
 
       // when use inside component
       if (rootRoute) {
-        const RouteComponent = rootRoute.component
+        const { component: RouteComponent, props = {} } = rootRoute
         if (status && RouteComponent) {
-          return <RouteComponent navigation={navigation} />
+          return <RouteComponent navigation={navigation} {...props} />
         }
       }
 
-      return filterChildren(this.children)
+      return null
     }
 
     const update = dispatch ? dispatch : this.update
@@ -84,23 +93,69 @@ export class Route extends Component {
     navigation: Navigation,
     match: Any,
     exact: Boolean,
+    animation: ifexist(Number),
   }
   static defaultProps = {
     exact: false,
   }
-  render() {
-    const { navigation, match, exact, component, props = {} } = this.attrs
-    if (navigation.test(match, exact)) {
-      const RouteComponent = component
-      if (RouteComponent) {
-        return <RouteComponent navigation={navigation} {...props} />
+  state = {
+    show: false,
+    display: false,
+  }
+  toggle() {
+    const { navigation, match, exact, animation } = this.attrs
+    const { show, display } = this.state
+    const matched = navigation.is(match, exact)
+    if (animation) {
+      if (matched && !display) {
+        clearTimeout(this.timer)
+        this.setState({ display: true, show: false })
+        this.timer = setTimeout(() => this.setState({ show: true }), 10)
       }
-      else {
-        return filterChildren(this.children)
+      else if (!matched && show) {
+        clearTimeout(this.timer)
+        this.setState({ show: false })
+        this.timer = setTimeout(() => this.setState({ display: false }), animation)
       }
     }
     else {
+      if (matched && !display) {
+        this.setState({ display: true, show: true })
+      }
+      else if (!matched && show) {
+        this.setState({ display: false, show: false })
+      }
+    }
+  }
+  onMounted() {
+    this.toggle()
+  }
+  onUpdated() {
+    this.toggle()
+  }
+  render() {
+    const { navigation, component, props = {} } = this.attrs
+    const { show, display } = this.state
+
+    if (!display) {
       return null
+    }
+
+    const children = filterChildren(this.children)
+    const RouteComponent = component
+    if (RouteComponent) {
+      return <RouteComponent navigation={navigation} show={show} {...props}>{children}</RouteComponent>
+    }
+    else if (isFunction(this.children)) {
+      return this.children({ navigation, show })
+    }
+    else if (children.length) {
+      return children
+    }
+    else {
+      const { route } = navigation.state
+      const { component: RouteComponent, props } = route
+      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
     }
   }
 }
@@ -120,7 +175,7 @@ export class Navigate extends Component {
   }
 
   render() {
-    const { to, params, replace, open, navigation, component, ...props } = this.attrs
+    const { to, params, replace, open, navigation, component, props = {} } = this.attrs
     const { children } = this
 
     const go = () => {
