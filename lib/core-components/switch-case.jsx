@@ -4,7 +4,7 @@ import { isFunction, mapChildren } from '../core/utils.js'
 
 export class Case extends Component {
   static props = {
-    value: Any,
+    is: Any,
     default: ifexist(Boolean),
   }
 
@@ -25,11 +25,11 @@ export class Switch extends Component {
 
     mapChildren(children, (child) => {
       const { type, props } = child
-      const { value, children } = props
+      const { is, children } = props
       if (type === Case) {
         blocks.push({
           default: props.default,
-          value,
+          is,
           children,
         })
       }
@@ -37,12 +37,12 @@ export class Switch extends Component {
 
     var use = null
     for (let block of blocks) {
-      const { value, children } = block
-      if (value === target) {
+      const { is, children } = block
+      if (is === target) {
         use = mapChildren(children, child => isFunction(child) ? child() : child)
         break
       }
-      else if (isFunction(value) && value()) {
+      else if (isFunction(is) && is()) {
         use = mapChildren(children, child => isFunction(child) ? child() : child)
         break
       }
