@@ -45,7 +45,7 @@ export class Language extends Component {
         unsubscribe={dispatch => i18n.off('initialized', dispatch).off('loaded', dispatch).off('languageChanged', dispatch)}
         dispatch={update}
       >
-        {this.children}
+        {isFunction(this.children) ? this.children(i18n) : this.children}
       </Observer>
     )
   }
@@ -62,19 +62,18 @@ export class T extends Component {
     const { i18n, t, s, ...props } = this.attrs
     const children = this.children
     const namespace = s ? s + ':' : ''
-    const exists = t ? i18n.exists(namespace + t) : false
 
     let text
-    if (exists && isFunction(t)) {
+    if (isFunction(t)) {
       text = t(i18n)
     }
-    if (exists) {
+    else if (i18n.has(namespace + t)) {
       text = i18n.t(namespace + t)
     }
     else if (isFunction(children)) {
       text = children(i18n)
     }
-    else if (i18n.exists(namespace + children)) {
+    else if (i18n.has(namespace + children)) {
       text = i18n.t(namespace + children)
     }
     else {
@@ -97,7 +96,7 @@ export class Locale extends Component {
     const { i18n, to, component, children, ...props } = this.props
 
     const change = () => {
-      i18n.changeLanguage(to)
+      i18n.setLang(to)
     }
 
     const nodes = filterChildren(children)
