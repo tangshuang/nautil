@@ -42,7 +42,7 @@ export class Navigator extends Component {
 
     const Page = () => {
       if (isFunction(this.children)) {
-        return this.children(navigation)
+        return this.children({ navigation })
       }
 
       const { options, state, status } = navigation
@@ -134,7 +134,7 @@ export class Route extends Component {
     this.toggle()
   }
   render() {
-    const { navigation, component, match, exact, animation, ...props } = this.attrs
+    const { navigation, component, props = {} } = this.attrs
     const { show, display } = this.state
 
     if (!display) {
@@ -144,10 +144,10 @@ export class Route extends Component {
     const children = filterChildren(this.children)
     const RouteComponent = component
     if (RouteComponent) {
-      return <RouteComponent navigation={navigation} show={animation ? show : undefined} {...props}>{children}</RouteComponent>
+      return <RouteComponent navigation={navigation} show={show} {...props}>{children}</RouteComponent>
     }
     else if (isFunction(this.children)) {
-      return this.children(navigation)
+      return this.children({ navigation, show })
     }
     else if (children.length) {
       return children
@@ -155,7 +155,7 @@ export class Route extends Component {
     else {
       const { route } = navigation.state
       const { component: RouteComponent, props } = route
-      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props}>{children}</RouteComponent> : null
+      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
     }
   }
 }
@@ -175,7 +175,7 @@ export class Navigate extends Component {
   }
 
   render() {
-    const { to, params, replace, open, navigation, component, ...props } = this.attrs
+    const { to, params, replace, open, navigation, component, props = {} } = this.attrs
     const { children } = this
 
     const go = () => {

@@ -29,8 +29,10 @@ export class Page7 extends Component {
         <Route match="page7.child2"
           animation={600}
           component={Animation}
-          enter="600 fade:in"
-          leave="easeInQuad 600 fade:out move:0/-300,-100 scale:1/1.5"
+          props={{
+            enter: "600 fade:in",
+            leave: "easeInQuad 600 fade:out move:0/-300,-100 scale:1/1.5",
+          }}
         >
           <Text>child2</Text>
         </Route>
