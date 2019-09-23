@@ -35,7 +35,7 @@
     "rxjs": "^6.5.2",
     "storagex": "^2.0.0",
     "ts-fns": "^0.1.1",
-    "tyshemo": "^2.7.1"
+    "tyshemo": "^2.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
