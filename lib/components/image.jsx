@@ -1,18 +1,18 @@
 import Component from '../core/component.js'
-import { enumerate, ifexist } from '../core/types.js'
+import { enumerate, ifexist, Unit } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Image extends Component {
   static props = {
-    source: enumerate([ String, Object ]),
-    width: Number,
-    height: Number,
-    maxWidth: ifexist(Number),
-    maxHeight: ifexist(Number),
+    source: enumerate([String, Object]),
+    width: Unit,
+    height: Unit,
+    maxWidth: ifexist(Unit),
+    maxHeight: ifexist(Unit),
   }
   static defaultProps = {
-    width: Infinity,
-    height: Infinity,
+    width: '100%',
+    height: 'auto',
 
     onLoad: noop,
   }

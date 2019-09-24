@@ -4,12 +4,13 @@ import { noop } from '../core/utils.js'
 
 export class Textarea extends Component {
   static props = {
-    value: ifexist(String),
+    value: String,
     line: Number,
     placeholder: ifexist(String),
   }
   static defualtProps = {
     line: 3,
+
     onChange: noop,
     onFocus: noop,
     onBlur: noop,

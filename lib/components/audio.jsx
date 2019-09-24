@@ -1,16 +1,16 @@
 import Component from '../core/component.js'
-import { enumerate } from '../core/types.js'
+import { enumerate, Unit } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Audio extends Component {
   static props = {
-    source: enumerate([ String, Object ]),
-    width: Number,
-    height: Number,
+    source: enumerate([String, Object]),
+    width: Unit,
+    height: Unit,
   }
   static defaultProps = {
-    width: Infinity,
-    height: 30,
+    width: '100%',
+    height: 90,
 
     onPlay: noop,
     onPause: noop,

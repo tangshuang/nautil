@@ -1,50 +1,32 @@
 import Component from '../core/component.js'
-import { Any, ifexist } from '../core/types.js'
-import { noop } from '../core/utils.js'
 
 export class Radio extends Component {
-  static props = {
-    value: ifexist(Any),
-    checked: Boolean,
-  }
-  static defaultProps = {
-    checked: false,
-    onCheck: noop,
-    onUncheck: noop,
-  }
   render() {
-    const {
-      onCheck$,
-      onUncheck$,
+    const { checked, ...rest } = this.attrs
+    const { $checked } = this.props
 
-      className,
-      style,
-      attrs,
-    } = this
-    const { value, bind, checked, ...props } = attrs
-
-    const isChecked = bind ? parse(bind[0], bind[1]) === value : checked
     const onChange = (e) => {
-      if (bind && isChecked) {
-        assign(bind[0], bind[1], value)
+      if ($checked) {
+        this.attrs.checked = !checked
       }
 
-      if (isChecked) {
-        onUncheck$.next(e)
+      if (checked) {
+        this.onUncheck$.next(e)
       }
       else {
-        onCheck$.next(e)
+        this.onCheck$.next(e)
       }
     }
 
     return <input type="radio"
-      {...props}
+      {...rest}
 
-      checked={isChecked}
+      checked={checked}
       onChange={onChange}
 
-      className={className}
-      style={style} />
+      className={this.className}
+      style={this.style}
+    />
   }
 }
 export default Radio

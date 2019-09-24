@@ -1,42 +1,27 @@
 import Component from '../core/component.js'
-import { enumerate, ifexist } from '../core/types.js'
-import { noop } from '../core/utils.js'
+import { isString } from '../core/utils.js'
 
 export class Image extends Component {
-  static props = {
-    source: enumerate([ String, Object ]),
-    width: Number,
-    height: Number,
-    maxWidth: ifexist(Number),
-    maxHeight: ifexist(Number),
-  }
-  static defaultProps = {
-    width: Infinity,
-    height: Infinity,
-
-    onLoad: noop,
-  }
   render() {
-    const {
-      className,
-      style,
-      attrs,
-      children,
-    } = this
-    var { source, width, height, maxWidth, maxHeight, ...props } = attrs
+    const { source, width, height, maxWidth, maxHeight, ...rest } = this.attrs
+    const style = { ...this.style, width, height, maxWidth, maxHeight }
+    const className = this.className
+    const children = this.children
+    const src = isString(source) ? source : source.uri
 
-    width = width === Infinity ? 'auto' : width
-    height = height === Infinity ? 'auto' : height
-
-    const styles = { width, height, maxWidth, maxHeight, ...style }
-
-    return children ? <div {...props} className={className} style={{
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
-      backgroundSize: 'cover',
-      ...styles,
-      backgroundImage: `url(${source})`,
-    }}>{children}</div> : <img {...props} src={source} className={className} style={styles} />
+    return children ? (
+      <div
+        {...rest}
+        className={className}
+        style={{
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          ...style,
+          backgroundImage: `url(${src})`,
+        }}
+      >{children}</div>
+    ) : <img {...rest} src={src} className={className} style={style} />
   }
 }
 export default Image

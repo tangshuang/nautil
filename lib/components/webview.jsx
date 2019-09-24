@@ -1,16 +1,16 @@
 import Component from '../core/component.js'
-import { enumerate } from '../core/types.js'
+import { enumerate, Unit } from '../core/types.js'
 import { noop } from '../core/utils.js'
 
 export class Webview extends Component {
   static props = {
-    source: enumerate([ String, Object ]),
-    width: Number,
-    height: Number,
+    source: enumerate([String, Object]),
+    width: Unit,
+    height: Unit,
   }
   static defaultProps = {
-    width: Infinity,
-    height: Infinity,
+    width: '100%',
+    height: '100%',
 
     onLoad: noop,
     onReload: noop,

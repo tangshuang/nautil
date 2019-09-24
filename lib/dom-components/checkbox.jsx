@@ -1,39 +1,16 @@
 import Component from '../core/component.js'
-import { Any, ifexist } from '../core/types.js'
-import { noop } from '../core/utils.js'
 
 export class Checkbox extends Component {
-  static props = {
-    checkedValue: ifexist(Any),
-    uncheckedValue: ifexist(Any),
-    // model: ifexist(String),
-
-    checked: Boolean,
-  }
-  static defaultProps = {
-    checked: false,
-    onCheck: noop,
-    onUncheck: noop,
-  }
   render() {
-    const {
-      onCheck$,
-      onUncheck$,
+    const { checked, ...rest } = this.attrs
+    const { $checked } = this.props
 
-      className,
-      style,
-      attrs,
-    } = this
-    const { checkedValue, uncheckedValue, bind, checked, ...props } = attrs
-
-    const isChecked = bind ? parse(bind[1], bind[2]) === checkedValue : checked
     const onChange = (e) => {
-      if (bind) {
-        const nextValue = isChecked ? uncheckedValue : checkedValue
-        assign(bind[0], bind[1], nextValue)
+      if ($checked) {
+        this.attrs.checked = !checked
       }
 
-      if (isChecked) {
+      if (checked) {
         onUncheck$.next(e)
       }
       else {
@@ -42,13 +19,14 @@ export class Checkbox extends Component {
     }
 
     return <input type="checkbox"
-      {...props}
+      {...rest}
 
-      checked={isChecked}
+      checked={checked}
       onChange={onChange}
 
       className={className}
-      style={style} />
+      style={style}
+    />
   }
 }
 export default Checkbox
