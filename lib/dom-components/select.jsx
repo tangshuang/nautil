@@ -10,7 +10,7 @@ export class Select extends Component {
         const value = e.target.value
         this.attrs.value = value
       }
-      onChange$.next(e)
+      this.onChange$.next(e)
     }
 
     return (

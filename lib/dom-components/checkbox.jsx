@@ -11,10 +11,10 @@ export class Checkbox extends Component {
       }
 
       if (checked) {
-        onUncheck$.next(e)
+        this.onUncheck$.next(e)
       }
       else {
-        onCheck$.next(e)
+        this.onCheck$.next(e)
       }
     }
 

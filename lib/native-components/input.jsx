@@ -1,62 +1,37 @@
 import Component from '../core/component.js'
-import { enumerate, ifexist } from '../core/types.js'
-import { noop } from '../core/utils.js'
 import { TextInput } from 'react-native'
 
 export class Input extends Component {
-  static props = {
-    type: enumerate([ 'text', 'number', 'email', 'tel', 'url' ]),
-    placeholder: ifexist(String),
-
-    value: ifexist(enumerate([String, Number])),
-  }
-  static defaultProps = {
-    type: 'text',
-    onChange: noop,
-    onFocus: noop,
-    onBlur: noop,
-    onSelect: noop,
-  }
   render() {
-    const {
-      onChange$,
-      onFocus$,
-      onBlur$,
-      onSelect$,
-
-      className,
-      style,
-      attrs,
-    } = this
-    const { type, placeholder, value, bind, readOnly, disabled, ...props } = attrs
+    const { type, placeholder, value, readOnly, disabled, ...rest } = this.attrs
+    const { $value } = this.props
+    const editable = !readOnly && !disabled
 
     const onChange = (e) => {
-      if (bind) {
+      if ($value) {
         const value = e.target.value
-        assign(bind[0], bind[1], value)
+        this.attrs.value = value
       }
-      onChange$.next(e)
+      this.onChange$.next(e)
     }
-
-    const useValue = bind ? parse(bind[0], bind[1]) : value
-    const editable = !readOnly && !disabled
 
     return <TextInput
       {...props}
 
       textContentType={type}
       placeholder={placeholder}
-      value={useValue}
+      value={value}
 
       editable={editable}
 
       onChange={onChange}
-      onFocus={e => onFocus$.next(e)}
-      onBlur={e => onBlur$.next(e)}
-      onSelectionChange={e => onSelect$.next(e)}
+      onFocus={e => this.onFocus$.next(e)}
+      onBlur={e => this.onBlur$.next(e)}
+      onSelectionChange={e => this.onSelect$.next(e)}
 
       className={className}
-      style={style}></TextInput>
+      style={style}
+    ></TextInput>
   }
 }
 export default Input

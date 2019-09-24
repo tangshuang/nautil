@@ -10,7 +10,7 @@ export class Textarea extends Component {
         const value = e.target.value
         this.attrs.value = value
       }
-      onChange$.next(e)
+      this.onChange$.next(e)
     }
 
     return <textarea
@@ -27,7 +27,7 @@ export class Textarea extends Component {
 
       className={this.className}
       style={this.style}
-    />
+    ></textarea>
   }
 }
 export default Textarea

@@ -7,11 +7,9 @@ export class Button extends Component {
       onClick={e => this.onHint$.next(e)}
 
       onMouseDown={e => !isTouchable &&this.onHintStart$.next(e)}
-      onMouseMove={e => !isTouchable &&this.onHintMove$.next(e)}
       onMouseUp={e => !isTouchable &&this.onHintEnd$.next(e)}
 
       onTouchStart={e => isTouchable &&this.onHintStart$.next(e)}
-      onTouchMove={e => isTouchable && this.onHintMove$.next(e)}
       onTouchEnd={e => isTouchable && this.onHintEnd$.next(e)}
 
       className={this.className}

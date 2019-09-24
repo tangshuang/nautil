@@ -9,19 +9,24 @@ export class Image extends Component {
     const children = this.children
     const src = isString(source) ? source : source.uri
 
-    return children ? (
-      <div
-        {...rest}
-        className={className}
-        style={{
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
-          ...style,
-          backgroundImage: `url(${src})`,
-        }}
-      >{children}</div>
-    ) : <img {...rest} src={src} className={className} style={style} />
+    if (children) {
+      return (
+        <div
+          {...rest}
+          className={className}
+          style={{
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            ...style,
+            backgroundImage: `url(${src})`,
+          }}
+        >{children}</div>
+      )
+    }
+    else {
+      return <img {...rest} src={src} className={className} style={style} />
+    }
   }
 }
 export default Image

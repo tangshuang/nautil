@@ -5,7 +5,6 @@ export class Button extends Component {
   static defaultProps = {
     onHint: noop,
     onHintStart: noop,
-    onHintMove: noop,
     onHintEnd: noop,
   }
 }

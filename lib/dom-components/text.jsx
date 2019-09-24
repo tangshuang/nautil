@@ -18,7 +18,7 @@ export class Text extends Component {
     style={this.style}
 
     {...this.attrs}
-    >{children}</span>
+    >{this.children}</span>
   }
 }
 export default Text
