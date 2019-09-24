@@ -5,8 +5,6 @@ import { noop } from '../core/utils.js'
 export class Textarea extends Component {
   static props = {
     value: ifexist(String),
-    // model: ifexist(String),
-
     line: Number,
     placeholder: ifexist(String),
   }

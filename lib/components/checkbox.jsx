@@ -6,8 +6,6 @@ export class Checkbox extends Component {
   static props = {
     checkedValue: ifexist(Any),
     uncheckedValue: ifexist(Any),
-    // model: ifexist(String),
-
     checked: Boolean,
   }
   static defaultProps = {
