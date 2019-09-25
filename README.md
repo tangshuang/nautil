@@ -4,25 +4,27 @@ Nautil is a responsive, efficient, and flexible JavaScript framework for buildin
 
 ⚠️ In development, welcome to contribute!
 
+【[中文文档](https://www.tangshuang.net/7273.html)】
+
 ## Background
 
 React provides a very excellent development experience. However, it only provides a UI library, if you want to build an application with it, you have to think of many different proposals on different points.
 
 To resolve this, I developed Nautil to provide developers a framework to be able to build a cross-platform application conveniently.
 
-It is based on React, so you do not need to worry about the ecosystem.
+It is based on React, so you do not need to worry about the synatax.
 
 One of our purposes is to build cross-platform application, so when you use it, you do not need to write two set of code, just one!
 
 Nautil contains:
 
-- UI rendering based on React
-- router/navigation
-- state management with observable store library
-- data management and requesting with observable data library
-- data type checker
-- cross-platform development proposal with react-dom and react-native
-- internationalization with i18next, and date/number/currency locale formatters
+- react
+- navigation
+- observable store
+- observable data management
+- observable event stream
+- internationalization
+- cross-platform
 
 ## Overview
 
@@ -30,7 +32,7 @@ Nautil is following observer pattern. In the development, you will find you ofte
 
 With Nautil, you do not need to include other packages such as redux, router and ajax library. We have provided our own proposal which included inside. And later, you will find them amazing and interesting.
 
-### Cross-platform
+### Cross-Platform
 
 Import `nautil/dom` to render in web, and use `nautil/native` to build a react-native app.
 
@@ -50,22 +52,28 @@ export default App
 ```
 
 ```js
+// for web
 import { mount } from 'nautil/dom'
 import App from './App.jsx'
 
 mount('#app', App)
 ```
 
-Developers should use inside basic components which imported from `nautil/components`.
-In deep, we override the prototype to make these basic components to act different ways in different platform.
+```js
+// for react-native
+import { register } from 'nautil/native'
+import App from './App.jsx'
+
+register('ProjectName', App)
+```
 
 ### State
 
 We do not advocate redux, it is too complex. We provide a inside-included library which is easy to understand to manage your application level state. It is called `Store` which is a observable data container.
 
 ```js
-import { Component, Store, Observer } from 'nautil'
-import { Section, Text, Button } from 'nautil/components'
+import { Component, Store } from 'nautil'
+import { Observer, Section, Text, Button } from 'nautil/components'
 
 // create a store
 const store = new Store({
@@ -76,7 +84,7 @@ const store = new Store({
 function Page1() {
   const { state } = store
   const grow = () => {
-    state.age ++
+    state.age ++ // modified state directly
   }
   return (
     <Section>
@@ -89,7 +97,11 @@ function Page1() {
 class App extends Component {
   render() {
     return (
-      <Observer subscribe={dispatch => store.watch('*', dispatch)} dispatch={this.update}>
+      <Observer
+        subscribe={dispatch => store.watch('*', dispatch)}
+        unsubscribe={dispatch => store.unwatch('*', dispatch)}
+        dispatch={this.update}
+      >
         <Page1 />
       </Observer>
     )
@@ -102,13 +114,13 @@ Here, we use a `Observer` component which will update UI triggered by subscriber
 
 ### Navigation
 
-We often call this part router, but here we call it navigation.
 It is implemented inside, and is cross-platform. A navigation is observable, so that you can change the UI when navigation changes.
-`Navigator` is to provide navigation, and `Navigate` is to jump between routes.
+
+`Navigator` is to provide navigation, `Route` is to determine which component to render UI, and `Navigate` is to jump between routes.
 
 ```js
-import { Navigation, Navigator, Navigate } from 'nautil'
-import { Section, Text, Button } from 'nautil/components'
+import { Navigation } from 'nautil'
+import { Navigator, Navigate, Route, Section, Text, Button } from 'nautil/components'
 
 import Page1 from './pages/Page1.jsx'
 import Page2 from './pages/Page2.jsx'
@@ -126,24 +138,25 @@ const navigation = new Navigation({
     {
       name: 'page1',
       path: '/page1',
-      component: Page1,
     },
     {
       name: 'page2',
       path: '/page2/:type/:id',
-      component: Page2,
       // default params
       params: {
         type: 'animal',
       },
     },
   ],
-  notFound: NotFound,
 })
 
 function App() {
   return (
-    <Navigator navigation={navigation}></Navigator>
+    <Navigator navigation={navigation}>
+      <Route match="page1" component={Page1} />
+      <Route match="page2" component={Page2} />
+      <Route match="!" component={NotFound} />
+    </Navigator>
   )
 }
 
@@ -157,10 +170,7 @@ function NotFound() {
 }
 ```
 
-`Navigate` which in `Navigator` will be injected with provided navigation automaticly.
-Look into examples and demo for more usages.
-
-### Data Depository
+### Depository
 
 In other system, developers should write many ajax services to request data from backend api. But in Nautil, you should not. You are recommended to follow a new idea of data manangement style: depository.
 
@@ -168,8 +178,8 @@ A data depository is in the middle of frontend business and backend api. For bus
 Yeah, one action, *get* from depository.
 
 ```js
-import { Component, Observer, Depository, Prepare } from 'nautil'
-import { Text } from 'nautil/components'
+import { Component, Depository } from 'nautil'
+import { Observer, Text, Prepare } from 'nautil/components'
 
 // set data sources information
 const datasources = [
@@ -203,7 +213,11 @@ function Page1() {
 class App extends Component {
   render() {
     return (
-      <Observer subscribe={dispatch => depo.subscribe('articles', dispatch).subscribe('tag', dispatch)} dispatch={this.update}>
+      <Observer
+        subscribe={dispatch => depo.subscribe(['articles', 'tag'], dispatch)}
+        unsubscribe={dispatch => depo.unsubscribe(['articles', 'tag'], dispatch)}
+        dispatch={this.update}
+      >
         <Page1 />
       </Observer>
     )
@@ -213,8 +227,7 @@ class App extends Component {
 
 In the example code, we use `depo.get` to get `some` from depository. When some does not exist in depository, it will return `undefined`, so we use `Prepare` component to provide a loading effect. And because we have subscirbe to `depo` and update when it change, after the data of `some` come back from backend api, `render` will be run again, and this time `some` has value.
 
-Maybe, at first, you do not approbate `depo.get`, why don't I send an ajax? why don't I need to create an asynchronous task?
-Finally, you will find it is interesting and genius with observer pattern.
+Maybe, at first, you do not approbate `depo.get`, why don't I send an ajax? why don't I need to create an asynchronous task? Finally, you will find it is interesting and genius with observer pattern.
 
 ### Internationalization
 
@@ -265,8 +278,8 @@ Open your brower to visit localhost:9000 and read the demo code in `demo` direct
 
 If you are going to work with Nautil, keep in mind:
 
-- forget React, nautil is a new framework
-- never forget you are build cross-platform application, so don't use abilities which only works for web
+- React is library, Nautil is a framework
+- never forget you are building cross-platform application, so don't use abilities which only works for web
 - use inside basic component from `nautil/components`, never use html components or react-native components
 - use css module to import stylesheets, when build react-native appliction, install react-native-css-loader to transform css files
 - install babel-plugin-react-require to import React automaticly

@@ -1,30 +1,16 @@
 import Component from '../core/component.js'
-import { enumerate } from '../core/types.js'
-import { noop } from '../core/utils.js'
+import { isString } from '../core/utils.js'
 
 export class Audio extends Component {
-  static props = {
-    source: enumerate([ String, Object ]),
-    width: Number,
-    height: Number,
-  }
-  static defaultProps = {
-    width: Infinity,
-    height: 30,
-
-    onPlay: noop,
-    onPause: noop,
-    onStop: noop,
-    onDrag: noop,
-    onResume: noop,
-    onReload: noop,
-    onLoad: noop,
-    onTick: noop,
-    onVolume: noop,
-  }
   render() {
-    const { children, ...props } = this.props
-    return <audio {...props}>{children}</audio>
+    const { source, width, height, ...rest } = this.attrs
+    const style = { ...this.style, width, height }
+    const src = isString(source) ? source : source.uri
+    return (
+      <audio {...rest} src={src} style={style} className={this.className}>
+        {this.children}
+      </audio>
+    )
   }
 }
 export default Audio

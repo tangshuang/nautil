@@ -4,11 +4,11 @@ import { noop } from '../core/utils.js'
 
 export class Radio extends Component {
   static props = {
-    value: ifexist(Any),
     checked: Boolean,
   }
   static defaultProps = {
     checked: false,
+
     onCheck: noop,
     onUncheck: noop,
   }
