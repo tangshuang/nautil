@@ -4,14 +4,11 @@ import { Picker } from 'react-native'
 export class Select extends Component {
   render() {
     const { value, placeholder, options, readOnly, disabled, ...rest } = this.attrs
-    const { $value } = this.props
     const enabled = !readOnly && !disabled
 
     const onChange = (e) => {
-      if ($value) {
-        const value = e.target.value
-        this.attrs.value = value
-      }
+      const value = e.target.value
+      this.attrs.value = value
       this.onChange$.next(e)
     }
 

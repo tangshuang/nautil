@@ -4,13 +4,10 @@ import { View } from 'react-native'
 export class Checkbox extends Component {
   render() {
     const { checked, ...rest } = this.attrs
-    const { $checked } = this.props
     const { color = '#888888' } = this.style
 
     const onChange = (e) => {
-      if ($checked) {
-        this.attrs.checked = !checked
-      }
+      this.attrs.checked = !checked
 
       if (checked) {
         this.onUncheck$.next(e)

@@ -3,13 +3,10 @@ import Component from '../core/component.js'
 export class Select extends Component {
   render() {
     const { value, placeholder, options, ...rest } = this.attrs
-    const { $value } = this.props
 
     const onChange = (e) => {
-      if ($value) {
-        const value = e.target.value
-        this.attrs.value = value
-      }
+      const value = e.target.value
+      this.attrs.value = value
       this.onChange$.next(e)
     }
 

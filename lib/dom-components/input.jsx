@@ -3,13 +3,10 @@ import Component from '../core/component.js'
 export class Input extends Component {
   render() {
     const { type, placeholder, value, bind, ...rest } = this.attrs
-    const { $value } = this.props
 
     const onChange = (e) => {
-      if ($value) {
-        const value = e.target.value
-        this.attrs.value = value
-      }
+      const value = e.target.value
+      this.attrs.value = value
       this.onChange$.next(e)
     }
 

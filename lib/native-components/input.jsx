@@ -4,14 +4,11 @@ import { TextInput } from 'react-native'
 export class Input extends Component {
   render() {
     const { type, placeholder, value, readOnly, disabled, ...rest } = this.attrs
-    const { $value } = this.props
     const editable = !readOnly && !disabled
 
     const onChange = (e) => {
-      if ($value) {
-        const value = e.target.value
-        this.attrs.value = value
-      }
+      const value = e.target.value
+      this.attrs.value = value
       this.onChange$.next(e)
     }
 
