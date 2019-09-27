@@ -5,7 +5,7 @@ import { noop } from '../core/utils.js'
 export class Video extends Component {
   static props = {
     source: enumerate([String, Object]),
-    width: Uint,
+    width: Unit,
     height: Unit,
   }
   static defaultProps = {
