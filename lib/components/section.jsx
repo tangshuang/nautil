@@ -7,6 +7,7 @@ export class Section extends Component {
     onHintStart: noop,
     onHintMove: noop,
     onHintEnd: noop,
+    onHintCancel: noop,
   }
 }
 export default Section

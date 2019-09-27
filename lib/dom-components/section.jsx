@@ -13,6 +13,7 @@ export class Section extends Component {
       onTouchStart={e => isTouchable &&this.onHintStart$.next(e)}
       onTouchMove={e => isTouchable && this.onHintMove$.next(e)}
       onTouchEnd={e => isTouchable && this.onHintEnd$.next(e)}
+      onTouchCancel={e => isTouchable && this.onHintCancel$.next(e)}
 
       className={this.className}
       style={this.style}
