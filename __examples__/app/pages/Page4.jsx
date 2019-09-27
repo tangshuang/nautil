@@ -5,7 +5,7 @@
 import { Component, Model } from 'nautil'
 import { Section, Input, Button, Navigate } from 'nautil/components'
 import { T } from 'nautil/i18n'
-import { initialize, pipe, inject } from 'nautil/operators'
+import { initialize, pipe, inject, observe } from 'nautil/operators'
 
 import depo from '../depo.js'
 import navigation from '../navigation.js'
@@ -82,11 +82,11 @@ export class Page4 extends Component {
           </Navigate>
         </Section>
         <Section>
-          <Section><Input placeholder="Name" value={form.get('name')} onChange={e => form.set('name', e.target.value)} /></Section>
+          <Section><Input placeholder="Name" $value={[form.get('name'), name => form.set('name', name)]} /></Section>
           <Section>{form.message('name')}</Section>
         </Section>
         <Section>
-          <Section><Input type="number" placeholder="Age" value={form.get('age')} onChange={e => form.set('age', e.target.value)} /></Section>
+          <Section><Input type="number" placeholder="Age" $value={[form.get('age'), age => form.set('age', age)]} /></Section>
           <Section>{form.message('age')}</Section>
         </Section>
         <Section>
@@ -99,6 +99,7 @@ export class Page4 extends Component {
 
 export default pipe([
   initialize('form', FormModel),
+  observe('form'),
   inject('navigation', () => navigation),
   inject('depo', depo),
 ])(Page4)
