@@ -20,4 +20,5 @@ export {
   mapChildren,
   createClassName,
   attachShadowClass,
+  createTwoWayBinding,
 } from './lib/core/utils.js'
