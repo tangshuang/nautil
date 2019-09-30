@@ -9,6 +9,8 @@ export class Text extends Component {
       onResponderGrant={e => this.onHintStart$.next(e)}
       onResponderMove={e => this.onHintMove$.next(e)}
       onResponderRelease={e => this.onHintEnd$.next(e)}
+      onResponderReject={e => this.onHintCancel$.next(e)}
+      onResponderTerminate={e => this.onHintCancel$.next(e)}
 
       className={this.className}
       style={this.style}

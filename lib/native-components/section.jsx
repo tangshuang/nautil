@@ -12,6 +12,8 @@ export class Section extends Component {
         this.onHintEnd$.next(e)
         this.onHint$.next(e)
       }}
+      onResponderReject={e => this.onHintCancel$.next(e)}
+      onResponderTerminate={e => this.onHintCancel$.next(e)}
 
       className={this.className}
       style={this.style}

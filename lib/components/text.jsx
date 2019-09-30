@@ -7,6 +7,7 @@ export class Text extends Component {
     onHintStart: noop,
     onHintMove: noop,
     onHintEnd: noop,
+    onHintCancel: noop,
   }
 }
 export default Text
