@@ -6,11 +6,11 @@ export class Input extends Component {
   static props = {
     type: enumerate([ 'text', 'number', 'email', 'tel', 'url' ]),
     placeholder: ifexist(String),
-
-    value: ifexist(enumerate([String, Number])),
+    value: enumerate([String, Number]),
   }
   static defaultProps = {
     type: 'text',
+
     onChange: noop,
     onFocus: noop,
     onBlur: noop,

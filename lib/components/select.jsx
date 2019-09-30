@@ -4,9 +4,7 @@ import { noop } from '../core/utils.js'
 
 export class Select extends Component {
   static props = {
-    value: ifexist(Any),
-    // model: ifexist(String),
-
+    value: Any,
     options: list([{
       text: String,
       value: Any,

@@ -1,46 +1,25 @@
 import { Component } from '../core/component.js'
-import { noop } from '../core/utils.js'
 
 export class Section extends Component {
-  static defaultProps = {
-    onHint: noop,
-    onHintEnter: noop,
-    onHintStart: noop,
-    onHintMove: noop,
-    onHintEnd: noop,
-    onHintLeave: noop,
-  }
   render() {
-    const {
-      onHint$,
-      onHintEnter$,
-      onHintStart$,
-      onHintMove$,
-      onHintEnd$,
-      onHintLeave$,
-
-      className,
-      style,
-      attrs,
-      children,
-    } = this
-
+    const isTouchable = ('ontouchmove' in document)
     return <div
-      onClick={e => onHint$.next(e)}
-      onMouseEnter={e => onHintEnter$.next(e)}
-      onMouseDown={e => onHintStart$.next(e)}
-      onMouseMove={e => onHintMove$.next(e)}
-      onMouseUp={e => onHintEnd$.next(e)}
-      onMouseLeave={e => onHintLeave$.next(e)}
+      onClick={e => this.onHint$.next(e)}
 
-      onTouchStart={e => onHintStart$.next(e)}
-      onTouchMove={e => onHintMove$.next(e)}
-      onTouchEnd={e => onHintEnd$.next(e)}
+      onMouseDown={e => !isTouchable &&this.onHintStart$.next(e)}
+      onMouseMove={e => !isTouchable &&this.onHintMove$.next(e)}
+      onMouseUp={e => !isTouchable &&this.onHintEnd$.next(e)}
 
-      className={className}
-      style={style}
+      onTouchStart={e => isTouchable &&this.onHintStart$.next(e)}
+      onTouchMove={e => isTouchable && this.onHintMove$.next(e)}
+      onTouchEnd={e => isTouchable && this.onHintEnd$.next(e)}
+      onTouchCancel={e => isTouchable && this.onHintCancel$.next(e)}
 
-      {...attrs}>{children}</div>
+      className={this.className}
+      style={this.style}
+
+      {...this.attrs}
+    >{this.children}</div>
   }
 }
 export default Section

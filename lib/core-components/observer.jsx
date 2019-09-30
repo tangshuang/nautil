@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { isFunction } from '../core/utils.js'
+import { noop } from '../core/utils.js'
 
 export class Observer extends Component {
   static props = {
@@ -7,15 +7,16 @@ export class Observer extends Component {
     unsubscribe: Function,
     dispatch: Function,
   }
+  static defaultProps = {
+    unsubscribe: noop,
+  }
   onMounted() {
     const { subscribe, dispatch } = this.attrs
     subscribe(dispatch)
   }
   onUnmount() {
     const { unsubscribe, dispatch } = this.attrs
-    if (isFunction(unsubscribe)) {
-      unsubscribe(dispatch)
-    }
+    unsubscribe(dispatch)
   }
   render() {
     return this.children

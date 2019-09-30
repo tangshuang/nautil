@@ -4,11 +4,8 @@ import { noop } from '../core/utils.js'
 export class Button extends Component {
   static defaultProps = {
     onHint: noop,
-    onHintEnter: noop,
     onHintStart: noop,
-    onHintMove: noop,
     onHintEnd: noop,
-    onHintLeave: noop,
   }
 }
 export default Button

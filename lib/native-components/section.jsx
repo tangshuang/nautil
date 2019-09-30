@@ -1,46 +1,27 @@
 import { Component } from '../core/component.js'
-import { noop } from '../core/utils.js'
 import { View } from 'react-native'
 
 export class Section extends Component {
-  static defaultProps = {
-    onHint: noop,
-    onHintEnter: noop,
-    onHintStart: noop,
-    onHintMove: noop,
-    onHintEnd: noop,
-    onHintLeave: noop,
-  }
   render() {
-    const {
-      onHint$,
-      onHintEnter$,
-      onHintStart$,
-      onHintMove$,
-      onHintEnd$,
-      onHintLeave$,
-
-      className,
-      style,
-      attrs,
-      children,
-    } = this
-
-    const { pointerEvents } = style
+    const { pointerEvents } = this.style
 
     return <View
-      onResponderGrant={e => onHintStart$.next(e)}
-      onResponderMove={e => onHintMove$.next(e)}
+      onResponderGrant={e => this.onHintStart$.next(e)}
+      onResponderMove={e => this.onHintMove$.next(e)}
       onResponderRelease={e => {
-        onHintEnd$.next(e)
-        onHint$.next(e)
+        this.onHintEnd$.next(e)
+        this.onHint$.next(e)
       }}
+      onResponderReject={e => this.onHintCancel$.next(e)}
+      onResponderTerminate={e => this.onHintCancel$.next(e)}
 
-      className={className}
-      style={style}
+      className={this.className}
+      style={this.style}
       pointerEvents={pointerEvents}
 
-      {...attrs}>{children}</View>
+      {...this.attrs}
+    >{this.children}</View>
   }
 }
+
 export default Section

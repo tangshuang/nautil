@@ -3,12 +3,12 @@ import { Component } from '../core/component.js'
 export class Line extends Component {
   static props = {
     length: Number,
-    thickness: Number,
+    thick: Number,
     color: String,
   }
   static defaultProps = {
-    length: Infinity,
-    thickness: 1,
+    length: 1,
+    thick: 1,
     color: '#888888',
   }
 }
