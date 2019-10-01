@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import { throttle } from '../core/utils.js'
 import Section from './section.jsx'
 
-export class Swipe extends Component {
+export class SwipeSection extends Component {
   onInit() {
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)

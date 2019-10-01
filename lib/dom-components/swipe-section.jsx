@@ -1,8 +1,7 @@
 import Component from '../core/component.js'
-import { createRef } from 'react'
-import { throttle } from '../core/utils.js'
+import { throttle, createRef } from '../core/utils.js'
 
-export class Swipe extends Component {
+export class SwipeSection extends Component {
   onInit() {
     this.dom = createRef()
 

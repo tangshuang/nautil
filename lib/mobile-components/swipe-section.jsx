@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import { noop } from '../core/utils.js'
 import { enumerate } from '../core/types.js'
 
-export class Swipe extends Component {
+export class SwipeSection extends Component {
   static props = {
     sensitivity: Number,
     distance: Number,
