@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 
 export class Input extends Component {
   render() {
-    const { type, placeholder, value, bind, ...rest } = this.attrs
+    const { type, placeholder, value, ...rest } = this.attrs
 
     const onChange = (e) => {
       const value = e.target.value
