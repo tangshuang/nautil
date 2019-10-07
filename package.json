@@ -3,13 +3,6 @@
   "version": "0.1.1",
   "description": "A javascript application framework.",
   "main": "index.js",
-  "scripts": {
-    "start": "npm run web-app",
-    "web-app": "webpack-dev-server --config __examples__/web-app/webpack.config.js",
-    "web-component": "webpack-dev-server --config __examples__/web-component/webpack.config.js",
-    "wx-app": "webpack --config __examples__/wx-app/webpack.config.js --watch",
-    "pull-to-load": "webpack-dev-server --config __examples__/pull-to-load/webpack.config.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tangshuang/nautil.git"
@@ -27,35 +20,16 @@
   "dependencies": {
     "axios": "^0.19.0",
     "axios-miniprogram-adapter": "^0.2.4",
-    "etx": "^1.1.0",
-    "i18next": "^17.0.6",
-    "react": "^16.9.0",
-    "react-dom": "^16.10.1",
+    "etx": "^4.0.0",
+    "i18next": "^17.0.18",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
     "react-list": "^0.8.13",
-    "react-native": "^0.61.1",
+    "react-native": "^0.61.2",
     "react-shadow-dom-retarget-events": "^1.0.10",
-    "rxjs": "^6.5.2",
+    "rxjs": "^6.5.3",
     "storagex": "^2.0.0",
-    "ts-fns": "^0.1.1",
-    "tyshemo": "^2.8.4"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/polyfill": "^7.6.0",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-react-require": "^3.1.1",
-    "css-loader": "^3.0.0",
-    "css-object-loader": "0.0.7",
-    "dotenv": "^8.0.0",
-    "i18next-browser-languagedetector": "^3.0.3",
-    "mini-css-extract-plugin": "^0.8.0",
-    "mp-webpack-plugin": "0.0.12",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.35.2",
-    "webpack-cli": "^3.3.5",
-    "webpack-dev-server": "^3.7.2"
+    "ts-fns": "^1.0.0",
+    "tyshemo": "^2.10.0"
   }
 }
