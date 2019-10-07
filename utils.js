@@ -1,4 +1,3 @@
-export * from 'ts-fns'
 export {
   cloneElement,
   createContext,
