@@ -25,11 +25,13 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-list": "^0.8.13",
-    "react-native": "^0.61.2",
     "react-shadow-dom-retarget-events": "^1.0.10",
     "rxjs": "^6.5.3",
     "storagex": "^2.0.0",
     "ts-fns": "^1.0.0",
     "tyshemo": "^2.10.0"
+  },
+  "peerDependencies": {
+    "react-native": "^0.61.2"
   }
 }
