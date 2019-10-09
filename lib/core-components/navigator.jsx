@@ -193,15 +193,15 @@ export class Navigate extends Component {
     const nodes = filterChildren(children)
     if (component || nodes.length > 1) {
       const C = component || Section
-      return <C {...props} onHintEnd={go}>{nodes}</C>
+      return <C {...props} onHint={go}>{nodes}</C>
     }
     else {
       return mapChildren(nodes, (child) => {
         if (child.type) {
-          return cloneElement(child, { onHintEnd: go })
+          return cloneElement(child, { onHint: go })
         }
         else {
-          return <Text {...props} onHintEnd={go}>{child}</Text>
+          return <Text {...props} onHint={go}>{child}</Text>
         }
       })
     }

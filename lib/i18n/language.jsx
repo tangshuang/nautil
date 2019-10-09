@@ -102,15 +102,15 @@ export class Locale extends Component {
     const nodes = filterChildren(children)
     if (component || nodes.length > 1) {
       const C = component || Section
-      return <C {...props} onHintEnd={change}>{nodes}</C>
+      return <C {...props} onHint={change}>{nodes}</C>
     }
     else {
       return mapChildren(children, (child) => {
         if (child.type) {
-          return cloneElement(child, { onHintEnd: change })
+          return cloneElement(child, { onHint: change })
         }
         else {
-          return <Text {...props} onHintEnd={change}>{child}</Text>
+          return <Text {...props} onHint={change}>{child}</Text>
         }
       })
     }
