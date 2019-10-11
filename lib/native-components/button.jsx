@@ -1,5 +1,5 @@
 import { Component } from '../core/component.js'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, Text } from 'react-native'
 
 export class Button extends Component {
   render() {
@@ -15,7 +15,7 @@ export class Button extends Component {
       color={color}
 
       {...this.attrs}
-    >{this.children}</TouchableOpacity>
+    ><Text>{this.children}</Text></TouchableOpacity>
   }
 }
 export default Button
