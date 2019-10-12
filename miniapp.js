@@ -4,5 +4,6 @@ import './lib/miniapp/storage.js'
 import './lib/miniapp/navigation.js'
 import './lib/dom/components.js'
 import './lib/dom/mobile-components.js'
+import './lib/miniapp/depository.js'
 
 export * from './lib/miniapp/nautil.js'
