@@ -154,7 +154,7 @@ export class Route extends Component {
     }
     else {
       const { route } = navigation.state
-      const { component: RouteComponent, props } = route
+      const { component: RouteComponent, props = {} } = route
       return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
     }
   }
@@ -193,7 +193,7 @@ export class Navigate extends Component {
     const nodes = filterChildren(children)
     if (component || nodes.length > 1) {
       const C = component || Section
-      return <C {...rest} onHint={go}>{nodes}</C>
+      return <C {...props} onHint={go}>{nodes}</C>
     }
     else {
       return mapChildren(nodes, (child) => {
@@ -201,7 +201,7 @@ export class Navigate extends Component {
           return cloneElement(child, { onHint: go })
         }
         else {
-          return <Text {...rest} onHint={go}>{child}</Text>
+          return <Text {...props} onHint={go}>{child}</Text>
         }
       })
     }
