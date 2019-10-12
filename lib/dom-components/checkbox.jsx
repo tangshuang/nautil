@@ -21,8 +21,8 @@ export class Checkbox extends Component {
       checked={checked}
       onChange={onChange}
 
-      className={className}
-      style={style}
+      className={this.className}
+      style={this.style}
     />
   }
 }

@@ -1,17 +1,23 @@
 import { Component } from '../core/component.js'
 import { View } from 'react-native'
+import Text from '../components/text.jsx'
+import { filterChildren } from '../core/utils.js'
 
 export class Section extends Component {
   render() {
     const { pointerEvents } = this.style
 
+    const children = this.children
+    const nodes = filterChildren(children)
+    const isPuerText = !nodes.some(node => node.type)
+    const content = isPuerText ? <Text>{children}</Text> : children
+
     return <View
+      onStartShouldSetResponder={() => true}
+      onMoveShouldSetResponder={() => true}
       onResponderGrant={e => this.onHintStart$.next(e)}
       onResponderMove={e => this.onHintMove$.next(e)}
-      onResponderRelease={e => {
-        this.onHintEnd$.next(e)
-        this.onHint$.next(e)
-      }}
+      onResponderRelease={e => this.onHintEnd$.next(e)}
       onResponderReject={e => this.onHintCancel$.next(e)}
       onResponderTerminate={e => this.onHintCancel$.next(e)}
 
@@ -20,7 +26,7 @@ export class Section extends Component {
       pointerEvents={pointerEvents}
 
       {...this.attrs}
-    >{this.children}</View>
+    >{content}</View>
   }
 }
 

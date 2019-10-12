@@ -241,7 +241,7 @@ export class Animation extends Component {
 
   render() {
     const { show, style } = this.state
-    const { ease, duration, component, ...props } = this.attrs
+    const { ease, duration, component, ...rest } = this.attrs
     delete props.show
 
     const C = component ? component : Section
@@ -251,7 +251,7 @@ export class Animation extends Component {
       stylesheet.push(style)
     }
 
-    return show ? <C {...props} stylesheet={stylesheet}>{this.children}</C> : null
+    return show ? <C {...rest} stylesheet={stylesheet}>{this.children}</C> : null
   }
 }
 

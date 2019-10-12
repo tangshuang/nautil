@@ -12,10 +12,14 @@ export class Input extends Component {
       this.onChange$.next(e)
     }
 
-    return <TextInput
-      {...props}
+    const contentType = type === 'password' ? 'password' : 'none'
+    const keyboardType = type === 'number' ? 'decimal-pad' : type === 'email' ? 'email-address' : type === 'tel' ? 'phone-pad' : 'default'
 
-      textContentType={type}
+    return <TextInput
+      {...rest}
+
+      keyboardType={keyboardType}
+      textContentType={contentType}
       placeholder={placeholder}
       value={value}
 
@@ -26,8 +30,8 @@ export class Input extends Component {
       onBlur={e => this.onBlur$.next(e)}
       onSelectionChange={e => this.onSelect$.next(e)}
 
-      className={className}
-      style={style}
+      className={this.className}
+      style={this.style}
     ></TextInput>
   }
 }

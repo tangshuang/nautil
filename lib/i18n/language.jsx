@@ -59,7 +59,7 @@ export class T extends Component {
   }
 
   render() {
-    const { i18n, t, s, ...props } = this.attrs
+    const { i18n, t, s, ...rest } = this.attrs
     const children = this.children
     const namespace = s ? s + ':' : ''
 
@@ -81,7 +81,7 @@ export class T extends Component {
     }
 
     return (
-      <Text stylesheet={[this.style, this.className]} {...props}>{text}</Text>
+      <Text stylesheet={[this.style, this.className]} {...rest}>{text}</Text>
     )
   }
 }
@@ -93,7 +93,7 @@ export class Locale extends Component {
   }
 
   render() {
-    const { i18n, to, component, children, ...props } = this.props
+    const { i18n, to, component, children, ...rest } = this.props
 
     const change = () => {
       i18n.setLang(to)
@@ -102,7 +102,7 @@ export class Locale extends Component {
     const nodes = filterChildren(children)
     if (component || nodes.length > 1) {
       const C = component || Section
-      return <C {...props} onHint={change}>{nodes}</C>
+      return <C {...rest} onHint={change}>{nodes}</C>
     }
     else {
       return mapChildren(children, (child) => {
@@ -110,7 +110,7 @@ export class Locale extends Component {
           return cloneElement(child, { onHint: change })
         }
         else {
-          return <Text {...props} onHint={change}>{child}</Text>
+          return <Text {...rest} onHint={change}>{child}</Text>
         }
       })
     }
