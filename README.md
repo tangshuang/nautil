@@ -204,8 +204,8 @@ depo.register(datasources)
 function Page1() {
   const some = depo.get('tag', { tag: 'some name' })
   return (
-    <Prepare isReady={some} loading={<Text>loading...</Text>}>
-      <Text>{some.name}</Text>
+    <Prepare ready={some} placeholder={<Text>loading...</Text>}>
+      {() => <Text>{some.name}</Text>}
     </Prepare>
   )
 }

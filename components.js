@@ -10,6 +10,7 @@ export * from './lib/core-components/navigator.jsx'
 export * from './lib/core-components/prepare.jsx'
 export * from './lib/core-components/show.jsx'
 export * from './lib/core-components/static.jsx'
+export * from './lib/core-components/await.jsx'
 
 // global components
 export * from './lib/components/section.jsx'
@@ -30,3 +31,5 @@ export * from './lib/components/webview.jsx'
 
 // mobile components
 export * from './lib/mobile-components/scroll-section.jsx'
+export * from './lib/mobile-components/swipe-section.jsx'
+export * from './lib/mobile-components/list-section.jsx'
