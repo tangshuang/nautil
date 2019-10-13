@@ -6,7 +6,7 @@ export class Input extends Component {
 
     const onChange = (e) => {
       const value = e.target.value
-      this.attrs.value = value
+      this.attrs.value = type === 'number' || type === 'range' ? +value : value
       this.onChange$.next(e)
     }
 
