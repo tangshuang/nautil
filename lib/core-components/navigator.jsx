@@ -67,7 +67,7 @@ class NavigatorPond extends Component {
 export class Navigator extends Component {
   static props = {
     navigation: Navigation,
-    match: Any,
+    match: ifexist(Any),
     exact: Boolean,
     animation: ifexist(Number),
   }
