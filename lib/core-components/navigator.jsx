@@ -43,7 +43,7 @@ class NavigatorPond extends Component {
       if (rootRoute) {
         const { component, props = {}, animation, name } = rootRoute
         if (component) {
-          return <Route component={component} match={name} navigation={navigation} animation={animation} {...props} />
+          return <Navigator component={component} match={name} navigation={navigation} animation={animation} {...props} />
         }
         else {
           return null
@@ -121,7 +121,7 @@ export class Navigator extends Component {
       this['_' + C.name + 'DefaultProps'] = originals
     }
 
-    pollute(Route)
+    pollute(Navigator)
     pollute(Navigate)
   }
   onRendered() {
@@ -130,7 +130,7 @@ export class Navigator extends Component {
       C.defaultProps = originals
     }
 
-    unpollute(Route)
+    unpollute(Navigator)
     unpollute(Navigate)
   }
 
