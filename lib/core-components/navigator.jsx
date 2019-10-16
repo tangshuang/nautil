@@ -7,50 +7,31 @@ import { isNumber, cloneElement, mapChildren, filterChildren, isFunction } from 
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
 
-export class Navigator extends Component {
+class NavigatorPond extends Component {
   static props = {
     navigation: Navigation,
     dispatch: ifexist(Function),
   }
 
-  onRender() {
-    const pollute = (C) => {
-      const { navigation } = this.attrs
-      const originals = C.defaultProps
-      const hasuse = originals || {}
-      const willuse = { ...hasuse, navigation }
-      C.defaultProps = willuse
-      this['_' + C.name + 'DefaultProps'] = originals
-    }
-
-    pollute(Route)
-    pollute(Navigate)
-  }
-
-  onRendered() {
-    const unpollute = (C) => {
-      const originals = this['_' + C.name + 'DefaultProps']
-      C.defaultProps = originals
-    }
-
-    unpollute(Route)
-    unpollute(Navigate)
-  }
-
   render() {
     const { navigation, dispatch } = this.attrs
+    const { options, state, status } = navigation
 
-    const Page = () => {
-      if (isFunction(this.children)) {
-        return this.children({ navigation })
+    const createRoute = () => {
+      // not ready
+      if (status < 0) {
+        return null
       }
 
-      const { options, state, status } = navigation
-      const children = filterChildren(this.children)
-
-      // use children if exist
-      if (children.length) {
-        return children
+      // not found
+      if (status === 0) {
+        const { notFoundComponent: NotFound } = options
+        if (NotFound) {
+          return <NotFound navigation={navigation} />
+        }
+        else {
+          return null
+        }
       }
 
       let rootRoute = state.route
@@ -58,17 +39,14 @@ export class Navigator extends Component {
         rootRoute = rootRoute.parent
       }
 
-      // use notFoundComponent
-      const { notFoundComponent: NotFound } = options
-      if (!status && NotFound) {
-        return <NotFound navigation={navigation} />
-      }
-
       // when use inside component
       if (rootRoute) {
-        const { component: RouteComponent, props = {} } = rootRoute
-        if (status && RouteComponent) {
-          return <RouteComponent navigation={navigation} {...props} />
+        const { component, props = {}, animation, name } = rootRoute
+        if (component) {
+          return <Route component={component} match={name} navigation={navigation} animation={animation} {...props} />
+        }
+        else {
+          return null
         }
       }
 
@@ -76,19 +54,17 @@ export class Navigator extends Component {
     }
 
     const update = dispatch ? dispatch : this.update
-    const page = Page()
+    const route = createRoute()
 
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
-        {page}
+        {route}
       </Observer>
     )
   }
 }
 
-export default Navigator
-
-export class Route extends Component {
+export class Navigator extends Component {
   static props = {
     navigation: Navigation,
     match: Any,
@@ -98,10 +74,12 @@ export class Route extends Component {
   static defaultProps = {
     exact: false,
   }
+
   state = {
     show: false,
     display: false,
   }
+
   toggle() {
     const { navigation, match, exact, animation } = this.attrs
     const { show, display } = this.state
@@ -133,8 +111,37 @@ export class Route extends Component {
   onUpdated() {
     this.toggle()
   }
+  onRender() {
+    const pollute = (C) => {
+      const { navigation } = this.attrs
+      const originals = C.defaultProps
+      const hasuse = originals || {}
+      const willuse = { ...hasuse, navigation }
+      C.defaultProps = willuse
+      this['_' + C.name + 'DefaultProps'] = originals
+    }
+
+    pollute(Route)
+    pollute(Navigate)
+  }
+  onRendered() {
+    const unpollute = (C) => {
+      const originals = this['_' + C.name + 'DefaultProps']
+      C.defaultProps = originals
+    }
+
+    unpollute(Route)
+    unpollute(Navigate)
+  }
+
   render() {
-    const { navigation, component, props = {} } = this.attrs
+    const { navigation, component, props = {}, match } = this.attrs
+
+    // when ther is no match prop, use the whole navigation options.routes as render base
+    if (!match) {
+      return <NavigatorPond navigation={navigation} />
+    }
+
     const { show, display } = this.state
 
     if (!display) {
@@ -207,3 +214,5 @@ export class Navigate extends Component {
     }
   }
 }
+
+export default Navigator
