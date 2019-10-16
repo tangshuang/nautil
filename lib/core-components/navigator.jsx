@@ -41,7 +41,7 @@ class NavigatorPond extends Component {
 
       // when use inside component
       if (rootRoute) {
-        const { component, props = {}, animation, name } = rootRoute
+        const { component, props = {}, animation = 0, name } = rootRoute
         if (component) {
           return <Navigator component={component} match={name} navigation={navigation} animation={animation} {...props} />
         }
@@ -68,11 +68,8 @@ export class Navigator extends Component {
   static props = {
     navigation: Navigation,
     match: ifexist(Any),
-    exact: Boolean,
+    exact: ifexist(Boolean),
     animation: ifexist(Number),
-  }
-  static defaultProps = {
-    exact: false,
   }
 
   state = {
