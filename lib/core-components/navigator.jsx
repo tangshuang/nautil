@@ -7,7 +7,7 @@ import { isNumber, cloneElement, mapChildren, filterChildren, isFunction } from 
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
 
-class NavigatorPond extends Component {
+class PondNavigator extends Component {
   static props = {
     navigation: Navigation,
     dispatch: ifexist(Function),
@@ -108,35 +108,13 @@ export class Navigator extends Component {
   onUpdated() {
     this.toggle()
   }
-  onRender() {
-    const pollute = (C) => {
-      const { navigation } = this.attrs
-      const originals = C.defaultProps
-      const hasuse = originals || {}
-      const willuse = { ...hasuse, navigation }
-      C.defaultProps = willuse
-      this['_' + C.name + 'DefaultProps'] = originals
-    }
-
-    pollute(Navigator)
-    pollute(Navigate)
-  }
-  onRendered() {
-    const unpollute = (C) => {
-      const originals = this['_' + C.name + 'DefaultProps']
-      C.defaultProps = originals
-    }
-
-    unpollute(Navigator)
-    unpollute(Navigate)
-  }
 
   render() {
     const { navigation, component, props = {}, match } = this.attrs
 
     // when ther is no match prop, use the whole navigation options.routes as render base
     if (!match) {
-      return <NavigatorPond navigation={navigation} />
+      return <PondNavigator navigation={navigation} />
     }
 
     const { show, display } = this.state
