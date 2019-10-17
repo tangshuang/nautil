@@ -33,8 +33,8 @@ export class Animation extends Component {
     style: {},
   }
 
-  onInit() {
-    const { enter, leave } = this.props
+  onMount() {
+    const { enter, leave } = this.attrs
 
     const enterTypes = []
     const enterOption = {}

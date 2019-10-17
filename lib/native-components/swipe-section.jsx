@@ -3,14 +3,14 @@ import { throttle } from '../core/utils.js'
 import Section from './section.jsx'
 
 export class SwipeSection extends Component {
-  onInit() {
+  onMount() {
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onTouchEnd = this.onTouchEnd.bind(this)
     this.onTouchCancel = this.onTouchCancel.bind(this)
 
-    if (this.props.throttle) {
-      this.onTouchMove = throttle(this.onTouchMove, this.props.throttle)
+    if (this.attrs.throttle) {
+      this.onTouchMove = throttle(this.onTouchMove, this.attrs.throttle)
     }
 
     this.touchStartX = 0

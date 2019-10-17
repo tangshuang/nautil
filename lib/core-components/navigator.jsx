@@ -3,92 +3,10 @@ import Navigation from '../core/navigation.js'
 import Observer from './observer.jsx'
 import React from 'react'
 import { enumerate, ifexist, Any } from '../core/types.js'
-import { isNumber, cloneElement, mapChildren, filterChildren, isFunction } from '../core/utils.js'
+import { isNumber, cloneElement, mapChildren, filterChildren, isFunction, isObject, isInstanceOf } from '../core/utils.js'
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
 import { createPollutedComponent } from '../core/_generators.js'
-
-const PollutedComponent = createPollutedComponent([
-  { component: Route, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
-  { component: Navigate, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
-])
-
-/**
- * @example use children
- * <Navigator navigation={navigation} dispatch={this.update}>
- *   <Route match="home" component={Home} props={{ title: 'Home Page' }} />
- *   <Route match="page1" component={Page1} props={{ title: 'Page1' }} />
- * </Navigator>
- *
- * @example I use Route directly previously, in fact, Route can be use anywhere inside Navigator
- * <Navigator navigation={navigation} dispatch={this.update}>
- *   <Page1 title="Page1" />
- * </Navigator>
- *
- * @example use components inside navigation
- * <Navigator navigation={navigation} inside />
- */
-class Navigator extends PollutedComponent {
-  static props = {
-    navigation: Navigation,
-    dispatch: ifexist(Function),
-
-    // whether to use components inside navigation instance,
-    // if false, will use children Route, dispatch should be set
-    inside: ifexist(Boolean),
-  }
-
-  render() {
-    const { navigation, dispatch, inside } = this.attrs
-    const { options, state, status } = navigation
-
-    const createRoute = () => {
-      // not ready
-      if (status < 0) {
-        return null
-      }
-
-      // not found
-      if (status === 0) {
-        const { notFoundComponent: NotFound } = options
-        if (NotFound) {
-          return <NotFound navigation={navigation} />
-        }
-        else {
-          return null
-        }
-      }
-
-      let rootRoute = state.route
-      while (rootRoute && rootRoute.parent) {
-        rootRoute = rootRoute.parent
-      }
-
-      // when use inside component
-      if (rootRoute) {
-        const { component, props = {}, animation = 0, name } = rootRoute
-        if (component) {
-          return <Route component={component} match={name} navigation={navigation} animation={animation} {...props} />
-        }
-        else {
-          return null
-        }
-      }
-
-      return null
-    }
-
-    const children = this.children
-    const update = dispatch ? dispatch : this.update
-    const route = inside ? (isFunction(children) ? children(navigation) : children) : createRoute()
-
-    return (
-      <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
-        {route}
-      </Observer>
-    )
-  }
-}
 
 export class Route extends Component {
   static props = {
@@ -207,6 +125,74 @@ export class Navigate extends Component {
         }
       })
     }
+  }
+}
+
+const PollutedComponent = createPollutedComponent([
+  { component: Route, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
+  { component: Navigate, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
+])
+
+/**
+ * @example use children
+ * <Navigator navigation={navigation} dispatch={this.update}>
+ *   <Route match="home" component={Home} props={{ title: 'Home Page' }} />
+ *   <Route match="page1" component={Page1} props={{ title: 'Page1' }} />
+ * </Navigator>
+ *
+ * @example I use Route directly previously, in fact, Route can be use anywhere inside Navigator
+ * <Navigator navigation={navigation} dispatch={this.update}>
+ *   <Page1 title="Page1" />
+ * </Navigator>
+ *
+ * @example use components inside navigation
+ * <Navigator navigation={navigation} inside />
+ */
+export class Navigator extends PollutedComponent {
+  static props = {
+    navigation: Navigation,
+    dispatch: ifexist(Function),
+
+    // whether to use components inside navigation instance,
+    // if false, will use children Route, dispatch should be set
+    inside: ifexist(Boolean),
+  }
+
+  render() {
+    const { navigation, dispatch, inside } = this.attrs
+    const { options } = navigation
+
+    const createRoutes = () => {
+      const { notFound, routes } = options
+      const views = routes.map((route) => {
+        const { component, props = {}, animation = 0, name } = route
+        return component ? <Route key={name} component={component} match={name} navigation={navigation} animation={animation} {...props} /> : null
+      })
+      if (notFound) {
+        if (isObject(notFound) && notFound.component) {
+          const { component, props = {}, animation = 0 } = notFound
+          const not =  <Route key="!" match="!" component={component} navigation={navigation} animation={animation} {...props} />
+          views.push(not)
+        }
+        else if (isInstanceOf(notFound, Component) || isFunction(notFound)) {
+          const not = <Route key="!" match="!" component={notFound} navigation={navigation} />
+          views.push(not)
+        }
+      }
+      return views
+    }
+    const views = createRoutes()
+
+    const children = this.children
+    const update = dispatch ? dispatch : this.update
+    const layout = isFunction(children) ? children(navigation) : children
+    const routes = inside ? views : layout
+
+    return (
+      <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
+        {routes}
+      </Observer>
+    )
   }
 }
 

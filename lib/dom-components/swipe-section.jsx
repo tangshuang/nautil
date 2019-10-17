@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import { throttle, createRef } from '../core/utils.js'
 
 export class SwipeSection extends Component {
-  onInit() {
+  onMount() {
     this.dom = createRef()
 
     this.onTouchStart = this.onTouchStart.bind(this)
@@ -10,8 +10,8 @@ export class SwipeSection extends Component {
     this.onTouchEnd = this.onTouchEnd.bind(this)
     this.onTouchCancel = this.onTouchCancel.bind(this)
 
-    if (this.props.throttle) {
-      this.onTouchMove = throttle(this.onTouchMove, this.props.throttle)
+    if (this.attrs.throttle) {
+      this.onTouchMove = throttle(this.onTouchMove, this.attrs.throttle)
     }
 
     this.touchStartX = 0

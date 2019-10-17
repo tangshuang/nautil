@@ -1,36 +1,11 @@
 import Component from '../core/component.js'
 import I18n from './i18n.js'
 import Text from '../components/text.jsx'
+import Observer from '../core-components/observer.jsx'
 import { isFunction, mapChildren, cloneElement, filterChildren } from '../core/utils.js'
 import { createPollutedComponent } from '../core/_generators.js'
+import { ifexist } from '../core/types.js'
 
-const PollutedComponent = createPollutedComponent([
-  { component: T, pollute: ({ i18n }) => ({ i18n }), type: 'pollutedProps' },
-  { component: Locale, pollute: ({ i18n }) => ({ i18n }), type: 'pollutedProps' },
-])
-
-export class Language extends PollutedComponent {
-  static props = {
-    i18n: I18n,
-    dispatch: ifexist(Function),
-  }
-
-  render() {
-    const { i18n, dispatch } = this.attrs
-    const update = dispatch ? dispatch : this.update
-    const children = this.children
-
-    return (
-      <Observer
-        subscribe={dispatch => i18n.on('initialized', dispatch).on('loaded', dispatch).on('languageChanged', dispatch)}
-        unsubscribe={dispatch => i18n.off('initialized', dispatch).off('loaded', dispatch).off('languageChanged', dispatch)}
-        dispatch={update}
-      >
-        {isFunction(children) ? children(i18n) : children}
-      </Observer>
-    )
-  }
-}
 
 export class T extends Component {
   static props = {
@@ -72,7 +47,8 @@ export class Locale extends Component {
   }
 
   render() {
-    const { i18n, to, component, children, ...rest } = this.props
+    const { i18n, to, component, ...rest } = this.attrs
+    const children = this.children
 
     const change = () => {
       i18n.setLang(to)
@@ -95,3 +71,34 @@ export class Locale extends Component {
     }
   }
 }
+
+
+const PollutedComponent = createPollutedComponent([
+  { component: T, pollute: ({ i18n }) => ({ i18n }), type: 'pollutedProps' },
+  { component: Locale, pollute: ({ i18n }) => ({ i18n }), type: 'pollutedProps' },
+])
+
+export class Language extends PollutedComponent {
+  static props = {
+    i18n: I18n,
+    dispatch: ifexist(Function),
+  }
+
+  render() {
+    const { i18n, dispatch } = this.attrs
+    const update = dispatch ? dispatch : this.update
+    const children = this.children
+
+    return (
+      <Observer
+        subscribe={dispatch => i18n.on('initialized', dispatch).on('loaded', dispatch).on('languageChanged', dispatch)}
+        unsubscribe={dispatch => i18n.off('initialized', dispatch).off('loaded', dispatch).off('languageChanged', dispatch)}
+        dispatch={update}
+      >
+        {isFunction(children) ? children(i18n) : children}
+      </Observer>
+    )
+  }
+}
+
+export default Language

@@ -46,7 +46,7 @@ export class ScrollSection extends Component {
   }
 
   shouldUpdate(nextProps) {
-    this.shouldUpdateChildren = this.props.children !== nextProps.children
+    this.shouldUpdateChildren = this.children !== nextProps.children
     return true
   }
 
