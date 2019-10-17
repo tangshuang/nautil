@@ -6,15 +6,40 @@ import { enumerate, ifexist, Any } from '../core/types.js'
 import { isNumber, cloneElement, mapChildren, filterChildren, isFunction } from '../core/utils.js'
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
+import { createPollutedComponent } from '../core/_generators.js'
 
-class PondNavigator extends Component {
+const PollutedComponent = createPollutedComponent([
+  { component: Route, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
+  { component: Navigate, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
+])
+
+/**
+ * @example use children
+ * <Navigator navigation={navigation} dispatch={this.update}>
+ *   <Route match="home" component={Home} props={{ title: 'Home Page' }} />
+ *   <Route match="page1" component={Page1} props={{ title: 'Page1' }} />
+ * </Navigator>
+ *
+ * @example I use Route directly previously, in fact, Route can be use anywhere inside Navigator
+ * <Navigator navigation={navigation} dispatch={this.update}>
+ *   <Page1 title="Page1" />
+ * </Navigator>
+ *
+ * @example use components inside navigation
+ * <Navigator navigation={navigation} inside />
+ */
+class Navigator extends PollutedComponent {
   static props = {
     navigation: Navigation,
     dispatch: ifexist(Function),
+
+    // whether to use components inside navigation instance,
+    // if false, will use children Route, dispatch should be set
+    inside: ifexist(Boolean),
   }
 
   render() {
-    const { navigation, dispatch } = this.attrs
+    const { navigation, dispatch, inside } = this.attrs
     const { options, state, status } = navigation
 
     const createRoute = () => {
@@ -43,7 +68,7 @@ class PondNavigator extends Component {
       if (rootRoute) {
         const { component, props = {}, animation = 0, name } = rootRoute
         if (component) {
-          return <Navigator component={component} match={name} navigation={navigation} animation={animation} {...props} />
+          return <Route component={component} match={name} navigation={navigation} animation={animation} {...props} />
         }
         else {
           return null
@@ -53,8 +78,9 @@ class PondNavigator extends Component {
       return null
     }
 
+    const children = this.children
     const update = dispatch ? dispatch : this.update
-    const route = createRoute()
+    const route = inside ? (isFunction(children) ? children(navigation) : children) : createRoute()
 
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
@@ -64,10 +90,10 @@ class PondNavigator extends Component {
   }
 }
 
-export class Navigator extends Component {
+export class Route extends Component {
   static props = {
     navigation: Navigation,
-    match: ifexist(Any),
+    match: Any,
     exact: ifexist(Boolean),
     animation: ifexist(Number),
   }
@@ -110,13 +136,7 @@ export class Navigator extends Component {
   }
 
   render() {
-    const { navigation, component, props = {}, match } = this.attrs
-
-    // when ther is no match prop, use the whole navigation options.routes as render base
-    if (!match) {
-      return <PondNavigator navigation={navigation} />
-    }
-
+    const { navigation, component, props = {} } = this.attrs
     const { show, display } = this.state
 
     if (!display) {
@@ -126,7 +146,7 @@ export class Navigator extends Component {
     const children = filterChildren(this.children)
     const RouteComponent = component
     if (RouteComponent) {
-      return <RouteComponent navigation={navigation} show={show} {...props}>{children}</RouteComponent>
+      return <RouteComponent show={show} {...props}>{children}</RouteComponent>
     }
     else if (isFunction(this.children)) {
       return this.children({ navigation, show })
