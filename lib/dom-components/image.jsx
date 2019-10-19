@@ -4,7 +4,7 @@ import { isString } from '../core/utils.js'
 export class Image extends Component {
   render() {
     const { source, width, height, maxWidth, maxHeight, ...rest } = this.attrs
-    const style = { ...this.style, width, height, maxWidth, maxHeight }
+    const style = { width, height, maxWidth, maxHeight, ...this.style }
     const className = this.className
     const children = this.children
     const src = isString(source) ? source : source.uri
