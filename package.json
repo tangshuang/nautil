@@ -28,7 +28,7 @@
     "react-native": "^0.61.2",
     "rxjs": "^6.5.3",
     "storagex": "^2.0.0",
-    "ts-fns": "^1.0.0",
-    "tyshemo": "^3.0.1"
+    "ts-fns": "^1.0.3",
+    "tyshemo": "^3.0.2"
   }
 }
