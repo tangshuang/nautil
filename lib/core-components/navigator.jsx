@@ -6,7 +6,6 @@ import { enumerate, ifexist, Any } from '../core/types.js'
 import { isNumber, cloneElement, mapChildren, filterChildren, isFunction, isObject, isInstanceOf } from '../core/utils.js'
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
-import { createPollutedComponent } from '../core/_generators.js'
 
 export class Route extends Component {
   static props = {
@@ -128,11 +127,6 @@ export class Navigate extends Component {
   }
 }
 
-const PollutedComponent = createPollutedComponent([
-  { component: Route, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
-  { component: Navigate, pollute: ({ navigation }) => ({ navigation }), type: 'pollutedProps' },
-])
-
 /**
  * @example use children
  * <Navigator navigation={navigation} dispatch={this.update}>
@@ -148,7 +142,7 @@ const PollutedComponent = createPollutedComponent([
  * @example use components inside navigation
  * <Navigator navigation={navigation} inside />
  */
-export class Navigator extends PollutedComponent {
+export class Navigator extends Component {
   static props = {
     navigation: Navigation,
     dispatch: ifexist(Function),
@@ -156,6 +150,20 @@ export class Navigator extends PollutedComponent {
     // whether to use components inside navigation instance,
     // if false, will use children Route, dispatch should be set
     inside: ifexist(Boolean),
+  }
+
+  onInit() {
+    const { navigation } = this.props
+    this._pollutedComponents = [
+      {
+        component: Route,
+        props: { navigation },
+      },
+      {
+        component: Navigate,
+        props: { navigation },
+      },
+    ]
   }
 
   render() {

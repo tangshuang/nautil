@@ -3,7 +3,6 @@ import I18n from './i18n.js'
 import Text from '../components/text.jsx'
 import Observer from '../core-components/observer.jsx'
 import { isFunction, mapChildren, cloneElement, filterChildren } from '../core/utils.js'
-import { createPollutedComponent } from '../core/_generators.js'
 import { ifexist } from '../core/types.js'
 
 
@@ -72,16 +71,24 @@ export class Locale extends Component {
   }
 }
 
-
-const PollutedComponent = createPollutedComponent([
-  { component: T, pollute: ({ i18n }) => ({ i18n }), type: 'pollutedProps' },
-  { component: Locale, pollute: ({ i18n }) => ({ i18n }), type: 'pollutedProps' },
-])
-
-export class Language extends PollutedComponent {
+export class Language extends Component {
   static props = {
     i18n: I18n,
     dispatch: ifexist(Function),
+  }
+
+  onInit() {
+    const { i18n } = this.props
+    this._pollutedComponents = [
+      {
+        component: T,
+        props: { i18n },
+      },
+      {
+        component: Locale,
+        props: { i18n },
+      },
+    ]
   }
 
   render() {
