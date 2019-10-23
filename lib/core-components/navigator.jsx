@@ -189,16 +189,25 @@ export class Navigator extends Component {
       }
       return views
     }
-    const views = createRoutes()
 
     const children = this.children
     const update = dispatch ? dispatch : this.update
-    const layout = isFunction(children) ? children(navigation) : children
-    const routes = inside ? views : layout
+
+    let layout = null
+    if (inside) {
+      const views = createRoutes()
+      layout = views
+    }
+    else if (isFunction(children)) {
+      layout = children(navigation)
+    }
+    else {
+      layout = children
+    }
 
     return (
       <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
-        {routes}
+        {layout}
       </Observer>
     )
   }
