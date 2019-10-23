@@ -93,6 +93,17 @@ export class Navigate extends Component {
     open: false,
   }
 
+  _wrapLink(child, props, go) {
+    if (process.env.RUNTIME_ENV === 'dom' || process.env.RUNTIME_ENV === 'ssr') {
+      const { navigation } = this.attrs
+      const url = navigation.getUrl()
+      return <a href={url} onClick={e => (go(), e.preventDefault(), false)} {...props}>{child}</a>
+    }
+    else {
+      return <Text {...props} onHint={go}>{child}</Text>
+    }
+  }
+
   render() {
     const { to, params, replace, open, navigation, component, props = {} } = this.attrs
     const { children } = this
@@ -120,7 +131,7 @@ export class Navigate extends Component {
           return cloneElement(child, { onHint: go })
         }
         else {
-          return <Text {...props} onHint={go}>{child}</Text>
+          return this._wrapLink(child, props, go)
         }
       })
     }
