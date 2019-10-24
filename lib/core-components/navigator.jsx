@@ -56,26 +56,44 @@ export class Route extends Component {
     const { navigation, component, props = {} } = this.attrs
     const { show, display } = this.state
 
+    const render = () => {
+      const children = filterChildren(this.children)
+      if (component) {
+        const RouteComponent = component
+        return <RouteComponent show={show} {...props}>{children}</RouteComponent>
+      }
+      else if (isFunction(this.children)) {
+        return this.children({ navigation, show })
+      }
+      else if (children.length) {
+        return children
+      }
+      else {
+        const { route } = navigation.state
+        const { component: RouteComponent, props = {} } = route
+        return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
+      }
+    }
+
+    // should sync-render in SSR
+    if (process.env.RUNTIME_ENV === 'ssr-server') {
+      const { match, exact } = this.attrs
+      const matched = navigation.is(match, exact)
+      if (matched) {
+        const output = render()
+        return output
+      }
+      else {
+        return null
+      }
+    }
+
     if (!display) {
       return null
     }
 
-    const children = filterChildren(this.children)
-    const RouteComponent = component
-    if (RouteComponent) {
-      return <RouteComponent show={show} {...props}>{children}</RouteComponent>
-    }
-    else if (isFunction(this.children)) {
-      return this.children({ navigation, show })
-    }
-    else if (children.length) {
-      return children
-    }
-    else {
-      const { route } = navigation.state
-      const { component: RouteComponent, props = {} } = route
-      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
-    }
+    const output = render()
+    return output
   }
 }
 
@@ -165,16 +183,30 @@ export class Navigator extends Component {
 
   onInit() {
     const { navigation } = this.props
+    const props = { navigation }
     this._pollutedComponents = [
-      {
-        component: Route,
-        props: { navigation },
-      },
-      {
-        component: Navigate,
-        props: { navigation },
-      },
+      { component: Route, props },
+      { component: Navigate, props },
     ]
+
+    // in SSR, render is sync, fiber is useless,
+    // we can just pollute components before they initialize
+    if (process.env.RUNTIME_ENV === 'ssr-server') {
+      {
+        const { defaultProps = {} } = Route
+        Route.defaultProps = {
+          ...props,
+          ...defaultProps,
+        }
+      }
+      {
+        const { defaultProps = {} } = Navigate
+        Navigate.defaultProps = {
+          ...props,
+          ...defaultProps,
+        }
+      }
+    }
   }
 
   render() {
@@ -190,7 +222,7 @@ export class Navigator extends Component {
       if (notFound) {
         if (isObject(notFound) && notFound.component) {
           const { component, props = {}, animation = 0 } = notFound
-          const not =  <Route key="!" match="!" component={component} navigation={navigation} animation={animation} {...props} />
+          const not = <Route key="!" match="!" component={component} navigation={navigation} animation={animation} {...props} />
           views.push(not)
         }
         else if (isInstanceOf(notFound, Component) || isFunction(notFound)) {

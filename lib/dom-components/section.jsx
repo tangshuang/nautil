@@ -2,7 +2,7 @@ import { Component } from '../core/component.js'
 
 export class Section extends Component {
   render() {
-    const isTouchable = ('ontouchmove' in document)
+    const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
     return <div
       onClick={e => this.onHint$.next(e)}
 

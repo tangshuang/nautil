@@ -79,16 +79,30 @@ export class Language extends Component {
 
   onInit() {
     const { i18n } = this.props
+    const props = { i18n }
     this._pollutedComponents = [
-      {
-        component: T,
-        props: { i18n },
-      },
-      {
-        component: Locale,
-        props: { i18n },
-      },
+      { component: T, props },
+      { component: Locale, props },
     ]
+
+    // in SSR, render is sync, fiber is useless,
+    // we can just pollute components before they initialize
+    if (process.env.RUNTIME_ENV === 'ssr-server') {
+      {
+        const { defaultProps = {} } = T
+        T.defaultProps = {
+          ...props,
+          ...defaultProps,
+        }
+      }
+      {
+        const { defaultProps = {} } = Locale
+        Locale.defaultProps = {
+          ...props,
+          ...defaultProps,
+        }
+      }
+    }
   }
 
   render() {

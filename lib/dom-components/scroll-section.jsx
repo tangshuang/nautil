@@ -6,7 +6,6 @@ import Static from '../core-components/static.jsx'
 import If from '../core-components/if-else.jsx'
 import { isObject, isString } from '../core/utils.js'
 
-const IS_WEBVIEW = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
 const DOWN = 'down'
 const UP = 'up'
 const BOTH = 'both'
@@ -187,8 +186,11 @@ export class ScrollSection extends Component {
 
     // https://github.com/ant-design/ant-design-mobile/issues/573#issuecomment-339560829
     // iOS UIWebView issue, It seems no problem in WKWebView
-    if (IS_WEBVIEW && e.changedTouches[0].screenY < 0) {
-      this.onTouchEnd()
+    if (typeof navigator !== 'undefined') {
+      const IS_WEBVIEW = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
+      if (IS_WEBVIEW && e.changedTouches[0].screenY < 0) {
+        this.onTouchEnd()
+      }
     }
   }
 

@@ -2,7 +2,7 @@ import { Component } from '../core/component.js'
 
 export class Button extends Component {
   render() {
-    const isTouchable = ('ontouchmove' in document)
+    const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
     return <button
       onClick={e => this.onHint$.next(e)}
 
