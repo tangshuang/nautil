@@ -4,6 +4,7 @@ import Text from '../components/text.jsx'
 import Observer from '../core-components/observer.jsx'
 import { isFunction, mapChildren, cloneElement, filterChildren } from '../core/utils.js'
 import { ifexist } from '../core/types.js'
+import { pipe, pollute } from '../core/operators.js'
 
 
 export class T extends Component {
@@ -71,38 +72,10 @@ export class Locale extends Component {
   }
 }
 
-export class Language extends Component {
+class _Language extends Component {
   static props = {
     i18n: I18n,
     dispatch: ifexist(Function),
-  }
-
-  onInit() {
-    const { i18n } = this.props
-    const props = { i18n }
-    this._pollutedComponents = [
-      { component: T, props },
-      { component: Locale, props },
-    ]
-
-    // in SSR, render is sync, fiber is useless,
-    // we can just pollute components before they initialize
-    if (process.env.RUNTIME_ENV === 'ssr') {
-      {
-        const { defaultProps = {} } = T
-        T.defaultProps = {
-          ...props,
-          ...defaultProps,
-        }
-      }
-      {
-        const { defaultProps = {} } = Locale
-        Locale.defaultProps = {
-          ...props,
-          ...defaultProps,
-        }
-      }
-    }
   }
 
   render() {
@@ -121,5 +94,10 @@ export class Language extends Component {
     )
   }
 }
+
+export const Language = pipe([
+  pollute(T, ({ i18n }) => ({ i18n })),
+  pollute(Locale, ({ i18n }) => ({ i18n })),
+])(_Language)
 
 export default Language

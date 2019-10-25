@@ -6,6 +6,7 @@ import { enumerate, ifexist, Any } from '../core/types.js'
 import { isNumber, cloneElement, mapChildren, filterChildren, isFunction, isObject, isInstanceOf } from '../core/utils.js'
 import Text from '../components/text.jsx'
 import Section from '../components/section.jsx'
+import { pollute, pipe } from '../core/operators.js'
 
 export class Route extends Component {
   static props = {
@@ -165,7 +166,7 @@ export class Navigate extends Component {
  * @example use components inside navigation
  * <Navigator navigation={navigation} inside />
  */
-export class Navigator extends Component {
+class _Navigator extends Component {
   static props = {
     navigation: Navigation,
     dispatch: ifexist(Function),
@@ -173,34 +174,6 @@ export class Navigator extends Component {
     // whether to use components inside navigation instance,
     // if false, will use children Route, dispatch should be set
     inside: ifexist(Boolean),
-  }
-
-  onInit() {
-    const { navigation } = this.props
-    const props = { navigation }
-    this._pollutedComponents = [
-      { component: Route, props },
-      { component: Navigate, props },
-    ]
-
-    // in SSR, render is sync, fiber is useless,
-    // we can just pollute components before they initialize
-    if (process.env.RUNTIME_ENV === 'ssr') {
-      {
-        const { defaultProps = {} } = Route
-        Route.defaultProps = {
-          ...props,
-          ...defaultProps,
-        }
-      }
-      {
-        const { defaultProps = {} } = Navigate
-        Navigate.defaultProps = {
-          ...props,
-          ...defaultProps,
-        }
-      }
-    }
   }
 
   render() {
@@ -249,5 +222,10 @@ export class Navigator extends Component {
     )
   }
 }
+
+export const Navigator = pipe([
+  pollute(Route, ({ navigation }) => ({ navigation })),
+  pollute(Navigate, ({ navigation }) => ({ navigation })),
+])(_Navigator)
 
 export default Navigator
