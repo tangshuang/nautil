@@ -15,15 +15,18 @@ export class Route extends Component {
     animation: ifexist(Number),
   }
 
-  state = {
-    show: false,
-    display: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      show: false,
+      display: false,
+    }
   }
 
   toggle() {
     const { navigation, match, exact, animation } = this.attrs
-    const { show, display } = this.state
     const matched = navigation.is(match, exact)
+    const { show, display } = this.state
     if (animation) {
       if (matched && !display) {
         clearTimeout(this.timer)
@@ -53,47 +56,35 @@ export class Route extends Component {
   }
 
   render() {
-    const { navigation, component, props = {} } = this.attrs
+    const { navigation, component, props = {}, match, exact } = this.attrs
     const { show, display } = this.state
+    const matched = navigation.is(match, exact)
 
-    const render = () => {
-      const children = filterChildren(this.children)
-      if (component) {
-        const RouteComponent = component
-        return <RouteComponent show={show} {...props}>{children}</RouteComponent>
-      }
-      else if (isFunction(this.children)) {
-        return this.children({ navigation, show })
-      }
-      else if (children.length) {
-        return children
-      }
-      else {
-        const { route } = navigation.state
-        const { component: RouteComponent, props = {} } = route
-        return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
-      }
-    }
-
-    // should sync-render in SSR
-    if (process.env.RUNTIME_ENV === 'ssr-server') {
-      const { match, exact } = this.attrs
-      const matched = navigation.is(match, exact)
-      if (matched) {
-        const output = render()
-        return output
-      }
-      else {
+    if (this.isMounted) {
+      if (!display) {
         return null
       }
     }
-
-    if (!display) {
+    else if (!matched) {
       return null
     }
 
-    const output = render()
-    return output
+    const children = filterChildren(this.children)
+    if (component) {
+      const RouteComponent = component
+      return <RouteComponent show={show} {...props}>{children}</RouteComponent>
+    }
+    else if (isFunction(this.children)) {
+      return this.children({ navigation, show })
+    }
+    else if (children.length) {
+      return children
+    }
+    else {
+      const { route } = navigation.state
+      const { component: RouteComponent, props = {} } = route
+      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
+    }
   }
 }
 
@@ -112,7 +103,7 @@ export class Navigate extends Component {
   }
 
   _wrapLink(child, props, go) {
-    if (process.env.RUNTIME_ENV === 'dom' || process.env.RUNTIME_ENV === 'ssr') {
+    if (process.env.RUNTIME_ENV === 'dom' || process.env.RUNTIME_ENV === 'ssr-server' || process.env.RUNTIME_ENV === 'ssr-client') {
       const { navigation } = this.attrs
       const url = navigation.getUrl()
       return <a href={url} onClick={e => (go(), e.preventDefault(), false)} {...props}>{child}</a>
