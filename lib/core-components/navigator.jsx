@@ -21,6 +21,7 @@ export class Route extends Component {
       show: false,
       display: false,
     }
+    this._isMounted = false
   }
 
   toggle() {
@@ -50,6 +51,7 @@ export class Route extends Component {
   }
   onMounted() {
     this.toggle()
+    this._isMounted = true
   }
   onUpdated() {
     this.toggle()
@@ -60,7 +62,8 @@ export class Route extends Component {
     const { show, display } = this.state
     const matched = navigation.is(match, exact)
 
-    if (this.isMounted) {
+    // in SSR, the first time render should not use sync-render
+    if (this._isMounted) {
       if (!display) {
         return null
       }
