@@ -87,7 +87,7 @@ export class Language extends Component {
 
     // in SSR, render is sync, fiber is useless,
     // we can just pollute components before they initialize
-    if (process.env.RUNTIME_ENV === 'ssr-server') {
+    if (process.env.RUNTIME_ENV === 'ssr') {
       {
         const { defaultProps = {} } = T
         T.defaultProps = {

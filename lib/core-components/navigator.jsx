@@ -106,7 +106,7 @@ export class Navigate extends Component {
   }
 
   _wrapLink(child, props, go) {
-    if (process.env.RUNTIME_ENV === 'dom' || process.env.RUNTIME_ENV === 'ssr-server' || process.env.RUNTIME_ENV === 'ssr-client') {
+    if (process.env.RUNTIME_ENV === 'web' || process.env.RUNTIME_ENV === 'web-component' || process.env.RUNTIME_ENV === 'ssr' || process.env.RUNTIME_ENV === 'ssr-client') {
       const { navigation } = this.attrs
       const url = navigation.getUrl()
       return <a href={url} onClick={e => (go(), e.preventDefault(), false)} {...props}>{child}</a>
@@ -185,7 +185,7 @@ export class Navigator extends Component {
 
     // in SSR, render is sync, fiber is useless,
     // we can just pollute components before they initialize
-    if (process.env.RUNTIME_ENV === 'ssr-server') {
+    if (process.env.RUNTIME_ENV === 'ssr') {
       {
         const { defaultProps = {} } = Route
         Route.defaultProps = {
