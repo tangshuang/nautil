@@ -1,7 +1,22 @@
 import Component from '../core/component.js'
 import { Image as NativeImage, ImageBackground } from 'react-native'
+import { enumerate, ifexist, Unit } from '../core/types.js'
+import { noop } from '../core/utils.js'
 
 export class Image extends Component {
+  static props = {
+    source: enumerate([String, Object]),
+    width: Unit,
+    height: Unit,
+    maxWidth: ifexist(Unit),
+    maxHeight: ifexist(Unit),
+  }
+  static defaultProps = {
+    width: '100%',
+    height: 'auto',
+
+    onLoad: noop,
+  }
   render() {
     const { source, width, height, maxWidth, maxHeight, ...rest } = this.attrs
     const styles = { ...this.style, width, height, maxWidth, maxHeight }

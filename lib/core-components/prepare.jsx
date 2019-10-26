@@ -1,11 +1,11 @@
 import Component from '../core/component.js'
 import { isFunction, createPlaceholderComponent } from '../core/utils.js'
-import { ifexist, enumerate } from '../core/types.js'
+import { Any } from '../core/types.js'
 
 export class Prepare extends Component {
   static props = {
     ready: Boolean,
-    placeholder: ifexist(enumerate([Function, Component])),
+    placeholder: Any,
   }
   render() {
     const { ready, placeholder } = this.attrs

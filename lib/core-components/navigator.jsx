@@ -106,15 +106,8 @@ export class Navigate extends Component {
     open: false,
   }
 
-  _wrapLink(child, props, go) {
-    if (process.env.RUNTIME_ENV === 'web' || process.env.RUNTIME_ENV === 'web-component' || process.env.RUNTIME_ENV === 'ssr' || process.env.RUNTIME_ENV === 'ssr-client') {
-      const { navigation } = this.attrs
-      const url = navigation.getUrl()
-      return <a href={url} onClick={e => (go(), e.preventDefault(), false)} {...props}>{child}</a>
-    }
-    else {
-      return <Text {...props} onHint={go}>{child}</Text>
-    }
+  _wrapLink(child, go) {
+    return <Text onHint={go}>{child}</Text>
   }
 
   render() {
@@ -144,7 +137,7 @@ export class Navigate extends Component {
           return cloneElement(child, { onHint: go })
         }
         else {
-          return this._wrapLink(child, props, go)
+          return this._wrapLink(child, go, navigation, to, params, open)
         }
       })
     }

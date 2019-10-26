@@ -1,10 +1,10 @@
 import Component from '../core/component.js'
 import { isFunction, createPlaceholderComponent, noop } from '../core/utils.js'
-import { ifexist, enumerate } from '../core/types.js'
+import { ifexist, Any } from '../core/types.js'
 
 export class Await extends Component {
   static props = {
-    placeholder: ifexist(enumerate([Function, Component])),
+    placeholder: Any,
     then: ifexist(Function),
     catch: Function,
     promise: Promise,

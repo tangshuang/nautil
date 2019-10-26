@@ -2,8 +2,18 @@
 
 import Component from '../core/component.js'
 import ReactList from 'react-list'
+import { list } from '../core/types.js'
 
 export class ListSection extends Component {
+  static props = {
+    data: list([Object]),
+    itemRender: Function,
+    itemKey: String,
+    itemStyle: Object,
+  }
+  static defaultProps = {
+    itemStyle: {},
+  }
   render() {
     const { itemRender, data, itemKey, itemStyle = {} } = this.attrs
     const renderItem = (index) => {

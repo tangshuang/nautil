@@ -2,8 +2,16 @@ import { Component } from '../core/component.js'
 import { View } from 'react-native'
 import Text from '../components/text.jsx'
 import { filterChildren } from '../core/utils.js'
+import { noop } from '../core/utils.js'
 
 export class Section extends Component {
+  static defaultProps = {
+    onHint: noop,
+    onHintStart: noop,
+    onHintMove: noop,
+    onHintEnd: noop,
+    onHintCancel: noop,
+  }
   render() {
     const { pointerEvents } = this.style
 

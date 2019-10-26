@@ -1,8 +1,31 @@
 import Component from '../core/component.js'
-import { throttle } from '../core/utils.js'
+import { throttle, noop } from '../core/utils.js'
 import Section from './section.jsx'
+import { enumerate } from '../core/types.js'
 
 export class SwipeSection extends Component {
+  static props = {
+    sensitivity: Number,
+    distance: Number,
+    disabled: Boolean,
+    direction: enumerate(['left', 'right', 'both']),
+    throttle: Number,
+  }
+
+  static defaultProps = {
+    sensitivity: 5,
+    distance: 100,
+    disabled: false,
+    direction: 'both',
+    throttle: 0,
+    onStart: noop,
+    onMove: noop,
+    onEnd: noop,
+    onCancel: noop,
+    onReach: noop,
+    onUnreach: noop,
+  }
+
   onMount() {
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)

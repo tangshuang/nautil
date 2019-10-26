@@ -1,9 +1,14 @@
 import { Component } from '../core/component.js'
 import Text from '../components/text.jsx'
 import { TouchableOpacity } from 'react-native'
-import { filterChildren } from '../core/utils.js'
+import { filterChildren, noop } from '../core/utils.js'
 
 export class Button extends Component {
+  static defaultProps = {
+    onHint: noop,
+    onHintStart: noop,
+    onHintEnd: noop,
+  }
   render() {
     const children = this.children
     const nodes = filterChildren(children)

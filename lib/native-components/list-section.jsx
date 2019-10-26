@@ -1,8 +1,19 @@
 import Component from '../core/component.js'
 import { FlatList } from 'react-native'
 import Section from '../components/section.jsx'
+import { list } from '../core/types.js'
 
 export class ListSection extends Component {
+  static props = {
+    data: list([Object]),
+    itemRender: Function,
+    itemKey: String,
+    itemStyle: Object,
+  }
+
+  static defaultProps = {
+    itemStyle: {},
+  }
   render() {
     const { itemRender, data, itemKey, itemStyle = {} } = this.attrs
     return (

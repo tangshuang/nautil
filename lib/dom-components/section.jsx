@@ -1,6 +1,14 @@
 import { Component } from '../core/component.js'
+import { noop } from '../core/utils.js'
 
 export class Section extends Component {
+  static defaultProps = {
+    onHint: noop,
+    onHintStart: noop,
+    onHintMove: noop,
+    onHintEnd: noop,
+    onHintCancel: noop,
+  }
   render() {
     const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
     return <div
