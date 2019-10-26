@@ -140,4 +140,4 @@ export class SwipeSection extends Component {
   }
 }
 
-export default Swipe
+export default SwipeSection
