@@ -2,8 +2,7 @@
 // pull to refresh/load-more on mobile
 
 import { Component } from '../core/component.js'
-import Static from '../core-components/static.jsx'
-import If from '../core-components/if-else.jsx'
+import { Static, If } from '../core-components/index.js'
 import { range, Any, enumerate } from '../core/types.js'
 import { noop, isObject, isString } from '../core/utils.js'
 

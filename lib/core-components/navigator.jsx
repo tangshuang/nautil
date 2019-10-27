@@ -4,8 +4,7 @@ import Observer from './observer.jsx'
 import React from 'react'
 import { enumerate, ifexist, Any } from '../core/types.js'
 import { isNumber, cloneElement, mapChildren, filterChildren, isFunction, isObject, isInstanceOf } from '../core/utils.js'
-import Text from '../components/text.jsx'
-import Section from '../components/section.jsx'
+import { Text, Section } from '../components/index.js'
 import { pollute, pipe } from '../core/operators.js'
 
 export class Route extends Component {

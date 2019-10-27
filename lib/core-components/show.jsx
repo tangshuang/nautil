@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import Section from '../components/section.jsx'
+import { Section } from '../components/index.js'
 
 export class Show extends Component {
   render() {

@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { noop, isNumeric } from '../core/utils.js'
-import Section from '../components/section.jsx'
+import { Section } from '../components/index.js'
 import Transition from './transition.js'
 import tween from './tween.js'
 import Transform from '../style/transform.js'
