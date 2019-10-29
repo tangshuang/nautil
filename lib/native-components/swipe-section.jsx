@@ -26,7 +26,7 @@ export class SwipeSection extends Component {
     onUnreach: noop,
   }
 
-  onMount() {
+  onInit() {
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onTouchEnd = this.onTouchEnd.bind(this)

@@ -23,7 +23,7 @@ export class SwipeSection extends Component {
     onReach: noop,
     onUnreach: noop,
   }
-  onMount() {
+  onInit() {
     this.dom = createRef()
 
     this.onTouchStart = this.onTouchStart.bind(this)

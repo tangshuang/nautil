@@ -33,7 +33,7 @@ export class Animation extends Component {
     style: {},
   }
 
-  onMount() {
+  onInit() {
     const { enter, leave } = this.attrs
 
     const enterTypes = []
