@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "A javascript application framework.",
   "main": "index.js",
   "repository": {
