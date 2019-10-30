@@ -20,4 +20,5 @@ export {
   createClassName,
   attachShadowClass,
   createTwoWayBinding,
+  useTwoWayBinding,
 } from './lib/core/utils.js'
