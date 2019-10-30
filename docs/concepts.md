@@ -30,7 +30,7 @@ In Nautil, we use `Observer` component as an *observer*, here `store` is a subje
 
 There is no strict defination of **Two Way Binding**. In short, it is about a reactive proposal between view and model, which describes [when changing model changes the view and changing the view changes the model](https://medium.com/front-end-weekly/what-is-2-way-data-binding-44dd8082e48e).
 
-In react, data only goes one way, from parent component to child component by passing props. And the main vioce in its community is immutable data. However, it is not comfortable when we are going to build a intertwined application. In fact, redux is not good enough to solve the problem, it is to complex to write many non-business codes. We want easy way.
+In react, data only goes one way, from parent component to child component by passing props. And the main vioce in its community is immutable data. However, it is not comfortable when we are going to build a intertwined application. In fact, redux is not good enough to solve the problem, it is to complex to write many non-business codes. We want an easy way.
 
 In Nautil, we can use Two Way Binding. Let's have a look:
 
@@ -57,11 +57,11 @@ const WrappedComponent = observe(
 )(MyComponent)
 ```
 
-As the code show, `WrappedComponent` will automaticly update when `some` of `depo` changes.
+As the code shown, `WrappedComponent` will automaticly update when `some` of `depo` changes.
 
 ## Reactive Mutable Data
 
-The developing experience of vue.js is excellent, because it provides a Reactive Mutable Data pattern which called [reactivity system](https://vuejs.org/v2/guide/instance.html#Data-and-Methods). However, this is not match the main vioce of react community, but we can use it in Nautil by using Store and Model.
+The developing experience of vue.js is excellent, because it provides a Reactive Mutable Data pattern which called [reactivity system](https://vuejs.org/v2/guide/instance.html#Data-and-Methods). However, this does not match the main vioce of react community, but we can use it in Nautil by using Store and Model.
 
 ```js
 import { Component, Store } from 'nautil'
@@ -71,7 +71,7 @@ class SomeComponent extends Component {
   render() {
     const { state } = this.attrs
     return (
-      <Button onClick={() => state.age ++}>age</Button>
+      <Button onHint={() => state.age ++}>age</Button>
     )
   }
 }
@@ -79,15 +79,15 @@ class SomeComponent extends Component {
 export default pipe([
   initialize('store', Store, { age: 10 }),
   observe('store'),
-  inject('state', attrs => attrs.store.state)
+  inject('state', props => props.store.state)
 ])(SomeComponent)
 ```
 
-In the previous code section, I invoke `state.age ++` in the `onClick` handler, and the UI rerender will be triggered after this sentence run. This is finished by comprehensive effect of Observer Pattern and Observable Object.
+In the previous code section, I invoked `state.age ++` in the `onHint` handler, and the UI rerendering will be triggered after this sentence run. This is finished by comprehensive effect of Observer Pattern and Observable Object.
 
 ## Data Type System
 
-To check the type and structure of a data, Nautil uses [tyshemo](https://github.com/tangshuang/tyshemo#concepts). You can give a `props` static property to a class component so that props will be checked.
+To check type and structure of a data, Nautil uses [tyshemo](https://github.com/tangshuang/tyshemo#concepts). You can give a `props` static property to a class component so that props will be checked.
 
 ```js
 import BookType from '../types/book.type.js'
