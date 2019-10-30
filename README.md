@@ -24,7 +24,7 @@ npm run dev
 
 【[中文文档](https://www.tangshuang.net/7273.html)】
 
-- Concepts
+- [Concepts](./docs/concepts.md)
 - Guide
 - CLI
 - Component
