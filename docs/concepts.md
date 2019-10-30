@@ -1,0 +1,86 @@
+# Concepts
+
+When you are going to use Nautil to write an application, I hope you know what it is, and the things which you should know before your action.
+
+As a framework, you should know the core concepts of Nautil, so that you can catch the main idea when you are developing with it.
+
+## Observer Pattern
+
+[Observer Pattern](https://en.wikipedia.org/wiki/Observer_pattern) is the most important concepts you should keep in mind when you use Nautil. It is so important that already all abilities are built on it.
+
+> The observer pattern is a software design pattern in which an object, called the **subject**, maintains a list of its dependents, called **observers**, and notifies them automatically of any state changes, usually by calling one of their methods.
+
+Normally, we create a subject and pass a function into it, this function is a method of an observer. When the subject changes, the method will be called, so that the observer will change too.
+
+Let's look a simple example:
+
+```js
+<Observer
+  dispatch={this.update}
+  subscribe={dispatch => store.on('*', dispatch)}
+  unsubscribe={dispatch => store.off('*', dispatch)}
+>
+  {store.get('some')}
+</Observer>
+```
+
+In Nautil, we use `Observer` component as an *observer*, here `store` is a subject. `Observer` component receive a `dispatch` prop to define its *method*. The `subscribe` prop is the action to give the *method* to the *subject*. After `Observer` component mounted, the subscribe function will be called, so that the *subject* `store` will put the *method* `dispatch` in the dependents' notifies list. When `store` changes, `dispatch` which equals `this.update` will be called. Then the UI will be rerendered.
+
+## Two Way Binding
+
+There is no strict defination of **Two Way Binding**. In short, it is about a reactive proposal between view and model, which describes [when changing model changes the view and changing the view changes the model](https://medium.com/front-end-weekly/what-is-2-way-data-binding-44dd8082e48e).
+
+In react, data only goes one way, from parent component to child component by passing props. And the main vioce in its community is immutable data. However, it is not comfortable when we are going to build a intertwined application. In fact, redux is not good enough to solve the problem, it is to complex to write many non-business codes. We want easy way.
+
+In Nautil, we can use Two Way Binding. Let's have a look:
+
+```js
+const $some = useState(some)
+<Input $value={some} />
+```
+
+The previous code is very simple, however it is very powerful. You do not need to care about what it will do inside `Input`. It will give you right UI response when value of input changed. In the document of Two Way Binding, I will introduce the whole face of it.
+
+## Observable Object
+
+Observable Object is a kind of object whose changing can be watched. There are many ways to create an observable object, such as computed property, rxjs Observable.create, mobx Observable and so on.
+
+In Nautil, internal objects, Navigation, Store, Model, Depository and I18n, are all observable objects.
+
+The usage is to work with Observer Pattern. As what I do in previous code section, we can use observable objects with `Observer` component or `observe` operator to make a reactive system.
+
+```js
+const depo = new Depository(options)
+const WrappedComponent = observe(
+  dispatch => depo.subscribe('some', dispatch),
+  dispatch => depo.unsubscribe('some', dispatch)
+)(MyComponent)
+```
+
+As the code show, `WrappedComponent` will automaticly update when `some` of `depo` changes.
+
+## Reactive Mutable Data
+
+The developing experience of vue.js is excellent, because it provides a Reactive Mutable Data pattern which called [reactivity system](https://vuejs.org/v2/guide/instance.html#Data-and-Methods). However, this is not match the main vioce of react community, but we can use it in Nautil by using Store and Model.
+
+```js
+import { Component, Store } from 'nautil'
+import { initialize, observe, inject, pipe } from 'nautil/operators'
+
+class SomeComponent extends Component {
+  render() {
+    const { state } = this.attrs
+    return (
+      <Button onClick={() => state.age ++}>age</Button>
+    )
+  }
+}
+
+export default pipe([
+  initialize('store', Store, { age: 10 }),
+  observe('store'),
+  inject('state', attrs => attrs.store.state)
+])(SomeComponent)
+```
+
+In the previous code section, I invoke `state.age ++` in the `onClick` handler, and the UI rerender will be triggered after this sentence run. This is finished by comprehensive effect of Observer Pattern and Observable Object.
