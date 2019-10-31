@@ -31,8 +31,8 @@ export class SwipeSection extends Component {
     this.onTouchEnd = this.onTouchEnd.bind(this)
     this.onTouchCancel = this.onTouchCancel.bind(this)
 
-    if (this.attrs.throttle) {
-      this.onTouchMove = throttle(this.onTouchMove, this.attrs.throttle)
+    if (this.props.throttle) {
+      this.onTouchMove = throttle(this.onTouchMove, this.props.throttle)
     }
 
     this.touchStartX = 0

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/tangshuang/nautil#readme",
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.2",
     "asw": "^1.1.0",
     "axios": "^0.19.0",
     "axios-miniprogram-adapter": "^0.2.4",
