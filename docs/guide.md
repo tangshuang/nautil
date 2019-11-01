@@ -242,3 +242,36 @@ export default class App extends Component {
 
 Now we created a `WrappedRect` which is a HOC of `Rect`. In this case, we do not irrupt `Rect`, it is still a Pure UI Component, but we wrap it with an operator and make it reactive for shared state.
 
+Until now, the change of store will not trigger rerender. We can use another operator to wrap root component App.
+
+```js
+import { observe } from 'nautil/operators'
+
+export default observe(store)(App)
+```
+
+Now when store change, `App` component will be rerendered.
+
+By using nautil/operators, you wrap a Pure UI Component into a Bussiness Component which may keep state inside. However, A UI component should not contains business components inside. With this way of wrapping, you are able to decorate your component to be more reative.
+
+## Step 6: data fetching
+
+Now we are going to fetch data from backend. At first, let's create a mock service. Create or modify `dev-server.config.js` in `.nautil` dir, and put content:
+
+```js
+module.exports = {
+  before(app) {
+    app.get('/api', (req, res) => {
+      res.send(JSON.stringify({
+        time: Date.now(),
+      }))
+    })
+  },
+}
+```
+
+This file will be merged into webpack-dev-server plugin. Now stop the CLI command, and run again `npm run dev:dom`. Visit localhost:9000/api to seen the mock data.
+
+Backend is ready. Now let's coding in frontend. We will use a inside Depository library.
+
+What is a Depository? It is to keep data from backend. Data transports from backend to a depository, and temporarily store in one space of the depository. Frontend get data from this space directly. So, summary, you do not need to care about fetching, thd depository do it automaticly.
