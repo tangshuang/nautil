@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { FlatList } from 'react-native'
-import { Section } from '../components/index.js'
+import { Section } from '../components'
 import { list } from '../core/types.js'
 
 export class ListSection extends Component {

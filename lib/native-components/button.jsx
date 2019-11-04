@@ -1,5 +1,5 @@
 import { Component } from '../core/component.js'
-import { Text } from '../components/index.js'
+import { Text } from '../components'
 import { TouchableOpacity } from 'react-native'
 import { filterChildren, noop } from '../core/utils.js'
 

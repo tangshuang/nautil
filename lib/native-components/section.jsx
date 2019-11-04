@@ -1,6 +1,6 @@
 import { Component } from '../core/component.js'
 import { View } from 'react-native'
-import { Text } from '../components/index.js'
+import { Text } from '../components'
 import { filterChildren } from '../core/utils.js'
 import { noop } from '../core/utils.js'
 
