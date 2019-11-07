@@ -25,8 +25,8 @@ npm run dev
 【[中文文档](https://www.tangshuang.net/7273.html)】
 
 - [Concepts](./docs/concepts.md)
-- Guide
-- CLI
+- [Guide](./docs/guide.md)
+- [CLI](./docs/cli.md)
 - Component
   - props
   - stylesheet
