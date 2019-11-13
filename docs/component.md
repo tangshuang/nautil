@@ -1,0 +1,48 @@
+# Component
+
+Based on [react component](https://reactjs.org/docs/react-component.html), Nautil Component has its own rules.
+
+Although we often use Function Component since react16.8 because of hooks, we will need Class Component in Nautil. Nautil has not enhnaced any things on Function Component. However, you can use [nautil hooks](./hooks.md) functions in Function Components.
+
+This paper will tell you what you can do in a Nautil Class Component.
+
+## Props
+
+You can define a static property in Nautil Component class called `props` to declare the receive props and their types.
+
+```js
+import { Component } from 'nautil'
+
+export class MyComponent extends Component {
+  static props = {
+    // normal prop
+    some: String,
+
+    // object prop
+    o: {
+      name: String,
+      age: Number,
+    },
+
+    // two-way-binding prop
+    $show: Boolean,
+
+    // event handler, there is no need to declare the real type, only pass `true`
+    onClick: true,
+  }
+}
+```
+
+Type checking is following [tyshemo](https://github.com/tangshuang/tyshemo) which is a data schema system in runtime. We will learn more about props type [here](./props-type.md).
+
+You can declare 3 kinds of prop:
+
+- normal
+- `$` beginning which is two-way-binding prop
+- `on` beginning which is event stream handler
+
+After you declare the props, you can use `defaultProps` to give the default values.
+
+## Attrs
+
+There is a `attrs` property on the component instance.
