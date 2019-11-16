@@ -20,39 +20,39 @@ npm i -g nautil-cli
 ```
 
 ```
-nautil-cli init [app-name] [--native]
+nautil-cli init [app-name] [--react-native]
 ```
 
 - app-name: optional, the project name of current apps
-- native: optional, whether to initialize react-native app
+- react-native: optional, whether to initialize react-native app
 
 After init, the project files will be generated in the directory.
 
-## Init-native
+## Init-react-native
 
 To generate react-native app.
 
 ```
-nautil-cli init-native [name]
+nautil-cli init-react-native [name]
 ```
 
 - name: optional, the name of ProjectName for react-native
 
-If you did not pass `--native` when `nautil-cli init`, there was no react-native files generated. However, you can generate later by `nautil-cli init-native`.
+If you did not pass `--react-native` when `nautil-cli init`, there was no react-native files generated. However, you can generate later by `nautil-cli init-react-native`.
 
-By default, we will use `.nautil/native.js` to build the native app. For this, you should not pass `name`. If you pass the `name` parameter, you should change the `output.path` for right path.
+By default, we will use `.nautil/react-native.js` to build the native app. For this, you should not pass `name`. If you pass the `name` parameter, you should change the `output.path` for right path.
 
 ## Build
 
 To generate built files.
 
 ```
-nautil-cli build <target> [--env=development] [--runtime=native] [--platform=ios] [--clean]
+nautil-cli build <target> [--env=development] [--runtime=react-native] [--platform=ios] [--clean]
 ```
 
-- target: the configuration file basename, such as `dom` `native` and `wechat-mp`.
+- target: the configuration file basename, such as `dom` `react-native` and `wechat-mp`.
 - env: development|production
-- runtime: dom|web-component|wechat-mp|ssr|ssr-client|native
+- runtime: dom|web-component|wechat-mp|ssr|ssr-client|react-native
 - platform: dom|ios|android
 - clean: to remove output dir before build
 
@@ -63,12 +63,12 @@ When `runtime` is `ssr`, nautil-cli will look for $target-client.js in `.nautil`
 To run a dev server in local to watch the change of files to refresh the UI.
 
 ```
-nautil-cli dev <target> [--env=development] [--runtime=native] [--platform=ios] [--clean]
+nautil-cli dev <target> [--env=development] [--runtime=react-native] [--platform=ios] [--clean]
 ```
 
-- target: the configuration file basename, such as `dom` `native` and `wechat-mp`.
+- target: the configuration file basename, such as `dom` `react-native` and `wechat-mp`.
 - env: development|production
-- runtime: dom|web-component|wechat-mp|ssr|ssr-client|native
+- runtime: dom|web-component|wechat-mp|ssr|ssr-client|react-native
 - platform: dom|ios|android
 
 Dont be worry about the effects, it will work as what you want.
@@ -131,7 +131,7 @@ You can put a `.env` file in your project root dir to control build.
 You can use `process.env.ENV_VAR` in your client side code to hold the place, and to replace when build. The available vars:
 
 - NODE_ENV: production|development
-- RUNTIME_ENV: web|web-component|wechat-mp|native|ssr|ssr-client
+- RUNTIME_ENV: web|web-component|wechat-mp|react-native|ssr|ssr-client
 - PLATFORM_ENV: dom|ios|android
 - APP_NAME: name of react-native app
 

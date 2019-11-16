@@ -1,2 +1,1 @@
-import './lib/ssr/polyfill.js'
-export * from './lib/ssr/ssr.js'
+export * from './lib/ssr/index.js'

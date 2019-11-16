@@ -24,7 +24,7 @@ The project directory structure is like:
 - src
   |- app: the logic codes for your project
   |- dom: the entry for dom
-  |- native: the entry for native
+  |- react-native: the entry for react-native
   |- ssr: the entry for ssr and ssr-client
   |- web-component: the entry for web-component
   `- wechat-mp: the entry for wechat miniprogram
