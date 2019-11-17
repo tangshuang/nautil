@@ -30,14 +30,14 @@ export class Route extends Component {
     const { show, display } = this.state
     if (animation) {
       if (matched && !display) {
-        clearTimeout(this.timer)
+        clearTimeout(this._timer)
         this.setState({ display: true, show: false })
-        this.timer = setTimeout(() => this.setState({ show: true }), 10)
+        this._timer = setTimeout(() => this.setState({ show: true }), 10)
       }
       else if (!matched && show) {
-        clearTimeout(this.timer)
+        clearTimeout(this._timer)
         this.setState({ show: false })
-        this.timer = setTimeout(() => this.setState({ display: false }), animation)
+        this._timer = setTimeout(() => this.setState({ display: false }), animation)
       }
     }
     else {
@@ -50,11 +50,15 @@ export class Route extends Component {
     }
   }
   onMounted() {
-    this.toggle()
     this._isMounted = true
+    this.toggle()
   }
   onUpdated() {
     this.toggle()
+  }
+  onUnmount() {
+    this._isMounted = false
+    clearTimeout(this._timer)
   }
 
   render() {
