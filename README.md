@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Nautil is built on React and is a framework, not a UI library. Developers can use React components in Nautil applications directly as possible. *Nautil is absolutely React, however, Nautil is more than React.* As a framework, it provides router/navigation, state management, data management, event stream, internationalization and ability of cross-platform.
+Nautil (nautil.js) is built on React and is a framework, not a UI library. Developers can use React components in Nautil applications directly as possible. *Nautil is absolutely React, however, Nautil is more than React.* As a framework, it provides router/navigation, state management, data management, event stream, internationalization and ability of cross-platform.
 
 The purpose of Nautil is to make development more easy, quick and comfortable.
 
@@ -29,8 +29,9 @@ npm run dev
 - [CLI](./docs/cli.md)
 - Component
   - props
-  - stylesheet
+  - attrs
   - two-way-binding
+  - stylesheet
   - event-stream
   - lifecycle
 - PropsType

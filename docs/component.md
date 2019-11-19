@@ -46,3 +46,47 @@ After you declare the props, you can use `defaultProps` to give the default valu
 ## Attrs
 
 There is a `attrs` property on the component instance.
+
+```js
+class SomeComponent extends Component {
+  render() {
+    const { some } = this.attrs
+  }
+}
+```
+
+It is a sub-set of `props`. It is from `props` but not the same. It contains:
+
+```
+<Some one={one} $two={two} onSee={onSee} />
+
++---------------+--------------+
+|     props     |     attrs    |
++---------------+--------------+
+|               |              |
+|      onSee    |              |
+|               |              |
+|   +---------------------+    |
+|   |                     |    |
+|   |         one         |    |
+|   |                     |    |
+|   +---------------------+    |
+|               |              |
+|     $two    ---->    two     |
+|               |              |
++---------------+--------------+
+```
+
+In the `Some` component, we can read `this.attrs.one` and `this.attrs.two`, `onSee` and `$two` are invisible. `this.attrs.two` is the real value of `this.props.$two[0]`.
+
+## Two-Way-Binding
+
+In nautil.js we can use two-way-binding props. The props which begin with `$` are two-way-binding props.
+
+To know more, we should follow:
+
+**
+
+*Pass props as two-way-binding props beginning with `$`.*
+
+The props which begin with `$` will be treated as two-way-binding.
