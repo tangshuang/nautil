@@ -85,7 +85,20 @@ In nautil.js we can use two-way-binding props. The props which begin with `$` ar
 
 To know more, we should follow:
 
-**
+*Two-Way-Binding only works on nautil class components.*
+
+React primitive components and Function components do not support two-way-binding. However, you can use two-way-binding components in react components and Function components. For example:
+
+```js
+import { Input } from 'nautil/components'
+import { useState } from 'react'
+
+export default function MyComponent() {
+  const value = useState('')
+  // Input is a two-way-binding component
+  return <Input $value={value}>
+}
+```
 
 *Pass props as two-way-binding props beginning with `$`.*
 
