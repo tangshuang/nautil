@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.12.2",
+  "version": "0.12.4",
   "description": "A javascript application framework.",
   "main": "index.js",
   "repository": {
@@ -18,22 +18,22 @@
   },
   "homepage": "https://github.com/tangshuang/nautil#readme",
   "dependencies": {
-    "@react-native-community/async-storage": "^1.6.2",
+    "@react-native-community/async-storage": "^1.6.3",
     "asw": "^1.1.0",
     "axios": "^0.19.0",
     "axios-miniprogram-adapter": "^0.2.4",
     "etx": "^4.0.0",
-    "i18next": "^17.0.18",
-    "i18next-browser-languagedetector": "^4.0.0",
+    "i18next": "^17.3.1",
+    "i18next-browser-languagedetector": "^4.0.1",
     "i18next-react-native-language-detector": "^1.0.2",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-list": "^0.8.13",
-    "react-native": "^0.61.2",
+    "react-native": "^0.61.4",
     "react-native-locale-detector": "^1.0.1",
     "rxjs": "^6.5.3",
-    "storagex": "^2.0.0",
-    "ts-fns": "^1.0.3",
-    "tyshemo": "^3.0.2"
+    "storagex": "^2.1.0",
+    "ts-fns": "^1.0.4",
+    "tyshemo": "^3.1.1"
   }
 }
