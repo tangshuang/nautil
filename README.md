@@ -27,20 +27,19 @@ npm run dev
 - [Concepts](./docs/concepts.md)
 - [Guide](./docs/guide.md)
 - [CLI](./docs/cli.md)
-- Component
-  - props
+- [Component](./docs/component.md)
   - attrs
   - two-way-binding
   - stylesheet
   - event-stream
   - lifecycle
-- PropsType
-- Builtin-Components
-- Store/State
+- [PropsType](./docs/props-type.md)
+- [Store/State](./docs/store.md)
 - Depository
 - Navigation
 - Stream
 - Operators
+- Builtin-Components
 - Builtin-Hooks
 - Style/CSS
 - Model
