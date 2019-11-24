@@ -35,7 +35,7 @@ npm run dev
   - lifecycle
 - [PropsType](./docs/props-type.md)
 - [Store/State](./docs/store.md)
-- Depository
+- [Depository](./docs/depository.md)
 - Navigation
 - Stream
 - Operators
