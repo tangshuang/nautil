@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { isFunction, createPlaceholderComponent, noop } from '../core/utils.js'
+import { isFunction, createPlaceholderComponent, noop } from '../utils.js'
 import { ifexist, Any } from '../core/types.js'
 
 export class Await extends Component {

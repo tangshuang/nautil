@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import I18n from './i18n.js'
 import { Text } from '../components'
 import { Observer } from '../core-components/index.js'
-import { isFunction, mapChildren, cloneElement, filterChildren } from '../core/utils.js'
+import { isFunction, mapChildren, cloneElement, filterChildren } from '../utils.js'
 import { ifexist } from '../core/types.js'
 import { pipe, pollute } from '../core/operators.js'
 

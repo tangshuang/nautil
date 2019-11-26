@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { throttle, createRef, noop } from '../core/utils.js'
+import { throttle, createRef, noop } from '../utils.js'
 import { enumerate } from '../core/types.js'
 
 export class SwipeSection extends Component {

@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { noop, isNumeric } from '../core/utils.js'
+import { noop, isNumeric } from '../utils.js'
 import { Section } from '../components'
 import Transition from './transition.js'
 import tween from './tween.js'

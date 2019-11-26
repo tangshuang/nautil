@@ -1,7 +1,7 @@
 import { Component } from '../core/component.js'
 import { Text } from '../components'
 import { TouchableOpacity } from 'react-native'
-import { filterChildren, noop } from '../core/utils.js'
+import { filterChildren, noop } from '../utils.js'
 
 export class Button extends Component {
   static defaultProps = {

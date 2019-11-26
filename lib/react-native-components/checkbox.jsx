@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { View } from 'react-native'
-import { noop } from '../core/utils.js'
+import { noop } from '../utils.js'
 
 export class Checkbox extends Component {
   static props = {

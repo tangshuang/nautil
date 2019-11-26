@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { enumerate, ifexist, Unit } from '../core/types.js'
-import { noop, isString } from '../core/utils.js'
+import { noop, isString } from '../utils.js'
 
 export class Image extends Component {
   static props = {

@@ -4,7 +4,7 @@
 import { Component } from '../core/component.js'
 import { Static, If } from '../core-components/index.js'
 import { range, Any, enumerate } from '../core/types.js'
-import { noop, isObject, isString } from '../core/utils.js'
+import { noop, isObject, isString } from '../utils.js'
 
 const DOWN = 'down'
 const UP = 'up'

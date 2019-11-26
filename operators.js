@@ -1,1 +1,2 @@
-export * from './lib/core/operators.js'
+export * from './lib/operators/combiners.js'
+export * from './lib/operators/operators.js'

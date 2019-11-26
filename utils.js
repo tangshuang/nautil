@@ -11,4 +11,4 @@ export {
   noop,
 
   createTwoWayBinding,
-} from './lib/core/utils.js'
+} from './lib/utils.js'

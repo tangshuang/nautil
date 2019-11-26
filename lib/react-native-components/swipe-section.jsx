@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { throttle, noop } from '../core/utils.js'
+import { throttle, noop } from '../utils.js'
 import Section from './section.jsx'
 import { enumerate } from '../core/types.js'
 

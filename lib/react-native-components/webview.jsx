@@ -1,7 +1,7 @@
 import Component from '../core/component.js'
 import { WebView as NativeWebview } from 'react-native'
 import { enumerate, Unit } from '../core/types.js'
-import { noop } from '../core/utils.js'
+import { noop } from '../utils.js'
 
 export class Webview extends Component {
   static props = {

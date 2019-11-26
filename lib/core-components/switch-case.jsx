@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { Any, ifexist } from '../core/types.js'
-import { isFunction, mapChildren } from '../core/utils.js'
+import { isFunction, mapChildren } from '../utils.js'
 
 export class Case extends Component {
   static props = {

@@ -1,1 +1,1 @@
-export * from './lib/core/stream.js'
+export * from './lib/stream.js'

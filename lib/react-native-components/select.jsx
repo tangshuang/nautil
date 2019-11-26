@@ -1,7 +1,7 @@
 import Component from '../core/component.js'
 import { Picker } from 'react-native'
 import { Any, list, ifexist } from '../core/types.js'
-import { noop } from '../core/utils.js'
+import { noop } from '../utils.js'
 
 export class Select extends Component {
   static props = {

@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import React from 'react'
-import { isFunction } from '../core/utils.js'
+import { isFunction } from '../utils.js'
 
 export class Else extends Component {
   render() {

@@ -1,8 +1,8 @@
 import { Component } from '../core/component.js'
 import { View } from 'react-native'
 import { Text } from '../components'
-import { filterChildren } from '../core/utils.js'
-import { noop } from '../core/utils.js'
+import { filterChildren } from '../utils.js'
+import { noop } from '../utils.js'
 
 export class Section extends Component {
   static defaultProps = {
