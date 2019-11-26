@@ -4,7 +4,7 @@ import { Text } from '../components'
 import { Observer } from '../core-components/index.js'
 import { isFunction, mapChildren, cloneElement, filterChildren } from '../utils.js'
 import { ifexist } from '../types.js'
-import { pipe, pollute } from '../operators.js'
+import { pipe, pollute } from '../operators/index.js'
 
 
 export class T extends Component {

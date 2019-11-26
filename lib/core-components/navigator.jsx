@@ -5,7 +5,7 @@ import React from 'react'
 import { enumerate, ifexist, Any } from '../types.js'
 import { isNumber, cloneElement, mapChildren, filterChildren, isFunction, isObject, isInstanceOf } from '../utils.js'
 import { Text, Section } from '../components'
-import { pollute, pipe } from '../operators.js'
+import { pollute, pipe } from '../operators/index.js'
 
 export class Route extends Component {
   static props = {
