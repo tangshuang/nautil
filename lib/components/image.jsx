@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { enumerate, ifexist, Unit } from '../core/types.js'
+import { enumerate, ifexist, Unit } from '../types.js'
 import { noop } from '../utils.js'
 
 export class Image extends Component {

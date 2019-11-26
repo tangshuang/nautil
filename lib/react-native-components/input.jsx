@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { TextInput } from 'react-native'
-import { enumerate, ifexist } from '../core/types.js'
+import { enumerate, ifexist } from '../types.js'
 import { noop } from '../utils.js'
 
 export class Input extends Component {

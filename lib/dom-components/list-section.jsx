@@ -2,7 +2,7 @@
 
 import Component from '../core/component.js'
 import ReactList from 'react-list'
-import { list } from '../core/types.js'
+import { list } from '../types.js'
 
 export class ListSection extends Component {
   static props = {

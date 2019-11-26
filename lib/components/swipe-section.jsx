@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { noop } from '../utils.js'
-import { enumerate } from '../core/types.js'
+import { enumerate } from '../types.js'
 
 export class SwipeSection extends Component {
   static props = {

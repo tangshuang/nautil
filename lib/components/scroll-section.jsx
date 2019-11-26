@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { range, Any, enumerate } from '../core/types.js'
+import { range, Any, enumerate } from '../types.js'
 import { noop } from '../utils.js'
 
 const DOWN = 'down'

@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { enumerate, Unit } from '../core/types.js'
+import { enumerate, Unit } from '../types.js'
 import { noop } from '../utils.js'
 
 export class Audio extends Component {

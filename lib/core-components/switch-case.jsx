@@ -1,5 +1,5 @@
 import Component from '../core/component.js'
-import { Any, ifexist } from '../core/types.js'
+import { Any, ifexist } from '../types.js'
 import { isFunction, mapChildren } from '../utils.js'
 
 export class Case extends Component {

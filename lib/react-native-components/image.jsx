@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { Image as NativeImage, ImageBackground } from 'react-native'
-import { enumerate, ifexist, Unit } from '../core/types.js'
+import { enumerate, ifexist, Unit } from '../types.js'
 import { noop } from '../utils.js'
 
 export class Image extends Component {

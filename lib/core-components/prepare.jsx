@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { isFunction, createPlaceholderComponent } from '../utils.js'
-import { Any } from '../core/types.js'
+import { Any } from '../types.js'
 
 export class Prepare extends Component {
   static props = {

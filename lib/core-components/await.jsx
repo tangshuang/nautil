@@ -1,6 +1,6 @@
 import Component from '../core/component.js'
 import { isFunction, createPlaceholderComponent, noop } from '../utils.js'
-import { ifexist, Any } from '../core/types.js'
+import { ifexist, Any } from '../types.js'
 
 export class Await extends Component {
   static props = {
