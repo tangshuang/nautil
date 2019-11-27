@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.12.8",
+  "version": "0.12.10",
   "description": "A javascript application framework.",
   "main": "index.js",
   "repository": {
@@ -33,7 +33,12 @@
     "react-native-locale-detector": "^1.0.1",
     "rxjs": "^6.5.3",
     "storagex": "^2.1.0",
+<<<<<<< HEAD
     "ts-fns": "^2.0.5",
     "tyshemo": "^3.2.4"
+=======
+    "ts-fns": "^2.0.4",
+    "tyshemo": "^3.2.3"
+>>>>>>> 22f3e483d2b777b6206b7bcd1b5ea2c268ad85fe
   }
 }
