@@ -5,7 +5,8 @@ import React from 'react'
 import { enumerate, ifexist, Any } from '../types.js'
 import { isNumber, cloneElement, mapChildren, filterChildren, isFunction, isObject, isInstanceOf } from '../utils.js'
 import { Text, Section } from '../components'
-import { pollute, pipe } from '../operators/index.js'
+import { pollute } from '../operators/operators.js'
+import { pipe } from '../operators/combiners.js'
 
 export class Route extends Component {
   static props = {
