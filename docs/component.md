@@ -64,7 +64,7 @@ It is a sub-set of `props`. It is from `props` but not the same. It contains:
 |     props     |     attrs    |
 +---------------+--------------+
 |               |              |
-|      onSee    |              |
+|      onSee    |       x      |
 |               |              |
 |   +---------------------+    |
 |   |                     |    |
