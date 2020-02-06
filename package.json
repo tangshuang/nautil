@@ -33,7 +33,7 @@
     "react-native-locale-detector": "^1.0.1",
     "rxjs": "^6.5.3",
     "storagex": "^2.1.0",
-    "ts-fns": "^4.0.0",
-    "tyshemo": "^4.1.5"
+    "ts-fns": "^4.1.0",
+    "tyshemo": "^4.3.0"
   }
 }
