@@ -1,11 +1,23 @@
+/**
+ * Switch, Case
+ *
+ * <Switch of={some}>
+ *   <Case is="0">0</Case>
+ *   <Case is="1" break>1</Case>
+ *   <Case default>x</Case>
+ * </Switch>
+ */
+
 import Component from '../core/component.js'
 import { Any, ifexist } from '../types.js'
-import { isFunction, mapChildren } from '../utils.js'
+import { isFunction, Children, isElement } from '../utils.js'
 
 export class Case extends Component {
   static props = {
     is: Any,
     default: ifexist(Boolean),
+    break: ifexist(Boolean),
+    render: ifexist(Function),
   }
 
   render() {
@@ -22,36 +34,37 @@ export class Switch extends Component {
     const children = this.children
     const target = this.attrs.of
     const blocks = []
+    let isMeet = false
 
-    mapChildren(children, (child) => {
-      const { type, props } = child
-      const { is, children } = props
-      if (type === Case) {
-        blocks.push({
-          default: props.default,
-          is,
-          children,
-        })
+    const items = Children.toArray(children)
+    for (let i = 0, len = items.length; i < len; i ++) {
+      const item = items[i]
+      if (!isElement(item)) {
+        continue
       }
-    })
 
-    var use = null
-    for (let block of blocks) {
-      const { is, children } = block
+      const { type, props } = item
+      if (type !== Case) {
+        continue
+      }
+
+      const { is, default: isDefault, break: isBreak, render, children } = props
+      const h = () => isFunction(children) ? children() : isFunction(render) ? render() : children
       if (is === target) {
-        use = mapChildren(children, child => isFunction(child) ? child() : child)
-        break
+        const block = h()
+        blocks.push(block)
+        isMeet = true
+        if (isBreak) {
+          break
+        }
       }
-      else if (isFunction(is) && is()) {
-        use = mapChildren(children, child => isFunction(child) ? child() : child)
-        break
-      }
-      else if (block.default) {
-        use = mapChildren(children, child => isFunction(child) ? child() : child)
+      if (isDefault && !isMeet) {
+        const block = h()
+        blocks.push(block)
         break
       }
     }
 
-    return use
+    return blocks
   }
 }

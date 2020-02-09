@@ -8,6 +8,7 @@ export class Await extends Component {
     then: ifexist(Function),
     catch: Function,
     promise: Promise,
+    render: ifexist(Function),
   }
   static defaultProps = {
     catch: noop,
@@ -42,7 +43,7 @@ export class Await extends Component {
       return createPlaceholderComponent(placeholder)
     }
     else if (status === 'resolved') {
-      return then ? then(data) : isFunction(this.children) ? this.children(data) : this.children
+      return then ? then(data) : isFunction(this.children) ? this.children(data) : isFunction(render) ? render(data) : this.children
     }
     else if (status === 'rejected') {
       return catchFn ? catchFn(error) : null

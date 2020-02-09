@@ -1,8 +1,20 @@
+/**
+ * If, ElseIf, Else
+ *
+ * <If is={cond1} render={fn1}>
+ *  <ElseIf is={cond2} render={fn2} />
+ *  <Else render={fn0} />
+ * </If>
+ */
+
 import Component from '../core/component.js'
-import React from 'react'
-import { isFunction } from '../utils.js'
+import { isFunction, Children, isElement } from '../utils.js'
+import { ifexist } from '../types.js'
 
 export class Else extends Component {
+  static props = {
+    render: ifexist(Function),
+  }
   render() {
     return null
   }
@@ -11,6 +23,7 @@ export class Else extends Component {
 export class ElseIf extends Component {
   static props = {
     is: Boolean,
+    render: ifexist(Function),
   }
 
   render() {
@@ -21,52 +34,43 @@ export class ElseIf extends Component {
 export class If extends Component {
   static props = {
     is: Boolean,
+    render: ifexist(Function),
   }
 
   render() {
     const children = this.children
-    const blocks = []
-    const { is } = this.attrs
+    const { is, render } = this.attrs
 
-    var block = {
-      type: If,
-      is,
-      children: [],
+    if (isFunction(children)) {
+      return is ? children() : null
     }
-    React.Children.forEach(children, (child) => {
-      const { type, props } = child
-      const { is } = props
-      if ([ElseIf, Else].includes(type)) {
-        blocks.push(block)
-        block = {
-          type,
-          is,
-          children: [],
+
+    if (is) {
+      return render()
+    }
+
+    const items = Children.toArray(children)
+    for (let i = 0, len = items.length; i < len; i ++) {
+      const item = items[i]
+      if (!isElement(item)) {
+        continue
+      }
+
+      const { type, props } = item
+      if (type === ElseIf) {
+        const { is, render } = props
+        if (is) {
+          return render()
         }
       }
-      else {
-        block.children.push(child)
-      }
-    })
-    if (block.children.length) {
-      blocks.push(block)
-      block = null
-    }
 
-    var use = null
-    for (let block of blocks) {
-      const { type, is, children } = block
-      if (is) {
-        use = children.map(child => isFunction(child) ? child() : child)
-        break
-      }
-      else if (type === Else) {
-        use = children.map(child => isFunction(child) ? child() : child)
-        break
+      if (type === Else) {
+        const { render } = props
+        return render()
       }
     }
 
-    return use
+    return null
   }
 }
 
