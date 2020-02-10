@@ -12,4 +12,5 @@ export {
   createTwoWayBinding,
   Children,
   isElement,
+  cloneElement,
 } from './lib/utils.js'
