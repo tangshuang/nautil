@@ -39,6 +39,7 @@ export class Each extends Component {
     const data = this.attrs.of
     const children = this.children
     const blocks = []
+    const { render } = this.attrs
 
     each(data, (value, key) => {
       const block = isFunction(children) ? children(value, key) : isFunction(render) ? render(value, key) : mapChildren(children, cloneElement)
