@@ -14,3 +14,4 @@ export {
   isElement,
   cloneElement,
 } from './lib/utils.js'
+export { attachState } from './lib/attatchors/state.js'
