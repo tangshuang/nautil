@@ -129,4 +129,4 @@ export default class Page1 extends Component {
 
 We pollute store into `Page1` `Page2` and `Page3` in `App` component so that we can use the global `store` in `Page1` `Page2` or `Page3` directly.
 
-We will learn how to use operators [here](./operators.md) latter.
+We will learn how to use operators latter.

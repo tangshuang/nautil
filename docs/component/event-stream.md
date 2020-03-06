@@ -16,4 +16,4 @@ Notice: onChange will not affect the reflect value of two-way-binding.
 
 Inside the component, we will get `this.onChange$` which is a rxjs observable.
 
-We will talk about this in [this paper](./stream.md) later.
+We will talk about this in [this paper](stream.md) later.

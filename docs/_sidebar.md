@@ -1,5 +1,5 @@
 - Guide
-  - [Step by step](./guide.md)
+  - [Step by step](guide.md)
 
 - Getting started
   - [Develop Environment](getting-started/dev-env.md)

@@ -22,4 +22,4 @@ Or generate later after you have initialize your project by using:
 npx nautil-cli init-react-native
 ```
 
-You will learn more about CLI tool [here](../cli/command.md).
+You will learn more about CLI tool.

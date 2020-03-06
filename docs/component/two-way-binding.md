@@ -190,5 +190,5 @@ It can receive two arguments:
 - data: object, which to be proxied
 - reflect: opitonal, function to be called when state.show changed
 
-It is always used with `[Store](./store.md)` or `[Model](./model.md)` which have `state` property.
+It is always used with `Store` or `Model` which have `state` property.
 We only pass `reflect` when we pass a normal object as `data`.
