@@ -316,7 +316,7 @@ Here, we use `depo.get('info')` to get the data, at the time we call this, an aj
 
 Now import it into `App` component to have a try.
 
-# Step 7: router
+## Step 7: router
 
 Frontend router is necessary in an application. It is used to switch views by different urls.
 
