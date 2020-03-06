@@ -1,53 +1,19 @@
-<div  align="center"><img src="./docs/_assets/nautil-logo.png" width="200" height="200"></div>
+<div  align="center"><img src="./.assets/nautil-logo.png" width="200" height="200"></div>
 
-<div  align="center">Nautil is a responsive, efficient, and flexible JavaScript framework for building cross-platform applications.</div>
+<div  align="center">Nautil is a responsive, efficient, and flexible JavaScript frontend framework for building cross-platform applications.</div>
 
 ## Introduction
 
-Nautil (nautil.js) is built on React and is a framework, not a UI library. Developers can use React components in Nautil applications directly as possible. *Nautil is absolutely React, however, Nautil is more than React.* As a framework, it provides router/navigation, state management, data management, event stream, internationalization and ability of cross-platform.
+Nautil (nautil.js) is a javascript frontend framework. You can use it to build cross-platform applications by using familiar React syntax.
 
 The purpose of Nautil is to make development more easy, quick and comfortable.
 
+Nautil (nautil.js) is built on React and is a framework, not a UI library. Developers can use React components in Nautil applications directly as possible. *Nautil is absolutely React, however, Nautil is more than React.* As a framework, it provides router/navigation, state management, data management, event stream, internationalization and ability of cross-platform.
+
 Without importing all the ecosystem of React, without complex redux, without any more choice of third part libraries, you will begin and build your application quickly with Nautil. Feel happy and relaxing when you writing with Nautil. It will work as what you think. You do not need to learn more than react. The only thing you need to know is some feature level api. There is no syntax level or higher knowledge to learn.
 
-To have a taste quickly, run with:
-
-```
-mkdir my-app && cd my-app
-npx nautil-cli init
-npm run dev
-```
-
-## Documentation
-
-⚠️ In development, welcome to contribute!
-
-【[中文文档](https://www.tangshuang.net/7273.html)】
-
-- [Concepts](./docs/concepts.md)
-- [Guide](./docs/guide.md)
-- [CLI](./docs/cli.md)
-- [Component](./docs/component.md)
-  - attrs
-  - two-way-binding
-  - stylesheet
-  - event-stream
-  - lifecycle
-- [PropsType](./docs/props-type.md)
-- [Store/State](./docs/store.md)
-- [Depository](./docs/depository.md)
-- Navigation
-- Stream
-- Operators
-- Builtin-Components
-- Builtin-Hooks
-- Style/CSS
-- Model
-- Animation
-- Internationalization
-- Cross-platform
-- Contribute Guide
-- Thanks
+[Documents](https://nautil.js.org)
+[中文文档](https://www.tangshuang.net/7273.html)
 
 ## MIT License
 
