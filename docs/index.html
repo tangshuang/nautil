@@ -12,14 +12,17 @@
 </body>
 <script>
   window.$docsify = {
-    formatUpdated: '{MM}/{DD}/{YYYY}',
+    formatUpdated: '{YYYY}-{MM}-{DD} {HH}:{mm}',
     name: 'Nautil',
     loadSidebar: true,
     maxLevel: 2,
+    subMaxLevel: 2,
     auto2top: true,
     repo: 'tangshuang/nautil',
-    subMaxLevel: 2,
-    basePath: 'https://raw.githubusercontent.com/tangshuang/nautil/master/docs/',
+    alias: {
+      // use absolutely sidebar file
+      '/.*/_sidebar.md': '/_sidebar.md',
+    }
   }
 </script>
 <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
