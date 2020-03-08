@@ -45,9 +45,18 @@
   - [Methods](depository/methods.md)
   - [Use with Component](depository/with-component.md)
 
+- Navigation
+  - [What is it?](navigation/overview.md)
+  - [Configuration](navigation/config.md)
+  - [State and status](navigation/state-and-status.md)
+  - [Watch changing](navigation/watch.md)
+  - [Events](navigation/events.md)
+  - [Is](navigation/is.md)
+  - [Navigator component](navigation/navigator.md)
+  - [Route component](navigation/route.md)
+  - [Navigate component](navigation/navigate.md)
 
 <!--
-- Navigation
 - Stream
 - Operators
 - Builtin-Components
