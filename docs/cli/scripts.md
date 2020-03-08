@@ -1,6 +1,11 @@
 # Nautil-CLI Scripts
 
 Use script files in `.nautil` directory to create custom build logic.
+You can put 3 types of files in the `.nautil` dir.
+
+- webpack config file which will be use as target file, i.e. demo.js
+- config files which have `.config.js` extension, currently `.postcss.config.js` and `wechat-mp.config.js` are supported
+- hook files which have `.hook.js` extension, currently `before.hook.js` and `after.hook.js` are supported
 
 ## Configs
 
@@ -14,16 +19,13 @@ For example, you create a `demo.js` in `.nautil`, and give right configuration o
 npx nautil-cli build demo --env=production
 ```
 
-You can put 3 types of files in the `.nautil` dir.
-
-- webpack config file which will be use as target file, i.e. demo.js
-- config files which have `.config.js` extension, currently `.postcss.config.js` and `wechat-mp.config.js` are supported
-- hook files which have `.hook.js` extension, currently `before.hook.js` and `after.hook.js` are supported
+## Hooks
 
 Hook files should export a function which return webpack configuration.
 
 ```js
 // before.hook.js
+// we create a basic config for webpack
 module.exports = function() {
   return {
     devServer: {
@@ -42,11 +44,11 @@ And the returned object from `after.hook.js` will be used as finally configurati
 
 To create your own build config file, you can use the tools provided by nautil-cli.
 
-**nautil/configs**
+**nautil-cli/configs**
 
-Files in nautil/configs dir can be used as a basic configuration, you can extends the exported configuration to create your own build configuration.
+Files in `nautil-cli/configs` dir can be used as a basic configuration, you can extends the exported configuration to create your own build configuration.
 
-**nautil/configs/rules**
+**nautil-cli/configs/rules**
 
 Modify the rules file to change default parsing.
 

@@ -1,7 +1,5 @@
-- Guide
-  - [Step by step](getting-started/guide.md)
-
 - Getting started
+  - [Step by step](getting-started/guide.md)
   - [Develop Environment](getting-started/dev-env.md)
   - [Install](getting-started/install.md)
   - [First application](getting-started/first-app.md)
