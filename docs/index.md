@@ -56,10 +56,21 @@
   - [Route component](navigation/route.md)
   - [Navigate component](navigation/navigate.md)
 
+- Builtin-Components
+  - [overview](components/overview.md)
+  - [If/ElseIf/Else](components/if-else.md)
+  - [Switch/Case](components/switch-case.md)
+  - [Show](components/show.md)
+  - [For](components/for.md)
+  - [Each](components/each.md)
+  - [Fragment](components/fragment.md)
+  - [Static](components/static.md)
+  - [Prepare](components/prepare.md)
+  - [Observer](components/observer.md)
+
 <!--
 - Stream
 - Operators
-- Builtin-Components
 - Builtin-Hooks
 - Style/CSS
 - Model
