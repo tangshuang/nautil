@@ -1,6 +1,6 @@
 # Methods of Instance
 
-### register(datasources)
+## register(datasources)
 
 Register datasources in databaxe,
 notice, data is shared with other instances of databaxe.
@@ -47,7 +47,7 @@ const datasource = {
 
 When you `.get` or `.save` data, this datasource info will be used as basic information.
 
-### subscribe(id, callback, priority = 10)
+## subscribe(id, callback, priority = 10)
 
 Add a callback function in to callback list.
 Notice, when data changed (new data requested from server side), all callback functions from components will be called.
@@ -86,7 +86,7 @@ dbx.get('myid', { feilds: { userId: 112 } })
 
 The order of callback functions to run, the bigger ones come first. Default is 10.
 
-### unsubscribe(id, callback)
+## unsubscribe(id, callback)
 
 Remove callback, so do not use anonymous functions as possible.
 
@@ -94,7 +94,7 @@ If callback is 'undefined', all callbacks of this datasource will be removed.
 
 You must to do this before you destroy your component, or you will face memory problem.
 
-### request(id, params)
+## request(id, params)
 
 Request data from backend with a Promise. When the data comes back, the stored data in depository will be replaced (which will be used by `get`).
 
@@ -132,7 +132,7 @@ depo.get('user_by_id', {
 
 This will send an ajax get `/api/v2/users/m?age=10`. Notice that, the params which have been used to interpolate will not exist in query string or post data.
 
-### get(id, params)
+## get(id, params)
 
 Get data from store and return value directly.
 If data is not exists, it will request data from server side in an async task.
@@ -148,7 +148,7 @@ When `async` option is set to be true, `get` will return a Promise. Because asyn
 const value = depo.get('user', { id: 10 })
 ```
 
-### save(id, params)
+## save(id, params)
 
 To save data to server side, I provide a save method. You can use it like put/post operation:
 
@@ -177,6 +177,6 @@ If more than one saving request happens in debounce time, post data will be merg
 So if one property of post data is same as another saving request's, the behind data property will be used, you should be careful about this.
 If you know react's `setState`, you may know more about this transaction.
 
-### destroy()
+## destroy()
 
 You should destroy the instance before you unmount your component.
