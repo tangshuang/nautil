@@ -9,14 +9,11 @@ You can put a `.env` file in your project root dir to control build.
 ```
 ## whether to disable hot-reload module,
 ## only works when NODE_ENV=development && RUNTIME_ENV=dom
-# NO_HOT_RELOAD=true
+HOT_RELOAD=true
 
 ## whether to disable use css module
 ## nautil-cli default use css module
-# NO_CSS_MODULE=true
-
-## if you want to build a wechat miniprogram (wechat-mp), you should set this
-# WECHAT_MINIPROGRAM_APP_ID=xxx
+CSS_MODULE=true
 ```
 
 ## process.env

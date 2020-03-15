@@ -358,8 +358,8 @@ export default class App extends Component {
   render() {
     return (
       <>
-        <button onClick={() => navigation.got('home')}>home</button>
-        <button onClick={() => navigation.got('about')}>about</button>
+        <button onClick={() => navigation.go('home')}>home</button>
+        <button onClick={() => navigation.go('about')}>about</button>
         <Navigator navigation={navigation} inside />
       </>
     )

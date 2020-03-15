@@ -54,8 +54,7 @@
   - [Route component](navigation/route.md)
   - [Navigate component](navigation/navigate.md)
 
-- Builtin-Components
-  - [overview](components/overview.md)
+- [Builtin-Components](components/overview.md)
   - [If/ElseIf/Else](components/if-else.md)
   - [Switch/Case](components/switch-case.md)
   - [Show](components/show.md)

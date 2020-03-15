@@ -1,4 +1,4 @@
-# Builtin Components Overview
+# Builtin Components
 
 Nautil has some builtin components which provide some core logic.
 

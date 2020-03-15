@@ -13,13 +13,13 @@ After building, the bundle files will be put into `dist` directory, find what yo
 Notice that, if you want to build a react-native app, you should initialize your react-native project first by using:
 
 ```
-npx nautil-cli init --react-native
+nautil-cli init --react-native
 ```
 
 Or generate later after you have initialize your project by using:
 
 ```
-npx nautil-cli init-react-native
+nautil-cli init-react-native
 ```
 
 You will learn more about CLI tool.

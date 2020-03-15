@@ -6,6 +6,12 @@
   <meta name="description" content="Nautil.js is a responsive, efficient, and flexible JavaScript framework for building cross-platform applications. Nautil is absolutely React, however, Nautil is more than React. As a framework, it provides router/navigation, state management, data management, event stream, internationalization and ability of cross-platform.">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <style>
+    .sidebar li>p a {
+      font-weight: 700;
+      color: #364149;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -20,12 +26,10 @@
     subMaxLevel: 2,
     auto2top: true,
     repo: 'tangshuang/nautil',
-    alias: {
-      // use absolutely sidebar file
-      '/.*/index.md': '/index.md',
-    }
+    relativePath: true,
+    sidebarAbsolutePath: true,
   }
 </script>
-<script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+<script src="./docsify.min.js"></script>
 <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
 </html>

@@ -25,7 +25,7 @@ export class MyComponent extends Component {
 }
 ```
 
-Type checking is following [tyshemo](https://github.com/tangshuang/tyshemo) which is a data schema system in runtime. We will learn more about props type [here](./props-type.md).
+Type checking is following [tyshemo](https://github.com/tangshuang/tyshemo) which is a data schema system in runtime. We will learn more about props type [here](props-type.md).
 
 You can declare 3 kinds of prop:
 
