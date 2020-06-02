@@ -34,6 +34,7 @@ export class Switch extends Component {
     const children = this.children
     const target = this.attrs.of
     const blocks = []
+
     let isMeet = false
 
     const items = Children.toArray(children)

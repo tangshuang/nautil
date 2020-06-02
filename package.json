@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.14.3",
+  "version": "0.14.8",
   "description": "A javascript application framework.",
   "main": "index.js",
   "repository": {
@@ -34,6 +34,6 @@
     "rxjs": "^6.5.3",
     "storagex": "^2.1.0",
     "ts-fns": "^4.1.0",
-    "tyshemo": "^4.3.0"
+    "tyshemo": "^4.3.1"
   }
 }
