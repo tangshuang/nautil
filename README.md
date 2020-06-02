@@ -12,8 +12,8 @@ Nautil (nautil.js) is built on React and is a framework, not a UI library. Devel
 
 Without importing all the ecosystem of React, without complex redux, without any more choice of third part libraries, you will begin and build your application quickly with Nautil. Feel happy and relaxing when you writing with Nautil. It will work as what you think. You do not need to learn more than react. The only thing you need to know is some feature level api. There is no syntax level or higher knowledge to learn.
 
-[Documents](https://nautil.js.org)
-[中文文档](https://www.tangshuang.net/7273.html)
+- [Documents](https://nautil.js.org)
+- [中文文档](https://www.tangshuang.net/7273.html)
 
 ## MIT License
 
