@@ -1,12 +1,18 @@
-import { Component as ReactComponent } from 'react'
+import {
+  Component as ReactComponent,
+  cloneElement,
+} from 'react'
+
 import {
   each,
-  getConstructor,
-  cloneElement,
-  mapChildren,
+  getConstructorOf,
   isArray,
-  throttle,
+} from 'ts-fns'
+
+import {
+  mapChildren
 } from '../utils.js'
+
 import {
   useAttrs,
   useStreams,
@@ -15,18 +21,6 @@ import {
 } from '../hooks/component.hooks.js'
 
 export class PrimitiveComponent extends ReactComponent {
-  constructor(props) {
-    super(props)
-
-    // render
-    const _render = this.render.bind(this)
-    this.render = () => {
-      const tree = _render()
-      const polluted = this._polluteRenderTree(tree)
-      return polluted
-    }
-  }
-
   _getPollutedComponents() {
     let pollutedComponents = this._pollutedComponents || []
     const fiber = this._reactInternalFiber
@@ -82,28 +76,34 @@ export class PrimitiveComponent extends ReactComponent {
     const output = modify(tree)
     return output
   }
+
+  render() {
+    const tree = super.render()
+    const polluted = this._polluteRenderTree(tree)
+    return polluted
+  }
 }
 
 export class Component extends PrimitiveComponent {
   constructor(props) {
     super(props)
 
-    // update
-    this.update = throttle(() => this.setState({}), 10)
-    // forceUpdate
-    const forceUpdate = this.forceUpdate.bind(this)
-    this.forceUpdate = () => {
-      this.onUpdate(this.props, this.state)
-      this._digest(this.props)
-      return forceUpdate()
-    }
-
     this.onInit()
     this._digest(props)
   }
 
+  forceUpdate() {
+    this.onUpdate(this.props, this.state)
+    this._digest(this.props)
+    return super.forceUpdate()
+  }
+
+  update() {
+    return this.setState({})
+  }
+
   _digest(props) {
-    const Constructor = getConstructor(this)
+    const Constructor = getConstructorOf(this)
 
     this.attrs = useAttrs(props, Constructor)
     this.className = useClassName(props, Constructor)
