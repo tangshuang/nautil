@@ -1,5 +1,6 @@
 node_modules/
-package-lock.json
 shells/
 dist/
 cjs/
+/*.js
+/*.map
