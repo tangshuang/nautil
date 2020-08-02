@@ -6,7 +6,7 @@ To know more, we should follow:
 
 **Two-Way-Binding only works on nautil class components.**
 
-React primitive components and Function components do not support two-way-binding.
+React primitive components and functional components do not support two-way-binding.
 
 ```js
 import { Component } from 'nautil'
@@ -15,6 +15,7 @@ export default class MyComponent extends Component {
   static props = {
     $show: Boolean,
   }
+
   render() {
     const { show } = this.attrs
     return (
@@ -27,7 +28,16 @@ export default class MyComponent extends Component {
 }
 ```
 
-However, you can use two-way-binding components in react components and Function components. For example:
+Now, `MyComponent` will have a tow-way-binding prop `$show`, you can use it like this:
+
+```js
+function WrapperComponent() {
+  const $show = useState(false)
+  return <MyComponent $show={$show} />
+}
+```
+
+Nautil builtin components `Input` `Textarea` `Select` support tow-way-binding as default:
 
 ```js
 import { Input } from 'nautil/components'
@@ -43,7 +53,7 @@ export default function MyComponent() {
 **Pass props as two-way-binding props beginning with `$`.**
 
 The props which begin with `$` will be treated as two-way-binding.
-No matter whether the component will receive the prop as two-way-binding prop, nautil will parse it as two-way-binding.
+No matter whether the component will receive the prop as two-way-binding prop or not, nautil will parse it as two-way-binding. (So don't define your normal prop begin with `$`.)
 
 ```js
 import { useTwoWayBinding } from 'nautil/hooks'
@@ -66,7 +76,7 @@ function B(props) {
 }
 ```
 
-In the previous code, we pass `show` as a two-way-binding prop into `A` in `B`, but in `A` we use `show` as a normal prop.
+In the previous code, we pass `show` as a two-way-binding prop from `B` into `A`, but in `A` we use `show` as a normal prop.
 This is ok, we do not need to worry about this even `A` will not change `show` forever.
 
 **You can always modify `this.attrs` directly.**
@@ -88,6 +98,7 @@ export default class MyComponent extends Component {
       this.attrs.show = !show
 
       // although `name` is not a declared two-way-binding prop, we can change this.attrs.name directly too
+      // if `name` is a normal prop, next sentence will not work
       // when and only when the parent component pass name as a two-way-binding prop, this will work
       this.attrs.name = 'some'
     }
@@ -141,12 +152,29 @@ As you seen, we use two-way-binding with `useState` excellently. This is the mos
 
 **useTwoWayBinding**
 
-Sometimes, you do not use `useState`, for example, in class components. We can use `useTwoWayBinding` to create a specail object.
+Sometimes, you do not use `useState`, for example, in class components. Or, you can only pass an array which contains only two items:
 
 ```js
 class D extends Component {
   render() {
-    const show = useTwoWayBinding(!!this.state.show, show => this.setState({ show }))
+    const show = [
+      !!this.state.show, // first item is the value
+      show => this.setState({ show }) // second item is the update function
+    ]
+    return <A $show={show} />
+  }
+}
+```
+
+We can use `useTwoWayBinding` to create a specail object.
+
+```js
+class D extends Component {
+  render() {
+    const show = useTwoWayBinding(
+      !!this.state.show, // first item is the value
+      show => this.setState({ show }), // second item is the update function
+    )
     return <A $show={show} />
   }
 }
@@ -155,7 +183,7 @@ class D extends Component {
 This function has two parameters:
 
 - value: the value to use
-- reflect: optional, function to be called when the child component change the two-way-binding prop
+- update: optional, function to be called when the child component change the two-way-binding prop
 
 In some cases, you do not know whether a passed prop is a two-way-prop, you can use it:
 
@@ -188,7 +216,7 @@ In the previous code, when `A` change the `show`'s value, `store.state.show` wil
 It can receive two arguments:
 
 - data: object, which to be proxied
-- reflect: opitonal, function to be called when state.show changed
+- update: opitonal, function to be called when state.show changed
 
 It is always used with `Store` or `Model` which have `state` property.
-We only pass `reflect` when we pass a normal object as `data`.
+We only pass `update` when we pass a normal object as `data`.

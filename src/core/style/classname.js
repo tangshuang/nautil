@@ -1,12 +1,13 @@
 import {
   each,
-  isString, isObject,
+  isString,
+  isObject,
   isBoolean,
   uniqueArray,
-} from '../utils.js'
+} from 'ts-fns'
 
-export class ClassName {
-  static make(stylesheet) {
+export const ClassNameService = {
+  make(stylesheet) {
     const classNames = []
     const patchStylesheetObject = (style = {}) => {
       each(style, (value, key) => {
@@ -28,16 +29,16 @@ export class ClassName {
     })
 
     return classNames
-  }
-  static ensure(classNames) {
+  },
+  ensure(classNames) {
     const className = uniqueArray(classNames.filter(item => !!item)).join(' ') || undefined
     return className
-  }
-  static create(stylesheet) {
+  },
+  create(stylesheet) {
     const stylequeue = [].concat(stylesheet)
-    const classNames = ClassName.make(stylequeue)
-    const className = ClassName.ensure(classNames)
+    const classNames = ClassNameService.make(stylequeue)
+    const className = ClassNameService.ensure(classNames)
     return className
-  }
+  },
 }
-export default ClassName
+export default ClassNameService

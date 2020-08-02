@@ -3,6 +3,9 @@
   "version": "0.14.8",
   "description": "A javascript application framework.",
   "main": "index.js",
+  "scripts": {
+    "build:component": "webpack --config .build/webpack.config.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tangshuang/nautil.git"
@@ -34,7 +37,15 @@
     "react-tyshemo": "^3.0.0",
     "rxjs": "^6.5.3",
     "storagex": "^2.1.0",
-    "ts-fns": "^6.4.4",
+    "ts-fns": "^7.1.2",
     "tyshemo": "^7.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.0",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-node-externals": "^2.5.0"
   }
 }

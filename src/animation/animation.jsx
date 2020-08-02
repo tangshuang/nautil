@@ -1,3 +1,4 @@
+import React from 'react'
 import Component from '../core/component.js'
 import { noop, isNumeric } from '../utils.js'
 import { Section } from '../components'

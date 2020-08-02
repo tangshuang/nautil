@@ -1,6 +1,6 @@
 # Props
 
-You can define a static property in Nautil Component class called `props` to declare the receive props and their types.
+You can define a static property in Nautil Component class called `props` to declare the received props and their types.
 
 ```js
 import { Component } from 'nautil'
@@ -11,7 +11,7 @@ export class MyComponent extends Component {
     some: String,
 
     // object prop
-    o: {
+    any: {
       name: String,
       age: Number,
     },
@@ -19,7 +19,7 @@ export class MyComponent extends Component {
     // two-way-binding prop
     $show: Boolean,
 
-    // event handler, there is no need to declare the real type, only pass `true`
+    // event stream prop, there is no need to declare the real type, only pass `true`
     onClick: true,
   }
 }
@@ -29,8 +29,8 @@ Type checking is following [tyshemo](https://github.com/tangshuang/tyshemo) whic
 
 You can declare 3 kinds of prop:
 
-- normal
+- normal prop
 - `$` beginning which is two-way-binding prop
-- `on` beginning which is event stream handler
+- `on` beginning which is event stream prop
 
 After you declare the props, you can use `defaultProps` to give the default values.

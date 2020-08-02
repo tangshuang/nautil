@@ -6,25 +6,13 @@ import {
   noop,
 } from '../utils.js'
 
-export {
-  userCallback,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react'
-
 /**
  * when you are not sure whether a var is a binding, use this function to deconstruct.
  * @param {*} value
  */
-export function useTwoWayBinding(value, reflect) {
-  if (reflect) {
-    return [value, reflect]
+export function useTwoWayBinding(value, update) {
+  if (update) {
+    return [value, update]
   }
 
   const binding = [].concat(value)

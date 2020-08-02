@@ -1,28 +1,23 @@
-import {
-  Component as ReactComponent,
-  cloneElement,
-} from 'react'
-
+import React from 'react'
 import {
   each,
   getConstructorOf,
   isArray,
 } from 'ts-fns'
+import { Observable } from 'rxjs'
+import { Ty } from 'tyshemo'
 
 import {
-  mapChildren
-} from '../utils.js'
+  buildAttrs,
+  buildClassName,
+  buildStyle,
+  buildStreams,
+} from './utils.js'
 
-import {
-  useAttrs,
-  useStreams,
-  useStyle,
-  useClassName,
-} from '../hooks/component.hooks.js'
-
-export class PrimitiveComponent extends ReactComponent {
+export class PrimitiveComponent extends React.Component {
   _getPollutedComponents() {
     let pollutedComponents = this._pollutedComponents || []
+
     const fiber = this._reactInternalFiber
     // pollute children tree by using parent fiber tree
     let parent = fiber.return
@@ -60,7 +55,7 @@ export class PrimitiveComponent extends ReactComponent {
       const { children } = props
       const subtree = modify(children)
 
-      return cloneElement(node, { ...pollutedProps }, subtree)
+      return React.cloneElement(node, { ...pollutedProps }, subtree)
     }
     const modify = (tree) => {
       if (isArray(tree)) {
@@ -88,8 +83,29 @@ export class Component extends PrimitiveComponent {
   constructor(props) {
     super(props)
 
+    this._jammers = []
     this.onInit()
     this._digest(props)
+  }
+
+  bind(name, affect) {
+    this._jammers.push({ name, affect })
+  }
+
+  unbind(name, affect) {
+    this._jammers.forEach((item, i) => {
+      if (name === item.name && (!affect || affect === item.affect)) {
+        this._jammers.splice(i, 1)
+      }
+    })
+  }
+
+  emit(name, data) {
+    const stream = this[name + '$']
+    if (!stream) {
+      return
+    }
+    this[name + '$'].next(data)
   }
 
   forceUpdate() {
@@ -105,19 +121,29 @@ export class Component extends PrimitiveComponent {
   _digest(props) {
     const Constructor = getConstructorOf(this)
 
-    this.attrs = useAttrs(props, Constructor)
-    this.className = useClassName(props, Constructor)
-    this.style = useStyle(props, Constructor)
+    this.attrs = buildAttrs(props, Constructor)
+    this.className = buildClassName(props, Constructor)
+    this.style = buildStyle(props, Constructor)
     this.children = props.children
 
-    const streams = useStreams(props, Constructor)
+    const streams = buildStreams(props, Constructor)
     each(this, (value, key) => {
       if (/^on[A-Z].*\$$/.test(key)) {
-        delete this[key]
+        const name = key.replace('on', '')
+        delete this[name + '$']
       }
     })
     each(streams, (value, key) => {
-      this[key + '$'] = value
+      const name = key.replace('on', '')
+      this._jammers.forEach((item) => {
+        if (name === item.name) {
+          value = item.affect(value) || value
+          if (process.env.NDOE_ENV !== 'production') {
+            Ty.expect(value).to.be(Observable)
+          }
+        }
+      })
+      this[name + '$'] = value
     })
 
     this.onDigested()

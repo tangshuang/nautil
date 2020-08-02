@@ -8,10 +8,6 @@ import {
   isInstanceOf,
   isString,
 } from '../utils.js'
-import {
-  PROXY_STORE,
-  PROXY_MODEL,
-} from '../constants.js'
 
 export function observe(subscription, unsubscription) {
   return function(C) {
@@ -32,10 +28,7 @@ export function observe(subscription, unsubscription) {
 
         // special for store
         // i.e. observe(store)
-        const isObservable = isInstanceOf(subscribe, Store)
-          || isInstanceOf(subscribe, Model)
-          || isInstanceOf(subscribe[PROXY_STORE], Store)
-          || isInstanceOf(subscribe[PROXY_MODEL], Model)
+        const isObservable = isInstanceOf(subscribe, Store) || isInstanceOf(subscribe, Model)
         if (isObservable) {
           const o = subscribe
           const k = isString(unsubscribe) ? unsubscribe : '*'

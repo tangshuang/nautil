@@ -1,5 +1,5 @@
-import { dict, ifexist, enumerate, tuple } from '../types.js'
-import { each, isString, isArray, isObject } from '../utils.js'
+import { dict, ifexist, enumerate, tuple } from 'tyshemo'
+import { each, isString, isArray, isObject } from 'ts-fns'
 
 const TranslateType = enumerate([String, Number])
 const ParamsType = dict({
@@ -22,6 +22,7 @@ export class Transform {
   constructor(rules = {}) {
     this.rules = { ...rules }
   }
+
   set(rules) {
     if (process.env.NODE_ENV !== 'production') {
       ParamsType.assert(rules)
@@ -41,11 +42,11 @@ export class Transform {
   get() {
     throw new Error(`Transform.prototype.get should be overrided.`)
   }
-}
 
-Transform.parse = parse
-Transform.generate = generate
-Transform.convert = convert
+  static parse = parse
+  static generate = generate
+  static convert = convert
+}
 
 // parse style.transform value to be a merged object
 function parse(value) {

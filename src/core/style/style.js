@@ -5,13 +5,13 @@ import {
   isObject,
   isBoolean,
   isFunction,
-} from '../utils.js'
+} from 'ts-fns'
 
-export class Style {
+export const StyleService = {
   /**
    * @param {array} stylesheet
    */
-  static make(stylesheet) {
+  make(stylesheet) {
     const style = {}
 
     stylesheet.forEach((item) => {
@@ -25,13 +25,13 @@ export class Style {
     })
 
     return style
-  }
+  },
 
   /**
    * @param {object} style
    * @param {function} iterate
    */
-  static ensure(style, iterate) {
+  ensure(style, iterate) {
     // will be override in react-native
     const rules = map(style, (value, key) => {
       if (key === 'transform' && !isBoolean(value)) {
@@ -46,17 +46,17 @@ export class Style {
       }
     })
     return rules
-  }
+  },
 
   /**
    * @param {*} stylesheet
    */
-  static create(stylesheet) {
+  create(stylesheet) {
     const stylequeue = [].concat(stylesheet)
-    const style = Style.make(stylequeue)
-    const rules = Style.ensure(style)
+    const style = StyleService.make(stylequeue)
+    const rules = StyleService.ensure(style)
     return rules
-  }
+  },
 }
 
-export default Style
+export default StyleService
