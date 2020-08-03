@@ -126,24 +126,26 @@ export class Component extends PrimitiveComponent {
     this.style = buildStyle(props, Constructor)
     this.children = props.children
 
-    const streams = buildStreams(props, Constructor)
-    each(this, (value, key) => {
-      if (/^on[A-Z].*\$$/.test(key)) {
-        const name = key.replace('on', '')
-        delete this[name + '$']
-      }
-    })
-    each(streams, (value, key) => {
+    const streams = buildStreams(props, Constructor, (stream, key) => {
       const name = key.replace('on', '')
       this._jammers.forEach((item) => {
         if (name === item.name) {
-          value = item.affect(value) || value
+          stream = item.affect(stream) || stream
           if (process.env.NDOE_ENV !== 'production') {
-            Ty.expect(value).to.be(Observable)
+            Ty.expect(stream).to.be(Observable)
           }
         }
       })
-      this[name + '$'] = value
+      return stream
+    })
+    each(this, (value, key) => {
+      if (/^[A-Z].*\$$/.test(key)) {
+        delete this[key + '$']
+      }
+    })
+    each(streams, (stream, key) => {
+      const name = key.replace('on', '')
+      this[name + '$'] = stream
     })
 
     this.onDigested()

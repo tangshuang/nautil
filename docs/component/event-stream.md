@@ -45,3 +45,10 @@ class Some extends Component {
   }
 }
 ```
+
+The pipe function of `bind` will run before the pipes of your passed.
+
+```js
+<Some onChange={[pipe, subscribe]} />
+// here, `pipe` will run after map(value => value ++)
+```

@@ -18,6 +18,7 @@ import {
   isObject,
   isFunction,
   isBoolean,
+  isArray,
 } from 'ts-fns'
 
 import Style from './style/style.js'
@@ -101,7 +102,7 @@ export function buildAttrs(props, Component) {
   // create two-way binding props
   const state = createProxy(finalAttrs, {
     writable(keyPath, value) {
-      const chain = makeKeyChain(keyPath)
+      const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
       const root = chain.shift()
       const bindKey = '$' + root
       const bindData = bindingAttrs[bindKey]
@@ -123,7 +124,7 @@ export function buildAttrs(props, Component) {
   return state
 }
 
-export function buildStreams(props, Component) {
+export function buildStreams(props, Component, callback) {
   const { props: PropsTypes } = Component
   const { children, stylesheet, style, className, ...attrs } = props
 
@@ -171,12 +172,18 @@ export function buildStreams(props, Component) {
    * use the passed handler like onClick to create a stream
    * @param {*} param
    */
-  function createHandledStream(param) {
+  function createHandledStream(param, key) {
     let subject = new Subject()
 
     const args = isArray(param) ? [...param] : [param]
     const subscribe = args.pop()
 
+    // inner bind come first
+    if (isFunction(callback)) {
+      subject = callback(subject, key)
+    }
+
+    // outer pass args come later
     if (args.length) {
       subject = subject.pipe(...args)
     }
@@ -188,7 +195,7 @@ export function buildStreams(props, Component) {
     return subject
   }
 
-  const streams = map(handlingAttrs, (value) => createHandledStream(value))
+  const streams = map(handlingAttrs, createHandledStream)
   return streams
 }
 
