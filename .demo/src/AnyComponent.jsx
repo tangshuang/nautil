@@ -69,7 +69,7 @@ const Container = provide('child', context)(function Container() {
   )
 })
 
-export default function App() {
+export default function AnyComponent() {
   const child = useState('ximi')
   return <Container child={child} />
 }

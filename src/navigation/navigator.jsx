@@ -1,12 +1,13 @@
+import React, { cloneElement, Children } from 'react'
+import { enumerate, ifexist, Any } from 'tyshemo'
+import { isNumber, isFunction, isObject, isInstanceOf } from 'ts-fns'
+
 import Component from '../core/component.js'
-import Navigation from '../core/navigation.js'
-import Observer from './observer.jsx'
-import React from 'react'
-import { enumerate, ifexist, Any } from '../types.js'
-import { isNumber, cloneElement, mapChildren, filterChildren, isFunction, isObject, isInstanceOf } from '../utils.js'
+import Navigation from './navigation.js'
+import { pipe } from '../core/operators/combiners.js'
+import { pollute } from '../core/operators/operators.js'
+import Observer from '../core/components/observer.jsx'
 import { Text, Section } from '../components'
-import { pollute } from '../operators/operators.js'
-import { pipe } from '../operators/combiners.js'
 
 export class Route extends Component {
   static props = {
@@ -77,7 +78,7 @@ export class Route extends Component {
       return null
     }
 
-    const children = filterChildren(this.children)
+    const children = this.children
     if (component) {
       const RouteComponent = component
       return <RouteComponent show={show} {...props}>{children}</RouteComponent>
@@ -85,7 +86,7 @@ export class Route extends Component {
     else if (isFunction(this.children)) {
       return this.children({ navigation, show })
     }
-    else if (children.length) {
+    else if (children) {
       return children
     }
     else {
@@ -130,13 +131,13 @@ export class Navigate extends Component {
       }
     }
 
-    const nodes = filterChildren(children)
-    if (component || nodes.length > 1) {
+    const nodes = children
+    if (component) {
       const C = component || Section
       return <C {...props} onHint={go}>{nodes}</C>
     }
     else {
-      return mapChildren(nodes, (child) => {
+      return Children.map(nodes, (child) => {
         if (child.type) {
           return cloneElement(child, { onHint: go })
         }
