@@ -83,6 +83,9 @@ export class Component extends PrimitiveComponent {
   constructor(props) {
     super(props)
 
+    this.update = this.update.bind(this)
+    this.forceUpdate = this.forceUpdate.bind(this)
+
     this._jammers = []
     this.onInit()
     this._digest(props)

@@ -7,6 +7,8 @@ const core = {
   output: {
     path: path.resolve(__dirname, '..'),
     filename: 'index.js',
+    library: 'nautil',
+    libraryTarget: 'commonjs2',
   },
   module: {
     rules: [

@@ -64,6 +64,9 @@ export function provide(prop, context = sharedContext) {
         const { children, ...props } = this.props
         const { Provider } = isFunction(context) ? context(this.props) : context
         const value = props[prop]
+
+        delete props[prop] // remove provide prop from original props
+
         return (
           <Provider value={value}>
             <C {...props}>{children}</C>

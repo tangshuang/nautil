@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import Component from '../../src/core/component'
+import React, { useState, createContext } from 'react'
+import { Component, connect, provide } from '../../index'
 import { map } from 'rxjs/operators'
 
 class Some extends Component {
@@ -44,18 +44,32 @@ class Some extends Component {
         <div className={this.className} style={this.style}>
           {some}
         </div>
+        <div>
+          <Child />
+        </div>
       </div>
     )
   }
 }
 
-export default function App() {
+const context = createContext(null)
+
+const Child = connect('name', context)(function Child(props) {
+  const { name: [name, setName] } = props
+  return <span onClick={() => setName('xisa')}>child: {name}</span>
+})
+
+const Container = provide('child', context)(function Container() {
   // use as two-way-binding
   const $age = useState(10)
   return (
-    <div className='App'>
-      <h4></h4>
+    <div className='container'>
       <Some name='tomy' $age={$age} onClick={console.log.bind(console)} stylesheet={[{ name: true, color: 'red' }, 'some-class']} />
     </div>
   )
+})
+
+export default function App() {
+  const child = useState('ximi')
+  return <Container child={child} />
 }
