@@ -1,6 +1,7 @@
-import Component from '../core/component.js'
-import { isFunction } from '../utils.js'
-import { Any, ifexist } from '../types.js'
+import { isFunction } from 'ts-fns'
+import { Any, ifexist } from 'tyshemo'
+
+import Component from '../component.js'
 
 export class Static extends Component {
   static props = {
@@ -8,7 +9,8 @@ export class Static extends Component {
     render: ifexist(Function),
   }
   shouldUpdate(nextProps) {
-    return nextProps.shouldUpdate
+    const { shouldUpdate } = nextProps
+    return isFunction(shouldUpdate) ? shouldUpdate() : shouldUpdate
   }
   render() {
     const { render } = this.attrs

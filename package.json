@@ -4,7 +4,7 @@
   "description": "A javascript application framework.",
   "main": "index.js",
   "scripts": {
-    "build:component": "webpack --config .build/webpack.config.js",
+    "build": "webpack --config .build/webpack.config.js",
     "dev": "webpack-dev-server --config .demo/webpack.config.js"
   },
   "repository": {
@@ -33,7 +33,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-list": "^0.8.13",
-    "react-native": "^0.61.5",
+    "react-native": "^0.63.2",
     "react-native-locale-detector": "^1.0.1",
     "react-tyshemo": "^3.0.0",
     "rxjs": "^6.5.3",

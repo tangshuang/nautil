@@ -1,18 +1,20 @@
-import Component from '../core/component.js'
-import { isFunction, createPlaceholderComponent } from '../utils.js'
-import { Any, ifexist } from '../types.js'
+import { Any, ifexist } from 'tyshemo'
+import { isFunction } from 'ts-fns'
+
+import Component from '../component.js'
+import { createPlaceholderComponent } from '../utils.js'
 
 export class Prepare extends Component {
   static props = {
     ready: Boolean,
-    placeholder: Any,
+    wait: Any,
     render: ifexist(Function),
   }
   render() {
-    const { ready, placeholder, render } = this.attrs
+    const { ready, wait, render } = this.attrs
     return ready
       ? (isFunction(this.children) ? this.children() : isFunction(render) ? render() : this.children )
-      : createPlaceholderComponent(placeholder)
+      : createPlaceholderComponent(wait)
   }
 }
 export default Prepare

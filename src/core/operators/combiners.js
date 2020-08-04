@@ -1,4 +1,4 @@
-import { isArray } from '../utils.js'
+import { isArray } from 'ts-fns'
 
 /**
  * Conbime operating, with order

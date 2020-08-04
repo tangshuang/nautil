@@ -7,14 +7,17 @@
  * </If>
  */
 
-import Component from '../core/component.js'
-import { isFunction, Children, isElement } from '../utils.js'
-import { ifexist } from '../types.js'
+import { ifexist } from 'tyshemo'
+import { isFunction } from 'ts-fns'
+import { Children, isValidElement } from 'react'
+
+import Component from '../component.js'
 
 export class Else extends Component {
   static props = {
     render: ifexist(Function),
   }
+
   render() {
     return null
   }
@@ -52,7 +55,7 @@ export class If extends Component {
     const items = Children.toArray(children)
     for (let i = 0, len = items.length; i < len; i ++) {
       const item = items[i]
-      if (!isElement(item)) {
+      if (!isValidElement(item)) {
         continue
       }
 

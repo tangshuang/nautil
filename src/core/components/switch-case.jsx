@@ -8,9 +8,11 @@
  * </Switch>
  */
 
-import Component from '../core/component.js'
-import { Any, ifexist } from '../types.js'
-import { isFunction, Children, isElement } from '../utils.js'
+import { Any, ifexist } from 'tyshemo'
+import { isFunction } from 'ts-fns'
+import { Children, isValidElement } from 'react'
+
+import Component from '../component.js'
 
 export class Case extends Component {
   static props = {
@@ -40,7 +42,7 @@ export class Switch extends Component {
     const items = Children.toArray(children)
     for (let i = 0, len = items.length; i < len; i ++) {
       const item = items[i]
-      if (!isElement(item)) {
+      if (!isValidElement(item)) {
         continue
       }
 

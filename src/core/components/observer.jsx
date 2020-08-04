@@ -1,23 +1,31 @@
-import Component from '../core/component.js'
+import { ifexist, Ty } from 'tyshemo'
+
+import Component from '../component.js'
 import { noop } from '../utils.js'
 
 export class Observer extends Component {
   static props = {
     subscribe: Function,
-    unsubscribe: Function,
+    unsubscribe: ifexist(Function),
     dispatch: Function,
   }
   static defaultProps = {
     unsubscribe: noop,
   }
+
   onMounted() {
     const { subscribe, dispatch } = this.attrs
-    subscribe(dispatch)
+    this._unsubscribe = subscribe(dispatch)
   }
+
   onUnmount() {
-    const { unsubscribe, dispatch } = this.attrs
+    const { unsubscribe = this._unsubscribe, dispatch } = this.attrs
+    if (process.env.NODE_ENV !== 'production') {
+      Ty.expect(unsubscribe).to.be(Function)
+    }
     unsubscribe(dispatch)
   }
+
   render() {
     return this.children
   }

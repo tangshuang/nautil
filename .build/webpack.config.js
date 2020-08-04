@@ -1,21 +1,22 @@
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 
-const component = {
-  mode: 'production',
-  entry: path.resolve(__dirname, '../src/core/component.js'),
+const core = {
+  mode: 'none',
+  entry: path.resolve(__dirname, '../src/index.js'),
   output: {
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'component.js',
-    library: 'nautil/component',
-    libraryTarget: 'umd',
+    path: path.resolve(__dirname, '..'),
+    filename: 'index.js',
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.js|.jsx$/,
         loader: 'babel-loader',
         options: {
+          presets: [
+            '@babel/preset-react',
+          ],
           plugins: [
             '@babel/plugin-proposal-class-properties',
           ],
@@ -26,9 +27,13 @@ const component = {
   externals: [
     nodeExternals(),
   ],
+  optimization: {
+    usedExports: true,
+    sideEffects: true,
+  },
   devtool: 'source-map',
 }
 
 module.exports = [
-  component,
+  core,
 ]

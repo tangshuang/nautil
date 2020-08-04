@@ -1,9 +1,8 @@
-import Component from '../core/component.js'
-import { enumerate } from '../types.js'
-import { isArray, isObject, each, isFunction, cloneElement, mapChildren } from '../utils.js'
+import { enumerate, ifexist } from 'tyshemo'
+import { each, isFunction } from 'ts-fns'
+import { cloneElement, Children } from 'react'
 
-import { ifexist } from '../types.js'
-import { render } from 'react-dom'
+import Component from '../component.js'
 
 export class For extends Component {
   static props = {
@@ -22,7 +21,7 @@ export class For extends Component {
     const blocks = []
 
     for (let i = start; i <= end; i += step) {
-      const block = isFunction(children) ? children(i) : isFunction(render) ? render(i) : mapChildren(children, cloneElement)
+      const block = isFunction(children) ? children(i) : isFunction(render) ? render(i) : Children.map(children, child => cloneElement(child))
       blocks.push(block)
     }
     return blocks
@@ -42,7 +41,7 @@ export class Each extends Component {
     const { render } = this.attrs
 
     each(data, (value, key) => {
-      const block = isFunction(children) ? children(value, key) : isFunction(render) ? render(value, key) : mapChildren(children, cloneElement)
+      const block = isFunction(children) ? children(value, key) : isFunction(render) ? render(value, key) : Children.map(children, child => cloneElement(child))
       blocks.push(block)
     })
 

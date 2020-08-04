@@ -1,13 +1,15 @@
-import React from 'react'
-import { Observer } from '../core-components/index.js'
-import Component from '../core/component.js'
-import { Store } from '../core/store.js'
-import { Model } from '../core/model.js'
+import React, { createContext } from 'react'
+import { Store, Model } from 'tyshemo'
 import {
   isFunction,
   isInstanceOf,
   isString,
-} from '../utils.js'
+} from 'ts-fns'
+
+import Component from '../component.js'
+import Observer from '../components/observer.jsx'
+
+const sharedContext = createContext(null)
 
 export function observe(subscription, unsubscription) {
   return function(C) {
@@ -51,11 +53,33 @@ export function observe(subscription, unsubscription) {
 }
 
 /**
+ * Use Provider to wrapper inner component
+ * @param {*} prop
+ * @param {*} context
+ */
+export function provide(prop, context = sharedContext) {
+  return function(C) {
+    return class extends Component {
+      render() {
+        const { children, ...props } = this.props
+        const { Provider } = isFunction(context) ? context(this.props) : context
+        const value = props[prop]
+        return (
+          <Provider value={value}>
+            <C {...props}>{children}</C>
+          </Provider>
+        )
+      }
+    }
+  }
+}
+
+/**
  * Connect a component with a context
  * @param {*} prop
  * @param {function|ReactContext} context
  */
-export function connect(prop, context) {
+export function connect(prop, context = sharedContext) {
   return function(C) {
     return class extends Component {
       render() {

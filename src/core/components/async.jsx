@@ -1,13 +1,14 @@
-import Component from '../core/component.js'
-import { isFunction, createPlaceholderComponent, noop } from '../utils.js'
-import { ifexist, Any } from '../types.js'
+import { isFunction, ifexist, Any } from 'tyshemo'
 
-export class Await extends Component {
+import Component from '../component.js'
+import { createPlaceholderComponent, noop } from '../utils.js'
+
+export class Async extends Component {
   static props = {
-    placeholder: Any,
+    wait: Any,
     then: ifexist(Function),
     catch: Function,
-    promise: Promise,
+    for: Promise,
     render: ifexist(Function),
   }
   static defaultProps = {
@@ -19,8 +20,8 @@ export class Await extends Component {
     error: null,
   }
   onMounted() {
-    const { promise } = this.attrs
-    promise.then((data) => {
+    const { for: _of } = this.attrs
+    _of.then((data) => {
       if (this._isUnmounted) {
         return
       }
@@ -36,11 +37,11 @@ export class Await extends Component {
     this._isUnmounted = true
   }
   render() {
-    const { placeholder, then, catch: catchFn } = this.attrs
+    const { wait, then, catch: catchFn } = this.attrs
     const { status, data, error } = this.state
 
     if (status === 'pending') {
-      return createPlaceholderComponent(placeholder)
+      return createPlaceholderComponent(wait)
     }
     else if (status === 'resolved') {
       return then ? then(data) : isFunction(this.children) ? this.children(data) : isFunction(render) ? render(data) : this.children
@@ -53,4 +54,4 @@ export class Await extends Component {
     }
   }
 }
-export default Await
+export default Async

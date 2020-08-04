@@ -1,10 +1,6 @@
-import {
-  Ty,
-  Binding,
-} from '../types.js'
-import {
-  noop,
-} from '../utils.js'
+import { Ty } from 'tyshemo'
+import { Binding } from '../types.js'
+import { noop } from '../utils.js'
 
 /**
  * when you are not sure whether a var is a binding, use this function to deconstruct.
