@@ -8,7 +8,7 @@ export class Async extends Component {
     wait: Any,
     then: ifexist(Function),
     catch: Function,
-    for: Promise,
+    of: Promise,
     render: ifexist(Function),
   }
   static defaultProps = {
@@ -20,7 +20,7 @@ export class Async extends Component {
     error: null,
   }
   onMounted() {
-    const { for: _of } = this.attrs
+    const { of: _of } = this.attrs
     _of.then((data) => {
       if (this._isUnmounted) {
         return
@@ -37,14 +37,16 @@ export class Async extends Component {
     this._isUnmounted = true
   }
   render() {
-    const { wait, then, catch: catchFn } = this.attrs
+    const { wait, then, catch: catchFn, render } = this.attrs
     const { status, data, error } = this.state
 
     if (status === 'pending') {
       return createPlaceholderComponent(wait)
     }
     else if (status === 'resolved') {
-      return then ? then(data) : isFunction(this.children) ? this.children(data) : isFunction(render) ? render(data) : this.children
+      return then ? then(data) : isFunction(this.children) ? this.children(data)
+        : render ? render(data)
+        : this.children
     }
     else if (status === 'rejected') {
       return catchFn ? catchFn(error) : null
