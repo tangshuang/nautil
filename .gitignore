@@ -4,3 +4,10 @@ dist/
 cjs/
 /*.js
 /*.map
+/lib/
+/platform/
+/dom/
+/native/
+/web-component/
+/wechat-miniprogram/
+/ssr/

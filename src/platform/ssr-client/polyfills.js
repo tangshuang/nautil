@@ -1,6 +1,0 @@
-import '../ssr/navigation.polyfill.js'
-import '../ssr/depository.polyfill.js'
-import '../dom/components.polyfill.js'
-import '../dom/style.polyfill.js'
-import '../dom/navigation.polyfill.js'
-import '../dom/storage.polyfill.js'

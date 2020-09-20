@@ -1,34 +1,33 @@
 const path = require('path')
-const nodeExternals = require('webpack-node-externals')
+const babelConfig = require('./babel.config.js')
 
 const core = {
   mode: 'none',
   entry: path.resolve(__dirname, '../src/index.js'),
   output: {
-    path: path.resolve(__dirname, '..'),
-    filename: 'index.js',
-    library: 'nautil',
-    libraryTarget: 'commonjs2',
+    path: path.resolve(__dirname, '../dist'),
+    filename: 'nautil.js',
+    library: 'Nautil',
+    libraryTarget: 'umd',
+    globalObject: `typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this`,
   },
   module: {
     rules: [
       {
         test: /\.js|.jsx$/,
         loader: 'babel-loader',
-        options: {
-          presets: [
-            '@babel/preset-react',
-          ],
-          plugins: [
-            '@babel/plugin-proposal-class-properties',
-          ],
-        },
+        options: babelConfig,
       },
     ],
   },
-  externals: [
-    nodeExternals(),
-  ],
+  externals: {
+    react: {
+      root: 'React',
+      amd: 'react',
+      commonjs: 'react',
+      commonjs2: 'react',
+    },
+  },
   optimization: {
     usedExports: true,
     sideEffects: true,
