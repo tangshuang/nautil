@@ -41,4 +41,8 @@ export { Route } from './lib/navi/route.jsx'
 export { Link } from './lib/navi/link.jsx'
 export { Navigate } from './lib/navi/navigate.jsx'
 
+export { Store } from './lib/store/store.js'
+export { Provider } from './lib/store/provider.jsx'
+export { Consumer } from './lib/store/consumer.jsx'
+
 export { Storage } from './lib/storage/storage.js'

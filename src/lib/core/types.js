@@ -3,8 +3,6 @@ import {
   List,
   Tuple,
   Any,
-  Store,
-  Model,
 } from 'tyshemo'
 
 export const Handling = new Enum([
@@ -12,11 +10,7 @@ export const Handling = new Enum([
   new List([Function]),
 ])
 
-export const Binding = new Enum([
-  Store,
-  Model,
-  new Tuple([Any, Function]),
-])
+export const Binding = new Tuple([Any, Function])
 
 /**
  * which is always used in styles rules, such as `12px`, `15`, `center`...

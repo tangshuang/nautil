@@ -21,7 +21,7 @@ export default class MyComponent extends Component {
     return (
       <>
         <button onClick={() => this.attrs.show = !show}>toggle</button>
-        <div stylesheet={{ display: show ? 'block' : 'none' }}>xxx</div>
+        <div style={{ display: show ? 'block' : 'none' }}>xxx</div>
       </>
     )
   }
@@ -37,10 +37,10 @@ function WrapperComponent() {
 }
 ```
 
-Nautil builtin components `Input` `Textarea` `Select` support tow-way-binding as default:
+Nautil builtin components `Input` `Textarea` `Select` `Checkbox` `Radio` support tow-way-binding as default:
 
 ```js
-import { Input } from 'nautil/components'
+import { Input } from 'nautil'
 import { useState } from 'react'
 
 export default function MyComponent() {
@@ -56,7 +56,7 @@ The props which begin with `$` will be treated as two-way-binding.
 No matter whether the component will receive the prop as two-way-binding prop or not, nautil will parse it as two-way-binding. (So don't define your normal prop begin with `$`.)
 
 ```js
-import { useTwoWayBinding } from 'nautil/hooks'
+import { useTwoWayBinding } from 'nautil'
 
 class A extends Component {
   static props = {
@@ -218,5 +218,5 @@ It can receive two arguments:
 - data: object, which to be proxied
 - update: opitonal, function to be called when state.show changed
 
-It is always used with `Store` or `Model` which have `state` property.
+*It is always used with reactive object.*
 We only pass `update` when we pass a normal object as `data`.

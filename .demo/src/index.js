@@ -1,12 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import { createApp, mount } from '../../src/dom/index.js'
 
-import AnyComponent from "./AnyComponent.jsx";
+import store from './store.js'
+import navigation from './navigation.js'
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(
-  <React.StrictMode>
-    <AnyComponent />
-  </React.StrictMode>,
-  rootElement
-);
+const App = createApp({
+  navigation,
+  store,
+})
+
+mount('#root', App)

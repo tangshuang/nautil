@@ -14,7 +14,7 @@ We pass event handlers like in react. However, in Nautil Class Components, you c
 
 Notice: `onChange` will not affect the value of two-way-binding.
 
-Inside the component, we should use `bind` to subscribe to Observable, use `emit` to active stream.
+Inside the component, we should use `on` to subscribe to Observable, use `emit` to active stream.
 
 ```js
 class Some extends Component {
@@ -31,22 +31,22 @@ class Some extends Component {
   }
 
   onInit() {
-    // here, we should use `Change` as event stream's name
-    this.bind('Change', this.handleChange)
+    // here, we should use `change` as event stream's name
+    this.on('change', this.handleChange)
   }
 
   onUnmount() {
-    this.unbind('Change', this.handleChange)
+    this.off('change', this.handleChange)
   }
 
   handleInput = (e) => {
     // use emit to active stream
-    this.emit('Change', e)
+    this.emit('change', e)
   }
 }
 ```
 
-The pipe function of `bind` will run before the pipes of your passed.
+The pipe function of `on` will run before the pipes of your passed.
 
 ```js
 <Some onChange={[pipe, subscribe]} />

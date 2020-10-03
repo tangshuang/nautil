@@ -15,6 +15,18 @@ import {
 } from './utils.js'
 
 export class PrimitiveComponent extends React.Component {
+  constructor(props) {
+    super(props)
+
+    // render
+    const _render = this.render.bind(this)
+    this.render = () => {
+      const tree = _render()
+      const polluted = this._polluteRenderTree(tree)
+      return polluted
+    }
+  }
+
   _getPollutedComponents() {
     let pollutedComponents = this._pollutedComponents || []
 
@@ -71,12 +83,6 @@ export class PrimitiveComponent extends React.Component {
     const output = modify(tree)
     return output
   }
-
-  render() {
-    const tree = super.render()
-    const polluted = this._polluteRenderTree(tree)
-    return polluted
-  }
 }
 
 export class Component extends PrimitiveComponent {
@@ -91,14 +97,19 @@ export class Component extends PrimitiveComponent {
     this._digest(props)
   }
 
-  bind(name, affect) {
-    this._jammers.push({ name, affect })
+  on(name, affect) {
+    const upperCaseName = name.replace(name[0], name[0].toUpperCase())
+    this._jammers.push({
+      name: upperCaseName,
+      affect,
+    })
     return this
   }
 
-  unbind(name, affect) {
+  off(name, affect) {
+    const upperCaseName = name.replace(name[0], name[0].toUpperCase())
     this._jammers.forEach((item, i) => {
-      if (name === item.name && (!affect || affect === item.affect)) {
+      if (upperCaseName === item.name && (!affect || affect === item.affect)) {
         this._jammers.splice(i, 1)
       }
     })
@@ -114,12 +125,13 @@ export class Component extends PrimitiveComponent {
       return this
     }
 
-    const stream = this[name + '$']
+    const upperCaseName = name.replace(name[0], name[0].toUpperCase())
+    const stream = this[upperCaseName + '$']
     if (!stream) {
       return this
     }
 
-    this[name + '$'].next(data)
+    this[upperCaseName + '$'].next(data)
     return this
   }
 

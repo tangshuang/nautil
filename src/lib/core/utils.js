@@ -4,8 +4,6 @@ import {
   Ty,
   Rule,
   ifexist,
-  Store,
-  Model,
 } from 'tyshemo'
 import {
   each,
@@ -69,15 +67,6 @@ export function buildAttrs(props, Component) {
   each(attrs, (data, key) => {
     if (/^\$[a-zA-Z]/.test(key)) {
       const attr = key.substr(1)
-
-      // simple way to use two-way binding, use store or model directly
-      if (isInstanceOf(data, Store)) {
-        const { state } = data
-        data = [state[attr], v => state[attr] = v]
-      }
-      else if (isInstanceOf(data, Model)) {
-        data = [data[attr], v => data[attr] = v]
-      }
 
       // not a required prop, check its data type with Binding
       if (process.env.NODE_ENV !== 'production') {

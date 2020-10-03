@@ -1,15 +1,11 @@
-import React, { createContext } from 'react'
-import { Store, Model } from 'tyshemo'
+import React from 'react'
 import {
   isFunction,
-  isInstanceOf,
   isString,
 } from 'ts-fns'
 
 import Component from '../component.js'
 import Observer from '../components/observer.jsx'
-
-const sharedContext = createContext(null)
 
 export function observe(subscription, unsubscription) {
   return function(C) {
@@ -28,20 +24,6 @@ export function observe(subscription, unsubscription) {
           unsubscribe = this.props[unsubscribe]
         }
 
-        // special for store
-        // i.e. observe(store)
-        const isObservable = isInstanceOf(subscribe, Store) || isInstanceOf(subscribe, Model)
-        if (isObservable) {
-          const o = subscribe
-          const k = isString(unsubscribe) ? unsubscribe : '*'
-          subscribe = dispatch => {
-            o.watch(k, dispatch)
-          }
-          unsubscribe = dispatch => {
-            o.unwatch(k, dispatch)
-          }
-        }
-
         return (
           <Observer subscribe={subscribe} unsubscribe={unsubscribe} dispatch={this.update}>
             <C {...this.props} />
@@ -57,7 +39,7 @@ export function observe(subscription, unsubscription) {
  * @param {*} prop
  * @param {*} context
  */
-export function provide(prop, context = sharedContext) {
+export function provide(prop, context) {
   return function(C) {
     return class extends Component {
       render() {
@@ -82,7 +64,7 @@ export function provide(prop, context = sharedContext) {
  * @param {*} prop
  * @param {function|ReactContext} context
  */
-export function connect(prop, context = sharedContext) {
+export function connect(prop, context) {
   return function(C) {
     return class extends Component {
       render() {
@@ -142,7 +124,7 @@ export function pollute(component, pollute) {
 /**
  * Initialize a Constructor when the component initialize
  * @param {*} prop
- * @param {*} Constructor should be Store or Model, or some class which has watch/unwatch method
+ * @param {*} Constructor
  * @param {...any} args the parameters which passed into the class constructor when initialize
  */
 export function initialize(prop, Constructor, ...args) {
@@ -160,6 +142,31 @@ export function initialize(prop, Constructor, ...args) {
         props[prop] = this[prop]
         return <C {...props}>{children}</C>
       }
+    }
+  }
+}
+
+/**
+ * create a component which is wrapped be nested components
+ * @param  {...any} args list of [Component, props]
+ */
+export function nest(...args) {
+  return function(C) {
+    return function(props) {
+      const realContent = <C {...props} />
+      let finalContent = realContent
+
+      const items = args.reverse()
+      items.forEach((item) => {
+        if (!item) {
+          return
+        }
+
+        const [Component, props] = item
+        finalContent = <Component {...props}>{finalContent}</Component>
+      })
+
+      return finalContent
     }
   }
 }

@@ -27,6 +27,7 @@
   - [Event Stream](component/event-stream.md)
   - [Stylesheet](component/stylesheet.md)
   - [Lifecircle](component/lifecircle.md)
+  - [Class or Functionn](component/class-or-function.md)
 
 - Store
   - [What is it?](store/overview.md)
