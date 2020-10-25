@@ -5,7 +5,7 @@ import { isFunction } from 'ts-fns'
 import Component from '../core/component.js'
 import Navigation from './navigation.js'
 
-export class Route extends Component {
+export class _Route extends Component {
   static props = {
     navigation: Navigation,
     match: Any,
@@ -90,6 +90,12 @@ export class Route extends Component {
       const { component: RouteComponent, props = {} } = route
       return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
     }
+  }
+}
+
+export class Route extends Component {
+  render() {
+    return <_Route {...this.props} />
   }
 }
 

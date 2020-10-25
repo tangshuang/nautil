@@ -7,8 +7,9 @@ import Component from '../core/component.js'
 import { Observer } from '../core/components/observer.jsx'
 import { pollute } from '../core/operators/operators.js'
 import { pipe } from '../core/operators/combiners.js'
-import Text from './text.jsx'
-import Locale from './locale.jsx'
+
+import { _Text } from './text.jsx'
+import { _Locale } from './locale.jsx'
 
 class _Language extends Component {
   static props = {
@@ -34,8 +35,8 @@ class _Language extends Component {
 }
 
 export const Language = pipe([
-  pollute(Text, ({ i18n }) => ({ i18n })),
-  pollute(Locale, ({ i18n }) => ({ i18n })),
+  pollute(_Text, ({ i18n }) => ({ i18n })),
+  pollute(_Locale, ({ i18n }) => ({ i18n })),
 ])(_Language)
 
 export default Language

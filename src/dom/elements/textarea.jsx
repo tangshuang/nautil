@@ -20,9 +20,9 @@ mixin(Textarea, class {
       value={value}
 
       onChange={onChange}
-      onFocus={e => this.onFocus$.next(e)}
-      onBlur={e => this.onBlur$.next(e)}
-      onSelect={e => this.onSelect$.next(e)}
+      onFocus={e => this.emit('Focus', e)}
+      onBlur={e => this.emit('Blur', e)}
+      onSelect={e => this.emit('Select', e)}
 
       className={this.className}
       style={this.style}

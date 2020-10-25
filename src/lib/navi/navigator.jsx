@@ -8,8 +8,9 @@ import { pipe } from '../core/operators/combiners.js'
 import { pollute } from '../core/operators/operators.js'
 import Observer from '../core/components/observer.jsx'
 
-import Route from './route.jsx'
-import Navigate from './navigate.jsx'
+import { _Route } from './route.jsx'
+import { _Navigate } from './navigate.jsx'
+import { _Link } from './link.jsx'
 
 /**
  * @example use children
@@ -84,8 +85,9 @@ class _Navigator extends Component {
 }
 
 export const Navigator = pipe([
-  pollute(Route, ({ navigation }) => ({ navigation })),
-  pollute(Navigate, ({ navigation }) => ({ navigation })),
+  pollute(_Route, ({ navigation }) => ({ navigation })),
+  pollute(_Navigate, ({ navigation }) => ({ navigation })),
+  pollute(_Link, ({ navigation }) => ({ navigation })),
 ])(_Navigator)
 
 export default Navigator

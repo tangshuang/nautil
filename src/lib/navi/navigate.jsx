@@ -2,8 +2,9 @@ import { enumerate } from 'tyshemo'
 
 import Navigation from './navigation.js'
 import Link from './link.jsx'
+import Component from '../core/component.js'
 
-export class Navigate extends Link {
+export class _Navigate extends Link {
   static props = {
     navigation: Navigation,
     to: enumerate([String, Number]),
@@ -25,4 +26,11 @@ export class Navigate extends Link {
     return render(goto, href, open)
   }
 }
+
+export class Navigate extends Component {
+  render() {
+    return <_Navigate {...this.props} />
+  }
+}
+
 export default Navigate

@@ -15,6 +15,8 @@ mixin(Radio, class {
       else {
         this.emit('Check', e)
       }
+
+      this.emit('Change', e)
     }
 
     return <input type="radio"

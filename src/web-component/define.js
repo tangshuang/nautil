@@ -1,5 +1,3 @@
-import './polyfills.js'
-
 import { mount, unmount } from '../dom/index.js'
 import retargetEvents from './retarget-events.js'
 

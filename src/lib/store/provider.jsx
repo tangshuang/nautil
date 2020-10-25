@@ -1,7 +1,8 @@
 import Component from '../core/component.js'
 import Store from './store.js'
-import Consumer from './consumer.jsx'
 import { pollute } from '../core/operators/operators.js'
+
+import { _Consumer} from './consumer.jsx'
 
 class _Provider extends Component {
   static props = {
@@ -13,7 +14,7 @@ class _Provider extends Component {
   }
 }
 
-export const Provider = pollute(Consumer, ({ store }) => {
+export const Provider = pollute(_Consumer, ({ store }) => {
   return { store }
 })(_Provider)
 

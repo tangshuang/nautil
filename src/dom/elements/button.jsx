@@ -2,9 +2,10 @@ import React from 'react'
 import { mixin } from 'ts-fns'
 import Button from '../../lib/elements/button.jsx'
 
+const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
+
 mixin(Button, class {
   render() {
-    const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
     return <button
       {...this.attrs}
 

@@ -6,7 +6,7 @@ import Component from '../core/component.js'
  *   <Button onHint={changeLang}>Chinese</Button>
  * } />
  */
-export class Locale extends Component {
+export class _Locale extends Component {
   static props = {
     i18n: I18n,
     to: String,
@@ -20,6 +20,11 @@ export class Locale extends Component {
     }
 
     return render(changeLang)
+  }
+}
+export class Locale extends Component {
+  render() {
+    return <_Locale {...this.props} />
   }
 }
 export default Locale

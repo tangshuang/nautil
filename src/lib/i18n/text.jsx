@@ -2,9 +2,10 @@ import { Enum, ifexist } from 'tyshemo'
 import { isFunction, isInstanceOf, mixin } from 'ts-fns'
 
 import I18n from './i18n.js'
-import Text from '../elements/text.jsx'
+import _Text from '../elements/text.jsx'
+import Component from '../core/component.js'
 
-mixin(Text, class {
+mixin(_Text, class {
   static props = {
     i18n: ifexit(I18n),
     t: ifexit(new Enum([Function, String])),
@@ -36,5 +37,11 @@ mixin(Text, class {
   }
 })
 
-export { Text }
+export class Text extends Component {
+  render() {
+    return <_Text {...this.props} />
+  }
+}
+
+export { _Text, Text }
 export default Text

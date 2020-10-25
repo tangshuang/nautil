@@ -1,10 +1,8 @@
-import Etx from 'etx'
-
 import { tween } from './tween.js'
 import easings from './easings.js'
 import { noop } from '../core/utils.js'
 
-export class Transition extends Etx {
+export class Transition {
   constructor(options = {}) {
     super()
 
@@ -19,7 +17,22 @@ export class Transition extends Etx {
 
     this.status = -1
     this._time = 0
+
+    this._listeners = []
   }
+
+  on(event, callback) {
+    this._listeners.push([event, callback])
+  }
+
+  emit(event, data) {
+    this._listeners.forEach(([e, fn]) => {
+      if (event === e) {
+        fn(data)
+      }
+    })
+  }
+
   animate() {
     if (this.status < 1) {
       return

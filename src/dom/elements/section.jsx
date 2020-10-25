@@ -2,9 +2,10 @@ import React from 'react'
 import { mixin } from 'ts-fns'
 import Section from '../../lib/elements/section.jsx'
 
+const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
+
 mixin(Section, class {
   render() {
-    const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
     return <div
       {...this.attrs}
 

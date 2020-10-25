@@ -3,7 +3,7 @@ import { ifexist } from 'tyshemo'
 import Component from '../core/component.js'
 import Store from './store.js'
 
-export class Consumer extends Component {
+export class _Consumer extends Component {
   static props = {
     store: Store,
     name: ifexist(String),
@@ -45,4 +45,10 @@ export class Consumer extends Component {
     return this._prevRender
   }
 }
+export class Consumer extends Component {
+  render() {
+    return <_Consumer {...this.props} />
+  }
+}
+
 export default Consumer

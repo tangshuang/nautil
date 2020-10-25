@@ -1,3 +1,5 @@
+export { default as Nautil } from 'react'
+
 export { Component } from './lib/core/component.js'
 
 export { createTwoWayBinding } from './lib/core/utils.js'

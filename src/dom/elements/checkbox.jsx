@@ -15,6 +15,8 @@ mixin(Checkbox, class {
       else {
         this.emit('Check', e)
       }
+
+      this.emit('Change', e)
     }
 
     return <input type="checkbox"

@@ -4,7 +4,7 @@ import { isNumber } from 'ts-fns'
 import Component from '../core/component.js'
 import Navigation from './navigation.js'
 
-export class Link extends Component {
+export class _Link extends Component {
   static props = {
     navigation: Navigation,
     to: enumerate([String, Number]),
@@ -50,4 +50,11 @@ export class Link extends Component {
     }
   }
 }
+
+export class Link extends Component {
+  render() {
+    return <_Link {...this.props} />
+  }
+}
+
 export default Link

@@ -43,7 +43,7 @@ export function createApp(options = {}) {
 
   items.push(
     store && [Provider, { store }],
-    [Navigator, { navigation, inside: true }],
+    navigation && [Navigator, { navigation, inside: true }],
   )
 
   const Component = nest(...items)(None)

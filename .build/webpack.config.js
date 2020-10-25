@@ -20,14 +20,6 @@ const core = {
       },
     ],
   },
-  externals: {
-    react: {
-      root: 'React',
-      amd: 'react',
-      commonjs: 'react',
-      commonjs2: 'react',
-    },
-  },
   optimization: {
     usedExports: true,
     sideEffects: true,
