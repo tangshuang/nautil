@@ -35,6 +35,55 @@ export function observe(subscription, unsubscription) {
 }
 
 /**
+ * Use Provider to wrapper inner component
+ * @param {*} prop
+ * @param {*} context
+ */
+export function provide(prop, context) {
+  return function(C) {
+    return class extends Component {
+      render() {
+        const { children, ...props } = this.props
+        const { Provider } = isFunction(context) ? context(this.props) : context
+        const value = props[prop]
+
+        delete props[prop] // remove provide prop from original props
+
+        return (
+          <Provider value={value}>
+            <C {...props}>{children}</C>
+          </Provider>
+        )
+      }
+    }
+  }
+}
+
+/**
+ * Connect a component with a context
+ * @param {*} prop
+ * @param {function|ReactContext} context
+ */
+export function connect(prop, context) {
+  return function(C) {
+    return class extends Component {
+      render() {
+        const { children, ...props } = this.props
+        const { Consumer } = isFunction(context) ? context(this.props) : context
+        return (
+          <Consumer>
+            {value => {
+              props[prop] = value
+              return <C {...props}>{children}</C>
+            }}
+          </Consumer>
+        )
+      }
+    }
+  }
+}
+
+/**
  * Add a new prop for some component
  * @param {*} prop
  * @param {function|any} define
