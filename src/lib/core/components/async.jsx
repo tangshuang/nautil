@@ -5,10 +5,10 @@ import { createPlaceholderComponent, noop } from '../utils.js'
 
 export class Async extends Component {
   static props = {
-    wait: Any,
     then: ifexist(Function),
     catch: Function,
-    of: Promise,
+    await: Function,
+    pendding: Any,
     render: ifexist(Function),
   }
   static defaultProps = {
@@ -20,8 +20,8 @@ export class Async extends Component {
     error: null,
   }
   onMounted() {
-    const { of: _of } = this.attrs
-    _of.then((data) => {
+    const { await: fn } = this.attrs
+    fn().then((data) => {
       if (this._isUnmounted) {
         return
       }
@@ -37,11 +37,11 @@ export class Async extends Component {
     this._isUnmounted = true
   }
   render() {
-    const { wait, then, catch: catchFn, render } = this.attrs
+    const { pendding, then, catch: catchFn, render } = this.attrs
     const { status, data, error } = this.state
 
     if (status === 'pending') {
-      return createPlaceholderComponent(wait)
+      return createPlaceholderComponent(pendding)
     }
     else if (status === 'resolved') {
       return then ? then(data) : isFunction(this.children) ? this.children(data)
