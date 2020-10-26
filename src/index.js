@@ -5,7 +5,7 @@ export { Component } from './lib/core/component.js'
 export { createTwoWayBinding } from './lib/core/utils.js'
 export { useTwoWayBinding } from './lib/core/hooks/two-way-binding.js'
 
-export { observe, provide, connect, inject, pollute, initialize } from './lib/core/operators/operators.js'
+export { observe, inject, pollute, initialize, nest } from './lib/core/operators/operators.js'
 export { pipe, multiple } from './lib/core/operators/combiners.js'
 
 export { Async } from './lib/core/components/async.jsx'
@@ -43,7 +43,7 @@ export { Route } from './lib/navi/route.jsx'
 export { Link } from './lib/navi/link.jsx'
 export { Navigate } from './lib/navi/navigate.jsx'
 
-export { Store } from './lib/store/store.js'
+export { Store, createStore, useStore, combineStores } from './lib/store/store.js'
 export { Provider } from './lib/store/provider.jsx'
 export { Consumer } from './lib/store/consumer.jsx'
 

@@ -1,12 +1,7 @@
 export const state = {
-  name: 'dog',
-  type: 'animal',
+  articles: [],
 }
 
-export function setName(dispatch, name) {
-  dispatch('name', name)
-}
-
-export function setType(dispatch, type) {
-  dispatch('type', type)
+export function setArticles(dispatch, articles) {
+  dispatch('articles', articles)
 }

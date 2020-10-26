@@ -3,7 +3,7 @@ const pkg = require('../package.json')
 
 const env = process.env.NODE_ENV
 
-const createStylesheetLoaders = (modules) => {
+const createStylesheetLoaders = (modules, type) => {
   const loaders = [
     {
       loader: 'style-loader',
@@ -15,10 +15,8 @@ const createStylesheetLoaders = (modules) => {
       loader: 'css-loader',
       options: {
         modules: {
-          localIdentName: env === 'production' ? '[hash:base64]' : '[path][name]__[local]',
-          localIdentHashPrefix: 'hash',
+          localIdentName: env === 'production' ? '[hash:base64]' : '[local]-[path][name]',
           exportLocalsConvention: 'camelCaseOnly',
-          namedExport: true,
         },
         sourceMap: true,
       },
@@ -33,7 +31,7 @@ const createStylesheetLoaders = (modules) => {
     })
   }
 
-  if (pkg.devDependencies['less-loader']) {
+  if (type === 'less') {
     loaders.push({
       loader: 'less-loader',
       options: {
@@ -42,7 +40,7 @@ const createStylesheetLoaders = (modules) => {
     })
   }
 
-  if (pkg.devDependencies['sass-loader']) {
+  if (type === 'sass') {
     loaders.push({
       loader: 'sass-loader',
       options: {
@@ -75,7 +73,7 @@ module.exports = {
         },
       },
       {
-        test: /\.css|less|scss$/,
+        test: /\.css$/,
         oneOf: [
           {
             resourceQuery: /not\-css\-module/,
@@ -87,6 +85,38 @@ module.exports = {
           },
           {
             use: createStylesheetLoaders(true),
+          },
+        ],
+      },
+      {
+        test: /\.less$/,
+        oneOf: [
+          {
+            resourceQuery: /not\-css\-module/,
+            use: createStylesheetLoaders(false, 'less'),
+          },
+          {
+            resourceQuery: /css\-module/,
+            use: createStylesheetLoaders(true, 'less'),
+          },
+          {
+            use: createStylesheetLoaders(true, 'less'),
+          },
+        ],
+      },
+      {
+        test: /\.scss$/,
+        oneOf: [
+          {
+            resourceQuery: /not\-css\-module/,
+            use: createStylesheetLoaders(false, 'sass'),
+          },
+          {
+            resourceQuery: /css\-module/,
+            use: createStylesheetLoaders(true, 'sass'),
+          },
+          {
+            use: createStylesheetLoaders(true, 'sass'),
           },
         ],
       },

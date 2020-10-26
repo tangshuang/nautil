@@ -1,8 +1,8 @@
 import { Store } from '../../src/index.js'
-import * as home from './modules/home/home.store.js'
+import * as Home from './modules/home/home.store.js'
 
 export const store = new Store({
-  home,
+  Home,
 })
 
 export default store

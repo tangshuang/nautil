@@ -15,8 +15,8 @@ import { _Link } from './link.jsx'
 /**
  * @example use children
  * <Navigator navigation={navigation} dispatch={this.update}>
- *   <Route match="home" component={Home} props={{ title: 'Home Page' }} />
- *   <Route match="page1" component={Page1} props={{ title: 'Page1' }} />
+ *   <_Route match="home" component={Home} props={{ title: 'Home Page' }} />
+ *   <_Route match="page1" component={Page1} props={{ title: 'Page1' }} />
  * </Navigator>
  *
  * @example I use Route directly previously, in fact, Route can be use anywhere inside Navigator
@@ -45,16 +45,16 @@ class _Navigator extends Component {
       const { notFound, routes } = options
       const views = routes.map((route) => {
         const { component, props = {}, animation = 0, name } = route
-        return component ? <Route key={name} component={component} match={name} navigation={navigation} animation={animation} {...props} /> : null
+        return component ? <_Route key={name} component={component} match={name} navigation={navigation} animation={animation} {...props} /> : null
       })
       if (notFound) {
         if (isObject(notFound) && notFound.component) {
           const { component, props = {}, animation = 0 } = notFound
-          const not = <Route key="!" match="!" component={component} navigation={navigation} animation={animation} {...props} />
+          const not = <_Route key="!" match="!" component={component} navigation={navigation} animation={animation} {...props} />
           views.push(not)
         }
         else if (isInstanceOf(notFound, Component) || isFunction(notFound)) {
-          const not = <Route key="!" match="!" component={notFound} navigation={navigation} />
+          const not = <_Route key="!" match="!" component={notFound} navigation={navigation} />
           views.push(not)
         }
       }
