@@ -1,4 +1,3 @@
-import React from 'react'
 import { Subject } from 'rxjs'
 import {
   Ty,
@@ -13,11 +12,8 @@ import {
   clone,
   assign,
   createProxy,
-  isObject,
   isFunction,
-  isBoolean,
   isArray,
-  isSymbol,
 } from 'ts-fns'
 
 import Style from './style/style.js'

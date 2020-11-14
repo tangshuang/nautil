@@ -1,4 +1,5 @@
-import { isFunction, ifexist, Any } from 'tyshemo'
+import { ifexist, Any } from 'tyshemo'
+import { isFunction } from 'ts-fns'
 
 import Component from '../component.js'
 import { createPlaceholderComponent, noop } from '../utils.js'

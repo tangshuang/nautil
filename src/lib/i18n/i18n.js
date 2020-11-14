@@ -1,6 +1,5 @@
 import i18next from 'i18next'
-
-import { isArray, isObject } from '../core/utils.js'
+import { isArray, isObject } from 'ts-fns'
 
 export class I18n {
   constructor(options) {

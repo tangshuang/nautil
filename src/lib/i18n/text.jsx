@@ -37,7 +37,7 @@ mixin(_Text, class {
   }
 })
 
-export class Text extends Component {
+class Text extends Component {
   render() {
     return <_Text {...this.props} />
   }

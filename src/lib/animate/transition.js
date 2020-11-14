@@ -4,8 +4,6 @@ import { noop } from '../core/utils.js'
 
 export class Transition {
   constructor(options = {}) {
-    super()
-
     const { ease = 'linear', start = 0, end = 1, duration = 0, loop = false } = options
 
     this._ease = ease

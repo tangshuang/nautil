@@ -4,9 +4,7 @@
   "description": "A javascript reactive framework which is for building crossing-platform applications.",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:cjs",
-    "build:cjs": "node .build/gulpfile.js",
-    "build:bundle": "webpack --config .build/webpack.config.js",
+    "build": "babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension",
     "dev": "webpack-dev-server --config .demo/webpack.config.js"
   },
   "repository": {
@@ -42,15 +40,13 @@
     "react-scrollable-list": "^1.2.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.1",
     "@babel/core": "^7.11.0",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
     "css-loader": "^4.3.0",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-rename": "^2.0.0",
     "less": "^3.12.2",
     "less-loader": "^7.0.1",
     "style-loader": "^1.2.1",
