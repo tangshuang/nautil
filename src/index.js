@@ -43,8 +43,18 @@ export { Route } from './lib/navi/route.jsx'
 export { Link } from './lib/navi/link.jsx'
 export { Navigate } from './lib/navi/navigate.jsx'
 
-export { Store, createStore, useStore, combineStores } from './lib/store/store.js'
+export { Animation } from './lib/animate/animation.jsx'
+
+export { Store, createStore, useStore, combineStores, applyStore } from './lib/store/store.js'
 export { Provider } from './lib/store/provider.jsx'
 export { Consumer } from './lib/store/consumer.jsx'
 
 export { Storage } from './lib/storage/storage.js'
+
+export { I18n } from './lib/i18n/i18n.js'
+export { Language } from './lib/i18n/language.jsx'
+export { Locale } from './lib/i18n/locale.jsx'
+export { Text } from './lib/i18n/text.jsx'
+export { LanguageDetector } from './lib/i18n/language-detector.js'
+
+export { createApp } from './lib/create-app.js'

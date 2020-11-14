@@ -2,7 +2,7 @@ import Component from '../core/component.js'
 import Store from './store.js'
 import { pollute } from '../core/operators/operators.js'
 
-import { _Consumer} from './consumer.jsx'
+import { _Consumer } from './consumer.jsx'
 
 class _Provider extends Component {
   static props = {

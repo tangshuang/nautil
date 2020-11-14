@@ -5,9 +5,9 @@ import { createPlaceholderComponent, noop } from '../utils.js'
 
 export class Async extends Component {
   static props = {
+    await: Function,
     then: ifexist(Function),
     catch: Function,
-    await: Function,
     pendding: Any,
     render: ifexist(Function),
   }

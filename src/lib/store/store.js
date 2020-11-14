@@ -1,4 +1,4 @@
-import { Store, createStore, useStore, combine as combineStores } from 'react-immut'
+import { Store, createStore, useStore, combineStores, applyStore } from 'react-immut'
 
-export { Store, createStore, useStore, combineStores }
+export { Store, createStore, useStore, combineStores, applyStore }
 export default Store

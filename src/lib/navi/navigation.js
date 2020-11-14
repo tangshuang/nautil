@@ -1,4 +1,3 @@
-import StorageX from 'storagex'
 import { inObject, isArray, isString, isFunction, isObject } from 'ts-fns'
 import Storage from '../storage/storage.js'
 
@@ -36,18 +35,7 @@ export class Navigation {
     this._listeners = []
     this._history = []
 
-    this.storage = this._getStorage()
-
     this.init(options)
-  }
-
-  _getStorage() {
-    return new StorageX({
-      namespace: this.options.namespace || 'nautil',
-      async: true,
-      stringify: true,
-      storage: this.options.storage || Storage,
-    })
   }
 
   getState() {
@@ -86,7 +74,7 @@ export class Navigation {
 
   async init() {
     const { mode } = this.options
-    const state = await this.storage.get('historyState')
+    const state = await Storage.getItem('historyState')
     if (mode === 'storage' && state) {
       const { route, name, params } = state
       const { redirect } = route
@@ -470,7 +458,7 @@ export class Navigation {
   }
 
   async changeLocation(state, replace = false) {
-    await this.storage.set('historyState', state)
+    await Storage.setItem('historyState', state)
   }
 
   static defualtOptions = {

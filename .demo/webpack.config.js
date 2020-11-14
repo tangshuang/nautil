@@ -58,6 +58,13 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: 'index.js',
   },
+  resolve: {
+    alias: {
+      'nautil$': path.resolve(__dirname, '../src'),
+      'ts-fns$': 'ts-fns/es',
+      'tyshemo$': 'tyshemo/src',
+    },
+  },
   module: {
     rules: [
       {

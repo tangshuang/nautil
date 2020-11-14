@@ -19,8 +19,9 @@ export { Audio } from '../dom/elements/audio.jsx'
 export { Video } from '../dom/elements/video.jsx'
 export { Webview } from '../dom/elements/webview.jsx'
 
-export { Navigation } from '../dom/navi/navigation.js'
-export { Storage } from '../dom/storage/storage.js'
 export { Transform } from '../dom/style/transform.js'
+export { Navigation } from '../dom/navi/navigation.js'
+export { Link } from '../dom/navi/link.jsx'
+export { Storage } from '../dom/storage/storage.js'
 
 export { define } from './define.js'

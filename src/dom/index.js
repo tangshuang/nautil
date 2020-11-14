@@ -24,4 +24,4 @@ export { Navigation } from './navi/navigation.js'
 export { Link } from './navi/link.jsx'
 export { Storage } from './storage/storage.js'
 
-export { mount, update, unmount, createApp } from './render.js'
+export { mount, update, unmount } from './render.js'
