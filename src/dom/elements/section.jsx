@@ -9,16 +9,16 @@ mixin(Section, class {
     return <div
       {...this.attrs}
 
-      onClick={e => this.emit('Hint', e)}
+      onClick={e => this.emit('Hit', e)}
 
-      onMouseDown={e => !isTouchable && this.emit('HintStart', e)}
-      onMouseMove={e => !isTouchable && this.emit('HintMove', e)}
-      onMouseUp={e => !isTouchable && this.emit('HintEnd', e)}
+      onMouseDown={e => !isTouchable && this.emit('HitStart', e)}
+      onMouseMove={e => !isTouchable && this.emit('HitMove', e)}
+      onMouseUp={e => !isTouchable && this.emit('HitEnd', e)}
 
-      onTouchStart={e => isTouchable && this.emit('HintStart', e)}
-      onTouchMove={e => isTouchable && this.emit('HintMove', e)}
-      onTouchEnd={e => isTouchable && this.emit('HintEnd', e)}
-      onTouchCancel={e => isTouchable && this.emit('HintCancel', e)}
+      onTouchStart={e => isTouchable && this.emit('HitStart', e)}
+      onTouchMove={e => isTouchable && this.emit('HitMove', e)}
+      onTouchEnd={e => isTouchable && this.emit('HitEnd', e)}
+      onTouchCancel={e => isTouchable && this.emit('HitCancel', e)}
 
       className={this.className}
       style={this.style}

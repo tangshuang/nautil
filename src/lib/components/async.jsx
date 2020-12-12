@@ -45,8 +45,9 @@ export class Async extends Component {
       return createPlaceholderComponent(pendding)
     }
     else if (status === 'resolved') {
-      return then ? then(data) : isFunction(this.children) ? this.children(data)
+      return then ? then(data)
         : render ? render(data)
+        : isFunction(this.children) ? this.children(data)
         : this.children
     }
     else if (status === 'rejected') {

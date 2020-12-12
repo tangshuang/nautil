@@ -3,7 +3,7 @@ import Component from '../component.js'
 
 /**
  * <Locale to="zh-CN" render={(changeLang) =>
- *   <Button onHint={changeLang}>Chinese</Button>
+ *   <Button onHit={changeLang}>Chinese</Button>
  * } />
  */
 export class _Locale extends Component {

@@ -1,6 +1,7 @@
 # Event Stream
 
-We pass event handlers like in react. However, in Nautil Class Components, you can use rxjs stream to handle events when you pass an array.
+We pass event handlers like in react.
+However, in Nautil Class Components, you can use rxjs stream to handle events.
 
 ```js
 <Input onChange={[
@@ -10,6 +11,18 @@ We pass event handlers like in react. However, in Nautil Class Components, you c
   // subscribe
   value => this.setState({ value }),
 ]} />
+```
+
+```js
+import { Stream } from 'nautil'
+
+const some$ = new Stream()
+some$.subscribe(function(e) {
+  console.log(e)
+})
+
+//////////
+<Input onChange={some$} />
 ```
 
 Notice: `onChange` will not affect the value of two-way-binding.
@@ -41,6 +54,7 @@ class Some extends Component {
 
   handleInput = (e) => {
     // use emit to active stream
+    // skill: you can emit('Change') or emit('change'), they are the same
     this.emit('change', e)
   }
 }

@@ -1,11 +1,7 @@
 node_modules/
-shells/
-dist/
-cjs/
 /*.js
 /*.map
 /lib/
-/platform/
 /dom/
 /native/
 /web-component/

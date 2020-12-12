@@ -3,18 +3,18 @@ import { noop } from '../utils.js'
 
 export class Section extends Component {
   static props = {
-    onHint: Function,
-    onHintStart: Function,
-    onHintMove: Function,
-    onHintEnd: Function,
-    onHintCancel: Function,
+    onHit: Function,
+    onHitStart: Function,
+    onHitMove: Function,
+    onHitEnd: Function,
+    onHitCancel: Function,
   }
   static defaultProps = {
-    onHint: noop,
-    onHintStart: noop,
-    onHintMove: noop,
-    onHintEnd: noop,
-    onHintCancel: noop,
+    onHit: noop,
+    onHitStart: noop,
+    onHitMove: noop,
+    onHitEnd: noop,
+    onHitCancel: noop,
   }
 }
 export default Section

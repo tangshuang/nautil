@@ -9,7 +9,7 @@ When you handle an event, you can pass a callback function, or, the deep usage, 
 ```
 
 ```js
-import { map } from 'nautil/stream'
+import { map } from 'rxjs'
 
 <Input
   value={state.value}
@@ -18,7 +18,7 @@ import { map } from 'nautil/stream'
     map(e => e.target.value),
     map(value => value ++),
 
-    // execution
+    // subscriber
     value => console.log(value)
   ]}
 />
@@ -26,12 +26,21 @@ import { map } from 'nautil/stream'
 
 If you pass an array, the last item should must be a function which pass into `stream$.subscribe`.
 
-And in a custom component, you will receive the registered stream by like `this.onHint$`, and you can subscribe to this stream too.
-
 ```js
-onDigest() {
-  this.onHint$.subscribe(value => console.log(value))
-}
+import { Stream } from 'nautil'
+
+const change$ = new Stream()
+change$.pipe(
+  map(e => e.target.value),
+  map(value => value ++),
+).subscribe(
+  value => console.log(value)
+)
+
+<Input
+  value={state.value}
+  onChange={change$}
+/>
 ```
 
 By supporting this pattern, you will be able to seperate your event stream from UX handlers.

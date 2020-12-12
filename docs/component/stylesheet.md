@@ -3,16 +3,15 @@
 In nautil.js, we praise css module, which is easy to implement cross-platform.
 
 ```js
-import { Component } from 'nautil'
-import { Section, Text } from 'nautil/components'
-import styles from './my-component.css'
+import { Section, Text, Component } from 'nautil'
+import Styles from './my-component.css'
 
 export default class MyComponent extends Component {
   render() {
     return (
-      <Section stylesheet={styles.container}>
-        <Text stylesheet={[styles.text, 'mui-text', this.className]}>xxx</Text>
-        <Text stylesheet={[styles.text, { textAlign: 'right' }, this.style]}>xxx</Text>
+      <Section stylesheet={Styles.container}>
+        <Text stylesheet={[Styles.text, 'mui-text', this.className]}>xxx</Text>
+        <Text stylesheet={[Styles.text, { textAlign: 'right' }, this.style]}>xxx</Text>
       </Section>
     )
   }
@@ -25,7 +24,7 @@ export default class MyComponent extends Component {
 
 Read the previous code, you can understand it very easily. You will notice points:
 
-- import .css directly (CSS Module)
+- import .css as CSS Module
 - use a `stylesheet` prop
 - mixing style object and className in an array
 - this.className

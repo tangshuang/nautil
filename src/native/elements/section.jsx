@@ -16,11 +16,11 @@ mixin(Section, class {
       <View
         onStartShouldSetResponder={() => true}
         onMoveShouldSetResponder={() => true}
-        onResponderGrant={e => this.emit('HintStart', e)}
-        onResponderMove={e => this.emit('HintMove', e)}
-        onResponderRelease={e => this.emit('HintEnd', e)}
-        onResponderReject={e => this.emit('HintCancel', e)}
-        onResponderTerminate={e => this.emit('HintCancel', e)}
+        onResponderGrant={e => this.emit('HitStart', e)}
+        onResponderMove={e => this.emit('HitMove', e)}
+        onResponderRelease={e => this.emit('HitEnd', e)}
+        onResponderReject={e => this.emit('HitCancel', e)}
+        onResponderTerminate={e => this.emit('HitCancel', e)}
 
         className={this.className}
         style={this.style}

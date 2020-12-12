@@ -10,6 +10,5 @@ For a frontend js framework, we provide a independent router system inside Nauti
 In your application, you should import them first:
 
 ```js
-import { Navigation } from 'nautil'
-import { Navigator, Route, Navigate } from 'nautil/components'
+import { Navigation, Navigator, Route, Navigate } from 'nautil'
 ```

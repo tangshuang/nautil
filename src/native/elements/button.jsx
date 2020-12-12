@@ -12,9 +12,9 @@ mixin(Button, class {
 
     return (
       <TouchableOpacity
-        onPress={e => this.emit('Hint', e)}
-        onPressIn={e => this.emit('HintStart', e)}
-        onPressOut={e => this.emit('HintEnd', e)}
+        onPress={e => this.emit('Hit', e)}
+        onPressIn={e => this.emit('HitStart', e)}
+        onPressOut={e => this.emit('HitEnd', e)}
         style={this.style}
         {...this.attrs}
       >{content}</TouchableOpacity>

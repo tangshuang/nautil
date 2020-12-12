@@ -3,14 +3,14 @@ import { noop } from '../utils.js'
 
 export class Button extends Component {
   static props = {
-    onHint: Function,
-    onHintStart: Function,
-    onHintEnd: Function,
+    onHit: Function,
+    onHitStart: Function,
+    onHitEnd: Function,
   }
   static defaultProps = {
-    onHint: noop,
-    onHintStart: noop,
-    onHintEnd: noop,
+    onHit: noop,
+    onHitStart: noop,
+    onHitEnd: noop,
   }
 }
 export default Button

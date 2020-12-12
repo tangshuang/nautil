@@ -16,8 +16,8 @@ export default class SomeComponent extends Component {
     name: String,
     // tow-way-binding
     $show: Boolean,
-    // event stream handler
-    onHint: true,
+    // event stream handler, only pass `true` to make it work
+    onHit: true,
   }
 }
 ```
@@ -43,7 +43,7 @@ Some logic can be inject:
 
 ```js
 import { Component } from 'nautil'
-import { ifexist } from 'nautil/types'
+import { ifexist } from 'tyshemo'
 
 export default class SomeComponent extends Component {
   static props = {

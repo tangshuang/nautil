@@ -31,6 +31,8 @@ export default class MyComponent extends Component {
 Now, `MyComponent` will have a tow-way-binding prop `$show`, you can use it like this:
 
 ```js
+import { useState } from 'react'
+
 function WrapperComponent() {
   const $show = useState(false)
   return <MyComponent $show={$show} />
@@ -112,7 +114,8 @@ export default class MyComponent extends Component {
 }
 ```
 
-In the previous code, we declare the prop `show` to be a two-way-binding prop. However, we can call `this.attrs.name = 'some'` even thought `name` is not declared to be a two-way-binding prop.
+In the previous code, we declare the prop `show` to be a two-way-binding prop so that the component should must receive `$show` prop (if not pass `$show`, error occurs).
+We did not declare `name` as a two-way-binding prop, however, we can call `this.attrs.name = 'some'` too.
 
 **Change `this.attrs` will happen nothing!**
 

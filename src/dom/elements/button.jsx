@@ -9,13 +9,13 @@ mixin(Button, class {
     return <button
       {...this.attrs}
 
-      onClick={e => this.emit('Hint', e)}
+      onClick={e => this.emit('Hit', e)}
 
-      onMouseDown={e => !isTouchable && this.emit('HintStart', e)}
-      onMouseUp={e => !isTouchable && this.emit('HintEnd', e)}
+      onMouseDown={e => !isTouchable && this.emit('HitStart', e)}
+      onMouseUp={e => !isTouchable && this.emit('HitEnd', e)}
 
-      onTouchStart={e => isTouchable && this.emit('HintStart', e)}
-      onTouchEnd={e => isTouchable && this.emit('HintEnd', e)}
+      onTouchStart={e => isTouchable && this.emit('HitStart', e)}
+      onTouchEnd={e => isTouchable && this.emit('HitEnd', e)}
 
       className={this.className}
       style={this.style}

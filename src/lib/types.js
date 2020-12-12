@@ -4,10 +4,12 @@ import {
   Tuple,
   Any,
 } from 'tyshemo'
+import { Stream } from './stream.js'
 
 export const Handling = new Enum([
   Function,
   new List([Function]),
+  Stream,
 ])
 
 export const Binding = new Tuple([Any, Function])

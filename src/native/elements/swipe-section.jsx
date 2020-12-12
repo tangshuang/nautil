@@ -101,10 +101,10 @@ mixin(SwipeSection, class {
     return (
       <Section
         {...rest}
-        onHintStart={this.onTouchStart}
-        onHintMove={this.onTouchMove}
-        onHintEnd={this.onTouchEnd}
-        onHintCancel={this.onTouchCancel}
+        onHitStart={this.onTouchStart}
+        onHitMove={this.onTouchMove}
+        onHitEnd={this.onTouchEnd}
+        onHitCancel={this.onTouchCancel}
         style={this.style}
       >{this.children}</Section>
     )
