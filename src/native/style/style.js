@@ -1,5 +1,5 @@
 import { map, isFunction, isBoolean, isString, mixin } from 'ts-fns'
-import Style from '../../lib/core/style/style.js'
+import Style from '../../lib/style/style.js'
 
 mixin(Style, class {
   ensure(styles, iterate) {

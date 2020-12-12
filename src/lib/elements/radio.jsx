@@ -1,5 +1,5 @@
-import Component from '../core/component.js'
-import { noop } from '../core/utils.js'
+import Component from '../component.js'
+import { noop } from '../utils.js'
 
 export class Radio extends Component {
   static props = {

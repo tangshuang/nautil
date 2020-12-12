@@ -1,20 +1,20 @@
 export { default as React } from 'react'
 
-export { Component } from './lib/core/component.js'
+export { Component } from './lib/component.js'
 
-export { createTwoWayBinding } from './lib/core/utils.js'
-export { useTwoWayBinding } from './lib/core/hooks/two-way-binding.js'
+export { createTwoWayBinding } from './lib/utils.js'
+export { useTwoWayBinding } from './lib/hooks/two-way-binding.js'
 
-export { observe, inject, pollute, initialize, nest } from './lib/core/operators/operators.js'
-export { pipe, multiple } from './lib/core/operators/combiners.js'
+export { observe, inject, pollute, initialize, nest } from './lib/operators/operators.js'
+export { pipe, multiple } from './lib/operators/combiners.js'
 
-export { Async } from './lib/core/components/async.jsx'
-export { For, Each } from './lib/core/components/for-each.jsx'
-export { If, Else, ElseIf } from './lib/core/components/if-else.jsx'
-export { Observer } from './lib/core/components/observer.jsx'
-export { Prepare } from './lib/core/components/prepare.jsx'
-export { Static } from './lib/core/components/static.jsx'
-export { Switch, Case } from './lib/core/components/switch-case.jsx'
+export { Async } from './lib/components/async.jsx'
+export { For, Each } from './lib/components/for-each.jsx'
+export { If, Else, ElseIf } from './lib/components/if-else.jsx'
+export { Observer } from './lib/components/observer.jsx'
+export { Prepare } from './lib/components/prepare.jsx'
+export { Static } from './lib/components/static.jsx'
+export { Switch, Case } from './lib/components/switch-case.jsx'
 
 export { Section } from './lib/elements/section.jsx'
 export { Text } from './lib/elements/text.jsx'
@@ -45,7 +45,7 @@ export { Navigate } from './lib/navi/navigate.jsx'
 
 export { Animation } from './lib/animate/animation.jsx'
 
-export { Store, createStore, useStore, combineStores, applyStore } from './lib/store/store.js'
+export { Store } from './lib/store/store.js'
 export { Provider } from './lib/store/provider.jsx'
 export { Consumer } from './lib/store/consumer.jsx'
 

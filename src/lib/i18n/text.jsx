@@ -3,7 +3,7 @@ import { isFunction, isInstanceOf, mixin } from 'ts-fns'
 
 import I18n from './i18n.js'
 import _Text from '../elements/text.jsx'
-import Component from '../core/component.js'
+import Component from '../component.js'
 
 mixin(_Text, class {
   static props = {

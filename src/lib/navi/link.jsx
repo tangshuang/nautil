@@ -1,7 +1,7 @@
 import { enumerate } from 'tyshemo'
 import { isNumber } from 'ts-fns'
 
-import Component from '../core/component.js'
+import Component from '../component.js'
 import Navigation from './navigation.js'
 
 export class _Link extends Component {

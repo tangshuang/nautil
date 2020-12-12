@@ -1,4 +1,4 @@
-import Component from '../core/component.js'
+import Component from '../component.js'
 
 export class Line extends Component {
   static props = {

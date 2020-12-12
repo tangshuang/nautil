@@ -1,6 +1,6 @@
-import Component from '../core/component.js'
+import Component from '../component.js'
 import Store from './store.js'
-import { pollute } from '../core/operators/operators.js'
+import { pollute } from '../operators/operators.js'
 
 import { _Consumer } from './consumer.jsx'
 

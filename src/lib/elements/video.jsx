@@ -1,8 +1,8 @@
 import { enumerate, dict } from 'tyshemo'
 
-import Component from '../core/component.js'
-import { Unit } from '../core/types.js'
-import { noop } from '../core/utils.js'
+import Component from '../component.js'
+import { Unit } from '../types.js'
+import { noop } from '../utils.js'
 
 export class Video extends Component {
   static props = {

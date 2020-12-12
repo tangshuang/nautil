@@ -4,8 +4,8 @@
 import React from 'react'
 import { isObject, isString, mixin } from 'ts-fns'
 
-import Static from '../../lib/core/components/static.jsx'
-import { If } from '../../lib/core/components/if-else.jsx'
+import Static from '../../lib/components/static.jsx'
+import { If } from '../../lib/components/if-else.jsx'
 
 import ScrollSection, {
   DOWN,

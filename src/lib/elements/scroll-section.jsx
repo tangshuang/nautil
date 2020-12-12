@@ -1,7 +1,7 @@
 import { range, Any, enumerate } from 'tyshemo'
 
-import Component from '../core/component.js'
-import { noop } from '../core/utils.js'
+import Component from '../component.js'
+import { noop } from '../utils.js'
 
 export const DOWN = 'down'
 export const UP = 'up'

@@ -2,7 +2,7 @@ import Navigator from './navi/navigator.jsx'
 import Provider from './store/provider.jsx'
 import Language from './i18n/language.jsx'
 
-import { nest } from './core/operators/operators.js'
+import { nest } from './operators/operators.js'
 
 export function createApp(options = {}, fn) {
   const { navigation, store, i18n } = options

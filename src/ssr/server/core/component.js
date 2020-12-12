@@ -1,6 +1,6 @@
 import React, { cloneElement } from 'react'
 import { mixin, isFunction, isInheritedOf } from 'ts-fns'
-import { PrimitiveComponent, Component } from '../../../lib/core/component.js'
+import { PrimitiveComponent, Component } from '../../../lib/component.js'
 
 const _polluteRenderTree = PrimitiveComponent.prototype._polluteRenderTree
 mixin(PrimitiveComponent, class {

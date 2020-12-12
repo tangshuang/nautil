@@ -24,11 +24,12 @@
   "homepage": "https://github.com/tangshuang/nautil#readme",
   "dependencies": {
     "i18next": "^17.3.1",
+    "immer": "^8.0.0",
     "react": "^16.13.0",
     "react-immut": "^3.0.0",
     "rxjs": "^6.6.3",
     "ts-fns": "^8.1.10",
-    "tyshemo": "^9.5.0"
+    "tyshemo": "^9.10.3"
   },
   "optionalDependencies": {
     "@react-native-community/async-storage": "^1.6.3",

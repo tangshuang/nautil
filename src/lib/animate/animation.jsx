@@ -2,12 +2,12 @@ import React from 'react'
 import { isNumeric } from 'ts-fns'
 import { ifexist } from 'tyshemo'
 
-import Component from '../core/component.js'
-import { noop } from '../core/utils.js'
+import Component from '../component.js'
+import { noop } from '../utils.js'
 import { Section } from '../elements/section.jsx'
 import Transition from './transition.js'
 import tween from './tween.js'
-import Transform from '../core/style/transform.js'
+import Transform from '../style/transform.js'
 
 export class Animation extends Component {
   static props = {

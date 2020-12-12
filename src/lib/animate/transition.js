@@ -1,6 +1,6 @@
 import { tween } from './tween.js'
 import easings from './easings.js'
-import { noop } from '../core/utils.js'
+import { noop } from '../utils.js'
 
 export class Transition {
   constructor(options = {}) {

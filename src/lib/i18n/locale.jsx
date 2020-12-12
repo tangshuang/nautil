@@ -1,5 +1,5 @@
 import I18n from './i18n.js'
-import Component from '../core/component.js'
+import Component from '../component.js'
 
 /**
  * <Locale to="zh-CN" render={(changeLang) =>

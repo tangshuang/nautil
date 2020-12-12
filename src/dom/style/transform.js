@@ -1,5 +1,5 @@
 import { isNumber, isArray, each, mixin } from 'ts-fns'
-import Transform from '../../lib/core/style/transform.js'
+import Transform from '../../lib/style/transform.js'
 
 mixin(Transform, class {
   get() {

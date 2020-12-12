@@ -2,7 +2,7 @@ import React from 'react'
 import { ifexist, Any } from 'tyshemo'
 import { isFunction } from 'ts-fns'
 
-import Component from '../core/component.js'
+import Component from '../component.js'
 import Navigation from './navigation.js'
 
 export class _Route extends Component {
