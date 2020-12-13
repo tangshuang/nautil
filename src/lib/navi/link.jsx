@@ -20,19 +20,8 @@ export class _Link extends Component {
 
   getHref() {
     const { to, params, navigation } = this.attrs
-    const { options } = navigation
-    const { base = '/' } = options
     const state = navigation.makeState(to, params)
-
-    let href = ''
-    if (!state) {
-      href = '#!'
-    }
-    else {
-      const { url } = state
-      href = base === '/' ? url : base + url
-    }
-
+    const href = navigation.makeHref(state)
     return href
   }
 

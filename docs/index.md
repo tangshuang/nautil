@@ -29,7 +29,6 @@
 - Builtin Components
   - [If/ElseIf/Else](components/if-else.md)
   - [Switch/Case](components/switch-case.md)
-  - [Show](components/show.md)
   - [For](components/for.md)
   - [Each](components/each.md)
   - [Static](components/static.md)

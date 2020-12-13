@@ -457,6 +457,51 @@ export class Navigation {
     }
   }
 
+  makeHref(state) {
+    if (!state) {
+      return '#!'
+    }
+
+    const { url } = state
+    const { mode, base = '/', searchQuery = '_url' } = this.options
+
+    if (mode === 'history') {
+      const href = base === '/' ? url : base + url
+      return href
+    }
+    else if (mode === 'hash') {
+      const href = '#' + url
+      return href
+    }
+    else if (mode === 'search') {
+      const target = url
+      const encoded = encodeURIComponent(target)
+      const hash = location.hash
+      if (!hash) {
+        const href = '#?' + searchQuery + '=' + encoded
+        return href
+      }
+      else if (hash.indexOf('?') === -1) {
+        const href = hash + '?' + searchQuery + '=' + encoded
+        return
+      }
+      else {
+        const search = hash.split('?').pop()
+        if (search.indexOf(searchQuery + '=') === -1) {
+          const href = hash + '&' + searchQuery + '=' + encoded
+          return href
+        }
+        else {
+          const href = hash.replace(new RegExp(searchQuery + '=(.*?)(\&|$)'), searchQuery + '=' + encoded)
+          return href
+        }
+      }
+    }
+    else {
+      return url
+    }
+  }
+
   async changeLocation(state, replace = false) {
     await Storage.setItem('historyState', state)
   }

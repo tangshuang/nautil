@@ -1,5 +1,4 @@
 const path = require('path')
-const pkg = require('../package.json')
 
 const env = process.env.NODE_ENV
 
@@ -60,9 +59,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'nautil$': path.resolve(__dirname, '../src'),
-      'ts-fns$': 'ts-fns/es',
-      'tyshemo$': 'tyshemo/src',
+      'nautil': path.resolve(__dirname, '../src'),
     },
   },
   module: {
@@ -76,6 +73,7 @@ module.exports = {
           ],
           plugins: [
             '@babel/plugin-proposal-class-properties',
+            'react-require',
           ],
         },
       },
@@ -132,5 +130,6 @@ module.exports = {
   devServer: {
     port: 9000,
     contentBase: __dirname,
+    historyApiFallback: true,
   },
 }

@@ -22,6 +22,7 @@ export { Webview } from './elements/webview.jsx'
 export { Transform } from './style/transform.js'
 export { Style } from './style/style.js'
 export { Navigation } from './navi/navigation.js'
+export { Link } from './navi/link.jsx'
 
 export { Storage } from './storage/storage.js'
 

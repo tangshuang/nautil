@@ -1,20 +1,25 @@
+import React from 'react'
 import { Model } from './model.js'
-import { each, getConstructorOf, isInstanceOf, isFunction } from 'ts-fns'
+import { Store } from './store/store.js'
+import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
 import Component from './component.js'
 import { isShallowEqual } from './utils.js'
+import { Stream } from './stream.js'
 
 /**
  * class SomeController extends Constroller {
- *   vote$ = new Stream()
+ *   static vote = VoteModel
  *
- *   Vote = new VoteModel()
+ *   static vote$(stream) {
+ *     stream.subscribe(() => this.vote.count ++ )
+ *   }
  *
  *   VoteButton(props) {
- *     return <Button onHit={vote$}>Vote</Button>
+ *     return <Button onHit={this.vote$}>Vote</Button>
  *   }
  *
  *   VoteCount(props) {
- *     return <Text>{this.Vote.count}</Text>
+ *     return <Text>{this.vote.count}</Text>
  *   }
  * }
  */
@@ -25,17 +30,26 @@ export class Controller {
       emiters.forEach(fn => fn())
     }
 
-    each(this, (value) => {
-      if (!isInstanceOf(value, Model)) {
-        return
+    const Constructor = getConstructorOf(this)
+    each(Constructor, (Item, key) => {
+      if (Item && isInheritedOf(Item, Model)) {
+        this[key] = new Item()
+        this[key].watch('*', emit, true)
       }
-      value.watch('*', emit, true)
+      else if (Item && (Item === Store || isInheritedOf(Item, Store))) {
+        this[key] = new Item()
+        this[key].subscribe(emit)
+      }
+      else if (isFunction(Item) && key[key.length - 1] === '$') {
+        const stream$ = new Stream()
+        this[key] = stream$
+        Item.call(this, stream$)
+      }
     })
 
-    const Constructor = getConstructorOf(this)
-    const protos = Constructor.proptotypes
-    each(protos, (value, key) => {
-      if (!isFunction(value)) {
+    const protos = Constructor.prototype
+    each(protos, ({ value }, key) => {
+      if (key === 'constructor') {
         return
       }
 
@@ -43,6 +57,12 @@ export class Controller {
       if (charCode < 65 || charCode > 90) {
         return
       }
+
+      if (!isFunction(value)) {
+        return
+      }
+
+      const Gen = value.bind(this)
 
       this[key] = class extends Component {
         onInit() {
@@ -59,9 +79,9 @@ export class Controller {
           return !isShallowEqual(nextProps, this.props)
         }
         render() {
-          return value(this.props)
+          return <Gen {...this.props} />
         }
       }
-    })
+    }, true)
   }
 }

@@ -103,21 +103,24 @@ export function initialize(prop, Constructor, ...args) {
  */
 export function nest(...args) {
   return function(C) {
-    return function(props) {
-      const realContent = <C {...props} />
-      let finalContent = realContent
+    return class extends Component {
+      render() {
+        const { props } = this
+        const realContent = <C {...props} />
+        let finalContent = realContent
 
-      const items = args.reverse()
-      items.forEach((item) => {
-        if (!item) {
-          return
-        }
+        const items = args.reverse()
+        items.forEach((item) => {
+          if (!item) {
+            return
+          }
 
-        const [Component, props] = item
-        finalContent = <Component {...props}>{finalContent}</Component>
-      })
+          const [Component, props] = item
+          finalContent = <Component {...props}>{finalContent}</Component>
+        })
 
-      return finalContent
+        return finalContent
+      }
     }
   }
 }

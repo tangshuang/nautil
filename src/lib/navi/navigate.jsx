@@ -1,7 +1,7 @@
 import { enumerate } from 'tyshemo'
 
 import Navigation from './navigation.js'
-import Link from './link.jsx'
+import { _Link as Link } from './link.jsx'
 import Component from '../component.js'
 
 export class _Navigate extends Link {

@@ -1,11 +1,7 @@
-# Navigate
-
-Navigate compoent is to jump/switch navigation from one route to another.
+# Link
 
 ```js
-import { Navigate } from 'nautil/components'
-
-<Navigate
+<Link
   navigation={navigation}
   to="article"
   params={{
@@ -13,10 +9,7 @@ import { Navigate } from 'nautil/components'
   }}
   replace={true}
   open={false}
-  render={(goto, href, open) => {
-    <a href={href} onClick={goto} target={open ? '_blank' : '_self'}>click to go</a>
-  }}
-/>
+>click to go</Link>
 ```
 
 **props**
@@ -29,4 +22,3 @@ import { Navigate } from 'nautil/components'
 - params: parameters to pass to next navigation state
 - open: Boolean, when `to` is a url, whether to open with `target="_blank"`
 - replace: whether to replace history when swtich route
-- render: Function

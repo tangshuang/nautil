@@ -7,8 +7,8 @@ import Component from '../component.js'
 
 mixin(_Text, class {
   static props = {
-    i18n: ifexit(I18n),
-    t: ifexit(new Enum([Function, String])),
+    i18n: ifexist(I18n),
+    t: ifexist(new Enum([Function, String])),
     s: ifexist(String),
   }
   onParseProps(props) {

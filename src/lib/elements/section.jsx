@@ -8,6 +8,7 @@ export class Section extends Component {
     onHitMove: Function,
     onHitEnd: Function,
     onHitCancel: Function,
+    onHitOutside: Function,
   }
   static defaultProps = {
     onHit: noop,
@@ -15,6 +16,7 @@ export class Section extends Component {
     onHitMove: noop,
     onHitEnd: noop,
     onHitCancel: noop,
+    onHitOutside: noop,
   }
 }
 export default Section

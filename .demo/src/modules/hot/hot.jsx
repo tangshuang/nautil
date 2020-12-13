@@ -6,16 +6,16 @@ import {
 } from 'nautil'
 import { Header } from '../../components/header/header.jsx'
 
-export class Home extends Component {
+export class Hot extends Component {
   render() {
     return (
       <>
         <Header />
         <Section>
-          <Text>Home</Text>
+          <Text>沸点</Text>
         </Section>
       </>
     )
   }
 }
-export default Home
+export default Hot

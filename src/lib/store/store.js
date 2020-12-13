@@ -1,9 +1,10 @@
 import produce from 'immer'
+import { isObject } from 'ts-fns'
 
 export class Store {
   constructor(initState = {}) {
+    this.state = initState
     this._subscribers = []
-    this._state = initState
     this._origin = initState
   }
   subscribe(fn) {
@@ -17,18 +18,23 @@ export class Store {
     })
   }
   getState() {
-    return this._state
+    return this.state
   }
   resetState() {
     this.dispatch(this._origin)
   }
   setState(state) {
-    this.dispatch(draft => { Object.assign(draft, state) })
+    this.dispatch(draft => {
+      if (!isObject(draft)) {
+        return state
+      }
+      Object.assign(draft, state)
+    })
   }
   dispatch(update) {
-    const prev = this._state
+    const prev = this.state
     const next = typeof update === 'function' ? produce(prev, update) : update
-    this._state = next
+    this.state = next
     this._subscribers.forEach((fn) => {
       fn(next, prev)
     })

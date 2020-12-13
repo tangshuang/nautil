@@ -1,5 +1,6 @@
 import { each, mixin } from 'ts-fns'
 import Navigation from '../../lib/navi/navigation.js'
+import Storage from '../../lib/storage/storage.js'
 
 mixin(Navigation, class {
   init() {
@@ -8,7 +9,7 @@ mixin(Navigation, class {
 
       // don't use browser url
       if (['history', 'hash', 'search'].indexOf(mode) === -1) {
-        const state = await this.storage.get('historyState')
+        const state = await Storage.getItem('historyState')
         if (mode === 'storage' && state) {
           const { route, params } = state
           const { redirect } = route
@@ -38,6 +39,9 @@ mixin(Navigation, class {
         else {
           this.push(state, changeLocation)
         }
+      }
+      else if (!changeLocation) {
+        this._goDefaultRoute()
       }
       else {
         this._onNotFound()
@@ -78,8 +82,7 @@ mixin(Navigation, class {
 
     this._changingLoactionHash = false // record whether is changing location hash
 
-    // window.addEventListener('load', onLoaded)
-    onLoaded()
+    onLoaded(false)
     window.addEventListener('hashchange', onHashChanged)
     window.addEventListener('popstate', onUrlChanged)
   }
@@ -161,7 +164,7 @@ mixin(Navigation, class {
       this._changingLoactionHash = true
     }
     else {
-      await this.storage.set('historyState', state)
+      await Storage.setItem('historyState', state)
     }
   }
 })

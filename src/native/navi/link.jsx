@@ -1,19 +1,16 @@
 import React from 'react'
 import { mixin } from 'ts-fns'
-
 import { _Link as Link } from '../../lib/navi/link.jsx'
+import Text from '../../lib/elements/text.jsx'
 
 mixin(Link, class {
   render() {
     const { open } = this.attrs
-    const href = this.getHref()
-    return <a
-      href={href}
-      target={open ? '_blank' : '_self'}
+    return <Text
       className={this.className}
       style={this.style}
       onClick={e => !open && (e.preventDefault(),this.goto())}
-    >{this.children}</a>
+    >{this.children}</Text>
   }
 })
 

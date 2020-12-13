@@ -21,3 +21,9 @@ export const Unit = new Enum([
   String,
   Number,
 ])
+
+export const StyleSheet = new Enum([
+  String,
+  Object,
+  new List([String, Object]),
+])

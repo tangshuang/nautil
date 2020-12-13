@@ -1,4 +1,7 @@
-export { default as React } from 'react'
+import * as TySheMo from 'tyshemo'
+import React from 'react'
+
+export { TySheMo, React }
 
 export { Component } from './lib/component.js'
 
@@ -48,6 +51,9 @@ export { Animation } from './lib/animate/animation.jsx'
 export { Store } from './lib/store/store.js'
 export { Provider } from './lib/store/provider.jsx'
 export { Consumer } from './lib/store/consumer.jsx'
+export { Model, Meta, Validator } from './lib/model.js'
+export { Stream } from './lib/stream.js'
+export { Controller } from './lib/controller.jsx'
 
 export { Storage } from './lib/storage/storage.js'
 
@@ -57,4 +63,4 @@ export { Locale } from './lib/i18n/locale.jsx'
 export { Text as T } from './lib/i18n/text.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createApp } from './lib/create-app.js'
+export { createApp, AppWormhole } from './lib/create-app.js'
