@@ -1,0 +1,15 @@
+.nav-bar {
+  display: flex;
+  border-bottom: #eee solid 1px;
+  padding: 0 5px;
+  background-color: #fff;
+  box-shadow: 0 1px 2px #f1f1f1;
+}
+.nav-bar__item {
+  padding: 10px;
+}
+.nav-bar__item-link {
+  text-decoration: none;
+  color: #585858;
+  font-size: 14px;
+}
