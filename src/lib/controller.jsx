@@ -42,8 +42,8 @@ export class Controller {
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
-        this[key] = stream$
-        Item.call(this, stream$)
+        const stream = Item.call(this, stream$)
+        this[key] = stream && stream instanceof Stream ? stream : stream$
       }
     })
 
@@ -53,12 +53,14 @@ export class Controller {
         return
       }
 
-      const charCode = key.charCodeAt(0)
-      if (charCode < 65 || charCode > 90) {
+      if (!isFunction(value)) {
         return
       }
 
-      if (!isFunction(value)) {
+      const charCode = key.charCodeAt(0)
+      // if not uppercase, make it as a method
+      if (charCode < 65 || charCode > 90) {
+        this[key] = value.bind(this)
         return
       }
 
