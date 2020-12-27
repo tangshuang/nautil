@@ -10,7 +10,7 @@ import {
   Button,
   Controller,
   If,
-  AppWormhole,
+  Navigate,
 } from 'nautil'
 import * as Styles from './header.css'
 import Icon from '../icon/icon.jsx'
@@ -50,11 +50,10 @@ export class Header extends Component {
   render() {
     const { SearchInput } = this.controller
     return (
-      <AppWormhole
-        map={(body) => {
+      <Navigate
+        map={(navigation) => {
           let menu = menus[0]
-          if (body) {
-            const { navigation } = body
+          if (navigation.status) {
             const { name } = navigation.state
             menu = menus.find(item => item.name === name)
           }

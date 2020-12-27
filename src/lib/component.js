@@ -29,12 +29,16 @@ export class PrimitiveComponent extends React.Component {
     super(props)
 
     // render
-    const _render = this.render.bind(this)
-    this.render = () => {
-      const tree = _render()
-      const polluted = this._polluteRenderTree(tree)
-      return polluted
-    }
+    const _render = this.render ? this.render.bind(this) : null
+    const _renderFrom = this.renderFrom ? this.renderFrom.bind(this) : null
+    Object.defineProperty(this, 'render', {
+      value: () => {
+        const resource = _renderFrom ? _renderFrom(this.props) : _render()
+        const tree = _renderFrom ? PrimitiveComponent.createComponentFrom(resource) : resource
+        const polluted = this._polluteRenderTree(tree)
+        return polluted
+      }
+    })
   }
 
   _getPollutedComponents() {
@@ -92,6 +96,27 @@ export class PrimitiveComponent extends React.Component {
 
     const output = modify(tree)
     return output
+  }
+
+  static createComponentFrom(resource) {
+    const create = (resource) => {
+      const [type, props, ...children] = resource
+      const desc = [type === null ? React.Fragment : type, props]
+      if (children.length) {
+        const subs = children.map((child) => {
+          if (isArray(child)) {
+            return create(child)
+          }
+          else {
+            return child
+          }
+        })
+        desc.push(...subs)
+      }
+      const element = React.createElement(...desc)
+      return element
+    }
+    return create(resource)
   }
 }
 

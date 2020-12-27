@@ -63,4 +63,4 @@ export { Locale } from './lib/i18n/locale.jsx'
 export { Text as T } from './lib/i18n/text.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createApp, AppWormhole } from './lib/create-app.js'
+export { createApp } from './lib/create-app.js'

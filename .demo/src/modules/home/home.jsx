@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Component,
   Section,
@@ -8,16 +7,14 @@ import Header from '../../components/header/header.jsx'
 import NavBar from '../../components/nav-bar/nav-bar.jsx'
 
 export class Home extends Component {
-  render() {
-    return (
-      <>
-        <Header />
-        <NavBar />
-        <Section>
-          <Text>Home</Text>
-        </Section>
-      </>
-    )
+  renderFrom() {
+    return [null, null,
+      [Header],
+      [NavBar],
+      [Section, null,
+        [Text, null, 'Home'],
+      ],
+    ]
   }
 }
 export default Home

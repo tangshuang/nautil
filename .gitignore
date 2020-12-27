@@ -7,3 +7,4 @@ node_modules/
 /web-component/
 /wechat-miniprogram/
 /ssr/
+.test/
