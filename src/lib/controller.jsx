@@ -31,6 +31,7 @@ export class Controller {
     }
 
     const Constructor = getConstructorOf(this)
+    const streams = []
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
@@ -42,10 +43,12 @@ export class Controller {
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
-        const stream = Item.call(this, stream$)
-        this[key] = stream && stream instanceof Stream ? stream : stream$
+        this[key] = stream$
+        streams.push([Item, stream$])
       }
     })
+    // register all streams at last, so that you can call this.stream$ directly in each function.
+    streams.forEach(([fn, stream$]) => fn.call(this, stream$))
 
     const protos = Constructor.prototype
     each(protos, ({ value }, key) => {

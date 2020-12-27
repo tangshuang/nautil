@@ -1,1 +1,1 @@
-export { Subject as Stream } from 'rxjs'
+export { Subject as Stream, Subject as default } from 'rxjs'

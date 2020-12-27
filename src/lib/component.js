@@ -3,16 +3,26 @@ import {
   each,
   getConstructorOf,
   isArray,
+  map,
+  isInstanceOf,
+  makeKeyChain,
+  clone,
+  assign,
+  createProxy,
 } from 'ts-fns'
-import { Observable } from 'rxjs'
-import { Ty } from 'tyshemo'
-
 import {
-  buildAttrs,
-  buildClassName,
-  buildStyle,
-  buildStreams,
-} from './utils.js'
+  Ty,
+  Rule,
+  ifexist,
+} from 'tyshemo'
+import Stream from './stream.js'
+
+import Style from './style/style.js'
+import ClassName from './style/classname.js'
+import {
+  Binding,
+  Handling,
+} from './types.js'
 
 export class PrimitiveComponent extends React.Component {
   constructor(props) {
@@ -89,7 +99,7 @@ export class Component extends PrimitiveComponent {
   constructor(props) {
     super(props)
 
-    this._jammers = []
+    this._effectors = []
     this.update = this.update.bind(this)
     this.forceUpdate = this.forceUpdate.bind(this)
 
@@ -99,7 +109,7 @@ export class Component extends PrimitiveComponent {
 
   on(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._jammers.push({
+    this._effectors.push({
       name: upperCaseName,
       affect,
     })
@@ -108,9 +118,9 @@ export class Component extends PrimitiveComponent {
 
   off(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._jammers.forEach((item, i) => {
+    this._effectors.forEach((item, i) => {
       if (upperCaseName === item.name && (!affect || affect === item.affect)) {
-        this._jammers.splice(i, 1)
+        this._effectors.splice(i, 1)
       }
     })
     return this
@@ -146,35 +156,156 @@ export class Component extends PrimitiveComponent {
   }
 
   _digest(props) {
-    const parsedProps = this.onParseProps(props)
-
     const Constructor = getConstructorOf(this)
+    const { props: PropsTypes, defaultStylesheet } = Constructor
+    const parsedProps = this.onParseProps(props)
+    const { children, stylesheet, style, className, ...attrs } = parsedProps
 
-    this.attrs = buildAttrs(parsedProps, Constructor)
-    this.className = buildClassName(parsedProps, Constructor)
-    this.style = buildStyle(parsedProps, Constructor)
-    this.children = parsedProps.children
+    // normal attrs
+    const finalAttrs = {}
+    const finalTypes = {}
 
-    const streams = buildStreams(parsedProps, Constructor, (stream, key) => {
+    // two-way binding:
+    const bindingAttrs = {}
+    const bindingTypes = {}
+
+    // handlers
+    const handlingAttrs = {}
+    const handlingTypes = {}
+
+    // prepare for data type checking
+    if (process.env.NODE_ENV !== 'production') {
+      if (PropsTypes) {
+        each(PropsTypes, (type, key) => {
+          if (/^\$[a-zA-Z]/.test(key)) {
+            const attr = key.substr(1)
+            finalTypes[attr] = type
+            bindingTypes[key] = isInstanceOf(type, Rule) && type.name === 'ifexist' ? ifexist(Binding) : Binding
+          }
+          else if (/^on[A-Z]/.test(key)) {
+            handlingTypes[key] = isInstanceOf(type, Rule) && type.name === 'ifexist' ? ifexist(Handling) : Handling
+          }
+          else {
+            finalTypes[key] = type
+          }
+        })
+      }
+    }
+
+    // prepare for attrs data
+    each(attrs, (data, key) => {
+      if (/^\$[a-zA-Z]/.test(key)) {
+        const attr = key.substr(1)
+
+        // not a required prop, check its data type with Binding
+        if (process.env.NODE_ENV !== 'production') {
+          if (!bindingTypes[key]) {
+            bindingTypes[key] = Binding
+          }
+        }
+
+        bindingAttrs[key] = data
+        finalAttrs[attr] = data[0] // $show={[value, update]} => finalAttrs[show]=value
+      }
+      else if (/^on[A-Z]/.test(key)) {
+        // for type checking
+        if (process.env.NODE_ENV !== 'production') {
+          if (!handlingTypes[key]) {
+            handlingTypes[key] = Handling
+          }
+        }
+
+        handlingAttrs[key] = data
+      }
+      else {
+        finalAttrs[key] = data
+      }
+    })
+
+    // check data type now
+    if (process.env.NODE_ENV !== 'production') {
+      Ty.expect(bindingAttrs).to.match(bindingTypes)
+      Ty.expect(handlingAttrs).to.be(handlingTypes)
+      Ty.expect(finalAttrs).to.match(finalTypes)
+    }
+
+    // format stylesheet by using stylesheet, className, style props
+    const classNameQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(className)
+    this.className = ClassName.create(classNameQueue)
+
+    // Format stylesheet by using stylesheet, className, style props
+    const styleQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(style)
+    this.style = Style.create(styleQueue)
+
+    this.children = children
+
+    // create two-way binding props
+    this.attrs = createProxy(finalAttrs, {
+      writable(keyPath, value) {
+        const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
+        const root = chain.shift()
+        const bindKey = '$' + root
+        const bindData = bindingAttrs[bindKey]
+        if (bindData) {
+          const [current, update] = bindData
+          if (chain.length) {
+            const next = clone(current)
+            assign(next, chain, value)
+            update(next, current)
+          }
+          else {
+            update(value, current)
+          }
+        }
+        return false
+      },
+    })
+
+    /**
+     * use the passed handler like onClick to create a stream
+     * @param {*} param
+     */
+    const createSubject = (param, key) => {
+      if (isInstanceOf(param, Stream)) {
+        return param
+      }
+
+      let subject = new Stream()
+
+      const args = isArray(param) ? [...param] : [param]
+      const subscribe = args.pop()
+
+      if (args.length) {
+        subject = subject.pipe(...args)
+      }
+
       const name = key.replace('on', '')
-      this._jammers.forEach((item) => {
+      this._effectors.forEach((item) => {
         if (name === item.name) {
-          stream = item.affect(stream) || stream
+          subject = item.affect(subject) || subject
           if (process.env.NDOE_ENV !== 'production') {
-            Ty.expect(stream).to.be(Observable)
+            Ty.expect(subject).to.be(Stream)
           }
         }
       })
-      return stream
-    })
+
+      subject.subscribe(subscribe)
+
+      return subject
+    }
+
+    const streams = map(handlingAttrs, createSubject)
     each(this, (value, key) => {
+      // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
       if (/^[A-Z].*\$$/.test(key)) {
-        delete this[key + '$']
+        const handler = key
+        this[key].complete() // finish stream, free memory
+        delete this[handler]
       }
     })
     each(streams, (stream, key) => {
-      const name = key.replace('on', '')
-      this[name + '$'] = stream
+      const name = key.substr(2) + '$'
+      this[name] = stream
     })
 
     this.onDigested()

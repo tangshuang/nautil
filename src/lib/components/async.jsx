@@ -2,7 +2,7 @@ import { ifexist, Any } from 'tyshemo'
 import { isFunction } from 'ts-fns'
 
 import Component from '../component.js'
-import { createPlaceholderComponent, noop } from '../utils.js'
+import { createPlaceholderElement, noop } from '../utils.js'
 
 export class Async extends Component {
   static props = {
@@ -41,7 +41,7 @@ export class Async extends Component {
     const { status, data, error } = this.state
 
     if (status === 'pending') {
-      return createPlaceholderComponent(pendding)
+      return createPlaceholderElement(pendding)
     }
     else if (status === 'resolved') {
       return then ? then(data)
