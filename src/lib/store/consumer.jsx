@@ -6,6 +6,7 @@ import Store from './store.js'
 export class _Consumer extends Component {
   static props = {
     store: Store,
+    map: ifexist(Function),
     render: ifexist(Function),
   }
 
@@ -24,20 +25,17 @@ export class _Consumer extends Component {
   }
 
   render() {
-    const { store, render } = this.attrs
+    const { store, map, render } = this.attrs
     const fn = render ? render : this.children
     const state = store.getState()
-    const dispatch = (update) => store.dispatch(update)
 
     if (state === this._latestState) {
       return this._latestRender
     }
 
+    const data = map ? map(store) : store
     this._latestState = state
-    this._latestRender = fn({
-      state,
-      dispatch,
-    })
+    this._latestRender = fn(data)
     return this._latestRender
   }
 }

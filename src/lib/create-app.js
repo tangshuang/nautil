@@ -1,26 +1,9 @@
 import Navigator from './navi/navigator.jsx'
 import Provider from './store/provider.jsx'
 import Language from './i18n/language.jsx'
-import { nest, pollute } from './operators/operators.js'
-import Component from './component.js'
-import { Any, ifexist, Ty } from 'tyshemo'
+import { nest } from './operators/operators.js'
+import { Ty } from 'tyshemo'
 import Navigation from './navi/navigation.js'
-
-export class AppWormhole extends Component {
-  static props = {
-    body: Any,
-    map: ifexist(Function),
-    render: Function,
-  }
-  static defaultProps = {
-    body: null,
-  }
-  render() {
-    const { map, body, render } = this.attrs
-    const data = map ? map(body) : body
-    return render(data)
-  }
-}
 
 export function createApp(options = {}, fn) {
   const { navigation, store, i18n } = options
@@ -46,7 +29,5 @@ export function createApp(options = {}, fn) {
   }
 
   const Component = nest(...items)(None)
-  const TopComponent = pollute(AppWormhole, { body: options })(Component)
-
-  return TopComponent
+  return Component
 }
