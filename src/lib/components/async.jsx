@@ -10,7 +10,6 @@ export class Async extends Component {
     then: ifexist(Function),
     catch: Function,
     pendding: Any,
-    render: ifexist(Function),
   }
   static defaultProps = {
     catch: noop,
@@ -38,7 +37,7 @@ export class Async extends Component {
     this._isUnmounted = true
   }
   render() {
-    const { pendding, then, catch: catchFn, render } = this.attrs
+    const { pendding, then, catch: catchFn } = this.attrs
     const { status, data, error } = this.state
 
     if (status === 'pending') {
@@ -46,7 +45,6 @@ export class Async extends Component {
     }
     else if (status === 'resolved') {
       return then ? then(data)
-        : render ? render(data)
         : isFunction(this.children) ? this.children(data)
         : this.children
     }

@@ -51,16 +51,16 @@ export class Header extends Component {
     const { SearchInput } = this.controller
     return (
       <AppWormhole
-        transport={(body) => {
+        map={(body) => {
           let menu = menus[0]
           if (body) {
             const { navigation } = body
             const { name } = navigation.state
             menu = menus.find(item => item.name === name)
           }
-          return menu
+          return { menu }
         }}
-        render={(menu) => {
+        render={({ menu }) => {
           return (
             <Section stylesheet={['header', Styles.header]}>
               <Section stylesheet={['header__logo', Styles.headerLogo]}>

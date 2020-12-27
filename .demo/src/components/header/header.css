@@ -1,8 +1,9 @@
 .header {
   padding: 10px 15px;
-  border-bottom: solid #dedede 1px;
+  border-bottom: solid #eee 1px;
   display: flex;
   align-items: center;
+  background-color: #fff;
 }
 .header__logo {
   width: 45px;
@@ -42,7 +43,7 @@
   margin-top: 10px;
   width: 90px;
   background-color: #fff;
-  border: #dedede solid 1px;
+  border: #eee solid 1px;
   border-radius: 5px;
 }
 .header__menus-item {

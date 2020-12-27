@@ -9,6 +9,7 @@ export class For extends Component {
     start: Number,
     end: Number,
     step: Number,
+    map: ifexist(Function),
     render: ifexist(Function),
   }
   static defaultProps = {
@@ -16,12 +17,15 @@ export class For extends Component {
   }
 
   render() {
-    const { start, end, step, render } = this.attrs
+    const { start, end, step, map, render } = this.attrs
     const children = this.children
     const blocks = []
 
     for (let i = start; i <= end; i += step) {
-      const block = isFunction(children) ? children(i) : isFunction(render) ? render(i) : Children.map(children, child => cloneElement(child))
+      const data = map ? map(i) : i
+      const block = isFunction(render) ? render(data)
+        : isFunction(children) ? children(data)
+        : Children.map(children, child => cloneElement(child))
       blocks.push(block)
     }
     return blocks
@@ -30,15 +34,17 @@ export class For extends Component {
 
 export class Each extends Component {
   static props = {
-    of: enumerate([ Array, Object ]),
+    of: enumerate([Array, Object]),
+    map: ifexist(Function),
     render: ifexist(Function),
   }
 
   render() {
-    const data = this.attrs.of
+    const obj = this.attrs.of
     const children = this.children
     const blocks = []
-    const { render } = this.attrs
+    const { map, render } = this.attrs
+    const data = map ? map(obj) : obj
 
     each(data, (value, key) => {
       const block = isFunction(children) ? children(value, key) : isFunction(render) ? render(value, key) : Children.map(children, child => cloneElement(child))

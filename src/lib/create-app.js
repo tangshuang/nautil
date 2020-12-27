@@ -9,15 +9,15 @@ import Navigation from './navi/navigation.js'
 export class AppWormhole extends Component {
   static props = {
     body: Any,
-    transport: ifexist(Function),
+    map: ifexist(Function),
     render: Function,
   }
   static defaultProps = {
     body: null,
   }
   render() {
-    const { transport, body, render } = this.attrs
-    const data = transport ? transport(body) : body
+    const { map, body, render } = this.attrs
+    const data = map ? map(body) : body
     return render(data)
   }
 }

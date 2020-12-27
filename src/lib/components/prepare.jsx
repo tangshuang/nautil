@@ -7,14 +7,14 @@ import { createPlaceholderComponent } from '../utils.js'
 export class Prepare extends Component {
   static props = {
     ready: Boolean,
-    wait: Any,
+    pendding: Any,
     render: ifexist(Function),
   }
   render() {
-    const { ready, wait, render } = this.attrs
+    const { ready, pendding, render } = this.attrs
     return ready
       ? (isFunction(this.children) ? this.children() : isFunction(render) ? render() : this.children )
-      : createPlaceholderComponent(wait)
+      : createPlaceholderComponent(pendding)
   }
 }
 export default Prepare
