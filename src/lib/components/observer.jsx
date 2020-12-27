@@ -2,24 +2,26 @@ import { ifexist, Ty } from 'tyshemo'
 
 import Component from '../component.js'
 import { noop } from '../utils.js'
+import { isFunction } from 'ts-fns'
 
 export class Observer extends Component {
   static props = {
     subscribe: Function,
     unsubscribe: ifexist(Function),
-    dispatch: Function,
+    dispatch: ifexist(Function),
+    render: ifexist(Function),
   }
   static defaultProps = {
     unsubscribe: noop,
   }
 
   onMounted() {
-    const { subscribe, dispatch } = this.attrs
+    const { subscribe, dispatch = this.update } = this.attrs
     this._unsubscribe = subscribe(dispatch)
   }
 
   onUnmount() {
-    const { unsubscribe = this._unsubscribe, dispatch } = this.attrs
+    const { unsubscribe = this._unsubscribe, dispatch = this.update } = this.attrs
     if (process.env.NODE_ENV !== 'production') {
       Ty.expect(unsubscribe).to.be(Function)
     }
@@ -27,7 +29,16 @@ export class Observer extends Component {
   }
 
   render() {
-    return this.children
+    const { render } = this.attrs
+    if (isFunction(render)) {
+      return render()
+    }
+    else if (isFunction(this.children)) {
+      return this.children()
+    }
+    else {
+      return this.children
+    }
   }
 }
 export default Observer
