@@ -29,12 +29,26 @@ export class PrimitiveComponent extends React.Component {
     super(props)
 
     // render
-    const _render = this.render ? this.render.bind(this) : null
-    const _renderFrom = this.renderFrom ? this.renderFrom.bind(this) : null
+    const render = this.render ? this.render.bind(this) : null
+    const renderFrom = this.renderFrom ? this.renderFrom.bind(this) : null
+    const Render = this.Render ? this.Render.bind(this) : null
     Object.defineProperty(this, 'render', {
       value: () => {
-        const resource = _renderFrom ? _renderFrom(this.props) : _render()
-        const tree = _renderFrom ? PrimitiveComponent.createComponentFrom(resource) : resource
+        const props = this.props
+
+        let tree = null
+
+        if (renderFrom) {
+          const resource = renderFrom(props)
+          tree = PrimitiveComponent.createComponentFrom(resource)
+        }
+        else if (Render) {
+          tree = <Render {...props} />
+        }
+        else {
+          tree = render()
+        }
+
         const polluted = this._polluteRenderTree(tree)
         return polluted
       }
@@ -323,9 +337,8 @@ export class Component extends PrimitiveComponent {
     each(this, (value, key) => {
       // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
       if (/^[A-Z].*\$$/.test(key)) {
-        const handler = key
         this[key].complete() // finish stream, free memory
-        delete this[handler]
+        delete this[key]
       }
     })
     each(streams, (stream, key) => {
@@ -358,6 +371,13 @@ export class Component extends PrimitiveComponent {
   }
   componentWillUnmount(...args) {
     this.onUnmount(...args)
+    // complete all streams, so that async operations will never emit
+    each(this, (value, key) => {
+      if (/^[A-Z].*\$$/.test(key)) {
+        this[key].complete() // finish stream, free memory
+        delete this[key]
+      }
+    })
   }
   componentDidCatch(...args) {
     this.onCatch(...args)
