@@ -4,7 +4,7 @@
 
 Although we are try to support react completely, we had some difficulty to face. Remember the following rules:
 
-**1. (IMPORTANT) Polluted components can only be used in class components!**
+**1. (IMPORTANT) Polluted components can only be used inside class components!**
 
 If you want to use custom polluted components, you should use them in class components.
 
@@ -85,3 +85,37 @@ class A extends Component {
   }
 }
 ```
+
+## Use hooks in Class component.
+
+To use hooks functions in class component, you should must set `Render` method then `render`.
+
+```js
+class Some extends Component {
+  Render(props) {
+    // use hooks directly here
+    const [value, setState] = useState('')
+    return <Input $value={[value, setState]}>
+  }
+}
+```
+
+## Description jsx
+
+In react, you use jsx to write UI structure, however, it to make it describale, you can use a description system instead.
+
+```js
+class Some extends Component {
+  renderFrom(props) {
+    return [
+      'button',
+      {
+        onClick: this.handleClick,
+      },
+      'Click me!',
+    ]
+  }
+}
+```
+
+The returned array will be apply into `React.createElement` to build a virtual dom tree.

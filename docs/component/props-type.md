@@ -2,7 +2,6 @@
 
 This paper will tell you how to set props type. As default, you can use react prop-types as what you did in your react application.
 However, we developed this, based on [tyshemo](http://github.com/tangshuang/tyshemo), we can check the data structure of props.
-
 ## Declare props type
 
 As you learned, we have 3 types of props in nautil: normal, two-way-binding and event-stream. How to declare each type?
@@ -55,7 +54,7 @@ export default class SomeComponent extends Component {
 }
 ```
 
-Read [more](https://github.com/tangshuang/tyshemo#type) for type checking.
+Read [more](https://tyshemo.js.org) for type checking.
 
 ## Optimization
 

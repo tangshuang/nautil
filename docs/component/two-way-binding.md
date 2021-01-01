@@ -5,7 +5,6 @@ In nautil.js we can use two-way-binding props. The props which begin with `$` ar
 To know more, we should follow:
 
 **Two-Way-Binding only works on nautil class components.**
-
 React primitive components and functional components do not support two-way-binding.
 
 ```js
@@ -115,7 +114,7 @@ export default class MyComponent extends Component {
 ```
 
 In the previous code, we declare the prop `show` to be a two-way-binding prop so that the component should must receive `$show` prop (if not pass `$show`, error occurs).
-We did not declare `name` as a two-way-binding prop, however, we can call `this.attrs.name = 'some'` too.
+We did not declare `name` as a two-way-binding prop, however, we can call `this.attrs.name = 'some'` too (without effects).
 
 **Change `this.attrs` will happen nothing!**
 
