@@ -1,5 +1,6 @@
 import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
 import { Stream } from './stream.js'
+import { Model } from './model.js'
 
 export class Service {
   constructor() {
@@ -7,6 +8,9 @@ export class Service {
     const streams = []
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, Service)) {
+        this[key] = new Item()
+      }
+      else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
