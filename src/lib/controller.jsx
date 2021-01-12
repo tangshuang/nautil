@@ -5,6 +5,7 @@ import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
 import Component from './component.js'
 import { isShallowEqual } from './utils.js'
 import { Stream } from './stream.js'
+import { Service } from './service.js'
 
 /**
  * class SomeController extends Constroller {
@@ -25,15 +26,18 @@ import { Stream } from './stream.js'
  */
 export class Controller {
   constructor() {
-    const emiters = []
+    const emitters = []
     const emit = () => {
-      emiters.forEach(fn => fn())
+      emitters.forEach(fn => fn())
     }
 
     const Constructor = getConstructorOf(this)
     const streams = []
     each(Constructor, (Item, key) => {
-      if (Item && isInheritedOf(Item, Model)) {
+      if (Item && isInheritedOf(Item, Service)) {
+        this[key] = Item.getInstance()
+      }
+      else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
         this[key].watch('*', emit, true)
       }
@@ -71,12 +75,12 @@ export class Controller {
 
       this[key] = class extends Component {
         onInit() {
-          emiters.push(this.forceUpdate)
+          emitters.push(this.forceUpdate)
         }
         onUnmount() {
-          emiters.forEach((fn, i) => {
+          emitters.forEach((fn, i) => {
             if (fn === this.forceUpdate) {
-              emiters.splice(i, 1)
+              emitters.splice(i, 1)
             }
           })
         }

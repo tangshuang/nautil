@@ -54,6 +54,7 @@ export { Consumer } from './lib/store/consumer.jsx'
 export { Model, Meta, Validator } from './lib/model.js'
 export { Stream } from './lib/stream.js'
 export { Controller } from './lib/controller.jsx'
+export { Service } from './lib/service.js'
 
 export { Storage } from './lib/storage/storage.js'
 
