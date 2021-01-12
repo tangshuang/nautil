@@ -8,7 +8,7 @@ export class Service {
     const streams = []
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, Service)) {
-        this[key] = new Item()
+        this[key] = Item.getInstance()
       }
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
