@@ -93,5 +93,4 @@ export class Controller {
       }
     }, true)
   }
-  destructor() {}
 }

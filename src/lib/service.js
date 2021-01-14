@@ -16,15 +16,27 @@ export class Service {
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
         this[key] = stream$
-        streams.push([Item, stream$])
+        streams.push([stream$, Item])
       }
     })
     // register all streams at last, so that you can call this.stream$ directly in each function.
-    streams.forEach(([fn, stream$]) => fn.call(this, stream$))
+    streams.forEach(([stream$, fn]) => fn.call(this, stream$))
   }
   $new() {
     const Constructor = getConstructorOf(this)
     return new Constructor()
+  }
+  destroy() {
+    each(this, (value, key) => {
+      if (isInstanceOf(value, Stream)) {
+        value.complete()
+        delete this[key]
+      }
+    })
+    const Constructor = getConstructorOf(this)
+    if (Constructor.__instance === this) {
+      delete Constructor.__instance
+    }
   }
   static getInstance() {
     const Constructor = this
