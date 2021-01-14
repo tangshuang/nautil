@@ -5,6 +5,7 @@ import {
   isArray,
   map,
   isInstanceOf,
+  isFunction,
   makeKeyChain,
   clone,
   assign,
@@ -315,7 +316,7 @@ export class Component extends PrimitiveComponent {
       const subscribe = args.pop()
 
       if (args.length) {
-        subject = subject.pipe(...args)
+        subject = subject.pipe(...args.filter(item => isFunction(item)))
       }
 
       const name = key.replace('on', '')

@@ -8,7 +8,7 @@ import { Stream } from './stream.js'
 
 export const Handling = new Enum([
   Function,
-  new List([Function]),
+  new List([Function, Stream]),
   Stream,
 ])
 
