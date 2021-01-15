@@ -75,5 +75,5 @@ Configuration > Function > Elements
 
 ## Auto pollute
 
-The `Route` component in a `Navigator` component will be polluted with `navigation` prop.
+The `Route` `Link` components in a `Navigator` component will be polluted with `navigation` prop.
 You do not need to pass `navigation` prop to `Route` manually.

@@ -10,11 +10,8 @@ Always, it contains the current route, current url, current route name and param
 ## Status
 
 However, when we navigate to a undefined route, navigation will emit a `$onNotFound` event.
-**But, navigation will not clear or change the current state.**
-Becuase when navigate to a undefined route may need some special operators.
 
 So, how to know current state is work? Use `status` property.
-
 When `status` property is `0`, it means current state is on notFound route. If it is `1`, current state is on normal route.
 
 So, in some cases, you should must use both `state` and `status` to determine what to doing:

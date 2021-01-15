@@ -6,11 +6,13 @@ export class Checkbox extends Component {
     checked: Boolean,
     onCheck: Function,
     onUncheck: Function,
+    onChange: Function,
   }
   static defaultProps = {
     checked: false,
     onCheck: noop,
     onUncheck: noop,
+    onChange: noop,
   }
 }
 export default Checkbox

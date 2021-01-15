@@ -9,7 +9,7 @@ export { createTwoWayBinding } from './lib/utils.js'
 export { useTwoWayBinding } from './lib/hooks/two-way-binding.js'
 
 export { observe, inject, pollute, initialize, nest } from './lib/operators/operators.js'
-export { pipe, multiple } from './lib/operators/combiners.js'
+export { pipe } from './lib/operators/combiners.js'
 
 export { Async } from './lib/components/async.jsx'
 export { For, Each } from './lib/components/for-each.jsx'

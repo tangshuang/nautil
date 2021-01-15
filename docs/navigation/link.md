@@ -14,7 +14,7 @@
 
 **props**
 
-- navigation: which navigation to navigate
+- navigation: which navigation to use, can ignore when in a `Navigator`
 - to: target, it can be one of:
   - name: route name
   - -1: go back one history stack

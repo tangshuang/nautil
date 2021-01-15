@@ -17,6 +17,14 @@ export class Animation extends Component {
     leave: String,
 
     loop: ifexist(Boolean), // when you pass loop=true, you should pass $show instead
+
+    onEnterStart: Function,
+    onEnterUpdate: Function,
+    onEnterStop: Function,
+
+    onLeaveStart: Function,
+    onLeaveUpdate: Function,
+    onLeaveStop: Function,
   }
 
   static defaultProps = {

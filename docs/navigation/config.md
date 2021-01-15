@@ -3,6 +3,7 @@
 To create a navigation, you should do
 
 ```js
+import { Navigation } from 'nautil'
 const navigation = new Navigation(config)
 ```
 

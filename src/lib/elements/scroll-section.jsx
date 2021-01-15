@@ -3,27 +3,14 @@ import { range, Any, enumerate } from 'tyshemo'
 import Component from '../component.js'
 import { noop } from '../utils.js'
 
-export const DOWN = 'down'
-export const UP = 'up'
-export const BOTH = 'both'
-export const NONE = 'none'
-export const ACTIVATE = 'activate'
-export const DEACTIVATE = 'deactivate'
-export const RELEASE = 'release'
-export const FINISH = 'finish'
-
-const LOAD_MORE_INDICATOR = {
-  [ACTIVATE]: 'release',
-  [DEACTIVATE]: 'pull',
-  [RELEASE]: 'loading',
-  [FINISH]: 'finish',
-}
-const REFRESH_INDICATOR = {
-  [ACTIVATE]: 'release',
-  [DEACTIVATE]: 'pull',
-  [RELEASE]: 'refreshing',
-  [FINISH]: 'finish',
-}
+const DOWN = 'down'
+const UP = 'up'
+const BOTH = 'both'
+const NONE = 'none'
+const ACTIVATE = 'activate'
+const DEACTIVATE = 'deactivate'
+const RELEASE = 'release'
+const FINISH = 'finish'
 
 export class ScrollSection extends Component {
   static props = {
@@ -31,30 +18,30 @@ export class ScrollSection extends Component {
     distance: Number,
     damping: range({ min: 0, max: 1 }),
 
-    refreshIndicator: {
+    topLoading: Boolean,
+    topIndicator: {
       [ACTIVATE]: Any,
       [DEACTIVATE]: Any,
       [RELEASE]: Any,
       [FINISH]: Any,
     },
-    loadMoreIndicator: {
+    topIndicatorStyle: enumerate([Object, String]),
+    onTopRelease: Function,
+
+    bottomLoading: Boolean,
+    bottomIndicator: {
       [ACTIVATE]: Any,
       [DEACTIVATE]: Any,
       [RELEASE]: Any,
       [FINISH]: Any,
     },
+    bottomIndicatorStyle: enumerate([Object, String]),
+    onBottomRelease: Function,
 
-    refreshing: Boolean,
-    loading: Boolean,
-
-    onRefresh: Function,
-    onLoadMore: Function,
     onScroll: Function,
 
     containerStyle: enumerate([Object, String]),
     contentStyle: enumerate([Object, String]),
-    refreshIndicatorStyle: enumerate([Object, String]),
-    loadMoreIndicatorStyle: enumerate([Object, String]),
   }
 
   static defaultProps = {
@@ -62,20 +49,40 @@ export class ScrollSection extends Component {
     distance: 40,
     damping: 0.4,
 
-    refreshIndicator: REFRESH_INDICATOR,
-    loadMoreIndicator: LOAD_MORE_INDICATOR,
+    topLoading: false,
+    topIndicator: {
+      [ACTIVATE]: 'release',
+      [DEACTIVATE]: 'pull',
+      [RELEASE]: 'refreshing',
+      [FINISH]: 'finish',
+    },
+    topIndicatorStyle: {},
+    onTopRelease: noop,
 
-    refreshing: false,
-    loading: false,
+    bottomLoading: false,
+    bottomIndicator: {
+      [ACTIVATE]: 'release',
+      [DEACTIVATE]: 'pull',
+      [RELEASE]: 'loading',
+      [FINISH]: 'finish',
+    },
+    bottomIndicatorStyle: {},
+    onBottomRelease: noop,
 
-    onRefresh: noop,
-    onLoadMore: noop,
     onScroll: noop,
 
     containerStyle: {},
     contentStyle: {},
-    refreshIndicatorStyle: {},
-    loadMoreIndicatorStyle: {},
   }
 }
+
+ScrollSection.UP = UP
+ScrollSection.DOWN = DOWN
+ScrollSection.BOTH = BOTH
+ScrollSection.NONE = NONE
+ScrollSection.ACTIVATE = ACTIVATE
+ScrollSection.DEACTIVATE = DEACTIVATE
+ScrollSection.RELEASE = RELEASE
+ScrollSection.FINISH = FINISH
+
 export default ScrollSection

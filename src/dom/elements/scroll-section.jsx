@@ -7,16 +7,9 @@ import { isObject, isString, mixin } from 'ts-fns'
 import Static from '../../lib/components/static.jsx'
 import { If } from '../../lib/components/if-else.jsx'
 
-import ScrollSection, {
-  DOWN,
-  UP,
-  BOTH,
-  NONE,
-  ACTIVATE,
-  DEACTIVATE,
-  RELEASE,
-  FINISH,
-} from '../../lib/elements/scroll-section.jsx'
+import ScrollSection from '../../lib/elements/scroll-section.jsx'
+
+const { DOWN, UP, BOTH, NONE, ACTIVATE, DEACTIVATE, RELEASE, FINISH } = ScrollSection
 
 mixin(ScrollSection, class {
   onInit() {
@@ -58,12 +51,12 @@ mixin(ScrollSection, class {
   }
 
   onUpdated(prevProps) {
-    const { refreshing, loading } = this.attrs
-    if (prevProps.refreshing && !refreshing) {
+    const { topLoading, bottomLoading } = this.attrs
+    if (prevProps.topLoading && !topLoading) {
       this.setState({ status: FINISH })
       this.reset()
     }
-    if (prevProps.loading && !loading) {
+    if (prevProps.bottomLoading && !bottomLoading) {
       this.setState({ status: FINISH })
       this.reset()
     }
@@ -109,19 +102,19 @@ mixin(ScrollSection, class {
       return
     }
 
-    const { refreshing, loading, direction, distance } = this.attrs
+    const { topLoading, bottomLoading, direction, distance } = this.attrs
 
-    if (refreshing && [DOWN, BOTH].includes(direction)) {
+    if (topLoading && [DOWN, BOTH].includes(direction)) {
       this.setState({ status: RELEASE })
       this._latestY = - distance - 1
       this.setContentY(this._latestY)
-      this.emit('Refresh')
+      this.emit('TopRelease')
     }
-    else if (loading && [UP, BOTH].includes(direction)) {
+    else if (bottomLoading && [UP, BOTH].includes(direction)) {
       this.setState({ status: RELEASE })
       this._latestY = distance + 1
       this.setContentY(this._latestY)
-      this.emit('LoadMore')
+      this.emit('BottomRelease')
     }
   }
 
@@ -135,7 +128,7 @@ mixin(ScrollSection, class {
       return
     }
 
-    // when refreshing is true, this._latestY has value
+    // when topLoading is true, this._latestY has value
     this._latestY = this._latestY || 0
   }
 
@@ -196,7 +189,7 @@ mixin(ScrollSection, class {
   }
 
   onTouchEnd(e) {
-    const { direction, loading, refreshing, distance } = this.attrs
+    const { direction, bottomLoading, topLoading, distance } = this.attrs
 
     if (direction === NONE) {
       return
@@ -211,15 +204,15 @@ mixin(ScrollSection, class {
       this.setState({ status: RELEASE })
 
       if ([DOWN, BOTH].includes(direction) && directTo === DOWN) {
-        this.emit('Refresh')
+        this.emit('TopRelease')
         this.setContentY(distance)
       }
       else if ([UP, BOTH].includes(direction) && directTo === UP) {
-        this.emit('LoadMore')
+        this.emit('BottomRelease')
         this.setContentY(-distance)
       }
     }
-    else if (!loading && !refreshing) {
+    else if (!bottomLoading && !topLoading) {
       this.reset()
     }
   }
@@ -269,7 +262,7 @@ mixin(ScrollSection, class {
   }
 
   render() {
-    const { refreshIndicator, loadMoreIndicator, containerStyle = {}, contentStyle = {}, refreshIndicatorStyle = {}, loadMoreIndicatorStyle = {}, direction } = this.attrs
+    const { topIndicator, bottomIndicator, containerStyle = {}, contentStyle = {}, topIndicatorStyle = {}, bottomIndicatorStyle = {}, direction } = this.attrs
     const { status } = this.state
     const childrenComponent = <Static shouldUpdate={this.shouldUpdateChildren}>{() => this.children}</Static>
 
@@ -293,16 +286,16 @@ mixin(ScrollSection, class {
         >
           <If is={[DOWN, BOTH].includes(direction)}>
             <div
-              className={isString(refreshIndicatorStyle) ? refreshIndicatorStyle : undefined}
+              className={isString(topIndicatorStyle) ? topIndicatorStyle : undefined}
               style={{
                 position: 'absolute',
                 left: 0,
                 bottom: '100%',
                 zIndex: 0,
-                ...(isObject(refreshIndicatorStyle) ? refreshIndicatorStyle : {}),
+                ...(isObject(topIndicatorStyle) ? topIndicatorStyle : {}),
               }}
             >
-              {refreshIndicator[status]}
+              {topIndicator[status]}
             </div>
           </If>
           <div
@@ -321,16 +314,16 @@ mixin(ScrollSection, class {
           </div>
           <If is={[UP, BOTH].includes(direction)}>
             <div
-              className={isString(loadMoreIndicatorStyle) ? loadMoreIndicatorStyle : undefined}
+              className={isString(bottomIndicatorStyle) ? bottomIndicatorStyle : undefined}
               style={{
                 position: 'absolute',
                 left: 0,
                 top: '100%',
                 zIndex: 0,
-                ...(isObject(loadMoreIndicatorStyle) ? loadMoreIndicatorStyle : {}),
+                ...(isObject(bottomIndicatorStyle) ? bottomIndicatorStyle : {}),
               }}
             >
-              {loadMoreIndicator[status]}
+              {bottomIndicator[status]}
             </div>
           </If>
         </div>

@@ -16,7 +16,7 @@ export class Webview extends Component {
     onReload: Function,
     onResize: Function,
     onScroll: Function,
-    onMessage: noop,
+    onMessage: Function,
   }
   static defaultProps = {
     width: '100%',

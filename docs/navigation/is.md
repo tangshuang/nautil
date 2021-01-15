@@ -20,3 +20,5 @@ Match pattern:
 - path && !exact: is matching sub route begining with this path
 - regexp: is matching current url
 - function: get state and return true
+
+The second parameter is `exact`, for example: `/a/b/c` match `/a/b` but not match `exact /a/b`

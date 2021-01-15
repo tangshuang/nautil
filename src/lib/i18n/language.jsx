@@ -15,6 +15,19 @@ class _Language extends Component {
   static props = {
     i18n: I18n,
     dispatch: ifexist(Function),
+    lng: ifexist(String), // force use a language
+  }
+
+  onMounted() {
+    if (this.attrs.lng && this.attrs.lng !== this.attrs.i18n.getLang()) {
+      this.attrs.i18n.setLang(lng)
+    }
+  }
+
+  onUpdated() {
+    if (this.attrs.lng && this.attrs.lng !== this.attrs.i18n.getLang()) {
+      this.attrs.i18n.setLang(lng)
+    }
   }
 
   render() {

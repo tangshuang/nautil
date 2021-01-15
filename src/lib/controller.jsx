@@ -29,13 +29,16 @@ export class Controller {
     const emitters = []
     const emit = () => {
       emitters.forEach(fn => fn())
+      this.onUpdate()
     }
+
+    this.update = emit
 
     const Constructor = getConstructorOf(this)
     const streams = []
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, Service)) {
-        this[key] = Item.getInstance()
+        this[key] = Item.getService()
       }
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
@@ -54,7 +57,9 @@ export class Controller {
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([fn, stream$]) => fn.call(this, stream$))
 
+    const controller = this
     const protos = Constructor.prototype
+    let registeredComponents = 0
     each(protos, ({ value }, key) => {
       if (key === 'constructor') {
         return
@@ -76,6 +81,10 @@ export class Controller {
       this[key] = class extends Component {
         onInit() {
           emitters.push(this.forceUpdate)
+          if (!registeredComponents) {
+            controller.onStart()
+          }
+          registeredComponents ++
         }
         onUnmount() {
           emitters.forEach((fn, i) => {
@@ -83,6 +92,10 @@ export class Controller {
               emitters.splice(i, 1)
             }
           })
+          registeredComponents --
+          if (!registeredComponents) {
+            controller.onEnd()
+          }
         }
         shouldUpdate(nextProps) {
           return !isShallowEqual(nextProps, this.props)
@@ -93,4 +106,7 @@ export class Controller {
       }
     }, true)
   }
+  onStart() {}
+  onUpdate() {}
+  onEnd() {}
 }
