@@ -27,8 +27,8 @@
     "immer": "^8.0.0",
     "react": "^17.0.1",
     "rxjs": "^6.6.3",
-    "ts-fns": "^8.1.10",
-    "tyshemo": "^9.10.3"
+    "ts-fns": "^9.0.2",
+    "tyshemo": "^10.1.0"
   },
   "optionalDependencies": {
     "@react-native-community/async-storage": "^1.6.3",
