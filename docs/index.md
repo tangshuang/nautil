@@ -95,3 +95,8 @@
   - [useTwoWayBinding](api/use-two-way-binding.md)
   - [Storage](api/storage.md)
   - [Animation](api/animation.md)
+
+- Renderers
+  - [DOM](renderers/dom.md)
+  - [Native](renderers/native.md)
+  - [Web-component](renderers/web-component.md)
