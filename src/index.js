@@ -63,7 +63,7 @@ export { Language } from './lib/i18n/language.jsx'
 export { Locale } from './lib/i18n/locale.jsx'
 export { Text as T } from './lib/i18n/text.jsx'
 export { Button as B } from './lib/i18n/button.jsx'
-export { Section as Sc } from './lib/i18n/section.jsx'
+export { Section as Se } from './lib/i18n/section.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
 export { createApp } from './lib/create-app.js'
