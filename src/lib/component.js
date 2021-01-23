@@ -133,6 +133,17 @@ export class PrimitiveComponent extends React.Component {
     }
     return create(resource)
   }
+
+  static extend(overrideProps) {
+    const Constructor = this
+    return class extends Constructor {
+      static defaultProps = {
+        ...(Constructor.defaultProps || {}),
+        ...(overrideProps.props || {}),
+      }
+      static defaultStylesheet = [].concat(Constructor.defaultStylesheet || []).concat(overrideProps.stylesheet || [])
+    }
+  }
 }
 
 export class Component extends PrimitiveComponent {
