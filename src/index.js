@@ -2,6 +2,8 @@ import * as TySheMo from 'tyshemo'
 import React from 'react'
 
 export { TySheMo, React }
+export { useState, useEffect, useContext, useReducer, useCallback, useMemo, useRef, useLayoutEffect } from 'react'
+export { Ty, Dict, Tuple, List, Enum, Range, Mapping, SelfRef, ifexist, nullable } from 'tyshemo'
 
 export { Component } from './lib/component.js'
 
