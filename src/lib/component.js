@@ -133,17 +133,6 @@ export class PrimitiveComponent extends React.Component {
     }
     return create(resource)
   }
-
-  static extend(overrideProps) {
-    const Constructor = this
-    return class extends Constructor {
-      static defaultProps = {
-        ...(Constructor.defaultProps || {}),
-        ...(overrideProps.props || {}),
-      }
-      static defaultStylesheet = [].concat(Constructor.defaultStylesheet || []).concat(overrideProps.stylesheet || [])
-    }
-  }
 }
 
 export class Component extends PrimitiveComponent {
@@ -410,6 +399,21 @@ export class Component extends PrimitiveComponent {
   onRendered() {}
   onParseProps(props) {
     return props
+  }
+
+  static extend(overrideProps) {
+    const Constructor = this
+    return class extends Constructor {
+      _digest(nextProps) {
+        const { stylesheet, props } = isFunction(overrideProps) ? overrideProps(nextProps) : nextProps
+        const useProps = {
+          ...nextProps,
+          ...(props || {}),
+          stylesheet: [].concat(nextProps.stylesheet || []).concat(stylesheet || [])
+        }
+        super._digest(useProps)
+      }
+    }
   }
 }
 export default Component
