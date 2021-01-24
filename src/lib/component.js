@@ -7,7 +7,6 @@ import {
   isInstanceOf,
   isFunction,
   makeKeyChain,
-  clone,
   assign,
   createProxy,
 } from 'ts-fns'
@@ -16,6 +15,7 @@ import {
   Rule,
   ifexist,
 } from 'tyshemo'
+import produce from 'immer'
 import Stream from './stream.js'
 
 import Style from './style/style.js'
@@ -289,8 +289,9 @@ export class Component extends PrimitiveComponent {
         if (bindData) {
           const [current, update] = bindData
           if (chain.length) {
-            const next = clone(current)
-            assign(next, chain, value)
+            const next = produce(current, data => {
+              assign(data, chain, value)
+            })
             update(next, current)
           }
           else {
