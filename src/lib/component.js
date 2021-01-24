@@ -191,8 +191,14 @@ export class Component extends PrimitiveComponent {
     return super.forceUpdate()
   }
 
-  update() {
-    return this.setState({})
+  update(fn) {
+    if (!fn) {
+      return this.setState({})
+    }
+    else {
+      const next = produce(this.state, state => { fn(state) })
+      return this.setState(next)
+    }
   }
 
   _digest(props) {
