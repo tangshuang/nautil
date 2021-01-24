@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.16.6",
+  "version": "0.16.7",
   "description": "A javascript reactive framework which is for building crossing-platform applications.",
   "main": "index.js",
   "scripts": {
