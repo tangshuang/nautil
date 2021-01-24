@@ -59,7 +59,7 @@ export class PrimitiveComponent extends React.Component {
   _getPollutedComponents() {
     let pollutedComponents = this._pollutedComponents || []
 
-    const fiber = this._reactInternalFiber
+    const fiber = this._reactInternalFiber || this._reactInternals
     // pollute children tree by using parent fiber tree
     let parent = fiber.return
     while (parent) {
@@ -412,11 +412,16 @@ export class Component extends PrimitiveComponent {
     const Constructor = this
     return class extends Constructor {
       _digest(nextProps) {
-        const { stylesheet, props } = isFunction(overrideProps) ? overrideProps(nextProps) : nextProps
+        const { stylesheet, props, deprecated } = isFunction(overrideProps) ? overrideProps(nextProps) : nextProps
         const useProps = {
           ...nextProps,
           ...(props || {}),
           stylesheet: [].concat(nextProps.stylesheet || []).concat(stylesheet || [])
+        }
+        if (deprecated) {
+          each(deprecated, (key) => {
+            delete useProps[key]
+          })
         }
         super._digest(useProps)
       }

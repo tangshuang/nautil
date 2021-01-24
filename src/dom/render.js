@@ -6,7 +6,7 @@ export function mount(el, Component, props = {}) {
     el = document.querySelector(el)
   }
 
-  return ReactDOM.render(<Component {...props} />, el)
+  return ReactDOM.render(React.createElement(Component, props), el)
 }
 
 export function unmount(el) {
