@@ -14,7 +14,7 @@ export class Textarea extends Component {
     onBlur: Function,
     onSelect: Function,
   }
-  static defualtProps = {
+  static defaultProps = {
     line: 3,
     onChange: noop,
     onFocus: noop,

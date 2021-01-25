@@ -3,7 +3,7 @@ import Storage from '../storage/storage.js'
 
 export class Navigation {
   constructor(options = {}) {
-    this.options = { ...Navigation.defualtOptions, ...options }
+    this.options = { ...Navigation.defaultOptions, ...options }
 
     // flat all children into this.routes
     const routes = []
@@ -506,7 +506,7 @@ export class Navigation {
     await Storage.setItem('historyState', state)
   }
 
-  static defualtOptions = {
+  static defaultOptions = {
     maxHistoryLength: 20,
   }
 }
