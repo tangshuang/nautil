@@ -11,6 +11,7 @@ export class Button extends Component {
     onHit: noop,
     onHitStart: noop,
     onHitEnd: noop,
+    type: 'button',
   }
 }
 export default Button

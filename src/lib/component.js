@@ -412,7 +412,7 @@ export class Component extends PrimitiveComponent {
     const Constructor = this
     return class extends Constructor {
       _digest(nextProps) {
-        const { stylesheet, props, deprecated } = isFunction(overrideProps) ? overrideProps(nextProps) : nextProps
+        const { stylesheet, props, deprecated } = isFunction(overrideProps) ? overrideProps(nextProps) : overrideProps
         const useProps = {
           ...nextProps,
           ...(props || {}),
