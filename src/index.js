@@ -1,7 +1,8 @@
 import * as TySheMo from 'tyshemo'
 import React from 'react'
+import produce from 'immer'
 
-export { TySheMo, React }
+export { TySheMo, React, produce }
 export { useState, useEffect, useContext, useReducer, useCallback, useMemo, useRef, useLayoutEffect, Fragment, createElement, cloneElement, Children, createRef, isValidElement, PureComponent } from 'react'
 export { Ty, Dict, Tuple, List, Enum, Range, Mapping, SelfRef, ifexist, nullable } from 'tyshemo'
 
