@@ -25,8 +25,6 @@ some$.subscribe(function(e) {
 <Input onChange={some$} />
 ```
 
-Notice: `onChange` will not affect the value of two-way-binding.
-
 Inside the component, we should use `on` to subscribe to Observable, use `emit` to active stream.
 
 ```js
