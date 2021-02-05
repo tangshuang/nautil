@@ -2,13 +2,14 @@ import * as TySheMo from 'tyshemo'
 import React from 'react'
 
 export { TySheMo, React }
-export { useState, useEffect, useContext, useReducer, useCallback, useMemo, useRef, useLayoutEffect } from 'react'
+export { useState, useEffect, useContext, useReducer, useCallback, useMemo, useRef, useLayoutEffect, Fragment, createElement, cloneElement, Children, createRef, isValidElement, PureComponent } from 'react'
 export { Ty, Dict, Tuple, List, Enum, Range, Mapping, SelfRef, ifexist, nullable } from 'tyshemo'
 
 export { Component } from './lib/component.js'
 
 export { createTwoWayBinding } from './lib/utils.js'
 export { useTwoWayBinding } from './lib/hooks/two-way-binding.js'
+export { useUniqueKeys } from './lib/hooks/unique-keys.js'
 
 export { observe, inject, pollute, initialize, nest } from './lib/operators/operators.js'
 export { pipe } from './lib/operators/combiners.js'

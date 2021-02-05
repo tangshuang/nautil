@@ -5,11 +5,19 @@
  *  <ElseIf is={cond2} render={fn2} />
  *  <Else render={fn0} />
  * </If>
+ *
+ * <If is={cond1}>
+ *   <Cond1 />
+ *   <ElseIf is={cond2}>
+ *   <Cond2 />
+ *   <Else />
+ *   <Rest />
+ * </If>
  */
 
 import { ifexist } from 'tyshemo'
 import { isFunction } from 'ts-fns'
-import { Children, isValidElement } from 'react'
+import { Children, createElement, Fragment } from 'react'
 
 import Component from '../component.js'
 
@@ -42,35 +50,60 @@ export class If extends Component {
 
   render() {
     const children = this.children
-    const { is, render } = this.attrs
 
     if (isFunction(children)) {
       return is ? children() : null
     }
 
-    if (is) {
+    const { is, render } = this.attrs
+
+    if (is && isFunction(render)) {
       return render()
+    }
+
+    let block = {
+      is,
+      render,
+      elements: [],
+    }
+
+    const create = () => {
+      if (isFunction(block.render)) {
+        return createElement(Fragment, {}, ...[].concat(block.render()))
+      }
+      else if (block.elements.length) {
+        return createElement(Fragment, {}, ...block.elements)
+      }
+      else {
+        return null
+      }
     }
 
     const items = Children.toArray(children)
     for (let i = 0, len = items.length; i < len; i ++) {
       const item = items[i]
-      if (!isValidElement(item)) {
-        continue
-      }
+      const { type } = item
 
-      const { type, props } = item
-      if (type === ElseIf) {
+      if (type === Else || type === ElseIf) {
+        if (block.is) {
+          return create()
+        }
+
+        const { props } = item
         const { is, render } = props
-        if (is) {
-          return render()
+        block = {
+          is: type === Else ? true : is,
+          render,
+          elements: [],
         }
       }
-
-      if (type === Else) {
-        const { render } = props
-        return render()
+      else {
+        block.elements.push(item)
       }
+    }
+
+    if (block.is) {
+      return create()
     }
 
     return null

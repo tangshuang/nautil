@@ -23,3 +23,4 @@ export function useTwoWayBinding(value) {
 
   return [v, update]
 }
+export default useTwoWayBinding
