@@ -20,3 +20,7 @@ export function unmount(el) {
 export function update(...args) {
   return mount(...args)
 }
+
+export function render(el, element) {
+  return ReactDOM.render(element, el)
+}
