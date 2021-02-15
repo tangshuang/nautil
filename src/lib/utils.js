@@ -1,9 +1,4 @@
-import {
-  assign,
-  createProxy,
-  isFunction,
-} from 'ts-fns'
-
+import { assign, createProxy, isFunction } from 'ts-fns'
 
 /**
  * noop

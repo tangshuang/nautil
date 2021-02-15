@@ -191,13 +191,17 @@ export class Component extends PrimitiveComponent {
     return super.forceUpdate()
   }
 
-  update(fn) {
-    if (!fn) {
-      return this.setState({})
+  update(keyPath, fn) {
+    if (keyPath && fn) {
+      const next = produce(this.state, state => { assign(state, keyPath, fn) })
+      return this.setState(next)
+    }
+    else if (typeof keyPath === 'function' && !fn) {
+      const next = produce(this.state, state => { keyPath(state) })
+      return this.setState(next)
     }
     else {
-      const next = produce(this.state, state => { fn(state) })
-      return this.setState(next)
+      return this.setState({})
     }
   }
 
