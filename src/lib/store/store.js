@@ -6,6 +6,11 @@ export class Store {
     this.state = initState
     this._subscribers = []
     this._origin = initState
+
+    // bind to store, so that we can destruct from store
+    this.dispatch = this.dispatch.bind(this)
+    this.setState = this.setState.bind(this)
+    this.getState = this.getState.bind(this)
   }
   subscribe(fn) {
     this._subscribers.push(fn)

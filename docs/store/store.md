@@ -46,3 +46,26 @@ store.dispatch(state => {
   state.next.some = ...
 })
 ```
+
+## applyStore
+
+Apply a shared store with hooks function usage.
+
+```js
+const useStore = applyStore(initState)
+
+function MyComponent() {
+  const { getState, setState, dispatch } = useStore()
+  const state = getState()
+
+  // ....
+
+  setState({ some: 111 })
+
+  dispatch(state => {
+    state.some = 222
+  })
+}
+```
+
+Use `useStore` amoung different components.

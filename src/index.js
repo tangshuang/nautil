@@ -8,7 +8,7 @@ export { Ty, Dict, Tuple, List, Enum, Range, Mapping, SelfRef, ifexist, nullable
 
 export { Component } from './lib/component.js'
 
-export { createTwoWayBinding } from './lib/utils.js'
+export { createTwoWayBinding, isShallowEqual } from './lib/utils.js'
 export { useTwoWayBinding } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
 
@@ -54,7 +54,9 @@ export { Animation } from './lib/animate/animation.jsx'
 
 export { Store } from './lib/store/store.js'
 export { Provider } from './lib/store/provider.jsx'
-export { Consumer } from './lib/store/consumer.jsx'
+export { Consumer, connect } from './lib/store/consumer.jsx'
+export { applyStore } from './lib/store/shared-store.js'
+
 export { Model, Meta, Validator } from './lib/model.js'
 export { Stream } from './lib/stream.js'
 export { Controller } from './lib/controller.jsx'
