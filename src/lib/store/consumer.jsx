@@ -48,18 +48,16 @@ export class Consumer extends Component {
 export default Consumer
 
 
-export function connect(mapStateToProps) {
-  return function decorate(C) {
-    return class ConnectedComponent extends Component {
-      render() {
-        return (
-          <Consumer render={(store) => {
-            const state = mapStateToProps ? mapStateToProps(store.state) : store.state
-            const props = { ...this.props, ...state }
-            return <C {...props} />
-          }} />
-        )
-      }
+export const connect = mapToProps => C => {
+  return class ConnectedComponent extends Component {
+    render() {
+      return (
+        <Consumer render={(store) => {
+          const data = mapToProps(store)
+          const props = { ...this.props, ...data }
+          return <C {...props} />
+        }} />
+      )
     }
   }
 }

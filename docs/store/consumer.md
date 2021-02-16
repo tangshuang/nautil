@@ -21,7 +21,7 @@ function Some() {
 `connect` should must be used inside `Provider`.
 
 ```js
-const ConnectedComponent = connect(mapStateToProps)(MyComponent)
+const ConnectedComponent = connect(mapStoreToProps)(MyComponent)
 
 <Section>
   <ConnectedComponent />

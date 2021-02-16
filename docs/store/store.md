@@ -52,7 +52,8 @@ store.dispatch(state => {
 Apply a shared store with hooks function usage.
 
 ```js
-const useStore = applyStore(initState)
+const store = new Store()
+const { useStore, connect } = applyStore(store)
 
 function MyComponent() {
   const { getState, setState, dispatch } = useStore()
