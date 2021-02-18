@@ -14,24 +14,31 @@ export function useUniqueKeys(items, useEqual) {
     // call again
     else {
       const { items: prevItems, keys: prevKeys } = lastest.current
-      const nextItems = []
       const nextKeys = []
 
-      items.forEach((item) => {
+      items.forEach((item, i) => {
         const index = prevItems.findIndex(one => useEqual ? isEqual(item, one) : item === one)
-        if (index === -1) {
-          const key = createRandomString(8)
-          nextKeys.push(key)
-          nextItems.push(item)
-        }
-        else {
-          const key = prevKeys[index]
-          nextKeys.push(key)
-          nextItems.push(item)
+        if (index > -1) {
+          nextKeys[i] = prevKeys[index]
         }
       })
 
-      lastest.current = { items: nextItems, keys: nextKeys }
+      items.forEach((_, i) => {
+        if (!nextKeys[i]) {
+          const prevKey = prevKeys[i]
+          if (!prevKey) {
+            nextKeys[i] = createRandomString(8)
+          }
+          else if (nextKeys.includes(prevKey)) {
+            nextKeys[i] = createRandomString(8)
+          }
+          else {
+            nextKeys[i] = prevKey
+          }
+        }
+      })
+
+      lastest.current = { items, keys: nextKeys }
       return nextKeys
     }
   }, [items, useEqual])
