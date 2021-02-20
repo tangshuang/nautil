@@ -2,7 +2,6 @@ import { enumerate, ifexist, dict } from 'tyshemo'
 
 import Component from '../component.js'
 import { Unit } from '../types.js'
-import { noop } from '../utils.js'
 
 export class Image extends Component {
   static props = {
@@ -13,12 +12,11 @@ export class Image extends Component {
     height: Unit,
     maxWidth: ifexist(Unit),
     maxHeight: ifexist(Unit),
-    onLoad: Function,
+    onLoad: false,
   }
   static defaultProps = {
     width: '100%',
     height: 'auto',
-    onLoad: noop,
   }
 }
 export default Image

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { isValidElement } from 'react'
 import {
   each,
   getConstructorOf,
@@ -10,20 +10,14 @@ import {
   assign,
   createProxy,
 } from 'ts-fns'
-import {
-  Ty,
-  Rule,
-  ifexist,
-} from 'tyshemo'
+import { Ty, Rule, ifexist } from 'tyshemo'
 import produce from 'immer'
 import Stream from './stream.js'
 
 import Style from './style/style.js'
 import ClassName from './style/classname.js'
-import {
-  Binding,
-  Handling,
-} from './types.js'
+import { Binding, Handling } from './types.js'
+import { noop } from './utils.js'
 
 export class PrimitiveComponent extends React.Component {
   constructor(props) {
@@ -232,8 +226,10 @@ export class Component extends PrimitiveComponent {
             finalTypes[attr] = type
             bindingTypes[key] = isInstanceOf(type, Rule) && type.name === 'ifexist' ? ifexist(Binding) : Binding
           }
+          // onChange: true -> required
+          // onChange: false -> not reuqired
           else if (/^on[A-Z]/.test(key)) {
-            handlingTypes[key] = isInstanceOf(type, Rule) && type.name === 'ifexist' ? ifexist(Handling) : Handling
+            handlingTypes[key] = !type ? ifexist(Handling) : Handling
           }
           else {
             finalTypes[key] = type
@@ -276,6 +272,17 @@ export class Component extends PrimitiveComponent {
     if (process.env.NODE_ENV !== 'production') {
       Ty.expect(bindingAttrs).to.match(bindingTypes)
       Ty.expect(handlingAttrs).to.be(handlingTypes)
+
+      // don't check again when update and the same prop has same value
+      if (this.isMounted) {
+        const currentProps = this.props
+        each(finalAttrs, (value, key) => {
+          if (currentProps[key] === value) {
+            delete finalTypes[key]
+          }
+        })
+      }
+
       Ty.expect(finalAttrs).to.match(finalTypes)
     }
 
@@ -310,24 +317,34 @@ export class Component extends PrimitiveComponent {
         }
         return false
       },
+      disable(_, value) {
+        return isValidElement(value)
+      },
     })
 
     /**
      * use the passed handler like onClick to create a stream
      * @param {*} param
      */
-    const createSubject = (param, key) => {
+    const streams = map(handlingTypes, (_, key) => {
+      const param = handlingAttrs[key]
+
       if (isInstanceOf(param, Stream)) {
         return param
       }
 
       let subject = new Stream()
+      let subscribe = noop
 
-      const args = isArray(param) ? [...param] : [param]
-      const subscribe = args.pop()
+      // key may not exist on props when developers use `onChange: false`
+      if (param) {
+        const args = isArray(param) ? [...param] : [param]
 
-      if (args.length) {
-        subject = subject.pipe(...args.filter(item => isFunction(item)))
+        subscribe = args.pop() // the last function of passed params will be force treated as subscriber
+
+        if (args.length) {
+          subject = subject.pipe(...args.filter(item => isFunction(item)))
+        }
       }
 
       const name = key.replace('on', '')
@@ -343,10 +360,8 @@ export class Component extends PrimitiveComponent {
       subject.subscribe(subscribe)
 
       return subject
-    }
-
-    const streams = map(handlingAttrs, createSubject)
-    each(this, (value, key) => {
+    })
+    each(this, (_, key) => {
       // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
       if (/^[A-Z].*\$$/.test(key)) {
         this[key].complete() // finish stream, free memory
@@ -362,6 +377,7 @@ export class Component extends PrimitiveComponent {
   }
 
   componentDidMount(...args) {
+    Object.defineProperty(this, 'isMounted', { value: true }) // override react inside logic
     this.onMounted(...args)
     this.onRendered()
   }

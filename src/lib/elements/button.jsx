@@ -1,16 +1,12 @@
 import { Component } from '../component.js'
-import { noop } from '../utils.js'
 
 export class Button extends Component {
   static props = {
-    onHit: Function,
-    onHitStart: Function,
-    onHitEnd: Function,
+    onHit: false,
+    onHitStart: false,
+    onHitEnd: false,
   }
   static defaultProps = {
-    onHit: noop,
-    onHitStart: noop,
-    onHitEnd: noop,
     type: 'button',
   }
 }

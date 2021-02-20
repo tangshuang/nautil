@@ -1,7 +1,6 @@
 import { range, Any, enumerate } from 'tyshemo'
 
 import Component from '../component.js'
-import { noop } from '../utils.js'
 
 const DOWN = 'down'
 const UP = 'up'
@@ -26,7 +25,7 @@ export class ScrollSection extends Component {
       [FINISH]: Any,
     },
     topIndicatorStyle: enumerate([Object, String]),
-    onTopRelease: Function,
+    onTopRelease: false,
 
     bottomLoading: Boolean,
     bottomIndicator: {
@@ -36,9 +35,9 @@ export class ScrollSection extends Component {
       [FINISH]: Any,
     },
     bottomIndicatorStyle: enumerate([Object, String]),
-    onBottomRelease: Function,
+    onBottomRelease: false,
 
-    onScroll: Function,
+    onScroll: false,
 
     containerStyle: enumerate([Object, String]),
     contentStyle: enumerate([Object, String]),
@@ -57,7 +56,6 @@ export class ScrollSection extends Component {
       [FINISH]: 'finish',
     },
     topIndicatorStyle: {},
-    onTopRelease: noop,
 
     bottomLoading: false,
     bottomIndicator: {
@@ -67,9 +65,6 @@ export class ScrollSection extends Component {
       [FINISH]: 'finish',
     },
     bottomIndicatorStyle: {},
-    onBottomRelease: noop,
-
-    onScroll: noop,
 
     containerStyle: {},
     contentStyle: {},

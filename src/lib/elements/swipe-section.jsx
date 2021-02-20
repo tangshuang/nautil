@@ -1,7 +1,6 @@
 import { enumerate } from 'tyshemo'
 
 import Component from '../component.js'
-import { noop } from '../utils.js'
 
 export class SwipeSection extends Component {
   static props = {
@@ -11,12 +10,12 @@ export class SwipeSection extends Component {
     direction: enumerate(['left', 'right', 'both']),
     throttle: Number,
 
-    onStart: Function,
-    onMove: Function,
-    onEnd: Function,
-    onCancel: Function,
-    onReach: Function,
-    onUnreach: Function,
+    onStart: false,
+    onMove: false,
+    onEnd: false,
+    onCancel: false,
+    onReach: false,
+    onUnreach: false,
   }
 
   static defaultProps = {
@@ -25,12 +24,6 @@ export class SwipeSection extends Component {
     disabled: false,
     direction: 'both',
     throttle: 0,
-    onStart: noop,
-    onMove: noop,
-    onEnd: noop,
-    onCancel: noop,
-    onReach: noop,
-    onUnreach: noop,
   }
 }
 export default SwipeSection
