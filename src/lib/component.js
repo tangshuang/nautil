@@ -9,6 +9,7 @@ import {
   makeKeyChain,
   assign,
   createProxy,
+  isEmpty,
 } from 'ts-fns'
 import { Ty, Rule, ifexist } from 'tyshemo'
 import produce from 'immer'
@@ -136,6 +137,8 @@ export class Component extends PrimitiveComponent {
     super(props)
 
     this._effectors = []
+    this._tasksQueue = []
+
     this.update = this.update.bind(this)
     this.forceUpdate = this.forceUpdate.bind(this)
 
@@ -201,9 +204,35 @@ export class Component extends PrimitiveComponent {
     }
   }
 
+  nextTick(fn, ...args) {
+    this._tasksQueue.push({ fn, args })
+  }
+
+  _runTasks() {
+    let count = 0
+    const run = () => {
+      setTimeout(() => {
+        if (!this._tasksQueue.length) {
+          return
+        }
+        if (count > 20) {
+          return
+        }
+
+        const { fn, args } = this._tasksQueue.shift()
+        fn(...args)
+
+        count ++
+
+        run()
+      }, 8)
+    }
+    run()
+  }
+
   _digest(props) {
     const Constructor = getConstructorOf(this)
-    const { props: PropsTypes, defaultStylesheet } = Constructor
+    const { props: PropsTypes, propsCheckAsync, defaultStylesheet } = Constructor
     const parsedProps = this.onParseProps(props)
     const { children, stylesheet, style, className, ...attrs } = parsedProps
 
@@ -279,13 +308,18 @@ export class Component extends PrimitiveComponent {
       if (this.isMounted) {
         const currentProps = this.props
         each(finalAttrs, (value, key) => {
-          if (currentProps[key] === value) {
+          if ((isEmpty(currentProps[key]) && isEmpty(value)) || currentProps[key] === value) {
             delete finalTypes[key]
           }
         })
       }
 
-      Ty.expect(finalAttrs).to.match(finalTypes)
+      if (propsCheckAsync) {
+        this.nextTick((finalAttrs, finalTypes) => Ty.expect(finalAttrs).to.match(finalTypes), finalAttrs, finalTypes)
+      }
+      else {
+        Ty.expect(finalAttrs).to.match(finalTypes)
+      }
     }
 
     // format stylesheet by using stylesheet, className, style props
@@ -382,6 +416,7 @@ export class Component extends PrimitiveComponent {
     Object.defineProperty(this, 'isMounted', { value: true, configurable: true })
     this.onMounted(...args)
     this.onRendered()
+    this._runTasks()
   }
   shouldComponentUpdate(nextProps, ...args) {
     const bool = this.shouldUpdate(nextProps, ...args)
@@ -398,6 +433,7 @@ export class Component extends PrimitiveComponent {
   componentDidUpdate(...args) {
     this.onUpdated(...args)
     this.onRendered()
+    this._runTasks()
   }
   componentWillUnmount(...args) {
     this.onUnmount(...args)
