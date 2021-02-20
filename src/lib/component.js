@@ -48,6 +48,8 @@ export class PrimitiveComponent extends React.Component {
         return polluted
       }
     })
+
+    Object.defineProperty(this, 'isMounted', { value: false, configurable: true }) // override react inside logic
   }
 
   _getPollutedComponents() {
@@ -377,7 +379,7 @@ export class Component extends PrimitiveComponent {
   }
 
   componentDidMount(...args) {
-    Object.defineProperty(this, 'isMounted', { value: true }) // override react inside logic
+    Object.defineProperty(this, 'isMounted', { value: true, configurable: true })
     this.onMounted(...args)
     this.onRendered()
   }
