@@ -30,8 +30,8 @@
     "react-dom": "^17.0.1",
     "react-scrollable-list": "^1.3.0",
     "rxjs": "^6.6.3",
-    "ts-fns": "^9.0.3",
-    "tyshemo": "^10.2.0"
+    "ts-fns": "^9.1.0",
+    "tyshemo": "^10.2.1"
   },
   "optionalDependencies": {
     "@react-native-community/async-storage": "^1.12.1",
