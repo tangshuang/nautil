@@ -49,8 +49,6 @@ export class PrimitiveComponent extends React.Component {
         return polluted
       }
     })
-
-    Object.defineProperty(this, 'isMounted', { value: false, configurable: true }) // override react inside logic
   }
 
   _getPollutedComponents() {
@@ -138,6 +136,8 @@ export class Component extends PrimitiveComponent {
 
     this._effectors = []
     this._tasksQueue = []
+    this._isMounted = false
+    this._isUnmounted = false
 
     this.update = this.update.bind(this)
     this.forceUpdate = this.forceUpdate.bind(this)
@@ -190,14 +190,27 @@ export class Component extends PrimitiveComponent {
     return super.forceUpdate()
   }
 
-  update(keyPath, fn) {
-    if (keyPath && fn) {
+  update(...args) {
+    if (args.length === 2) {
+      const [keyPath, fn] = args
       const next = produce(this.state, state => { assign(state, keyPath, fn) })
       return this.setState(next)
     }
-    else if (typeof keyPath === 'function' && !fn) {
-      const next = produce(this.state, state => { keyPath(state) })
-      return this.setState(next)
+    else if (args.length === 1) {
+      const arg = args[0]
+      if (typeof arg === 'function') {
+        const next = produce(this.state, state => { arg(state) })
+        return this.setState(next)
+      }
+      else if (typeof arg && typeof arg === 'object') {
+        return this.setState(arg)
+      }
+      else if (arg === true) {
+        return this.forceUpdate()
+      }
+      else {
+        return this.setState({})
+      }
     }
     else {
       return this.setState({})
@@ -305,7 +318,7 @@ export class Component extends PrimitiveComponent {
       Ty.expect(handlingAttrs).to.be(handlingTypes)
 
       // don't check again when update and the same prop has same value
-      if (this.isMounted) {
+      if (this._isMounted) {
         const currentProps = this.props
         each(finalAttrs, (value, key) => {
           if ((isEmpty(currentProps[key]) && isEmpty(value)) || currentProps[key] === value) {
@@ -413,7 +426,7 @@ export class Component extends PrimitiveComponent {
   }
 
   componentDidMount(...args) {
-    Object.defineProperty(this, 'isMounted', { value: true, configurable: true })
+    this._isMounted = true
     this.onMounted(...args)
     this.onRendered()
     this._runTasks()
@@ -444,6 +457,7 @@ export class Component extends PrimitiveComponent {
         delete this[key]
       }
     })
+    this._isUnmounted = true
   }
   componentDidCatch(...args) {
     this.onCatch(...args)
