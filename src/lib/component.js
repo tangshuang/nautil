@@ -375,9 +375,7 @@ export class Component extends PrimitiveComponent {
      * use the passed handler like onClick to create a stream
      * @param {*} param
      */
-    const streams = map(handlingTypes, (_, key) => {
-      const param = handlingAttrs[key]
-
+    const streams = map(handlingAttrs, (param, key) => {
       if (isInstanceOf(param, Stream)) {
         return param
       }

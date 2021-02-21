@@ -7,6 +7,7 @@ import Component from '../component.js'
 
 mixin(_Button, class {
   static props = {
+    ..._Button.props,
     i18n: ifexist(I18n),
     t: ifexist(new Enum([Function, String])),
     s: ifexist(String),
