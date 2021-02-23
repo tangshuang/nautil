@@ -4,13 +4,13 @@ import Component from '../component.js'
 
 export class Select extends Component {
   static props = {
-    value: Any,
-    options: list([{
+    options: ifexist(list([{
       text: String,
       value: Any,
       disabled: ifexist(Boolean),
-    }]),
+    }])),
     placeholder: ifexist(String),
+    value: ifexist(Any),
     onChange: false,
   }
 }

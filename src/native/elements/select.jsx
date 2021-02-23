@@ -26,7 +26,7 @@ mixin(Select, class {
         className={this.className}
         style={this.style}
       >
-        {options.map(item => item.disabled ? null : <Picker.Item key={item.value} value={item.value} label={item.text}></Picker.Item>)}
+        {options ? options.map(item => item.disabled ? null : <Picker.Item key={item.value} value={item.value} label={item.text}></Picker.Item>) : null}
       </Picker>
     )
   }

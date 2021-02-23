@@ -200,6 +200,13 @@ export class Component extends PrimitiveComponent {
       const arg = args[0]
       if (typeof arg === 'function') {
         const next = produce(this.state, state => { arg(state) })
+        // we can delete a property of state in fn
+        const existingKeys = Object.keys(this.state)
+        existingKeys.forEach((key) => {
+          if (!(key in next)) {
+            next[key] = void 0
+          }
+        })
         return this.setState(next)
       }
       else if (typeof arg && typeof arg === 'object') {
