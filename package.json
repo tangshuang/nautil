@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.19.2",
+  "version": "0.20.0",
   "description": "A javascript reactive framework which is for building crossing-platform applications.",
   "main": "index.js",
   "scripts": {
@@ -30,8 +30,8 @@
     "react-dom": "^17.0.1",
     "react-scrollable-list": "^1.3.0",
     "rxjs": "^6.6.3",
-    "ts-fns": "^9.2.1",
-    "tyshemo": "^10.2.2"
+    "ts-fns": "^9.3.0",
+    "tyshemo": "^10.3.0"
   },
   "optionalDependencies": {
     "@react-native-community/async-storage": "^1.12.1",

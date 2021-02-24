@@ -8,7 +8,7 @@ export { Ty, Dict, Tuple, List, Enum, Range, Mapping, SelfRef, ifexist, nullable
 
 export { Component } from './lib/component.js'
 
-export { createTwoWayBinding, isShallowEqual } from './lib/utils.js'
+export { createTwoWayBinding, isShallowEqual, isRef, noop } from './lib/utils.js'
 export { useTwoWayBinding } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
 

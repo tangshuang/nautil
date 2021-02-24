@@ -18,7 +18,7 @@ import Stream from './stream.js'
 import Style from './style/style.js'
 import ClassName from './style/classname.js'
 import { Binding, Handling } from './types.js'
-import { noop } from './utils.js'
+import { noop, isRef } from './utils.js'
 
 export class PrimitiveComponent extends React.Component {
   constructor(props) {
@@ -374,7 +374,7 @@ export class Component extends PrimitiveComponent {
         return false
       },
       disable(_, value) {
-        return isValidElement(value)
+        return isValidElement(value) || isRef(value)
       },
     })
 

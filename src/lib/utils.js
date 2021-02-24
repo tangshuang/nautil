@@ -1,4 +1,4 @@
-import { assign, createProxy, isFunction } from 'ts-fns'
+import { assign, createProxy, isFunction, isObject, isEqual } from 'ts-fns'
 
 /**
  * noop
@@ -84,4 +84,8 @@ export function isShallowEqual(objA,objB){
       }
   }
   return true;
+}
+
+export function isRef(obj) {
+  return isObject(obj) && isEqual(Object.keys(obj), ['current'])
 }
