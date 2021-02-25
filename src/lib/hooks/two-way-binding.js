@@ -1,3 +1,5 @@
+import { Ty } from 'tyshemo'
+import { Binding } from '../types.js'
 import { isRef } from '../utils.js'
 import { isValidElement, useMemo } from 'react'
 import { each, map, createProxy } from 'ts-fns'
@@ -8,6 +10,9 @@ import produce from 'immer'
  * @param {*} value
  */
 export function useTwoWayBinding(attrs) {
+  const bindTypes = {}
+  const bindAttrs = {}
+
   const finalAttrs = {}
   const deps = []
 
@@ -16,6 +21,11 @@ export function useTwoWayBinding(attrs) {
       const attr = key.substr(1)
       finalAttrs[attr] = data[0]
       deps.push(attr, data[0])
+
+      if (process.env.NODE_ENV !== 'production') {
+        bindTypes[key] = Binding
+        bindAttrs[key] = data
+      }
     }
     else if (!/^on[A-Z]/.test(key)) {
       finalAttrs[key] = data
@@ -24,6 +34,10 @@ export function useTwoWayBinding(attrs) {
   })
 
   return useMemo(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      Ty.expect(bindAttrs).to.be(bindTypes)
+    }
+
     const originalAttrs =  map(finalAttrs, (value) => {
       return value && typeof value === 'object' && value[Symbol('ORIGIN')] ? value[Symbol('ORIGIN')] : value
     })
