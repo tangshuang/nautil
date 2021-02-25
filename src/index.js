@@ -19,7 +19,6 @@ export {
   createRef,
   isValidElement,
   PureComponent,
-  createRef,
   createContext,
   Suspense,
 } from 'react'
