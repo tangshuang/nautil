@@ -110,7 +110,7 @@ export class Animation extends Component {
       this.EnterStop$.next()
       // use two way binding to trigger leave
       if (loop) {
-        this.attrs.show = false
+        this.$attrs.show = false
       }
     })
 
@@ -126,7 +126,7 @@ export class Animation extends Component {
       this.LeaveStop$.next()
       // use two way binding to trigger leave
       if (loop) {
-        this.attrs.show = true
+        this.$attrs.show = true
       }
     })
   }

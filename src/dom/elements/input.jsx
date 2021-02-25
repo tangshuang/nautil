@@ -8,7 +8,7 @@ mixin(Input, class {
 
     const onChange = (e) => {
       const value = e.target.value
-      this.attrs.value = type === 'number' || type === 'range' ? +value : value
+      this.$attrs.value = type === 'number' || type === 'range' ? +value : value
       this.emit('Change', e)
     }
 

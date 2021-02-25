@@ -142,6 +142,13 @@ export class Component extends PrimitiveComponent {
     this.update = this.update.bind(this)
     this.forceUpdate = this.forceUpdate.bind(this)
 
+    this.$state = createProxy(this.state, {
+      writable: (keyPath, value) => {
+        this.update(keyPath, value)
+        return false
+      },
+    })
+
     this.onInit()
     this._digest(props)
   }
@@ -352,8 +359,12 @@ export class Component extends PrimitiveComponent {
 
     this.children = children
 
+    // get original data (without proxied)
+    this.attrs = map(finalAttrs, (value) => {
+      return value && typeof value === 'object' && value[Symbol('ORIGIN')] ? value[Symbol('ORIGIN')] : value
+    })
     // create two-way binding props
-    this.attrs = createProxy(finalAttrs, {
+    this.$attrs = createProxy(finalAttrs, {
       writable(keyPath, value) {
         const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
         const root = chain.shift()

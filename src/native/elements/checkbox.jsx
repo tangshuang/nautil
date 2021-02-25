@@ -9,7 +9,7 @@ mixin(Checkbox, class {
     const { color = '#888888' } = this.style
 
     const onChange = (e) => {
-      this.attrs.checked = !checked
+      this.$attrs.checked = !checked
 
       if (checked) {
         this.emit('Uncheck', e)

@@ -8,7 +8,7 @@ mixin(Select, class {
 
     const onChange = (e) => {
       const value = e.target.value
-      this.attrs.value = value
+      this.$attrs.value = value
       this.emit('Change', e)
     }
 

@@ -7,7 +7,7 @@ mixin(Radio, class {
     const { checked, ...rest } = this.attrs
 
     const onChange = (e) => {
-      this.attrs.checked = !checked
+      this.$attrs.checked = !checked
 
       if (checked) {
         this.emit('Uncheck', e)

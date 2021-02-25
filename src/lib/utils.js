@@ -29,15 +29,15 @@ export function createTwoWayBinding(data, update) {
     }
   }
   const proxy = createProxy(data, {
-    get({ keyPath }) {
+    get(keyPath) {
       const update = createReflect(data, keyPath)
       return [value, update]
     },
-    set({ keyPath }) {
+    set(keyPath, value) {
       const update = createReflect(data, keyPath)
       update(value)
     },
-    del({ keyPath }) {
+    del(keyPath) {
       // use passed update
       if (isFunction(update)) {
         update(data, keyPath)
