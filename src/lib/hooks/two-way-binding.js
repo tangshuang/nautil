@@ -8,19 +8,22 @@ import produce from 'immer'
  * @param {*} value
  */
 export function useTwoWayBinding(attrs) {
+  const finalAttrs = {}
+  const deps = []
+
+  each(attrs, (data, key) => {
+    if (/^\$[a-zA-Z]/.test(key)) {
+      const attr = key.substr(1)
+      finalAttrs[attr] = data[0]
+      deps.push(attr, data[0])
+    }
+    else if (!/^on[A-Z]/.test(key)) {
+      finalAttrs[key] = data
+      deps.push(key, data)
+    }
+  })
+
   return useMemo(() => {
-    const finalAttrs = {}
-
-    each(attrs, (data, key) => {
-      if (/^\$[a-zA-Z]/.test(key)) {
-        const attr = key.substr(1)
-        finalAttrs[attr] = data[0]
-      }
-      else if (!/^on[A-Z]/.test(key)) {
-        finalAttrs[key] = data
-      }
-    })
-
     const originalAttrs =  map(finalAttrs, (value) => {
       return value && typeof value === 'object' && value[Symbol('ORIGIN')] ? value[Symbol('ORIGIN')] : value
     })
@@ -51,6 +54,6 @@ export function useTwoWayBinding(attrs) {
     })
 
     return [originalAttrs, bindingAttrs]
-  }, [...Object.keys(attrs), ...Object.values(attrs)]) // only shallow changes will trigger recalculate
+  }, deps) // only shallow changes will trigger recalculate
 }
 export default useTwoWayBinding
