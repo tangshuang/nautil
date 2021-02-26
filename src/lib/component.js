@@ -360,9 +360,7 @@ export class Component extends PrimitiveComponent {
     this.children = children
 
     // get original data (without proxied)
-    this.attrs = map(finalAttrs, (value) => {
-      return value && typeof value === 'object' && value[Symbol('ORIGIN')] ? value[Symbol('ORIGIN')] : value
-    })
+    this.attrs = finalAttrs
     // create two-way binding props
     this.$attrs = createProxy(finalAttrs, {
       writable(keyPath, value) {

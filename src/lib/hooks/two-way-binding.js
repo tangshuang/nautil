@@ -2,7 +2,7 @@ import { Ty } from 'tyshemo'
 import { Binding } from '../types.js'
 import { isRef } from '../utils.js'
 import { isValidElement, useMemo } from 'react'
-import { each, map, createProxy } from 'ts-fns'
+import { each, createProxy } from 'ts-fns'
 import produce from 'immer'
 
 /**
@@ -38,10 +38,6 @@ export function useTwoWayBinding(attrs) {
       Ty.expect(bindAttrs).to.be(bindTypes)
     }
 
-    const originalAttrs =  map(finalAttrs, (value) => {
-      return value && typeof value === 'object' && value[Symbol('ORIGIN')] ? value[Symbol('ORIGIN')] : value
-    })
-
     const bindingAttrs = createProxy(finalAttrs, {
       writable(keyPath, value) {
         const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
@@ -67,7 +63,7 @@ export function useTwoWayBinding(attrs) {
       },
     })
 
-    return [originalAttrs, bindingAttrs]
+    return [finalAttrs, bindingAttrs]
   }, deps) // only shallow changes will trigger recalculate
 }
 export default useTwoWayBinding
