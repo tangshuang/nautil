@@ -236,23 +236,26 @@ export class Component extends PrimitiveComponent {
   }
 
   _runTasks() {
-    let count = 0
     const run = () => {
-      setTimeout(() => {
+      let start = Date.now()
+      const consume = () => {
         if (!this._tasksQueue.length) {
-          return
-        }
-        if (count > 20) {
           return
         }
 
         const { fn, args } = this._tasksQueue.shift()
         fn(...args)
 
-        count ++
+        // splice time by 16ms
+        const now = Date.now()
+        if (now - start > 8) {
+          setTimeout(run, 8)
+          return
+        }
 
-        run()
-      }, 8)
+        return consume()
+      }
+      consume()
     }
     run()
   }
