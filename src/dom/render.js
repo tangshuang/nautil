@@ -2,11 +2,7 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 
 export function mount(el, Component, props = {}) {
-  if (typeof el === 'string') {
-    el = document.querySelector(el)
-  }
-
-  return ReactDOM.render(React.createElement(Component, props), el)
+  return render(el, React.createElement(Component, props))
 }
 
 export function unmount(el) {
@@ -21,6 +17,10 @@ export function update(...args) {
   return mount(...args)
 }
 
-export function render(el, element) {
-  return ReactDOM.render(element, el)
+export function render(el, vdom) {
+  if (typeof el === 'string') {
+    el = document.querySelector(el)
+  }
+
+  return ReactDOM.render(vdom, el)
 }
