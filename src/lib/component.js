@@ -110,8 +110,17 @@ export class PrimitiveComponent extends React.Component {
 
   static createComponentFrom(resource) {
     const create = (resource) => {
+      if (!isArray(resource)) {
+        return resource
+      }
+
       const [type, props, ...children] = resource
-      const desc = [type === null ? React.Fragment : type, props]
+
+      if (type === null) {
+        return null
+      }
+
+      const desc = [type, props]
       if (children.length) {
         const subs = children.map((child) => {
           if (isArray(child)) {
