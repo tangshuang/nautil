@@ -26,7 +26,6 @@ export class PrimitiveComponent extends React.Component {
 
     // render
     const render = this.render ? this.render.bind(this) : null
-    const renderFrom = this.renderFrom ? this.renderFrom.bind(this) : null
     const Render = this.Render ? this.Render.bind(this) : null
     Object.defineProperty(this, 'render', {
       value: () => {
@@ -34,11 +33,7 @@ export class PrimitiveComponent extends React.Component {
 
         let tree = null
 
-        if (renderFrom) {
-          const resource = renderFrom(props)
-          tree = PrimitiveComponent.createComponentFrom(resource)
-        }
-        else if (Render) {
+        if (Render) {
           tree = <Render {...props} />
         }
         else {
@@ -106,36 +101,6 @@ export class PrimitiveComponent extends React.Component {
 
     const output = modify(tree)
     return output
-  }
-
-  static createComponentFrom(resource) {
-    const create = (resource) => {
-      if (!isArray(resource)) {
-        return resource
-      }
-
-      const [type, props, ...children] = resource
-
-      if (type === null) {
-        return null
-      }
-
-      const desc = [type, props]
-      if (children.length) {
-        const subs = children.map((child) => {
-          if (isArray(child)) {
-            return create(child)
-          }
-          else {
-            return child
-          }
-        })
-        desc.push(...subs)
-      }
-      const element = React.createElement(...desc)
-      return element
-    }
-    return create(resource)
   }
 }
 

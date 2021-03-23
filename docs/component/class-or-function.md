@@ -99,23 +99,3 @@ class Some extends Component {
   }
 }
 ```
-
-## Description jsx
-
-In react, you use jsx to write UI structure, however, it to make it describale, you can use a description system instead.
-
-```js
-class Some extends Component {
-  renderFrom(props) {
-    return [
-      'button',
-      {
-        onClick: this.handleClick,
-      },
-      'Click me!',
-    ]
-  }
-}
-```
-
-The returned array will be apply into `React.createElement` to build a virtual dom tree.
