@@ -114,8 +114,8 @@ function composeComponents(components) {
 }
 
 function parseJsx(jsx, scopex, components) {
-  const [tag, nest = {}, ...children] = jsx
-  const name = isString(tag) && isExp(tag) ? parseExp(getExp(tag)) : tag
+  const [tag, nest, ...children] = jsx
+  const name = isString(tag) && isExp(tag) ? parseExp(getExp(tag), scopex) : tag
 
   const comps = composeComponents(components)
   const Item = comps[name] ? comps[name] : name
@@ -124,7 +124,7 @@ function parseJsx(jsx, scopex, components) {
     return null
   }
 
-  const props = parseNest(nest, scopex)
+  const props = nest ? parseNest(nest, scopex) : {}
 
   return React.createElement(
     Item,
