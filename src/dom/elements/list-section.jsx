@@ -1,8 +1,79 @@
-// https://github.com/jwarning/react-scrollable-list/blob/master/index.js
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { mixin } from 'ts-fns'
 import ListSection from '../../lib/elements/list-section.jsx'
-import ReactList from 'react-scrollable-list'
+
+// fork from https://github.com/jwarning/react-scrollable-list
+// https://github.com/jwarning/react-scrollable-list/blob/master/index.js
+class ReactList extends Component {
+  static propTypes = {
+    listItems: PropTypes.array.isRequired,
+    heightOfItem: PropTypes.number,
+    maxItemsToRender: PropTypes.number,
+    style: PropTypes.object
+  }
+  static defaultProps = {
+    listItems: [],
+    heightOfItem: 30,
+    maxItemsToRender: 50
+  }
+  constructor(props) {
+    super(props)
+    this.state = { scrollPosition: 0 }
+    this.list = null
+
+    this.setListRef = element => {
+      this.list = element
+    }
+
+    this.updateScrollPosition = this.updateScrollPosition.bind(this)
+  }
+  componentDidMount() {
+    this.list.addEventListener('scroll', this.updateScrollPosition)
+  }
+  componentWillUnmount() {
+    this.list.removeEventListener('scroll', this.updateScrollPosition)
+  }
+  updateScrollPosition() {
+    const newScrollPosition = this.list.scrollTop / this.props.heightOfItem
+    const difference = Math.abs(this.state.scrollPosition - newScrollPosition)
+
+    if (difference >= this.props.maxItemsToRender / 5) {
+      this.setState({ scrollPosition: newScrollPosition })
+    }
+  }
+  render() {
+    const startPosition = this.state.scrollPosition - this.props.maxItemsToRender > 0
+      ? this.state.scrollPosition - this.props.maxItemsToRender
+      : 0
+
+    const endPosition = this.state.scrollPosition + this.props.maxItemsToRender >= this.props.listItems.length
+      ? this.props.listItems.length
+      : this.state.scrollPosition + this.props.maxItemsToRender
+
+    return (
+      <div className="react-scrollable-list" ref={this.setListRef} style={this.props.style}>
+        <div
+          key="list-spacer-top"
+          style={{
+            height: startPosition * this.props.heightOfItem,
+          }}
+        />
+        {this.props.listItems.slice(startPosition, endPosition).map(item => (
+          <div className="react-scrollable-list-item" key={'list-item-' + item.id}>
+            {item.content}
+          </div>
+        ))}
+        <div
+          key="list-spacer-bottom"
+          style={{
+            height: this.props.listItems.length * this.props.heightOfItem - endPosition * this.props.heightOfItem,
+          }}
+        />
+      </div>
+    )
+  }
+}
 
 mixin(ListSection, class {
   render() {
