@@ -26,6 +26,8 @@ import { Service } from './service.js'
  */
 export class Controller {
   constructor() {
+    let activeComponents = 0
+
     const emitters = []
     const emit = () => {
       emitters.forEach(fn => fn())
@@ -43,6 +45,7 @@ export class Controller {
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
         this[key].watch('*', emit, true)
+        this[key].watch('!', emit)
       }
       else if (Item && (Item === Store || isInheritedOf(Item, Store))) {
         this[key] = new Item()
@@ -57,10 +60,13 @@ export class Controller {
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([fn, stream$]) => fn.call(this, stream$))
 
+    // developers should must extends Controller and overwrite `init` method to initailize
+    this.init()
+
     const controller = this
     const protos = Constructor.prototype
-    let registeredComponents = 0
-    each(protos, ({ value }, key) => {
+    const props = { ...controller, ...protos }
+    each(props, ({ value }, key) => {
       if (key === 'constructor') {
         return
       }
@@ -81,10 +87,10 @@ export class Controller {
       this[key] = class extends Component {
         onInit() {
           emitters.push(this.forceUpdate)
-          if (!registeredComponents) {
+          if (!activeComponents) {
             controller.onStart()
           }
-          registeredComponents ++
+          activeComponents ++
         }
         onUnmount() {
           emitters.forEach((fn, i) => {
@@ -92,8 +98,8 @@ export class Controller {
               emitters.splice(i, 1)
             }
           })
-          registeredComponents --
-          if (!registeredComponents) {
+          activeComponents --
+          if (!activeComponents) {
             controller.onEnd()
           }
         }
@@ -106,6 +112,7 @@ export class Controller {
       }
     }, true)
   }
+  init() {}
   onStart() {}
   onUpdate() {}
   onEnd() {}
