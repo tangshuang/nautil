@@ -32,7 +32,7 @@
     "rxjs": "^6.6.3",
     "scopex": "^2.1.0",
     "ts-fns": "^9.3.1",
-    "tyshemo": "^10.7.1"
+    "tyshemo": "^10.7.2"
   },
   "peerDependencies": {
     "react-native": "^0.64.0"
