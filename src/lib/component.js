@@ -166,43 +166,57 @@ export class Component extends PrimitiveComponent {
   }
 
   forceUpdate() {
-    this.onUpdate(this.props, this.state)
-    this._digest(this.props)
-    return super.forceUpdate()
+    return new Promise((callback) => {
+      if (!this._isMounted || this._isUnmounted) {
+        callback()
+        return
+      }
+
+      this.onUpdate(this.props, this.state)
+      this._digest(this.props)
+      super.forceUpdate(callback)
+    })
   }
 
   update(...args) {
-    if (args.length === 2) {
-      const [keyPath, fn] = args
-      const next = produce(this.state, state => { assign(state, keyPath, fn) })
-      return this.setState(next)
-    }
-    else if (args.length === 1) {
-      const arg = args[0]
-      if (typeof arg === 'function') {
-        const next = produce(this.state, state => { arg(state) })
-        // we can delete a property of state in fn
-        const existingKeys = Object.keys(this.state)
-        existingKeys.forEach((key) => {
-          if (!(key in next)) {
-            next[key] = void 0
-          }
-        })
-        return this.setState(next)
+    return new Promise((callback) => {
+      if (!this._isMounted || this._isUnmounted) {
+        callback()
+        return
       }
-      else if (typeof arg && typeof arg === 'object') {
-        return this.setState(arg)
+
+      if (args.length === 2) {
+        const [keyPath, fn] = args
+        const next = produce(this.state, state => { assign(state, keyPath, fn) })
+        this.setState(next, callback)
       }
-      else if (arg === true) {
-        return this.forceUpdate()
+      else if (args.length === 1) {
+        const arg = args[0]
+        if (typeof arg === 'function') {
+          const next = produce(this.state, state => { arg(state) })
+          // we can delete a property of state in fn
+          const existingKeys = Object.keys(this.state)
+          existingKeys.forEach((key) => {
+            if (!(key in next)) {
+              next[key] = void 0
+            }
+          })
+          this.setState(next, callback)
+        }
+        else if (typeof arg && typeof arg === 'object') {
+          this.setState(arg, callback)
+        }
+        else if (arg === true) {
+          this.forceUpdate(callback)
+        }
+        else {
+          this.setState({}, callback)
+        }
       }
       else {
-        return this.setState({})
+        this.setState({}, callback)
       }
-    }
-    else {
-      return this.setState({})
-    }
+    })
   }
 
   nextTick(fn, ...args) {
