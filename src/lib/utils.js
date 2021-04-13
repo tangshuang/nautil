@@ -60,30 +60,44 @@ export function createPlaceholderElement(placeholder) {
   }
 }
 
-// https://www.cnblogs.com/mengff/p/9664287.html
-export function isShallowEqual(objA,objB){
-  if(objA === objB){
-      return true;
+export function isShallowEqual(objA, objB, isEqaul) {
+  if (objA === objB) {
+    return true
   }
-  if(!(typeof objA === 'object' && objA != null) || !(typeof objB === 'object' && objB != null)){
-      return false;
+
+  if (typeof objA !== 'object' || typeof objB !== 'object') {
+    return objA === objB
   }
-  const keysA = Object.keys(objA);
-  const keysB = Object.keys(objB);
-  if(keysA.length !== keysB.length){
-      return false;
+
+  if (typeof objA === null || typeof objB === null) {
+    return objA === objB
   }
-  for(let i = 0;i< keysA.length;i++){
-      if(objB.hasOwnProperty(keysA[i])){
-          if(objA[keysA[i]] !== objB[keysA[i]]){
-              return false;
-          }
+
+  const keysA = Object.keys(objA).sort()
+  const keysB = Object.keys(objB).sort()
+
+  if (keysA.length !== keysB.length) {
+    return false
+  }
+
+  for (let i = 0; i< keysA.length; i++) {
+    const keyA = keysA[i]
+    const keyB = keysB[i]
+
+    if (keyA !== keyB) {
+      return false
+    }
+    else if (isEqaul) {
+      if (!isEqaul(objA[keyA], objB[keyB])) {
+        return false
       }
-      else{
-          return false;
-      }
+    }
+    else if (objA[keyA] !== objB[keyB]) {
+      return false
+    }
   }
-  return true;
+
+  return true
 }
 
 export function isRef(obj) {

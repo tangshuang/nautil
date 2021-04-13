@@ -18,7 +18,7 @@ import Stream from './stream.js'
 import Style from './style/style.js'
 import ClassName from './style/classname.js'
 import { Binding, Handling } from './types.js'
-import { noop, isRef } from './utils.js'
+import { noop, isRef, isShallowEqual } from './utils.js'
 
 export class PrimitiveComponent extends React.Component {
   constructor(props) {
@@ -109,7 +109,10 @@ export class Component extends PrimitiveComponent {
     super(props)
 
     this._effectors = []
+
     this._tasksQueue = []
+    this._tasksRunner = null
+
     this._isMounted = false
     this._isUnmounted = false
 
@@ -224,24 +227,31 @@ export class Component extends PrimitiveComponent {
   }
 
   _runTasks() {
+    // dont run two runner at the same time
+    if (this._tasksRunner) {
+      return
+    }
+
     const run = () => {
       let start = Date.now()
       const consume = () => {
         if (!this._tasksQueue.length) {
+          clearTimeout(this._tasksRunner)
           return
         }
 
         const { fn, args } = this._tasksQueue.shift()
         fn(...args)
 
-        // splice time by 16ms
         const now = Date.now()
+        // splice time by 16ms
+        // when a function call is more than 8ms, tasks should be holded for 8ms to wait other function calls
         if (now - start > 8) {
-          setTimeout(run, 8)
-          return
+          this._tasksRunner = setTimeout(run, 8)
         }
-
-        return consume()
+        else {
+          this._tasksRunner = setTimeout(consume, 0)
+        }
       }
       consume()
     }
@@ -250,26 +260,52 @@ export class Component extends PrimitiveComponent {
 
   _digest(props) {
     const Constructor = getConstructorOf(this)
-    const { props: PropsTypes, propsCheckAsync, defaultStylesheet } = Constructor
+    const { props: PropsTypes, defaultStylesheet } = Constructor
     const parsedProps = this.onParseProps(props)
     const { children, stylesheet, style, className, ...attrs } = parsedProps
 
     // normal attrs
     const finalAttrs = {}
-    const finalTypes = {}
-
     // two-way binding:
     const bindingAttrs = {}
-    const bindingTypes = {}
-
     // handlers
     const handlingAttrs = {}
-    const handlingTypes = {}
+
+    // prepare for attrs data
+    each(attrs, (data, key) => {
+      if (/^\$[a-zA-Z]/.test(key)) {
+        bindingAttrs[key] = data
+        finalAttrs[key.substr(1)] = data[0] // $show={[value, update]} => finalAttrs[show]=value
+      }
+      else if (/^on[A-Z]/.test(key)) {
+        handlingAttrs[key] = data
+      }
+      else {
+        finalAttrs[key] = data
+      }
+    })
 
     // prepare for data type checking
-    if (process.env.NODE_ENV !== 'production') {
-      if (PropsTypes) {
-        each(PropsTypes, (type, key) => {
+    if (process.env.NODE_ENV !== 'production' && PropsTypes) {
+      const checkPropTypes = (propTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs) => {
+        const finalTypes = {}
+        const bindingTypes = {}
+        const handlingTypes = {}
+
+        each(attrs, (data, key) => {
+          if (/^\$[a-zA-Z]/.test(key)) {
+            if (!bindingTypes[key]) {
+              bindingTypes[key] = Binding
+            }
+          }
+          else if (/^on[A-Z]/.test(key)) {
+            if (!handlingTypes[key]) {
+              handlingTypes[key] = Handling
+            }
+          }
+        })
+
+        each(propTypes, (type, key) => {
           if (/^\$[a-zA-Z]/.test(key)) {
             const attr = key.substr(1)
             finalTypes[attr] = type
@@ -284,59 +320,30 @@ export class Component extends PrimitiveComponent {
             finalTypes[key] = type
           }
         })
-      }
-    }
 
-    // prepare for attrs data
-    each(attrs, (data, key) => {
-      if (/^\$[a-zA-Z]/.test(key)) {
-        const attr = key.substr(1)
+        Ty.expect(bindingAttrs).to.match(bindingTypes)
+        Ty.expect(handlingAttrs).to.be(handlingTypes)
 
-        // not a required prop, check its data type with Binding
-        if (process.env.NODE_ENV !== 'production') {
-          if (!bindingTypes[key]) {
-            bindingTypes[key] = Binding
-          }
+        // don't check again when update and the same prop has same value
+        if (this._isMounted) {
+          const currentProps = this.props
+          each(finalAttrs, (value, key) => {
+            if ((isEmpty(currentProps[key]) && isEmpty(value)) || currentProps[key] === value) {
+              delete finalTypes[key]
+            }
+          })
         }
 
-        bindingAttrs[key] = data
-        finalAttrs[attr] = data[0] // $show={[value, update]} => finalAttrs[show]=value
-      }
-      else if (/^on[A-Z]/.test(key)) {
-        // for type checking
-        if (process.env.NODE_ENV !== 'production') {
-          if (!handlingTypes[key]) {
-            handlingTypes[key] = Handling
-          }
-        }
-
-        handlingAttrs[key] = data
-      }
-      else {
-        finalAttrs[key] = data
-      }
-    })
-
-    // check data type now
-    if (process.env.NODE_ENV !== 'production') {
-      Ty.expect(bindingAttrs).to.match(bindingTypes)
-      Ty.expect(handlingAttrs).to.be(handlingTypes)
-
-      // don't check again when update and the same prop has same value
-      if (this._isMounted) {
-        const currentProps = this.props
-        each(finalAttrs, (value, key) => {
-          if ((isEmpty(currentProps[key]) && isEmpty(value)) || currentProps[key] === value) {
-            delete finalTypes[key]
-          }
-        })
-      }
-
-      if (propsCheckAsync) {
-        this.nextTick((finalAttrs, finalTypes) => Ty.expect(finalAttrs).to.match(finalTypes), finalAttrs, finalTypes)
-      }
-      else {
         Ty.expect(finalAttrs).to.match(finalTypes)
+      }
+      if (isFunction(PropsTypes)) {
+        this.nextTick((PropsTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs) => {
+          const propTypes = PropsTypes()
+          checkPropTypes(propTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs)
+        }, PropsTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs)
+      }
+      else {
+        checkPropTypes(PropsTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs)
       }
     }
 
@@ -350,33 +357,36 @@ export class Component extends PrimitiveComponent {
 
     this.children = children
 
-    // get original data (without proxied)
-    this.attrs = finalAttrs
-    // create two-way binding props
-    this.$attrs = createProxy(finalAttrs, {
-      writable(keyPath, value) {
-        const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
-        const root = chain.shift()
-        const bindKey = '$' + root
-        const bindData = bindingAttrs[bindKey]
-        if (bindData) {
-          const [current, update] = bindData
-          if (chain.length) {
-            const next = produce(current, data => {
-              assign(data, chain, value)
-            })
-            update(next, current)
+    // createProxy will cost performance, so we only createProxy when attrs are changed in 2 deepth
+    if (!this._isMounted || (this._isMounted && !isShallowEqual(finalAttrs, this.attrs, isShallowEqual))) {
+      // get original data (without proxied)
+      this.attrs = finalAttrs
+      // create two-way binding props
+      this.$attrs = createProxy(finalAttrs, {
+        writable(keyPath, value) {
+          const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
+          const root = chain.shift()
+          const bindKey = '$' + root
+          const bindData = bindingAttrs[bindKey]
+          if (bindData) {
+            const [current, update] = bindData
+            if (chain.length) {
+              const next = produce(current, data => {
+                assign(data, chain, value)
+              })
+              update(next, current)
+            }
+            else {
+              update(value, current)
+            }
           }
-          else {
-            update(value, current)
-          }
-        }
-        return false
-      },
-      disable(_, value) {
-        return isValidElement(value) || isRef(value)
-      },
-    })
+          return false
+        },
+        disable(_, value) {
+          return isValidElement(value) || isRef(value)
+        },
+      })
+    }
 
     /**
      * use the passed handler like onClick to create a stream
@@ -462,6 +472,10 @@ export class Component extends PrimitiveComponent {
         delete this[key]
       }
     })
+    // dont run any task any more
+    this._tasksQueue.length = 0
+    clearTimeout(this._tasksRunner)
+    // tag unmounted
     this._isUnmounted = true
   }
   componentDidCatch(...args) {
