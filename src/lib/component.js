@@ -287,7 +287,7 @@ export class Component extends PrimitiveComponent {
 
     // prepare for data type checking
     if (process.env.NODE_ENV !== 'production' && PropsTypes) {
-      const checkPropTypes = (propTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs) => {
+      const checkPropTypes = (propTypes) => {
         const finalTypes = {}
         const bindingTypes = {}
         const handlingTypes = {}
@@ -337,13 +337,13 @@ export class Component extends PrimitiveComponent {
         Ty.expect(finalAttrs).to.match(finalTypes)
       }
       if (isFunction(PropsTypes)) {
-        this.nextTick((PropsTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs) => {
+        this.nextTick(() => {
           const propTypes = PropsTypes()
-          checkPropTypes(propTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs)
-        }, PropsTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs)
+          checkPropTypes(propTypes)
+        })
       }
       else {
-        checkPropTypes(PropsTypes, attrs, handlingAttrs, bindingAttrs, finalAttrs)
+        checkPropTypes(PropsTypes)
       }
     }
 
