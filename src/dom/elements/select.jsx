@@ -9,12 +9,11 @@ mixin(Select, class {
       changed: false,
     }
     this.el = createRef()
-  }
-
-  handleChange = (e) => {
-    this.setState({ changed: true })
-    const { onChange } = this.props
-    onChange && onChange(e)
+    this.handleChange = (e) => {
+      this.setState({ changed: true })
+      const { onChange } = this.props
+      onChange && onChange(e)
+    }
   }
 
   render() {
