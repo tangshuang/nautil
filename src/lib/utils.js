@@ -69,12 +69,17 @@ export function isShallowEqual(objA, objB, isEqaul) {
     return objA === objB
   }
 
-  if (typeof objA === null || typeof objB === null) {
+  if (objA === null || objB === null) {
     return objA === objB
   }
 
   const keysA = Object.keys(objA).sort()
   const keysB = Object.keys(objB).sort()
+
+  // two empty object
+  if (!keysA.length && !keyB.length) {
+    return true
+  }
 
   if (keysA.length !== keysB.length) {
     return false
