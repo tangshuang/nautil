@@ -10,6 +10,7 @@ import {
   assign,
   createProxy,
   isEmpty,
+  define,
 } from 'ts-fns'
 import { Ty, Rule, ifexist } from 'tyshemo'
 import produce from 'immer'
@@ -27,22 +28,20 @@ export class PrimitiveComponent extends React.Component {
     // render
     const render = this.render ? this.render.bind(this) : null
     const Render = this.Render ? this.Render.bind(this) : null
-    Object.defineProperty(this, 'render', {
-      value: () => {
-        const props = this.props
+    define(this, 'render', () => {
+      const props = this.props
 
-        let tree = null
+      let tree = null
 
-        if (Render) {
-          tree = <Render {...props} />
-        }
-        else {
-          tree = render()
-        }
-
-        const polluted = this._polluteRenderTree(tree)
-        return polluted
+      if (Render) {
+        tree = <Render {...props} />
       }
+      else {
+        tree = render()
+      }
+
+      const polluted = this._polluteRenderTree(tree)
+      return polluted
     })
   }
 
@@ -116,10 +115,14 @@ export class Component extends PrimitiveComponent {
     this._isMounted = false
     this._isUnmounted = false
 
-    this.update = this.update.bind(this)
-    this.forceUpdate = this.forceUpdate.bind(this)
+    define(this, 'update', () => this.update.bind(this))
+    define(this, 'forceUpdate', () => this.forceUpdate.bind(this))
 
-    this.$state = createProxy(this.state, {
+    this.init()
+
+    this._digest(props)
+
+    this.$state = this.state && createProxy(this.state, {
       writable: (keyPath, value) => {
         this.update(keyPath, value)
         return false
@@ -127,7 +130,10 @@ export class Component extends PrimitiveComponent {
     })
 
     this.onInit()
-    this._digest(props)
+  }
+
+  init() {
+    // should be override
   }
 
   on(name, affect) {
@@ -443,7 +449,7 @@ export class Component extends PrimitiveComponent {
   componentDidMount(...args) {
     this._isMounted = true
     this.onMounted(...args)
-    this.onRendered()
+    this.onAffected()
     this._runTasks()
   }
   shouldComponentUpdate(nextProps, ...args) {
@@ -460,7 +466,7 @@ export class Component extends PrimitiveComponent {
   }
   componentDidUpdate(...args) {
     this.onUpdated(...args)
-    this.onRendered()
+    this.onAffected()
     this._runTasks()
   }
   componentWillUnmount(...args) {
@@ -477,6 +483,7 @@ export class Component extends PrimitiveComponent {
     clearTimeout(this._tasksRunner)
     // tag unmounted
     this._isUnmounted = true
+    this._isMounted = false
   }
   componentDidCatch(...args) {
     this.onCatch(...args)
@@ -494,7 +501,7 @@ export class Component extends PrimitiveComponent {
   onUnmount() {}
   onCatch() {}
   onDigested() {}
-  onRendered() {}
+  onAffected() {}
   onParseProps(props) {
     return props
   }

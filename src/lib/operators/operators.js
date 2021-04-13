@@ -59,7 +59,7 @@ export function inject(prop, define) {
 export function pollute(component, pollute) {
   return function(C) {
     return class extends Component {
-      onInit() {
+      init() {
         const pollutedProps = isFunction(pollute) ? pollute(this.props) : pollute
         this._pollutedComponents = [
           { component, props: pollutedProps }
@@ -81,7 +81,7 @@ export function pollute(component, pollute) {
 export function initialize(prop, Constructor, ...args) {
   return function(C) {
     return class extends Component {
-      onInit() {
+      init() {
         const instance = new Constructor(...args)
         this[prop] = instance
       }

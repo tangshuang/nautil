@@ -14,7 +14,7 @@ import ScrollSection, {
 } from '../../lib/elements/scroll-section.jsx'
 
 mixin(ScrollSection, class {
-  onInit() {
+  init() {
     this.state = {
       status: DEACTIVATE,
     }

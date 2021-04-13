@@ -12,7 +12,7 @@ import ScrollSection from '../../lib/elements/scroll-section.jsx'
 const { DOWN, UP, BOTH, NONE, ACTIVATE, DEACTIVATE, RELEASE, FINISH } = ScrollSection
 
 mixin(ScrollSection, class {
-  onInit() {
+  init() {
     this.state = {
       status: DEACTIVATE,
     }

@@ -4,10 +4,12 @@ import Select from '../../lib/elements/select.jsx'
 import { isRef } from '../../lib/utils.js'
 
 mixin(Select, class {
-  state = {
-    changed: false,
+  init() {
+    this.state = {
+      changed: false,
+    }
+    this.el = createRef()
   }
-  el = createRef()
 
   handleChange = (e) => {
     this.setState({ changed: true })

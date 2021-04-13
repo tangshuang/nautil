@@ -4,7 +4,7 @@ import { mixin, throttle } from 'ts-fns'
 import SwipeSection from '../../lib/elements/swipe-section.jsx'
 
 mixin(SwipeSection, class {
-  onInit() {
+  init() {
     this.dom = createRef()
 
     this.onTouchStart = this.onTouchStart.bind(this)

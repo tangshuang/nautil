@@ -5,7 +5,7 @@ import Section from '../../lib/elements/section.jsx'
 const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
 
 mixin(Section, class {
-  onInit() {
+  init() {
     this._ref = createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
   }
@@ -19,17 +19,15 @@ mixin(Section, class {
     if (this._ref.current && this._ref.current.contains && this._ref.current.contains(event.target)) {
       return
     }
-    if (!this.__mounted) {
+    if (!this._isMounted) {
       return
     }
     this.emit('HitOutside', event)
   }
   onMounted() {
     document.addEventListener('click', this.handleClickOutside, true)
-    this.__mounted = true
   }
   onUnmount() {
-    this.__mounted = false
     document.removeEventListener('click', this.handleClickOutside)
   }
   render() {
