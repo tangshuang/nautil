@@ -28,7 +28,7 @@ export class PrimitiveComponent extends React.Component {
     // render
     const render = this.render ? this.render.bind(this) : null
     const Render = this.Render ? this.Render.bind(this) : null
-    define(this, 'render', () => {
+    define(this, 'render', () => () => {
       const props = this.props
 
       let tree = null
