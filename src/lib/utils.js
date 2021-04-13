@@ -106,5 +106,5 @@ export function isShallowEqual(objA, objB, isEqaul) {
 }
 
 export function isRef(obj) {
-  return isObject(obj) && isEqual(Object.keys(obj), ['current'])
+  return obj && isObject(obj) && isEqual(Object.keys(obj), ['current'])
 }
