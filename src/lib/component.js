@@ -28,7 +28,7 @@ export class PrimitiveComponent extends React.Component {
     // render
     const render = this.render ? this.render.bind(this) : null
     const Render = this.Render ? this.Render.bind(this) : null
-    define(this, 'render', () => () => {
+    const proxyRender = () => {
       const props = this.props
 
       let tree = null
@@ -42,7 +42,8 @@ export class PrimitiveComponent extends React.Component {
 
       const polluted = this._polluteRenderTree(tree)
       return polluted
-    })
+    }
+    define(this, 'render', { value: proxyRender })
   }
 
   _getPollutedComponents() {
@@ -115,8 +116,8 @@ export class Component extends PrimitiveComponent {
     this._isMounted = false
     this._isUnmounted = false
 
-    define(this, 'update', () => this.update.bind(this))
-    define(this, 'forceUpdate', () => this.forceUpdate.bind(this))
+    define(this, 'update', { value: this.update.bind(this) })
+    define(this, 'forceUpdate', { value: this.forceUpdate.bind(this) })
 
     this.init()
 
