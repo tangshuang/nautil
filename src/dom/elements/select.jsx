@@ -8,7 +8,6 @@ mixin(Select, class {
     this.state = {
       changed: false,
     }
-    this.el = createRef()
     this.handleChange = (e) => {
       this.setState({ changed: true })
       const { onChange } = this.props
@@ -17,7 +16,7 @@ mixin(Select, class {
   }
 
   render() {
-    const { onChange, inputRef, options, optionValueKey, optionTextKey, ...attrs } = this.props
+    const { inputRef, options, optionValueKey, optionTextKey, ...attrs } = this.attrs
 
     const placeholder = attrs.placeholder
     let hasPlaceholder = typeof placeholder !== 'undefined'
@@ -63,11 +62,13 @@ mixin(Select, class {
     return (
       <select
         {...attrs}
+        className={this.className}
+        style={this.style}
         onChange={this.handleChange}
-        ref={isRef(inputRef) ? inputRef : this.el}
+        ref={el => isRef(inputRef) && (inputRef.current = el)}
       >
         {hasPlaceholder ? <option disabled hidden value="">{placeholder || ''}</option> : null}
-        {options ? options.map(option => <option key={optionValueKey ? option[optionValueKey] : option.value} value={optionValueKey ? option[optionValueKey] : option.value} hidden={option.hidden} disabled={option.disabled}>{optionTextKey ? option[optionTextKey] : option.text}</option>) : children}
+        {options ? options.map(option => <option key={optionValueKey ? option[optionValueKey] : option.value} value={optionValueKey ? option[optionValueKey] : option.value} hidden={option.hidden} disabled={option.disabled}>{optionTextKey ? option[optionTextKey] : option.text}</option>) : this.children}
       </select>
     )
   }
