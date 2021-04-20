@@ -1,29 +1,26 @@
-import React, { createRef } from 'react'
+import React from 'react'
 import { mixin } from 'ts-fns'
 import Select from '../../lib/elements/select.jsx'
 import { isRef } from '../../lib/utils.js'
 
 mixin(Select, class {
   init() {
-    this.state = {
-      changed: false,
-    }
-    this.handleChange = (e) => {
-      this.setState({ changed: true })
-      const { onChange } = this.props
-      onChange && onChange(e)
-    }
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleChange(e) {
+    const { onChange } = this.props
+    onChange && onChange(e)
   }
 
   render() {
     const { inputRef, options, optionValueKey, optionTextKey, ...attrs } = this.attrs
 
-    const placeholder = attrs.placeholder
-    let hasPlaceholder = typeof placeholder !== 'undefined'
+    const { placeholder } = attrs
+    const hasPlaceholder = typeof placeholder !== 'undefined'
     let isPlaceholderSelected = false
 
-    // 迫使placeholder生效
-    if (hasPlaceholder && !this.state.changed) {
+    if (hasPlaceholder) {
       if ('value' in attrs) {
         const { value } = attrs
         const selected = options.some(item => item.value === value)
@@ -44,15 +41,7 @@ mixin(Select, class {
         attrs.defaultValue = ''
         isPlaceholderSelected = true
       }
-    }
-
-    if (hasPlaceholder) {
       delete attrs.placeholder
-    }
-
-    if (this.state.changed) {
-      isPlaceholderSelected = false
-      hasPlaceholder = false
     }
 
     if (isPlaceholderSelected) {
