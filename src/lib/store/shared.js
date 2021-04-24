@@ -3,7 +3,7 @@ import { Component } from '../component.js'
 
 export function applyStore(store) {
   function useStore() {
-    const [_, update] = useState()
+    const [, update] = useState()
     useEffect(() => {
       const forceUpdate = () => {
         update({})
@@ -17,10 +17,10 @@ export function applyStore(store) {
   const connect = mapToProps => C => {
     return class ConnectedComponent extends Component {
       onInit() {
-        store.watch('*', this.update, true)
+        store.subscribe(this.update)
       }
       onUnmount() {
-        store.unwatch('*', this.update)
+        store.unsubscribe(this.update)
       }
       render() {
         const data = mapToProps(store)
