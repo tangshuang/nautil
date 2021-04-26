@@ -8,7 +8,7 @@ export class Service {
     const streams = []
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, Service)) {
-        this[key] = Item.getService()
+        this[key] = Item.new()
       }
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
@@ -22,7 +22,7 @@ export class Service {
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([stream$, fn]) => fn.call(this, stream$))
   }
-  $new() {
+  new() {
     const Constructor = getConstructorOf(this)
     return new Constructor()
   }
@@ -30,8 +30,8 @@ export class Service {
     each(this, (value, key) => {
       if (isInstanceOf(value, Stream)) {
         value.complete()
-        delete this[key]
       }
+      delete this[key]
     })
     const Constructor = getConstructorOf(this)
     if (Constructor.__instance === this) {

@@ -1,11 +1,12 @@
 import React from 'react'
 import { Model } from './model.js'
 import { Store } from './store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
 import Component from './component.js'
 import { isShallowEqual } from './utils.js'
 import { Stream } from './stream.js'
 import { Service } from './service.js'
+import { DataService } from './services/data-service.js'
 
 /**
  * class SomeController extends Constroller {
@@ -26,30 +27,36 @@ import { Service } from './service.js'
  */
 export class Controller {
   constructor() {
+    this.observers = []
+
     let activeComponents = 0
 
     const emitters = []
-    const emit = () => {
+    this.update = () => {
       emitters.forEach(fn => fn())
       this.onUpdate()
     }
 
-    this.update = emit
-
     const Constructor = getConstructorOf(this)
     const streams = []
     each(Constructor, (Item, key) => {
-      if (Item && isInheritedOf(Item, Service)) {
+      if (Item && isInheritedOf(Item, DataService)) {
+        this[key] = Item.getService()
+        this.observe((dispatch) => {
+          this[key].subscribe(dispatch)
+          return () => this[key].unsubscribe(dispatch)
+        })
+      }
+      else if (Item && isInheritedOf(Item, Service)) {
         this[key] = Item.getService()
       }
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
-        this[key].watch('*', emit, true)
-        this[key].watch('!', emit)
+        this.observe(this[key])
       }
       else if (Item && (Item === Store || isInheritedOf(Item, Store))) {
         this[key] = new Item()
-        this[key].subscribe(emit)
+        this.observe(this[key])
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
@@ -65,8 +72,7 @@ export class Controller {
 
     const controller = this
     const protos = Constructor.prototype
-    const props = { ...controller, ...protos }
-    each(props, ({ value }, key) => {
+    each(protos, ({ value }, key) => {
       if (key === 'constructor') {
         return
       }
@@ -88,6 +94,7 @@ export class Controller {
         onInit() {
           emitters.push(this.forceUpdate)
           if (!activeComponents) {
+            controller.observers.forEach(({ start }) => start())
             controller.onStart()
           }
           activeComponents ++
@@ -101,6 +108,7 @@ export class Controller {
           activeComponents --
           if (!activeComponents) {
             controller.onEnd()
+            controller.observers.forEach(({ stop }) => stop())
           }
         }
         shouldUpdate(nextProps) {
@@ -112,6 +120,53 @@ export class Controller {
       }
     }, true)
   }
+
+  observe(observer) {
+    if (isInstanceOf(observer, Store)) {
+      const subscription = {
+        start: () => observer.subscribe(this.update),
+        stop: () => observer.unsubscribe(this.update),
+      }
+      this.observers.push(subscription)
+    }
+    else if (isInstanceOf(observer, Model)) {
+      const subscription = {
+        start: () => {
+          observer.watch('*', this.update, true)
+          observer.watch('!', this.update)
+        },
+        stop: () => {
+          observer.unwatch('*', this.update)
+          observer.unwatch('!', this.update)
+        },
+      }
+      this.observers.push(subscription)
+    }
+    else if (isFunction(observer)) {
+      let unsubscribe = null
+      const subscription = {
+        start: () => {
+          unsubscribe = observer(this.update)
+        },
+        stop: () => {
+          if (isFunction(unsubscribe)) {
+            unsubscribe(this.update)
+            unsubscribe = null
+          }
+        },
+      }
+      this.observers.push(subscription)
+    }
+    else if (isObject(observer)) {
+      const { subscribe, unsubscribe } = observer
+      const subscription = {
+        start: () => subscribe(this.update),
+        stop: () => isFunction(unsubscribe) ? unsubscribe(this.update) : null,
+      }
+      this.observers.push(subscription)
+    }
+  }
+
   init() {}
   onStart() {}
   onUpdate() {}

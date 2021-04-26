@@ -1,4 +1,5 @@
 import {
+  React,
   Component,
   Section,
   Text,
@@ -6,15 +7,17 @@ import {
 import Header from '../../components/header/header.jsx'
 import NavBar from '../../components/nav-bar/nav-bar.jsx'
 
-export class Home extends Component {
+export class Hot extends Component {
   render() {
     return (
       <>
         <Header />
         <NavBar />
-        <Section><Text>Home</Text></Section>
+        <Section>
+          <Text>沸点</Text>
+        </Section>
       </>
     )
   }
 }
-export default Home
+export default Hot

@@ -59,7 +59,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'nautil': path.resolve(__dirname, '../src'),
+      'nautil': path.resolve(__dirname, '../../src'),
     },
   },
   module: {

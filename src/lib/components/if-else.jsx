@@ -50,12 +50,11 @@ export class If extends Component {
 
   render() {
     const children = this.children
+    const { is, render } = this.attrs
 
     if (isFunction(children)) {
       return is ? children() : null
     }
-
-    const { is, render } = this.attrs
 
     if (is && isFunction(render)) {
       return render()

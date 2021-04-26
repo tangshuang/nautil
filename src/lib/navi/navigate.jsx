@@ -1,3 +1,4 @@
+import React from 'react'
 import { ifexist } from 'tyshemo'
 
 import Navigation from './navigation.js'
