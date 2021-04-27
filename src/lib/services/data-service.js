@@ -1,7 +1,5 @@
 import { Service } from '../service.js'
-import { Ty, Enum, List, ifexist } from 'tyshemo'
-import { Store } from '../store/store.js'
-import { getObjectHash, isEqual, debounce } from 'ts-fns'
+import { getObjectHash, isEqual } from 'ts-fns'
 
 const CELL_TYPES = {
   SOURCE: 1,
@@ -61,7 +59,7 @@ export class DataService extends Service {
       return 'value' in atom ? [atom.value, atom.next] : [value, atom.next]
     }
 
-    const next = debounce(() => {
+    const next = () => {
       const atom = atoms.find(item => item.hash === hash)
       if (atom.deferer) {
         return
@@ -82,7 +80,7 @@ export class DataService extends Service {
           }
         })
       })
-    }, 64)
+    }
 
     const item = atom || { hash, params, next, hosts: [], cell }
     const host = this._hostsChain[this._hostsChain.length - 1]
@@ -119,7 +117,7 @@ export class DataService extends Service {
       return value
     }
 
-    const next = debounce(() => {
+    const next = () => {
       const atom = atoms.find(item => item.hash === hash)
       const value = compute(atom)
       this._dispatch(cell, params, value)
@@ -132,7 +130,7 @@ export class DataService extends Service {
           host.next()
         }
       })
-    }, 64)
+    }
 
     const emit = (...cells) => {
       const atom = atoms.find(item => item.hash === hash)
@@ -174,5 +172,128 @@ export class DataService extends Service {
     this._subscribers.forEach((callback) => {
       callback(cell, params, value)
     })
+  }
+
+  setup(run) {
+    const atom = { deps: [], hooks: [] }
+    const next = () => {
+      this.hostsChain.push(atom)
+      run()
+      this.hostsChain.pop()
+      this.hooksChain.length = 0 // clear hooks list
+    }
+    atom.next = next
+    next()
+    return () => { atom.end = true }
+  }
+
+  // hooks -------------
+
+  affect(invoke, deps) {
+    if (this.isGettingComposeValue) {
+      return
+    }
+
+    const host = this.hostsChain[this.hostsChain.length - 1]
+    const index = this.hooksChain.length
+
+    this.hooksChain.push(1)
+
+    const hook = host.hooks[index]
+    if (hook) {
+      if (!deps && !hook.deps) {
+        return
+      }
+      if (!isEqual(deps, hook.deps)) {
+        if (hook.revoke) {
+          hook.revoke()
+        }
+        const revoke = invoke()
+        host.hooks[index] = { deps, revoke }
+      }
+    }
+    else {
+      const revoke = invoke()
+      host.hooks[index] = { deps, revoke }
+    }
+  }
+
+  select(compute, deps) {
+    if (this.isGettingComposeValue) {
+      return compute()
+    }
+
+    const host = this.hostsChain[this.hostsChain.length - 1]
+    const index = this.hooksChain.length
+
+    this.hooksChain.push(1)
+
+    const hook = host.hooks[index]
+    if (hook) {
+      if (!deps && !hook.deps) {
+        hook.deps = deps
+        return hook.value
+      }
+      else if (isEqual(deps, hook.deps)) {
+        hook.deps = deps
+        return hook.value
+      }
+      else {
+        const value = compute()
+        hook.value = value
+        hook.deps = deps
+        return value
+      }
+    }
+    else {
+      const value = compute()
+      host.hooks[index] = { deps, value }
+      return value
+    }
+  }
+
+  apply(get, value) {
+    if (this.isGettingComposeValue) {
+      return (() => [value])
+    }
+
+    const host = this.hostsChain[this.hostsChain.length - 1]
+    const index = this.hooksChain.length
+
+    this.hooksChain.push(1)
+
+    const hook = host.hooks[index]
+    if (hook) {
+      const { query } = hook
+      return query
+    }
+    else {
+      const cell = source(get, value)
+      const next = (...args) => query(cell, ...args)
+      const hook = { query: next }
+      host.hooks[index] = hook
+      return next
+    }
+  }
+
+  ref(value) {
+    if (this.isGettingComposeValue) {
+      return { value }
+    }
+
+    const host = this.hostsChain[this.hostsChain.length - 1]
+    const index = this.hooksChain.length
+
+    this.hooksChain.push(1)
+
+    const hook = host.hooks[index]
+    if (hook) {
+      return hook
+    }
+    else {
+      const hook = { value }
+      host.hooks[index] = hook
+      return hook
+    }
   }
 }
