@@ -72,7 +72,10 @@
   - [Controller](controller/controller.md)
 
 - Service
-  - [Service](service/service.md)
+  - [Service](services/service.md)
+  - [DataService](services/data-service.md)
+  - [QueueService](services/queue-service.md)
+  - [HyperJSONService](services/hyperjson-service.md)
 
 - I18n
   - [I18n](i18n/i18n.md)

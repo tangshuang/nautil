@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { each, map, isString, isEmpty, isArray, isObject } from 'ts-fns'
 import ScopeX from 'scopex'
+import { Service } from '../service.js'
 
 const REACT_PROPS_MAPPING = {
   for: 'htmlFor',
@@ -133,35 +134,40 @@ function parseJsx(jsx, scopex, components) {
   )
 }
 
-export function parseHyperJSON(hyperJSON, options = {}) {
-  const { scope = {}, components = {}, filters = {} } = options
-  const render = findProp(hyperJSON)
+export class HyperJSONService extends Service {
+  parse(hyperJSON, options = {}) {
+    const { scope = {}, components = {}, filters = {} } = options
+    return function Component(props) {
+      if (isEmpty(hyperJSON)) {
+        return null
+      }
 
-  if (isEmpty(render)) {
-    throw new Error('No render!')
-  }
+      const render = findProp(hyperJSON, 'render')
+      if (isEmpty(render)) {
+        throw new Error('No render in HyperJSON!')
+      }
 
-  const { value: jsx } = render
-  const { props: attrs } = hyperJSON
+      const { value: jsx } = render
+      const { props: attrs } = hyperJSON
+      const locals = { ...scope, ...components }
 
-  return function Component(props) {
-    const locals = { ...scope, ...components }
+      if (isString(attrs)) {
+        locals[attrs] = props
+      }
+      else if (isArray(attrs)) {
+        attrs.forEach((key) => {
+          locals[key] = props[key]
+        })
+      }
+      else if (isObject(attrs)) {
+        each(attrs, (alias, key) => {
+          locals[alias] = attrs[key]
+        })
+      }
 
-    if (isString(attrs)) {
-      locals[attrs] = props
+      const scopex = new ScopeX(locals, { filters, loose: true })
+      return parseJsx(jsx, scopex, components)
     }
-    else if (isArray(attrs)) {
-      attrs.forEach((key) => {
-        locals[key] = props[key]
-      })
-    }
-    else if (isObject(attrs)) {
-      each(attrs, (alias, key) => {
-        locals[alias] = attrs[key]
-      })
-    }
-
-    const scopex = new ScopeX(locals, { filters, loose: true })
-    return parseJsx(jsx, scopex, components)
   }
 }
+export default HyperJSONService
