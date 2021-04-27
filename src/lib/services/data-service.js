@@ -1,10 +1,11 @@
 import { Service } from '../service.js'
-import { getObjectHash, isEqual } from 'ts-fns'
+import { getObjectHash, isEqual, isString, isObject } from 'ts-fns'
 
 const CELL_TYPES = {
   SOURCE: 1,
   COMPOSE: 2,
 }
+const SOURCE = Symbol('source')
 
 export class DataService extends Service {
   _subscribers = []
@@ -16,6 +17,7 @@ export class DataService extends Service {
 
   source(get, value) {
     const cell = {
+      $$type: SOURCE,
       type: CELL_TYPES.SOURCE,
       get,
       value,
@@ -29,6 +31,7 @@ export class DataService extends Service {
     const value = get.call(this)
     this._isGettingComposeValue = false
     const cell = {
+      $$type: SOURCE,
       type: CELL_TYPES.COMPOSE,
       get,
       atoms: [],
@@ -38,6 +41,16 @@ export class DataService extends Service {
   }
 
   query(cell, ...params) {
+    if (isString(cell)) {
+      if (!this[cell]) {
+        throw new Error(`${cell} is not in DataService`)
+      }
+      cell = this[cell]
+      if (!isObject(cell) || cell.$$type !== SOURCE) {
+        throw new Error(`${cell} is not a data source`)
+      }
+    }
+
     const { type, value } = cell
     if (this._isGettingComposeValue) {
       return [value, () => { throw new Error('refetch in compose directly is not allowed.') }]

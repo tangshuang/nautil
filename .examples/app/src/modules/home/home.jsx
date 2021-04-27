@@ -20,7 +20,7 @@ class HomeController extends Controller {
   static dataService = HomeDataService
 
   HomeCover() {
-    const [items] = this.dataService.query(this.dataService.items)
+    const [items] = this.dataService.query('items')
     return (
       <Section>
         <Text>Home</Text>
