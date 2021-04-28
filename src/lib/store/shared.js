@@ -1,18 +1,8 @@
-import { useState, useEffect } from 'react'
 import { Component } from '../component.js'
+import { useStore as originUseStore } from './consumer.jsx'
 
 export function applyStore(store) {
-  function useStore() {
-    const [, update] = useState()
-    useEffect(() => {
-      const forceUpdate = () => {
-        update({})
-      }
-      store.subscribe(forceUpdate)
-      return () => store.unsubscribe(forceUpdate)
-    }, [])
-    return store
-  }
+  const useStore = () => originUseStore(store)
   const connect = mapToProps => C => {
     return class ConnectedComponent extends Component {
       onInit() {

@@ -27,3 +27,14 @@ const ConnectedComponent = connect(mapStoreToProps)(MyComponent)
   <ConnectedComponent />
 </Section>
 ```
+
+## useStore
+
+`useStore` will watch the change of store and trigger rerendering:
+
+```js
+function MyComponent() {
+  useStore(store)
+  ...
+}
+```
