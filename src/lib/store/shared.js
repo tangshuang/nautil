@@ -11,7 +11,6 @@ export function applyStore(store) {
       store.subscribe(forceUpdate)
       return () => store.unsubscribe(forceUpdate)
     }, [])
-
     return store
   }
   const connect = mapToProps => C => {

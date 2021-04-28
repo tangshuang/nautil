@@ -90,7 +90,7 @@ export { Animation } from './lib/animate/animation.jsx'
 
 export { Store } from './lib/store/store.js'
 export { Provider } from './lib/store/provider.jsx'
-export { Consumer, connect } from './lib/store/consumer.jsx'
+export { Consumer, connect, useStore } from './lib/store/consumer.jsx'
 export { applyStore } from './lib/store/shared.js'
 
 export { Model, Meta, Validator } from './lib/model.js'

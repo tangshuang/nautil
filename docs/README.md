@@ -1,6 +1,6 @@
 # Nautil
 
-> May be the best [React](https://reactjs.org/) framework to build business applications.
+> May be the best [React](https://reactjs.org/) frontend framework to build business applications.
 
 ## What is all the Nuatil?
 

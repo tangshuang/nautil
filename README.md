@@ -20,6 +20,16 @@ Without importing all the ecosystem of React, without complex redux, without any
 - [Documents](https://nautil.js.org)
 - [中文文档](https://www.tangshuang.net/7273.html)
 
+## Install
+
+```
+npm i nautil
+```
+
+## Contributing
+
+Feel free to dive in! [Open an issue](https://github.com/tangshuang/nautil/issues/new) or submit PRs.
+
 ## MIT License
 
 Copyright 2019 tangshuang

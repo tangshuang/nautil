@@ -4,6 +4,7 @@
   - [Data Type System](concepts/data-type-system.md)
   - [CSS Module](concepts/css-module.md)
   - [Stream](concepts/stream.md)
+  - [MVC](concepts/mvc.md)
 
 - Component
   - [Props](component/props.md)

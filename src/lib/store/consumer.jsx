@@ -47,7 +47,6 @@ export class Consumer extends Component {
 
 export default Consumer
 
-
 export const connect = mapToProps => C => {
   return class ConnectedComponent extends Component {
     render() {
@@ -60,4 +59,16 @@ export const connect = mapToProps => C => {
       )
     }
   }
+}
+
+export function useStore(store) {
+  const [, update] = useState()
+  useEffect(() => {
+    const forceUpdate = () => {
+      update({})
+    }
+    store.subscribe(forceUpdate)
+    return () => store.unsubscribe(forceUpdate)
+  }, [])
+  return store
 }
