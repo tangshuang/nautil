@@ -16,12 +16,12 @@ export class Observer extends Component {
   }
 
   onMounted() {
-    const { subscribe, dispatch = this.forceUpdate } = this.attrs
+    const { subscribe, dispatch = this.weakUpdate } = this.attrs
     this._unsubscribe = subscribe(dispatch)
   }
 
   onUnmount() {
-    const { unsubscribe = this._unsubscribe, dispatch = this.forceUpdate } = this.attrs
+    const { unsubscribe = this._unsubscribe, dispatch = this.weakUpdate } = this.attrs
     if (process.env.NODE_ENV !== 'production') {
       Ty.expect(unsubscribe).to.be(Function)
     }

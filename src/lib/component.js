@@ -175,6 +175,12 @@ export class Component extends PrimitiveComponent {
     return this
   }
 
+  weakUpdate() {
+    return new Promise((callback) => {
+      this.setState({}, callback)
+    })
+  }
+
   forceUpdate() {
     return new Promise((callback) => {
       if (!this._isMounted || this._isUnmounted) {

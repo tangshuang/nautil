@@ -32,7 +32,7 @@ class _Language extends Component {
 
   render() {
     const { i18n, dispatch } = this.attrs
-    const update = dispatch ? dispatch : this.forceUpdate
+    const update = dispatch ? dispatch : this.weakUpdate
     const children = this.children
 
     return (

@@ -6,10 +6,10 @@ export function applyStore(store) {
   const connect = mapToProps => C => {
     return class ConnectedComponent extends Component {
       onInit() {
-        store.subscribe(this.forceUpdate)
+        store.subscribe(this.weakUpdate)
       }
       onUnmount() {
-        store.unsubscribe(this.forceUpdate)
+        store.unsubscribe(this.weakUpdate)
       }
       render() {
         const data = mapToProps(store)

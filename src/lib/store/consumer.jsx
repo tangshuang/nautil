@@ -16,7 +16,7 @@ export class _Consumer extends Component {
     const { store } = props
     store.subscribe((next, prev) => {
       if (next !== prev) {
-        this.forceUpdate()
+        this.weakUpdate()
       }
     })
 

@@ -92,7 +92,7 @@ export class Controller {
 
       this[key] = class extends Component {
         onInit() {
-          emitters.push(this.forceUpdate)
+          emitters.push(this.weakUpdate)
           if (!activeComponents) {
             controller.observers.forEach(({ start }) => start())
             controller.onStart()
@@ -101,7 +101,7 @@ export class Controller {
         }
         onUnmount() {
           emitters.forEach((fn, i) => {
-            if (fn === this.forceUpdate) {
+            if (fn === this.weakUpdate) {
               emitters.splice(i, 1)
             }
           })
