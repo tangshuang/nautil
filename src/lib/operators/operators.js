@@ -24,6 +24,23 @@ export function observe(subscription, unsubscription) {
           unsubscribe = this.props[unsubscribe]
         }
 
+        // subscribe to store or data service
+        if (subscription && typeof subscription === 'object' && subscription.subscribe && subscription.unsubscribe) {
+          subscribe = (update) => subscription.subscribe(update)
+          unsubscribe = (update) => subscription.unsubscribe(update)
+        }
+        // subscribe to model
+        else if (subscription && typeof subscription === 'object' && subscription.watch && subscription.unwatch) {
+          subscribe = (update) => {
+            subscription.watch('*', update, true)
+            subscription.watch('!', update)
+          }
+          unsubscribe = (update) => {
+            subscription.unwatch('*', update)
+            subscription.unwatch('!', update)
+          }
+        }
+
         return (
           <Observer subscribe={subscribe} unsubscribe={unsubscribe} dispatch={this.update}>
             <C {...this.props} />
