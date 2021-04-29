@@ -1,42 +1,69 @@
-import { ifexist } from 'tyshemo'
+import { ifexist, Enum, List, nonable } from 'tyshemo'
+import { isArray, isInstanceOf } from 'ts-fns'
 
 import Component from '../component.js'
 import Store from './store.js'
+import { isShallowEqual } from '../utils.js'
 
 export class _Consumer extends Component {
   static props = {
     store: Store,
-    map: ifexist(Function),
+    map: nonable(Function),
+    watch: nonable(new Enum([String, new List([String])])),
     render: ifexist(Function),
   }
 
-  constructor(props) {
-    super(props)
+  _latestState = null
+  _latestMapped = null
 
-    const { store } = props
-    store.subscribe((next, prev) => {
-      if (next !== prev) {
-        this.weakUpdate()
-      }
+  watch = (next, prev) => {
+    const { watch } = this.attrs
+    if (!watch) {
+      this.forceUpdate()
+      return
+    }
+
+    const items = isArray(watch) ? watch : [watch]
+    const latest = {}
+    const current = {}
+    items.forEach((key) => {
+      current[key] = next[key]
+      latest[key] = prev[key]
     })
 
+    if (!isShallowEqual(current, latest)) {
+      this.forceUpdate()
+    }
+  }
+
+  shouldUpdate() {
+    return false
+  }
+
+  onMounted() {
+    const { store } = this.attrs
+    store.subscribe(this.watch)
+  }
+
+  onUnmount() {
+    const { store } = this.attrs
+    store.unsubscribe(this.watch)
+
+    this._latestMapped = null
     this._latestState = null
-    this._latestRender = null
   }
 
   render() {
     const { store, map, render } = this.attrs
     const fn = render ? render : this.children
-    const state = store.getState()
 
-    if (state === this._latestState) {
-      return this._latestRender
-    }
+    const currentState = store.getState()
+    const data = map ? (this._latestState && this._latestMapped && this._latestState === currentState ? this._latestMapped : map(store)) : store
 
-    const data = map ? map(store) : store
-    this._latestState = state
-    this._latestRender = fn(data)
-    return this._latestRender
+    this._latestState = currentState
+    this._latestMapped = data
+
+    return fn(data)
   }
 }
 export class Consumer extends Component {
@@ -47,13 +74,13 @@ export class Consumer extends Component {
 
 export default Consumer
 
-export const connect = mapToProps => C => {
+export const connect = (mapToProps, watch) => C => {
   return class ConnectedComponent extends Component {
     render() {
       return (
-        <Consumer render={(store) => {
-          const data = mapToProps(store)
-          const props = { ...this.props, ...data }
+        <Consumer watch={watch} map={mapToProps} render={(data) => {
+          const mapped = isInstanceOf(data, Store) ? data.getState() : data
+          const props = { ...this.props, ...mapped }
           return <C {...props} />
         }} />
       )
@@ -61,11 +88,26 @@ export const connect = mapToProps => C => {
   }
 }
 
-export function useStore(store) {
+export function useStore(store, watch) {
   const [, update] = useState()
   useEffect(() => {
-    const forceUpdate = () => {
-      update({})
+    const forceUpdate = (next, prev) => {
+      if (!watch) {
+        update({})
+        return
+      }
+
+      const items = isArray(watch) ? watch : [watch]
+      const latest = {}
+      const current = {}
+      items.forEach((key) => {
+        current[key] = next[key]
+        latest[key] = prev[key]
+      })
+
+      if (!isShallowEqual(current, latest)) {
+        update({})
+      }
     }
     store.subscribe(forceUpdate)
     return () => store.unsubscribe(forceUpdate)

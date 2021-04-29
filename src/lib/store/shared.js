@@ -1,22 +1,21 @@
 import { Component } from '../component.js'
-import { useStore as originUseStore } from './consumer.jsx'
+import { useStore as originUseStore, Consumer } from './consumer.jsx'
 
 export function applyStore(store) {
-  const useStore = () => originUseStore(store)
-  const connect = mapToProps => C => {
+  const useStore = (watch) => originUseStore(store, watch)
+  const connect = (mapToProps, watch) => C => {
     return class ConnectedComponent extends Component {
-      onInit() {
-        store.subscribe(this.weakUpdate)
-      }
-      onUnmount() {
-        store.unsubscribe(this.weakUpdate)
-      }
       render() {
-        const data = mapToProps(store)
-        const props = { ...this.props, ...data }
-        return <C {...props} />
+        return (
+          <Consumer store={store} watch={watch} map={mapToProps} render={(data) => {
+            const mapped = isInstanceOf(data, Store) ? data.getState() : data
+            const props = { ...this.props, ...mapped }
+            return <C {...props} />
+          }} />
+        )
       }
     }
   }
+
   return { useStore, connect }
 }
