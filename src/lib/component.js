@@ -401,13 +401,27 @@ export class Component extends PrimitiveComponent {
       })
     }
 
+    // make sure the handler can be called in component
+    // i.e. static props = { onChange: false } and developer did not pass onChange
+    if (PropsTypes) {
+      each(PropsTypes, (value, key) => {
+        if (/^on[A-Z]/.test(key) && !value && !handlingAttrs[key]) {
+          handlingAttrs[key] = false
+        }
+      })
+    }
     /**
      * use the passed handler like onClick to create a stream
      * @param {*} param
      */
-    const streams = map(handlingAttrs, (param, key) => {
+    const streams = {}
+    each(handlingAttrs, (param, key) => {
+      const name = key.replace('on', '')
+      const sign = name + '$'
+
       if (isInstanceOf(param, Stream)) {
-        return param
+        streams[sign] = param
+        return
       }
 
       let subject = new Stream()
@@ -424,7 +438,6 @@ export class Component extends PrimitiveComponent {
         }
       }
 
-      const name = key.replace('on', '')
       this._effectors.forEach((item) => {
         if (name === item.name) {
           subject = item.affect(subject) || subject
@@ -436,17 +449,22 @@ export class Component extends PrimitiveComponent {
 
       subject.subscribe(subscribe)
 
-      return subject
+      streams[sign] = subject
     })
+
     each(this, (_, key) => {
       // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
       if (/^[A-Z].*\$$/.test(key)) {
-        this[key].complete() // finish stream, free memory
+        // keep the unchanged streams
+        if (key in streams && this[key] === streams[key]) {
+          return
+        }
+        // finish stream, free memory
+        this[key].complete()
         delete this[key]
       }
     })
-    each(streams, (stream, key) => {
-      const name = key.substr(2) + '$'
+    each(streams, (stream, name) => {
       this[name] = stream
     })
 
