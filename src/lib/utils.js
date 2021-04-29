@@ -1,4 +1,5 @@
 import { assign, createProxy, isFunction, isObject, isEqual } from 'ts-fns'
+import produce from 'immer'
 
 /**
  * noop
@@ -16,31 +17,33 @@ export function noop() {}
  * @param {*} update
  */
 export function createTwoWayBinding(data, update) {
-  const createReflect = (data, keyPath) => {
-    return (v) => {
-      // use passed update
-      if (isFunction(update)) {
-        update(data, keyPath, v)
-      }
-      // update data directly
-      else {
-        assign(data, keyPath, v)
-      }
+  const reactive = (data, keyPath, value) => {
+    // use passed update
+    if (isFunction(update)) {
+      const next = produce(data, data => {
+        assign(data, keyPath, value)
+      })
+      update(next, keyPath, value)
+    }
+    // update data directly
+    else {
+      assign(data, keyPath, value)
     }
   }
   const proxy = createProxy(data, {
-    get(keyPath) {
-      const update = createReflect(data, keyPath)
-      return [value, update]
+    get(keyPath, value) {
+      return [value, (value) => reactive(data, keyPath, value)]
     },
     set(keyPath, value) {
-      const update = createReflect(data, keyPath)
-      update(value)
+      reactive(data, keyPath, value)
     },
     del(keyPath) {
       // use passed update
       if (isFunction(update)) {
-        update(data, keyPath)
+        const next = produce(data, data => {
+          remove(data, keyPath)
+        })
+        update(next, keyPath)
       }
       // update data directly
       else {
