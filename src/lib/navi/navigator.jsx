@@ -14,13 +14,13 @@ import { _Link } from './link.jsx'
 
 /**
  * @example use children
- * <Navigator navigation={navigation} dispatch={this.update}>
+ * <Navigator navigation={navigation} dispatch={this.forceUpdate}>
  *   <_Route match="home" component={Home} props={{ title: 'Home Page' }} />
  *   <_Route match="page1" component={Page1} props={{ title: 'Page1' }} />
  * </Navigator>
  *
  * @example I use Route directly previously, in fact, Route can be use anywhere inside Navigator
- * <Navigator navigation={navigation} dispatch={this.update}>
+ * <Navigator navigation={navigation} dispatch={this.forceUpdate}>
  *   <Page1 title="Page1" />
  * </Navigator>
  *
@@ -62,7 +62,7 @@ class _Navigator extends Component {
     }
 
     const children = this.children
-    const update = dispatch ? dispatch : this.update
+    const update = dispatch ? dispatch : this.forceUpdate
 
     let layout = null
     if (inside) {

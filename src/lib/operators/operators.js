@@ -42,7 +42,7 @@ export function observe(subscription, unsubscription) {
         }
 
         return (
-          <Observer subscribe={subscribe} unsubscribe={unsubscribe} dispatch={this.update}>
+          <Observer subscribe={subscribe} unsubscribe={unsubscribe} dispatch={this.forceUpdate}>
             <C {...this.props} />
           </Observer>
         )
