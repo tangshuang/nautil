@@ -7,7 +7,7 @@
 - [Documents](https://nautil.js.org)
 - [中文文档](https://www.tangshuang.net/7273.html)
 
-## What is all the Nuatil?
+## What is all the Nautil?
 
 Nautil (nautil.js) is a javascript frontend framework which helps you to build cross-platform business system by using familiar React syntax.
 
