@@ -1,5 +1,5 @@
 import { ifexist, Enum, List, nonable } from 'tyshemo'
-import { isArray, isInstanceOf } from 'ts-fns'
+import { isArray, isInstanceOf, parse } from 'ts-fns'
 
 import Component from '../component.js'
 import Store from './store.js'
@@ -27,8 +27,8 @@ export class _Consumer extends Component {
     const latest = {}
     const current = {}
     items.forEach((key) => {
-      current[key] = next[key]
-      latest[key] = prev[key]
+      current[key] = parse(next, key)
+      latest[key] = parse(prev, key)
     })
 
     if (!isShallowEqual(current, latest)) {
@@ -101,8 +101,8 @@ export function useStore(store, watch) {
       const latest = {}
       const current = {}
       items.forEach((key) => {
-        current[key] = next[key]
-        latest[key] = prev[key]
+        current[key] = parse(next, key)
+        latest[key] = parse(prev, key)
       })
 
       if (!isShallowEqual(current, latest)) {
