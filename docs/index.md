@@ -1,10 +1,10 @@
 - Concepts
+  - [MVC](concepts/mvc.md)
   - [Observer Pattern](concepts/observer-pattern.md)
   - [Two-Way-Binding](concepts/two-way-binding.md)
   - [Data Type System](concepts/data-type-system.md)
   - [CSS Module](concepts/css-module.md)
   - [Stream](concepts/stream.md)
-  - [MVC](concepts/mvc.md)
 
 - Component
   - [Props](component/props.md)
