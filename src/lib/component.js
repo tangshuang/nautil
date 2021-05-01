@@ -402,15 +402,17 @@ export class Component extends PrimitiveComponent {
       })
     }
 
-    // make sure the handler can be called in component
-    // i.e. static props = { onChange: false } and developer did not pass onChange
-    if (PropsTypes) {
-      each(PropsTypes, (value, key) => {
-        if (/^on[A-Z]/.test(key) && !value && !handlingAttrs[key]) {
-          handlingAttrs[key] = false
-        }
-      })
-    }
+    // DROP: because we may remove static props when build
+    // // make sure the handler can be called in component
+    // // i.e. static props = { onChange: false } and developer did not pass onChange
+    // if (PropsTypes) {
+    //   each(PropsTypes, (value, key) => {
+    //     if (/^on[A-Z]/.test(key) && !value && !handlingAttrs[key]) {
+    //       handlingAttrs[key] = false
+    //     }
+    //   })
+    // }
+
     /**
      * use the passed handler like onClick to create a stream
      * @param {*} param

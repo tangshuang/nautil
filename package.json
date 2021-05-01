@@ -26,21 +26,18 @@
     "@babel/runtime": "^7.13.10",
     "i18next": "^20.2.1",
     "immer": "^9.0.1",
-    "prop-types": "^15.7.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "rxjs": "^6.6.7",
     "scopex": "^2.1.0",
     "ts-fns": "^9.3.1",
     "tyshemo": "^10.10.3"
   },
   "peerDependencies": {
-    "react-native": "^0.64.0"
-  },
-  "optionalDependencies": {
     "@react-native-async-storage/async-storage": "^1.14.1",
     "i18next-browser-languagedetector": "^4.0.1",
     "i18next-react-native-language-detector": "^1.0.2",
+    "react-dom": "^17.0.2",
+    "react-native": "^0.64.0",
     "react-native-locale-detector": "^1.0.1"
   },
   "devDependencies": {

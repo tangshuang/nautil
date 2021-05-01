@@ -1,16 +1,17 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import { mixin } from 'ts-fns'
 import ListSection from '../../lib/elements/list-section.jsx'
+import { Component } from '../../lib/component.js'
+import { ifexist } from 'tyshemo'
 
 // fork from https://github.com/jwarning/react-scrollable-list
 // https://github.com/jwarning/react-scrollable-list/blob/master/index.js
 class ReactList extends Component {
-  static propTypes = {
-    listItems: PropTypes.array.isRequired,
-    heightOfItem: PropTypes.number,
-    maxItemsToRender: PropTypes.number,
-    style: PropTypes.object
+  static props = {
+    listItems: Array,
+    heightOfItem: ifexist(Number),
+    maxItemsToRender: ifexist(Number),
+    style: ifexist(Object),
   }
   static defaultProps = {
     listItems: [],
