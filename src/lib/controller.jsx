@@ -3,7 +3,6 @@ import { Model } from './model.js'
 import { Store } from './store/store.js'
 import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
 import Component from './component.js'
-import { isShallowEqual } from './utils.js'
 import { Stream } from './stream.js'
 import { Service } from './service.js'
 import { DataService } from './services/data-service.js'
@@ -77,7 +76,9 @@ export class Controller {
         return
       }
 
-      if (!isFunction(value)) {
+      // Fn() {}
+      // get Fn() { return class extends Component {} }
+      if (!isFunction(value) && !isInstanceOf(value, Component)) {
         return
       }
 
@@ -88,7 +89,7 @@ export class Controller {
         return
       }
 
-      const Gen = value.bind(this)
+      const Gen = isInstanceOf(value, Component) ? value : value.bind(this)
 
       this[key] = class extends Component {
         onInit() {
@@ -112,7 +113,7 @@ export class Controller {
           }
         }
         render() {
-          return <Gen {...this.props} />
+          return <Gen {...this.props} className={this.className} style={this.style} />
         }
       }
     }, true)
