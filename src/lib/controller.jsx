@@ -111,9 +111,6 @@ export class Controller {
             controller.observers.forEach(({ stop }) => stop())
           }
         }
-        shouldUpdate(nextProps) {
-          return !isShallowEqual(nextProps, this.props)
-        }
         render() {
           return <Gen {...this.props} />
         }
