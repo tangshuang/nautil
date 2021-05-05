@@ -22,7 +22,14 @@ export class Css {
     const res = {}
     each(rules, (value, key) => {
       const name = Css.getName(key)
-      res[name] = Css.getRule(value)
+      const rule = Css.getRule(value)
+      if (!rule) {
+        return
+      }
+      if (typeof rule !== 'string' && typeof rule !== 'object') {
+        return
+      }
+      res[name] = rule
     })
     return res
   }
