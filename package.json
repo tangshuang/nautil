@@ -29,8 +29,8 @@
     "react": "^17.0.2",
     "rxjs": "^6.6.7",
     "scopex": "^2.1.0",
-    "ts-fns": "^9.3.2",
-    "tyshemo": "^10.10.3"
+    "ts-fns": "^10.1.0",
+    "tyshemo": "^11.0.1"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": "^1.14.1",
@@ -43,7 +43,6 @@
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.11.0",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
