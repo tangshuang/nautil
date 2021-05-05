@@ -11,6 +11,7 @@ import {
   createProxy,
   isEmpty,
   define,
+  decideby,
 } from 'ts-fns'
 import { Ty, Rule, ifexist } from 'tyshemo'
 import produce from 'immer'
@@ -18,6 +19,7 @@ import Stream from './stream.js'
 
 import Style from './style/style.js'
 import ClassName from './style/classname.js'
+import Css from './style/css.js'
 import { Binding, Handling } from './types.js'
 import { noop, isRef, isShallowEqual } from './utils.js'
 
@@ -274,7 +276,7 @@ export class Component extends PrimitiveComponent {
 
   _digest(props) {
     const Constructor = getConstructorOf(this)
-    const { props: PropsTypes, defaultStylesheet } = Constructor
+    const { props: PropsTypes, defaultStylesheet, css } = Constructor
     const parsedProps = this.onParseProps(props)
     const { children, stylesheet, style, className, ...attrs } = parsedProps
 
@@ -362,13 +364,21 @@ export class Component extends PrimitiveComponent {
     }
 
     // format stylesheet by using stylesheet, className, style props
-    const classNameQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(className)
-    this.className = ClassName.create(classNameQueue)
+    this.className = decideby(() => {
+      const classNameQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(className)
+      return ClassName.create(classNameQueue)
+    })
 
     // Format stylesheet by using stylesheet, className, style props
-    const styleQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(style)
-    this.style = Style.create(styleQueue)
+    this.style = decideby(() => {
+      const styleQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(style)
+      return Style.create(styleQueue)
+    })
 
+    // import css and transform css rules
+    this.css = Css.create(css)
+
+    // generate this.children
     this.children = children
 
     // createProxy will cost performance, so we only createProxy when attrs are changed in 2 deepth
