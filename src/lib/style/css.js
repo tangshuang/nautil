@@ -1,4 +1,5 @@
 import { each } from 'ts-fns'
+import { Style } from './style.js'
 
 export class Css {
   static getName(key) {
@@ -8,7 +9,7 @@ export class Css {
     return name
   }
   static getRule(rule) {
-    return rule
+    return typeof rule === 'object' ? Style.ensure(rule) : rule
   }
   static create(css) {
     if (!css) {
