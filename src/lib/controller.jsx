@@ -113,7 +113,9 @@ export class Controller {
           }
         }
         render() {
-          return <Gen {...this.props} className={this.className} style={this.style} />
+          const attrs = { ...this.props }
+          delete attrs.stylesheet
+          return <Gen {...attrs} className={this.className} style={this.style} />
         }
       }
     }, true)
