@@ -3,7 +3,6 @@ import {
   each,
   getConstructorOf,
   isArray,
-  map,
   isInstanceOf,
   isFunction,
   makeKeyChain,
@@ -375,9 +374,6 @@ export class Component extends PrimitiveComponent {
       return Style.create(styleQueue)
     })
 
-    // import css and transform css rules
-    this.css = Css.create(css)
-
     // generate this.children
     this.children = children
 
@@ -411,6 +407,16 @@ export class Component extends PrimitiveComponent {
         },
       })
     }
+
+    // import css and transform css rules
+    this.css = decideby(() => {
+      const rules = isFunction(css) ? css({
+        attrs: this.attrs,
+        className: this.className,
+        style: this.style,
+      }) : css
+      return Css.create(rules)
+    })
 
     // DROP: because we may remove static props when build
     // // make sure the handler can be called in component
