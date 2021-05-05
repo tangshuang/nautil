@@ -10,7 +10,7 @@ export class Css {
     }
 
     if (css.rules && typeof css.rules === 'object') {
-      const { rules, camel } = css
+      const { rules, camel = true } = css
       if (camel) {
         const res = {}
         each(rules, (value, key) => {
