@@ -1,3 +1,7 @@
+- Beginning
+  - [Install](beginning/install.md)
+  - [Package Usage](beginning/package-usage.md)
+
 - Concepts
   - [MVC](concepts/mvc.md)
   - [Observer Pattern](concepts/observer-pattern.md)
