@@ -7,9 +7,9 @@ mixin(Form, class {
     return <form
       {...this.attrs}
 
-      onChange={e => this.emit('Change', e)}
-      onReset={e => this.emit('Reset', e)}
-      onSubmit={e => this.emit('Submit', e)}
+      onChange={e => this.dispatch('Change', e)}
+      onReset={e => this.dispatch('Reset', e)}
+      onSubmit={e => this.dispatch('Submit', e)}
 
       style={this.style}
       className={this.className}

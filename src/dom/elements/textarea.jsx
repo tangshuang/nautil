@@ -9,7 +9,7 @@ mixin(Textarea, class {
     const onChange = (e) => {
       const value = e.target.value
       this.$attrs.value = value
-      this.emit('Change', e)
+      this.dispatch('Change', e)
     }
 
     return <textarea
@@ -20,9 +20,9 @@ mixin(Textarea, class {
       value={value}
 
       onChange={onChange}
-      onFocus={e => this.emit('Focus', e)}
-      onBlur={e => this.emit('Blur', e)}
-      onSelect={e => this.emit('Select', e)}
+      onFocus={e => this.dispatch('Focus', e)}
+      onBlur={e => this.dispatch('Blur', e)}
+      onSelect={e => this.dispatch('Select', e)}
 
       className={this.className}
       style={this.style}

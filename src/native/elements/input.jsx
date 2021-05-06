@@ -11,7 +11,7 @@ mixin(Input, class {
     const onChange = (e) => {
       const value = e.target.value
       this.$attrs.value = value
-      this.emit('Change', e)
+      this.dispatch('Change', e)
     }
 
     const contentType = type === 'password' ? 'password' : 'none'

@@ -25,7 +25,7 @@ some$.subscribe(function(e) {
 <Input onChange={some$} />
 ```
 
-Inside the component, we should use `on` to subscribe to Observable, use `emit` to active stream.
+Inside the component, we should use `subscribe` to subscribe to Observable, use `dispatch` to active stream.
 
 ```js
 class Some extends Component {
@@ -42,18 +42,19 @@ class Some extends Component {
   }
 
   onInit() {
-    // here, we should use `change` as event stream's name
-    this.on('change', this.handleChange)
+    // here, we should use `change` or `Change` as event stream's name
+    // the first case of stream's name is uppercase, but we can use lowercase for it to write more comfortable
+    this.subscribe('change', this.handleChange)
   }
 
   onUnmount() {
-    this.off('change', this.handleChange)
+    this.unsubscribe('change', this.handleChange)
   }
 
   handleInput = (e) => {
-    // use emit to active stream
-    // skill: you can emit('Change') or emit('change'), they are the same
-    this.emit('change', e)
+    // use dispatch to active stream
+    // skill: you can dispatch('Change') or dispatch('change'), they are the same
+    this.dispatch('change', e)
   }
 }
 ```

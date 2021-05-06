@@ -36,21 +36,21 @@ mixin(SwipeSection, class {
     }
 
     if (!this.started && this.isReached(touchMoveX, sensitivity)) {
-      this.emit('Start', { startX: currentX })
+      this.dispatch('Start', { startX: currentX })
       this.startX = currentX
       this.started = true
     }
     else if (this.started) {
       const moveX = currentX - startX
-      this.emit('Move', { moveX, startX, currentX })
+      this.dispatch('Move', { moveX, startX, currentX })
 
       // 当达到了可以执行 onEnd 的位置
       if (this.isReached(moveX, distance)) {
-        this.emit('Reach', { moveX, startX, currentX })
+        this.dispatch('Reach', { moveX, startX, currentX })
       }
       // 未达到指定位置
       else {
-        this.emit('Unreach', { moveX, startX, currentX })
+        this.dispatch('Unreach', { moveX, startX, currentX })
       }
     }
   }
@@ -71,14 +71,14 @@ mixin(SwipeSection, class {
 
     if (this.isReached(moveX, distance)) {
       if (!disabled) {
-        this.emit('End', { moveX, startX, currentX })
+        this.dispatch('End', { moveX, startX, currentX })
       }
       else {
-        this.emit('Cancel', { moveX, startX, currentX })
+        this.dispatch('Cancel', { moveX, startX, currentX })
       }
     }
     else {
-      this.emit('Cancel', { moveX, startX, currentX })
+      this.dispatch('Cancel', { moveX, startX, currentX })
     }
 
     this.startX = 0
@@ -90,7 +90,7 @@ mixin(SwipeSection, class {
     const { startX } = this
     const moveX = currentX - startX
 
-    this.emit('Cancel', { moveX, startX, currentX })
+    this.dispatch('Cancel', { moveX, startX, currentX })
 
     this.startX = 0
     this.started = false

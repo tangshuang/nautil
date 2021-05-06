@@ -47,7 +47,7 @@ mixin(Section, class {
         }}
         onStartShouldSetResponder={(e) => {
           if (this.isPathOutsidePath(capturePath, activePath) && activeNode.__mounted) {
-            activeNode.emit('HitOutside', e)
+            activeNode.dispatch('HitOutside', e)
           }
 
           activeNode = this
@@ -56,11 +56,11 @@ mixin(Section, class {
           return true
         }}
 
-        onResponderStart={e => this.emit('HitStart', e)}
-        onResponderMove={e => this.emit('HitMove', e)}
-        onResponderRelease={e => this.emit('HitEnd', e)}
-        onResponderEnd={e => this.emit('Hit', e)}
-        onResponderTerminate={e => this.emit('HitCancel', e)}
+        onResponderStart={e => this.dispatch('HitStart', e)}
+        onResponderMove={e => this.dispatch('HitMove', e)}
+        onResponderRelease={e => this.dispatch('HitEnd', e)}
+        onResponderEnd={e => this.dispatch('Hit', e)}
+        onResponderTerminate={e => this.dispatch('HitCancel', e)}
 
         style={this.style}
         pointerEvents={pointerEvents}

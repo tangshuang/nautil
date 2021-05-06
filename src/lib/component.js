@@ -139,7 +139,7 @@ export class Component extends PrimitiveComponent {
     // should be override
   }
 
-  on(name, affect) {
+  subscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
     this._effectors.push({
       name: upperCaseName,
@@ -148,7 +148,7 @@ export class Component extends PrimitiveComponent {
     return this
   }
 
-  off(name, affect) {
+  unsubscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
     this._effectors.forEach((item, i) => {
       if (upperCaseName === item.name && (!affect || affect === item.affect)) {
@@ -158,11 +158,11 @@ export class Component extends PrimitiveComponent {
     return this
   }
 
-  emit(name, data) {
+  dispatch(name, data) {
     if (isArray(name)) {
       const names = name
       names.forEach((name) => {
-        this.emit(name, data)
+        this.dispatch(name, data)
       })
       return this
     }

@@ -108,13 +108,13 @@ mixin(ScrollSection, class {
       this.setState({ status: RELEASE })
       this._latestY = - distance - 1
       this.setContentY(this._latestY)
-      this.emit('TopRelease')
+      this.dispatch('TopRelease')
     }
     else if (bottomLoading && [UP, BOTH].includes(direction)) {
       this.setState({ status: RELEASE })
       this._latestY = distance + 1
       this.setContentY(this._latestY)
-      this.emit('BottomRelease')
+      this.dispatch('BottomRelease')
     }
   }
 
@@ -204,11 +204,11 @@ mixin(ScrollSection, class {
       this.setState({ status: RELEASE })
 
       if ([DOWN, BOTH].includes(direction) && directTo === DOWN) {
-        this.emit('TopRelease')
+        this.dispatch('TopRelease')
         this.setContentY(distance)
       }
       else if ([UP, BOTH].includes(direction) && directTo === UP) {
-        this.emit('BottomRelease')
+        this.dispatch('BottomRelease')
         this.setContentY(-distance)
       }
     }
@@ -221,7 +221,7 @@ mixin(ScrollSection, class {
     const { scrollTop } = e.target
     const directTo = scrollTop < this._latestTop ? UP : DOWN
     this._latestTop = scrollTop
-    this.emit('Scroll', { scrollTop, directTo })
+    this.dispatch('Scroll', { scrollTop, directTo })
   }
 
   isEdge(directTo) {

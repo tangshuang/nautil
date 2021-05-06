@@ -78,10 +78,10 @@ mixin(ScrollSection, class {
           }
           this.setState({ status: RELEASE })
           if ([DOWN, BOTH].includes(direction) && directTo === DOWN) {
-            this.emit('Refresh')
+            this.dispatch('Refresh')
           }
           else if ([UP, BOTH].includes(direction) && directTo === UP) {
-            this.emit('LoadMore')
+            this.dispatch('LoadMore')
           }
         }}
         refreshing={doing}

@@ -22,7 +22,7 @@ mixin(Section, class {
     if (!this._isMounted) {
       return
     }
-    this.emit('HitOutside', event)
+    this.dispatch('HitOutside', event)
   }
   onMounted() {
     document.addEventListener('click', this.handleClickOutside, true)
@@ -34,16 +34,16 @@ mixin(Section, class {
     return <div
       {...this.attrs}
 
-      onClick={e => this.emit('Hit', e)}
+      onClick={e => this.dispatch('Hit', e)}
 
-      onMouseDown={e => !isTouchable && this.emit('HitStart', e)}
-      onMouseMove={e => !isTouchable && this.emit('HitMove', e)}
-      onMouseUp={e => !isTouchable && this.emit('HitEnd', e)}
+      onMouseDown={e => !isTouchable && this.dispatch('HitStart', e)}
+      onMouseMove={e => !isTouchable && this.dispatch('HitMove', e)}
+      onMouseUp={e => !isTouchable && this.dispatch('HitEnd', e)}
 
-      onTouchStart={e => isTouchable && this.emit('HitStart', e)}
-      onTouchMove={e => isTouchable && this.emit('HitMove', e)}
-      onTouchEnd={e => isTouchable && this.emit('HitEnd', e)}
-      onTouchCancel={e => isTouchable && this.emit('HitCancel', e)}
+      onTouchStart={e => isTouchable && this.dispatch('HitStart', e)}
+      onTouchMove={e => isTouchable && this.dispatch('HitMove', e)}
+      onTouchEnd={e => isTouchable && this.dispatch('HitEnd', e)}
+      onTouchCancel={e => isTouchable && this.dispatch('HitCancel', e)}
 
       className={this.className}
       style={this.style}

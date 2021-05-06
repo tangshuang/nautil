@@ -12,10 +12,10 @@ mixin(Checkbox, class {
       this.$attrs.checked = !checked
 
       if (checked) {
-        this.emit('Uncheck', e)
+        this.dispatch('Uncheck', e)
       }
       else {
-        this.emit('Check', e)
+        this.dispatch('Check', e)
       }
     }
 
