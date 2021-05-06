@@ -4,3 +4,5 @@ docs/
 .demo/
 .test/
 .examples/
+.babelrc
+.browserslistrc

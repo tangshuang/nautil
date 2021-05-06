@@ -1,0 +1,1 @@
+rm -rf dom lib native ssr web-component wechat-miniprogram index.js
