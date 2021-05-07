@@ -21,7 +21,7 @@ export class Css {
     }
 
     const res = {}
-    each(rules, (value, key) => {
+    each(css, (value, key) => {
       const name = Css.getName(key)
       const rule = Css.getRule(value)
       if (!rule) {
