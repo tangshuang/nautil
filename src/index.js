@@ -93,7 +93,7 @@ export { Provider } from './lib/store/provider.jsx'
 export { Consumer, connect, useStore } from './lib/store/consumer.jsx'
 export { applyStore } from './lib/store/shared.js'
 
-export { Model, Meta, Validator } from './lib/model.js'
+export { Model, Meta, Validator, AsyncGetter, Factory } from './lib/model.js'
 export { Stream } from './lib/stream.js'
 export { Controller } from './lib/controller.jsx'
 export { Service } from './lib/service.js'

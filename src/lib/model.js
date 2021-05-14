@@ -1,1 +1,1 @@
-export { Model, Meta, Validator } from 'tyshemo'
+export { Model, Meta, Validator, AsyncGetter, Factory } from 'tyshemo'
