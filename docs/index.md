@@ -91,6 +91,7 @@
 
 - operators
   - [observe](operators/observe.md)
+  - [evolve](operators/evolve.md)
   - [inject](operators/inject.md)
   - [pollute](operators/pollute.md)
   - [initialize](operators/initialize.md)

@@ -17,18 +17,38 @@ Nautil (nautil.js) is built on React and is a framework, not a UI library. Devel
 Without importing all the ecosystem of React, without complex redux, without any more choice of third part libraries, you will begin and build your application quickly with Nautil. Feel happy and relaxing when you writing with Nautil. It will work as what you think. You do not need to learn more than react. The only thing you need to know is some feature level api. There is no syntax level or higher knowledge to learn. Try it, I belive, you will fall in love with Nautil in 5 minutes.<br>
 不需要把整个 React 生态里面的东西都引入进来了，不需要复杂的 redux，不需要一大堆第三方库，你现在只需要使用到 Nautil 就可以开始快速构建你的应用。轻松上阵吧！它会按照你所想的那样工作，除了 React 本身，你不需要学更多复杂的内容了，你要了解的全都是 API 层面的东西，不会再有新语法让你去学了。现在开始吧，我相信你会在 5 分钟内爱上她！
 
-- [Documents](https://nautil.js.org)
-- [中文文档](https://www.tangshuang.net/7273.html)
-
 ## Install
 
 ```
 npm i nautil
 ```
 
+## Documention
+
+- [Documents](https://nautil.js.org)
+- [中文文档](https://www.tangshuang.net/7273.html)
+
+## Related Efforts
+
+- [nautil-cli](https://github.com/tangshuang/nautil-cli) - The CLI tool for Nautil to make your development more easy.
+- [tyshemo](https://github.com/tangshuang/tyshemo) - A data type checker, Model generator library which is used in Nautil to help developers to crete models.
+
+## Maintainers
+
+[@tangshuang](https://github.com/tangshuang).
+
 ## Contributing
 
 Feel free to dive in! [Open an issue](https://github.com/tangshuang/nautil/issues/new) or submit PRs.
+
+## Road Map
+
+- [ ] TypeScript supports (highest priority)
+- [ ] Unit test
+- [ ] Eslint rules in nautil-cli
+- [ ] testing tasks in nautil-cli
+- [ ] React Native in nautil-cli
+- [ ] Wechat/Alipay miniprogram
 
 ## MIT License
 

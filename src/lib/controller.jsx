@@ -1,11 +1,12 @@
 import React from 'react'
 import { Model } from './model.js'
 import { Store } from './store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, throttle } from 'ts-fns'
 import Component from './component.js'
 import { Stream } from './stream.js'
 import { Service } from './service.js'
 import { DataService } from './services/data-service.js'
+import { evolve } from './operators/operators.js'
 
 /**
  * class SomeController extends Constroller {
@@ -31,10 +32,10 @@ export class Controller {
     let activeComponents = 0
 
     const emitters = []
-    this.update = () => {
+    this.update = throttle(() => {
       emitters.forEach(fn => fn())
       this.onUpdate()
-    }
+    }, 16)
 
     const Constructor = getConstructorOf(this)
     const streams = []
@@ -119,6 +120,32 @@ export class Controller {
         }
       }
     }, true)
+
+    each(this, (value, key) => {
+      if (isObject(value) && value.$$type === 'turner' && value.component && value.collect) {
+        const C = value.component
+        class G extends Component {
+          render() {
+            const attrs = { ...this.props }
+            delete attrs.stylesheet
+            return <C {...attrs} className={this.className} style={this.style} />
+          }
+        }
+        this[key] = this.turn(G, value.collect.bind(this))
+      }
+    })
+  }
+
+  turn(component, collect) {
+    if (!this.update) {
+      return {
+        $$type: 'turner',
+        component,
+        collect,
+      }
+    }
+
+    return evolve(collect)(component)
   }
 
   observe(observer) {

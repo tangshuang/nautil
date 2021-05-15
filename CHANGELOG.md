@@ -1,3 +1,8 @@
+## 0.31.5 (May. 15, 2021)
+
+- add `evolve` operator
+- add `Controller.turn`
+
 ## 0.29.11 (Apr. 30, 2021)
 
 - Redefine nautil to `Powerful Cross Platform Business System Frontend Framework` which emphasize MVC

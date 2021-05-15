@@ -21,7 +21,11 @@ export class Service {
     })
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([stream$, fn]) => fn.call(this, stream$))
+    this.init()
   }
+
+  init() {}
+
   new() {
     const Constructor = getConstructorOf(this)
     return new Constructor()

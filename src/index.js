@@ -48,7 +48,7 @@ export { createTwoWayBinding, isShallowEqual, isRef, noop } from './lib/utils.js
 export { useTwoWayBinding } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
 
-export { observe, inject, pollute, initialize, nest } from './lib/operators/operators.js'
+export { observe, evolve, inject, pollute, initialize, nest } from './lib/operators/operators.js'
 export { pipe } from './lib/operators/combiners.js'
 
 export { Async } from './lib/components/async.jsx'

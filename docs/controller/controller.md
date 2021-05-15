@@ -22,7 +22,8 @@ class SomeController extends Controller {
   }
 
   // a component
-  PriceSection(props) {
+  // this component will be automaticly rerendered when the controller's models, stores, dataServices changed
+  Price(props) {
     const value = useState(0) // can use hooks
 
     return (
@@ -33,6 +34,24 @@ class SomeController extends Controller {
       </Section>
     )
   }
+
+  // a component
+  // this component will be rendered only when this.someModel's order_count and price properties changed
+  // this.turn use evolve operator to controll rerenderer
+  Order = this.turn(
+    (props) => {
+      const { order_count, price } = this.someModel
+      return (
+        <Section>
+          <Text>Total Price: {order_count * price}</Text>
+        </Section>
+      )
+    },
+    (props) => {
+      const { order_count, price } = this.someModel
+      return { order_count, price }
+    },
+  )
 }
 ```
 

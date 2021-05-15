@@ -1,4 +1,4 @@
-import { assign, createProxy, isFunction, isObject, isEqual } from 'ts-fns'
+import { assign, createProxy, isFunction, isObject, isEqual, isArray } from 'ts-fns'
 import produce from 'immer'
 
 /**
@@ -74,6 +74,13 @@ export function isShallowEqual(objA, objB, isEqaul) {
 
   if (objA === null || objB === null) {
     return objA === objB
+  }
+
+  if (
+    (isArray(objA) && !isArray(objB))
+    || (isArray(objB) && !isArray(objA))
+  ) {
+    return false
   }
 
   const keysA = Object.keys(objA).sort()
