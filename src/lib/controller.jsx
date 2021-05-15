@@ -29,13 +29,38 @@ export class Controller {
   constructor() {
     this.observers = []
 
-    let activeComponents = 0
-
     const emitters = []
     this.update = throttle(() => {
       emitters.forEach(fn => fn())
       this.onUpdate()
     }, 16)
+    this.on = (fn) => {
+      emitters.push(fn)
+    }
+    this.off = (fn) => {
+      emitters.forEach((item, i) => {
+        if (fn === item) {
+          emitters.splice(i, 1)
+        }
+      })
+    }
+
+    let activeComponents = 0
+
+    this.active = () => {
+      if (!activeComponents) {
+        controller.observers.forEach(({ start }) => start())
+        controller.onStart()
+      }
+      activeComponents ++
+    }
+    this.inactive = () => {
+      activeComponents --
+      if (!activeComponents) {
+        controller.onEnd()
+        controller.observers.forEach(({ stop }) => stop())
+      }
+    }
 
     const Constructor = getConstructorOf(this)
     const streams = []
@@ -91,24 +116,12 @@ export class Controller {
 
       this[key] = class extends Component {
         onInit() {
-          emitters.push(this.weakUpdate)
-          if (!activeComponents) {
-            controller.observers.forEach(({ start }) => start())
-            controller.onStart()
-          }
-          activeComponents ++
+          controller.on(this.weakUpdate)
+          controller.active()
         }
         onUnmount() {
-          emitters.forEach((fn, i) => {
-            if (fn === this.weakUpdate) {
-              emitters.splice(i, 1)
-            }
-          })
-          activeComponents --
-          if (!activeComponents) {
-            controller.onEnd()
-            controller.observers.forEach(({ stop }) => stop())
-          }
+          controller.off(this.weakUpdate)
+          controller.inactive()
         }
         render() {
           const attrs = { ...this.props }
@@ -120,15 +133,7 @@ export class Controller {
 
     each(this, (value, key) => {
       if (isObject(value) && value.$$type === 'turner' && value.component && value.collect) {
-        const C = value.component
-        class G extends Component {
-          render() {
-            const attrs = { ...this.props }
-            delete attrs.stylesheet
-            return <C {...attrs} className={this.className} style={this.style} />
-          }
-        }
-        this[key] = this.turn(G, value.collect.bind(this))
+        this[key] = this.turn(value.component, value.collect.bind(this))
       }
     })
 
@@ -145,7 +150,26 @@ export class Controller {
       }
     }
 
-    return evolve(collect)(component)
+    const E = evolve(collect)(component)
+
+    const controller = this
+    class G extends Component {
+      onInit() {
+        controller.on(this.weakUpdate)
+        controller.active()
+      }
+      onUnmount() {
+        controller.off(this.weakUpdate)
+        controller.inactive()
+      }
+      render() {
+        const attrs = { ...this.props }
+        delete attrs.stylesheet
+        return <E {...attrs} className={this.className} style={this.style} />
+      }
+    }
+
+    return G
   }
 
   observe(observer) {
