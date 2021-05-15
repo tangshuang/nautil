@@ -67,9 +67,6 @@ export class Controller {
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([fn, stream$]) => fn.call(this, stream$))
 
-    // developers should must extends Controller and overwrite `init` method to initailize
-    this.init()
-
     const controller = this
     const protos = Constructor.prototype
     each(protos, ({ value }, key) => {
@@ -134,6 +131,9 @@ export class Controller {
         this[key] = this.turn(G, value.collect.bind(this))
       }
     })
+
+    // developers should must extends Controller and overwrite `init` method to initailize
+    this.init()
   }
 
   turn(component, collect) {
