@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { createArray, createRandomString, isEqual } from 'ts-fns'
 
-export function useUniqueKeys(items, useEqual) {
+export function useUniqueKeys(items, shouldDeepEqual) {
   const lastest = useRef()
   const keys = useMemo(() => {
     // the first call
@@ -17,7 +17,7 @@ export function useUniqueKeys(items, useEqual) {
       const nextKeys = []
 
       items.forEach((item, i) => {
-        const index = prevItems.findIndex(one => useEqual ? isEqual(item, one) : item === one)
+        const index = prevItems.findIndex(one => shouldDeepEqual ? isEqual(item, one) : item === one)
         if (index > -1) {
           nextKeys[i] = prevKeys[index]
         }
@@ -41,7 +41,7 @@ export function useUniqueKeys(items, useEqual) {
       lastest.current = { items, keys: nextKeys }
       return nextKeys
     }
-  }, [items, useEqual])
+  }, [items, shouldDeepEqual])
 
   return keys
 }

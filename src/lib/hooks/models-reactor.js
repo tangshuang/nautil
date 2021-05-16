@@ -14,7 +14,7 @@ export function useModelsReactor(models, compute, ...args) {
   const latestArgs = useShallowLatest(args)
   const [state, setState] = useState()
 
-  const { vdom, deps, hash } = useMemo(() => {
+  const { res, deps, hash } = useMemo(() => {
     const items = models.map((model) => {
       return { model, keys: [] }
     })
@@ -32,7 +32,7 @@ export function useModelsReactor(models, compute, ...args) {
       model.on('get', collect)
     })
 
-    const vdom = compute(...args)
+    const res = compute(...args)
 
     items.forEach((item) => {
       const { model, collect } = item
@@ -43,7 +43,7 @@ export function useModelsReactor(models, compute, ...args) {
     const deps = items.map(item => item.keys)
     const hash = getObjectHash(deps)
 
-    return { vdom, deps, hash }
+    return { res, deps, hash }
   }, [state, latest, latestArgs])
 
   useEffect(() => {
@@ -65,5 +65,5 @@ export function useModelsReactor(models, compute, ...args) {
     }
   }, [hash, latest])
 
-  return vdom
+  return res
 }

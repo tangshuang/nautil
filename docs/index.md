@@ -98,10 +98,15 @@
   - [nest](operators/nest.md)
   - [pipe](operators/pipe.md)
 
+- hooks
+  - [useTwoWayBinding](hooks/use-two-way-binding.md)
+  - [useUniqueKeys](hooks/use-unique-keys.md)
+  - [useShallowLatest](hooks/use-shallow-lastest.md)
+  - [useModelsReactor](hooks/use-models-reactor.md)
+
 - Top-Level-Api
   - [createApp](api/create-app.md)
   - [createTwoWayBinding](api/create-two-way-binding.md)
-  - [useTwoWayBinding](api/use-two-way-binding.md)
   - [Storage](api/storage.md)
   - [Animation](api/animation.md)
 
