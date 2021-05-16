@@ -4,6 +4,7 @@ import { isRef } from '../utils.js'
 import { isValidElement, useMemo } from 'react'
 import { each, createProxy } from 'ts-fns'
 import produce from 'immer'
+import { useShallowLatest } from './shallow-latest.js'
 
 /**
  * when you are not sure whether a var is a binding, use this function to deconstruct.
@@ -33,7 +34,9 @@ export function useTwoWayBinding(attrs) {
     }
   })
 
-  return useMemo(() => {
+  const latest = useShallowLatest(deps)
+
+  const res = useMemo(() => {
     if (process.env.NODE_ENV !== 'production') {
       Ty.expect(bindAttrs).to.be(bindTypes)
     }
@@ -64,6 +67,8 @@ export function useTwoWayBinding(attrs) {
     })
 
     return [finalAttrs, bindingAttrs]
-  }, deps) // only shallow changes will trigger recalculate
+  }, [latest]) // only shallow changes will trigger recalculate
+
+  return res
 }
 export default useTwoWayBinding
