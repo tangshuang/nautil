@@ -113,22 +113,7 @@ export class Controller {
       }
 
       const Gen = isInstanceOf(value, Component) ? value : value.bind(this)
-
-      this[key] = class extends Component {
-        onInit() {
-          controller.on(this.weakUpdate)
-          controller.active()
-        }
-        onUnmount() {
-          controller.off(this.weakUpdate)
-          controller.inactive()
-        }
-        render() {
-          const attrs = { ...this.props }
-          delete attrs.stylesheet
-          return <Gen {...attrs} className={this.className} style={this.style} />
-        }
-      }
+      this[key] = this.turn(Gen)
     }, true)
 
     each(this, (value, key) => {
@@ -150,11 +135,11 @@ export class Controller {
       }
     }
 
-    const E = evolve(collect)(component)
+    const E = collect ? evolve(collect)(component) : component
 
     const controller = this
     class G extends Component {
-      onInit() {
+      onMounted() {
         controller.on(this.weakUpdate)
         controller.active()
       }
