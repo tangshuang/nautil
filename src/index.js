@@ -100,6 +100,7 @@ export { Stream } from './lib/stream.js'
 export { Controller } from './lib/controller.jsx'
 export { Service } from './lib/service.js'
 export { DataService } from './lib/services/data-service.js'
+export { QueueService, SerialQueueService, ParallelQueueService, ShiftQueueService, SwitchQueueService } from './lib/services/queue-service.js'
 
 export { Storage } from './lib/storage/storage.js'
 

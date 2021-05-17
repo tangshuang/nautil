@@ -21,7 +21,7 @@ export class QueueService extends Service {
 
     const options = this.options()
     this.options = {
-      mode: MODES.SERIAL,
+      mode: MODES.PARALLEL,
       autoStart: true, // whether to auto start when push
       delay: 0, // whether to delay start when push
       debounce: 0,
@@ -58,9 +58,13 @@ export class QueueService extends Service {
     return item.promise
   }
 
-  stop(e) {
+  stop(err) {
     this.status = -1
-    this.fallbacks.forEach(fn => fn(e || new Error('stop')))
+
+    if (err) {
+      this.fallbacks.forEach(fn => fn(err || new Error('stop')))
+    }
+
     return this
   }
   clear() {
@@ -208,7 +212,7 @@ export class QueueService extends Service {
     run.serial = () => {
       const item = this.queue[0]
       const { defer } = item
-      item.deferer = defer().then(success(item)).catch(fail(item))
+      item.deferer = Promise.resolve().then(defer).then(success(item)).catch(fail(item))
     }
     // in parallel
     run.parallel = () => {
@@ -232,7 +236,7 @@ export class QueueService extends Service {
       this.clear()
       this.queue.push(item)
 
-      item.deferer = defer().then((res) => {
+      item.deferer = Promise.resolve().then(defer).then((res) => {
         // the item is canceled, drop it directly
         // the pushed item is running, and do not need to fire it any more
         // it means to drop this item
@@ -271,7 +275,7 @@ export class QueueService extends Service {
 
       const runLatest = (item) => {
         const { defer, callback, fallback, resolve, reject } = item
-        item.deferer = defer().then((res) => {
+        item.deferer = Promise.resolve().then(defer).then((res) => {
           if (this.queue.length && this.queue[0] !== item) {
             run()
             return

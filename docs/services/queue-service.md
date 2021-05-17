@@ -1,14 +1,11 @@
 # QueueService
 
-> Notice: QueueService is not exported by default, you should use `import QueueService from 'nautil/lib/services/queue-service'` to use it.
-
-A deferer queue manager.
+The service provides four types of queues to help developer manage tasks.
 
 ## Usage
 
 ```js
-import { Controller } from 'nautil'
-import QueueService from 'nautil/lib/services/queue-service'
+import { Controller, QueueService } from 'nautil'
 
 class MyController extends Controller {
   static queue = QueueService
@@ -43,18 +40,24 @@ class MyQueueService extends QueueService {
       debounce: 0, // number, default 0, debounce come before delay and throttle
       throttle: 0, // number, default 0, throttle come before delay
         /**
-        It recommands that: debounce works with switch; delay works with parallel, serial and shift; throttle works with serial switch and shift. Notice that, when the queue is running, delay will not work, it only works with a static queue which is going to start.
+        It is recommanded that: debounce works with switch; delay works with parallel, serial and shift; throttle works with serial switch and shift. Notice that, when the queue is running, delay will not work, it only works with a static queue which is going to start.
         */
     }
   }
 }
 ```
 
+```js
+import { SerialQueueService, ParallelQueueService, ShiftQueueService, SwitchQueueService } from 'nautil'
+```
+
+Notice that, if you use `QueueService`, it will use MODES.PARALLEL as default, so the behaviour is equal to `ParallelQueueService`.
+
 ## API
 
 **push(defer, success, fail, cancel)**
 
-- defer: a function which return an instance of Promise
+- defer: a function which return an instance of Promise / async function / sync function will be convert to be async function
 - success: invoke after deferer resolved
 - fail: invoke after deferer rejected
 - cancel: invoke when a defer is going to be canceled
@@ -105,9 +108,11 @@ Cancel a certain defer. Notice, defer is the passed function.
 
 At the same time, cancel which passed by push will be run too.
 
-**stop()**
+**stop(err)**
 
-Stop the queue. onError callbacks will be invoked. However, defers which in the queue are not dropped, you can restart queue by using queue.start().
+- err: should be an instance of Error
+
+Stop the queue. onError callbacks will be invoked if `err` passed. However, defers which in the queue are not dropped, you can restart queue by using queue.start().
 
 **end()**
 
@@ -115,8 +120,8 @@ Forcely end the queue.
 
 difference between clear, cancel, stop and end
 
-- clear: just drop the un-run defers, not change the status of queue
-cancel: just drop one defer
+- clear: just drop the un-run defers, does not change the status of queue
+- cancel: just drop one defer
 - end: drop the un-run defers and change the status of queue, onEnd callbacks will be invoked
 - stop: not drop any defer, throw error manually, queue status changes, onError callbacks will be invoked, can be continue by start
 
