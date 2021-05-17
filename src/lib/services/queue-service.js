@@ -375,3 +375,31 @@ export class QueueService extends Service {
   static MODES = MODES
 }
 export default QueueService
+
+export class SerialQueueService extends QueueService {
+  constructor() {
+    super()
+    this.options.mode = MODES.SERIAL
+  }
+}
+
+export class ParallelQueueService extends QueueService {
+  constructor() {
+    super()
+    this.options.mode = MODES.PARALLEL
+  }
+}
+
+export class ShiftQueueService extends QueueService {
+  constructor() {
+    super()
+    this.options.mode = MODES.SHIFT
+  }
+}
+
+export class SwitchQueueService extends QueueService {
+  constructor() {
+    super()
+    this.options.mode = MODES.SEITCH
+  }
+}
