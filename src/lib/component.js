@@ -275,7 +275,7 @@ export class Component extends PrimitiveComponent {
 
   _digest(props) {
     const Constructor = getConstructorOf(this)
-    const { props: PropsTypes, defaultStylesheet, css, ...defaultStreams } = Constructor
+    const { props: PropsTypes, defaultStylesheet, css } = Constructor
     const parsedProps = this.onParseProps(props)
     const { children, stylesheet, style, className, ...attrs } = parsedProps
 
@@ -478,7 +478,7 @@ export class Component extends PrimitiveComponent {
     })
 
     // create streams from static properties
-    each(defaultStreams, (fn, key) => {
+    each(Constructor, ({ value: fn }, key) => {
       if (!isFunction(fn)) {
         return
       }
@@ -508,7 +508,7 @@ export class Component extends PrimitiveComponent {
       const subject = affect(name, stream)
       fn.call(this, subject)
       streams[key] = stream
-    })
+    }, true)
 
     each(this, (_, key) => {
       // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
