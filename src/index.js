@@ -46,7 +46,7 @@ export { Component } from './lib/component.js'
 
 export { createTwoWayBinding, isShallowEqual, isRef, noop } from './lib/utils.js'
 
-export { useTwoWayBinding } from './lib/hooks/two-way-binding.js'
+export { useTwoWayBinding, useTwoWayBindingState } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
 export { useModelsReactor } from './lib/hooks/models-reactor.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
