@@ -5,8 +5,6 @@ import { nest } from './operators/operators.js'
 import { Ty } from 'tyshemo'
 import Navigation from './navi/navigation.js'
 import { Component } from './component.js'
-import { isFunction, isInstanceOf } from 'ts-fns'
-import { Component as ReactComponent } from 'react'
 
 export function createApp(options = {}, fn) {
   const { navigation, store, i18n } = options
@@ -46,10 +44,6 @@ export function createAsyncComponent(fn) {
         }
         else {
           component = res
-        }
-
-        if (!isFunction(res) && !isInstanceOf(res, ReactComponent)) {
-          throw new Error('createAsyncComponent did not receive a valid component')
         }
 
         this.component = component
