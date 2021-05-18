@@ -79,7 +79,7 @@ export function useTwoWayBindingState(initState) {
     get: (_, key) => {
       return [state[key], value => setState({ ...state, [key]: value })]
     },
-    set: (_, key) => {
+    set: (_, key, value) => {
       setState({ ...state, [key]: value })
       return true
     },
