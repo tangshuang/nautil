@@ -45,4 +45,3 @@ export function useUniqueKeys(items, shouldDeepEqual) {
 
   return keys
 }
-export default useUniqueKeys

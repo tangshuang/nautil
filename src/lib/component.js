@@ -403,7 +403,7 @@ export class Component extends PrimitiveComponent {
           return false
         },
         disable(_, value) {
-          return isValidElement(value) || isRef(value)
+          return isValidElement(value) || isRef(value) || Object.isFrozen(value)
         },
       })
     }

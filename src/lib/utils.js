@@ -1,5 +1,6 @@
 import { assign, createProxy, isFunction, isObject, isEqual, isArray } from 'ts-fns'
 import produce from 'immer'
+import { isValidElement } from 'react'
 
 /**
  * noop
@@ -49,6 +50,9 @@ export function createTwoWayBinding(data, update) {
       else {
         remove(data, keyPath)
       }
+    },
+    disable(_, value) {
+      return isValidElement(value) || isRef(value) || Object.isFrozen(value)
     },
   })
   return proxy

@@ -1,8 +1,8 @@
 import { Ty } from 'tyshemo'
 import { Binding } from '../types.js'
 import { isRef } from '../utils.js'
-import { isValidElement, useMemo } from 'react'
-import { each, createProxy } from 'ts-fns'
+import { isValidElement, useMemo, useState } from 'react'
+import { each, createProxy, isObject } from 'ts-fns'
 import produce from 'immer'
 import { useShallowLatest } from './shallow-latest.js'
 
@@ -62,7 +62,7 @@ export function useTwoWayBinding(attrs) {
         return false
       },
       disable(_, value) {
-        return isValidElement(value) || isRef(value)
+        return isValidElement(value) || isRef(value) || Object.isFrozen(value)
       },
     })
 
@@ -71,4 +71,24 @@ export function useTwoWayBinding(attrs) {
 
   return res
 }
-export default useTwoWayBinding
+
+export function useTwoWayBindingState(initState) {
+  const obj = isObject(initState) ? initState : { value: initState }
+  const [state, setState] = useState(obj)
+  const proxy = new Proxy({}, {
+    get: (_, key) => {
+      return [state[key], value => setState({ ...state, [key]: value })]
+    },
+    set: (_, key) => {
+      setState({ ...state, [key]: value })
+      return true
+    },
+    deleteProperty: (_, key) => {
+      const next = { ...state }
+      delete next[key]
+      setState(next)
+      return true
+    },
+  })
+  return proxy
+}
