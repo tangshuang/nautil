@@ -56,6 +56,19 @@ class Some extends Component {
     // skill: you can dispatch('Change') or dispatch('change'), they are the same
     this.dispatch('change', e)
   }
+
+  // static properties those begin with upper case will be treated as default streams
+  // `default` means you can declare it in `props` to override by passing from outside
+  // only begin with upper case will work
+  // this.Remove$ is there, subscribe, dispatch works on these streams
+  // `this` inside the function point to component instance
+  static Remove$(stream) {
+    stream.subscribe(this.handleRemove)
+  }
+
+  handleRemove = () => {
+    // ... do some thing
+  }
 }
 ```
 

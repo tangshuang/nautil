@@ -275,7 +275,7 @@ export class Component extends PrimitiveComponent {
 
   _digest(props) {
     const Constructor = getConstructorOf(this)
-    const { props: PropsTypes, defaultStylesheet, css } = Constructor
+    const { props: PropsTypes, defaultStylesheet, css, ...defaultStreams } = Constructor
     const parsedProps = this.onParseProps(props)
     const { children, stylesheet, style, className, ...attrs } = parsedProps
 
@@ -429,6 +429,18 @@ export class Component extends PrimitiveComponent {
     //   })
     // }
 
+    const affect = (name, subject) => {
+      this._effectors.forEach((item) => {
+        if (name === item.name) {
+          subject = item.affect(subject) || subject
+          if (process.env.NDOE_ENV !== 'production') {
+            Ty.expect(subject).to.be(Stream)
+          }
+        }
+      })
+      return subject
+    }
+
     /**
      * use the passed handler like onClick to create a stream
      * @param {*} param
@@ -443,7 +455,9 @@ export class Component extends PrimitiveComponent {
         return
       }
 
-      let subject = new Stream()
+      const stream = new Stream()
+
+      let subject = stream
       let subscribe = noop
 
       // key may not exist on props when developers use `onChange: false`
@@ -457,31 +471,57 @@ export class Component extends PrimitiveComponent {
         }
       }
 
-      this._effectors.forEach((item) => {
-        if (name === item.name) {
-          subject = item.affect(subject) || subject
-          if (process.env.NDOE_ENV !== 'production') {
-            Ty.expect(subject).to.be(Stream)
-          }
-        }
-      })
-
+      subject = affect(name, subject)
       subject.subscribe(subscribe)
 
-      streams[sign] = subject
+      streams[sign] = stream
+    })
+
+    // create streams from static properties
+    each(defaultStreams, (fn, key) => {
+      if (!isFunction(fn)) {
+        return
+      }
+
+      // only those begin with upper case
+      if (!/^[A-Z].*\$$/.test(key)) {
+        return
+      }
+
+      // notice that, it will be oveerided by passed on* stream
+      if (key in streams) {
+        if (this[key] && isInstanceOf(this[key], Stream)) {
+          // finish stream, free memory
+          this[key].complete()
+          delete this[key]
+        }
+        return
+      }
+
+      if (this[key] && isInstanceOf(this[key], Stream)) {
+        streams[key] = this[key]
+        return
+      }
+
+      const stream = new Stream()
+      const name = key.substr(0, key.length - 1)
+      const subject = affect(name, stream)
+      fn.call(this, subject)
+      streams[key] = stream
     })
 
     each(this, (_, key) => {
       // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
-      if (/^[A-Z].*\$$/.test(key)) {
-        // keep the unchanged streams
-        if (key in streams && this[key] === streams[key]) {
-          return
-        }
-        // finish stream, free memory
-        this[key].complete()
-        delete this[key]
+      if (!/^[A-Z].*\$$/.test(key)) {
+        return
       }
+      // keep the unchanged streams
+      if (key in streams && this[key] === streams[key]) {
+        return
+      }
+      // finish stream, free memory
+      this[key].complete()
+      delete this[key]
     })
     each(streams, (stream, name) => {
       this[name] = stream
