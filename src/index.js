@@ -97,7 +97,7 @@ export { Consumer, connect, useStore } from './lib/store/consumer.jsx'
 export { applyStore } from './lib/store/shared.js'
 
 export { Model, Meta, Validator, AsyncGetter, Factory } from './lib/model.js'
-export { Stream } from './lib/stream.js'
+export { Stream, createStream } from './lib/stream.js'
 export { Controller } from './lib/controller.jsx'
 export { Service } from './lib/service.js'
 export { DataService } from './lib/services/data-service.js'
