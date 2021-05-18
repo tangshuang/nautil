@@ -21,6 +21,7 @@ export {
   PureComponent,
   createContext,
   Suspense,
+  lazy,
 } from 'react'
 export {
   Ty,
@@ -112,4 +113,4 @@ export { Button as B } from './lib/i18n/button.jsx'
 export { Section as Se } from './lib/i18n/section.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createApp } from './lib/create-app.js'
+export { createApp, createAsyncComponent } from './lib/create-app.js'
