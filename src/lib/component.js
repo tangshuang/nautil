@@ -126,9 +126,14 @@ export class Component extends PrimitiveComponent {
     this._digest(props)
 
     this.$state = this.state && createProxy(this.state, {
-      writable: (keyPath, value) => {
+      receive: (keyPath, value) => {
         this.update(keyPath, value)
+      },
+      writable() {
         return false
+      },
+      disable(_, value) {
+        return isValidElement(value) || isRef(value)
       },
     })
 
@@ -383,7 +388,7 @@ export class Component extends PrimitiveComponent {
       this.attrs = finalAttrs
       // create two-way binding props
       this.$attrs = createProxy(finalAttrs, {
-        writable(keyPath, value) {
+        receive(keyPath, value) {
           const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
           const root = chain.shift()
           const bindKey = '$' + root
@@ -400,10 +405,12 @@ export class Component extends PrimitiveComponent {
               update(value, current)
             }
           }
+        },
+        writable() {
           return false
         },
         disable(_, value) {
-          return isValidElement(value) || isRef(value) || Object.isFrozen(value)
+          return isValidElement(value) || isRef(value)
         },
       })
     }

@@ -42,7 +42,7 @@ export function useTwoWayBinding(attrs) {
     }
 
     const bindingAttrs = createProxy(finalAttrs, {
-      writable(keyPath, value) {
+      receive(keyPath, value) {
         const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
         const root = chain.shift()
         const bindKey = '$' + root
@@ -59,10 +59,12 @@ export function useTwoWayBinding(attrs) {
             update(value, current)
           }
         }
+      },
+      writable() {
         return false
       },
       disable(_, value) {
-        return isValidElement(value) || isRef(value) || Object.isFrozen(value)
+        return isValidElement(value) || isRef(value)
       },
     })
 

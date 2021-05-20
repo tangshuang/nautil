@@ -33,26 +33,33 @@ export function createTwoWayBinding(data, update) {
   }
   const proxy = createProxy(data, {
     get(keyPath, value) {
-      return [value, (value) => reactive(data, keyPath, value)]
+      return [value, value => reactive(data, keyPath, value)]
     },
-    set(keyPath, value) {
-      reactive(data, keyPath, value)
-    },
-    del(keyPath) {
-      // use passed update
-      if (isFunction(update)) {
-        const next = produce(data, data => {
+    receive(...args) {
+      const [keyPath, value] = args
+      // delete a property
+      if (args.length === 1) {
+        // use passed update
+        if (isFunction(update)) {
+          const next = produce(data, data => {
+            remove(data, keyPath)
+          })
+          update(next, keyPath)
+        }
+        // update data directly
+        else {
           remove(data, keyPath)
-        })
-        update(next, keyPath)
+        }
       }
-      // update data directly
       else {
-        remove(data, keyPath)
+        reactive(data, keyPath, value)
       }
+    },
+    writable() {
+      return false
     },
     disable(_, value) {
-      return isValidElement(value) || isRef(value) || Object.isFrozen(value)
+      return isValidElement(value) || isRef(value)
     },
   })
   return proxy
