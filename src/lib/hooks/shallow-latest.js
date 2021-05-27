@@ -14,5 +14,9 @@ export function useShallowLatest(obj) {
     latest.current = isArray(obj) ? [...obj] : isObject(obj) ? { ...obj } : obj
   }
 
+  if (!used.current) {
+    used.current = true
+  }
+
   return latest.current
 }
