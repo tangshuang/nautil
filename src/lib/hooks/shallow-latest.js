@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { isShallowEqual } from '../utils.js'
+import { isArray, isObject } from 'ts-fns'
 
 /**
  * @param {*} obj
@@ -10,11 +11,7 @@ export function useShallowLatest(obj) {
   const latest = useRef(obj)
 
   if (used.current && !isShallowEqual(latest.current, obj)) {
-    latest.current = obj
-  }
-
-  if (!used.current) {
-    used.current = true
+    latest.current = isArray(obj) ? [...obj] : isObject(obj) ? { ...obj } : obj
   }
 
   return latest.current
