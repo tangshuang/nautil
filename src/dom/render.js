@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom'
-import React from 'react'
+import { createElement } from 'react'
 
 export function mount(el, Component, props = {}) {
-  return render(el, React.createElement(Component, props))
+  return render(el, createElement(Component, props))
 }
 
 export function unmount(el) {

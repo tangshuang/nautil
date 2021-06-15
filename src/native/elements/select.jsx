@@ -1,4 +1,3 @@
-import React from 'react'
 import { Picker } from 'react-native'
 import { mixin } from 'ts-fns'
 import Select from '../../lib/elements/select.jsx'

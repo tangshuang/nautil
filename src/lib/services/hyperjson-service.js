@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment, createElement } from 'react'
 import { each, map, isString, isEmpty, isArray, isObject } from 'ts-fns'
 import ScopeX from 'scopex'
 import { Service } from '../service.js'
@@ -127,7 +127,7 @@ function parseJsx(jsx, scopex, components) {
 
   const props = nest ? parseNest(nest, scopex) : {}
 
-  return React.createElement(
+  return createElement(
     Item,
     props,
     ...map(children, (child) => parseJsx(child, scopex, components)),

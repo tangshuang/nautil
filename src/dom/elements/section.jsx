@@ -1,4 +1,4 @@
-import React, { createRef } from 'react'
+import { createRef } from 'react'
 import { mixin } from 'ts-fns'
 import Section from '../../lib/elements/section.jsx'
 

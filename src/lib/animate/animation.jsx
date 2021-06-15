@@ -1,4 +1,3 @@
-import React from 'react'
 import { isNumeric } from 'ts-fns'
 import { ifexist } from 'tyshemo'
 

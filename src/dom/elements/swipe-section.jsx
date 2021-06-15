@@ -1,4 +1,4 @@
-import React, { createRef } from 'react'
+import { createRef } from 'react'
 import { mixin, throttle } from 'ts-fns'
 
 import SwipeSection from '../../lib/elements/swipe-section.jsx'

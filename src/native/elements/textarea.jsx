@@ -1,4 +1,3 @@
-import React from 'ts-fns'
 import { mixin } from 'ts-fns'
 import { TextInput } from 'react-native'
 import Textarea from '../../lib/elements/textarea.jsx'

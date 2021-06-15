@@ -1,4 +1,3 @@
-import React from 'react'
 import { isString, mixin } from 'ts-fns'
 import Audio from '../../lib/elements/audio.jsx'
 

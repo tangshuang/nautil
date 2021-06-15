@@ -3,8 +3,12 @@
   "version": "0.31.22",
   "description": "A javascript reactive framework which is for building crossing-platform applications.",
   "main": "index.js",
+  "miniprogram": "dist",
   "scripts": {
-    "build": "babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension",
+    "clean": "rimraf dist dom lib native ssr web-component wechat index.js",
+    "build": "npm run clean && babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
+    "build:dist": "webpack --config .build/webpack.config.js",
+    "build:wechat": "webpack --config .build/webpack.wechat.config.js && babel src/wechat/components --out-dir dist/wechat/components --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
     "dev": "webpack-dev-server --config .examples/app/webpack.config.js"
   },
   "repository": {
@@ -38,21 +42,26 @@
     "i18next-react-native-language-detector": "^1.0.2",
     "react-dom": "^17.0.2",
     "react-native": "^0.64.0",
-    "react-native-locale-detector": "^1.0.1"
+    "react-native-locale-detector": "^1.0.1",
+    "react-reconciler": "^0.26.2",
+    "scheduler": "^0.20.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
-    "@babel/core": "^7.11.0",
+    "@babel/core": "^7.14.5",
     "@babel/plugin-transform-runtime": "^7.12.10",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-env": "^7.14.5",
+    "@babel/preset-react": "^7.14.5",
     "babel-loader": "^8.1.0",
     "css-loader": "^4.3.0",
     "less": "^3.12.2",
     "less-loader": "^7.0.1",
+    "rimraf": "^3.0.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "react-reconciler": "^0.26.2",
+    "scheduler": "^0.20.2"
   }
 }

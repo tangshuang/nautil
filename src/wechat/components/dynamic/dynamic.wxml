@@ -1,0 +1,80 @@
+<wxs src="./fns.wxs" module="fns"></wxs>
+
+<block wx:if="{{type === '#text'}}">
+  <text>{{content}}</text>
+</block>
+
+<block wx:if="{{type === 'view'}}">
+  <view
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    hidden="{{props.hidden}}"
+    hover-class="{{props['hover-class']}}"
+    hover-stop-propagation="{{true}}"
+    bindtap="bindtap"
+    bindtapstart="bindtapstart"
+    bindtapmove="bindtapmove"
+    bindtapend="bindtapend"
+    bindtapcancel="bindtapcancel"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+  >
+    <dynamic
+      wx:if="{{fns.isType(children, 'Array')}}"
+      wx:for="{{children}}"
+      wx:key="id"
+      data="{{item}}"
+    />
+  </view>
+</block>
+
+<block wx:elif="{{type === 'text'}}">
+  <text
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    hidden="{{props.hidden}}"
+    selectable="{{props.selectable}}"
+    space="{{props.space}}"
+    decode="{{props.decode}}"
+    bindtap="bindtap"
+    bindtapstart="bindtapstart"
+    bindtapmove="bindtapmove"
+    bindtapend="bindtapend"
+    bindlongpress="bindlongpress"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+  >
+    <block wx:if="{{fns.isType(children, 'Array')}}" wx:for="{{children}}" wx:key="id">{{item.content}}</block>
+  </text>
+</block>
+
+<block wx:elif="{{type === 'button'}}">
+  <button
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    hidden="{{props.hidden}}"
+    size="{{props.size}}"
+    disabled="{{props.disabled}}"
+    form-type="{{props.type}}"
+    lang="{{props.lang}}"
+    hover-class="{{props['hover-class']}}"
+    hover-stop-propagation="{{true}}"
+    bindtap="bindtap"
+    bindtapstart="bindtapstart"
+    bindtapmove="bindtapmove"
+    bindtapend="bindtapend"
+    bindlongpress="bindlongpress"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+  >
+    <dynamic
+      wx:if="{{fns.isType(children, 'Array')}}"
+      wx:for="{{children}}"
+      wx:key="id"
+      data="{{item}}"
+    />
+  </button>
+</block>

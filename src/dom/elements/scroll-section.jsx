@@ -1,7 +1,6 @@
 // https://github.com/react-component/m-pull-to-refresh
 // pull to refresh/load-more on mobile
 
-import React from 'react'
 import { isObject, isString, mixin } from 'ts-fns'
 
 import Static from '../../lib/components/static.jsx'
@@ -13,6 +12,10 @@ const { DOWN, UP, BOTH, NONE, ACTIVATE, DEACTIVATE, RELEASE, FINISH } = ScrollSe
 
 mixin(ScrollSection, class {
   init() {
+    if (this._inited) {
+      return
+    }
+
     this.state = {
       status: DEACTIVATE,
     }
@@ -36,6 +39,19 @@ mixin(ScrollSection, class {
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onTouchEnd = this.onTouchEnd.bind(this)
     this.onScroll = this.onScroll.bind(this)
+
+    const { containerRef, contentRef } = this
+    if (!containerRef) {
+      // like return in destroy fn ???!!
+      return
+    }
+
+    containerRef.addEventListener('touchstart', this.onTouchStart, { passive: false })
+    containerRef.addEventListener('touchmove', this.onTouchMove, { passive: false })
+    containerRef.addEventListener('touchend', this.onTouchEnd, { passive: false })
+    contentRef.addEventListener('scroll', this.onScroll, { passive: false })
+
+    this._inited = true
   }
 
   shouldUpdate(nextProps) {
@@ -65,25 +81,6 @@ mixin(ScrollSection, class {
   onUnmount() {
     clearTimeout(this._timer)
     this.destroy()
-  }
-
-  init() {
-    if (this._inited) {
-      return
-    }
-
-    const { containerRef, contentRef } = this
-    if (!containerRef) {
-      // like return in destroy fn ???!!
-      return
-    }
-
-    containerRef.addEventListener('touchstart', this.onTouchStart, { passive: false })
-    containerRef.addEventListener('touchmove', this.onTouchMove, { passive: false })
-    containerRef.addEventListener('touchend', this.onTouchEnd, { passive: false })
-    contentRef.addEventListener('scroll', this.onScroll, { passive: false })
-
-    this._inited = true
   }
 
   destroy() {

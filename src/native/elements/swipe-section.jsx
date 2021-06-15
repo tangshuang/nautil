@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 
 import SwipeSection from '../../lib/elements/swipe-section.jsx'

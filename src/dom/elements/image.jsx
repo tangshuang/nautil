@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin, isString } from 'ts-fns'
 import Image from '../../lib/elements/image.jsx'
 

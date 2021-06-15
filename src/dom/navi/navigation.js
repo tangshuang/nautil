@@ -87,10 +87,8 @@ mixin(Navigation, class {
     window.addEventListener('popstate', onUrlChanged)
   }
 
-  open(url, params) {
-    each(params, (value, key) => {
-      url = url.replace(new RegExp(':' + key + '[(?=\\\/)|$]', 'g'), value)
-    })
+  open(to, params) {
+    const url = this.makeUrl(to, params)
     window.open(url, '_blank')
   }
 

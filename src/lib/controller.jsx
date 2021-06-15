@@ -1,4 +1,4 @@
-import React from 'react'
+import { memo } from 'react'
 import { Model } from './model.js'
 import { Store } from './store/store.js'
 import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, throttle } from 'ts-fns'
@@ -112,7 +112,7 @@ export class Controller {
         return
       }
 
-      const Gen = isInstanceOf(value, Component) ? value : value.bind(this)
+      const Gen = isInstanceOf(value, Component) ? value : memo(value.bind(this))
       this[key] = this.turn(Gen)
     }, true)
 

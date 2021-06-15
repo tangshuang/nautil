@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 
 import { _Link as Link } from '../../lib/navi/link.jsx'

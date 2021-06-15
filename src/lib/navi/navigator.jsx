@@ -1,4 +1,3 @@
-import React from 'react'
 import { ifexist } from 'tyshemo'
 import { isFunction, isObject, isInstanceOf } from 'ts-fns'
 

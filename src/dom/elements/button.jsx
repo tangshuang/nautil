@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import Button from '../../lib/elements/button.jsx'
 

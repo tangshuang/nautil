@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import { WebView as NativeWebview } from 'react-native'
 import Webview from '../../lib/elements/webview.jsx'

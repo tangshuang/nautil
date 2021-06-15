@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import Video from '../../lib/elements/video.jsx'
 

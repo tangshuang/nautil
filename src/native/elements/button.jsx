@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import { Children } from 'react'
 import { mixin } from 'ts-fns'
 import { TouchableOpacity } from 'react-native'
 import Button from '../../lib/elements/button.jsx'

@@ -1,20 +1,17 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import Select from '../../lib/elements/select.jsx'
 import { isRef } from '../../lib/utils.js'
 
 mixin(Select, class {
-  init() {
-    this.handleChange = this.handleChange.bind(this)
-  }
-
-  handleChange(e) {
-    const { onChange } = this.props
-    onChange && onChange(e)
-  }
-
   render() {
     const { inputRef, options, optionValueKey, optionTextKey, ...attrs } = this.attrs
+
+    const onChange = (e) => {
+      const value = e.target.value
+      const item = options.find(item => item[optionValueKey || 'value'] + '' === value)
+      this.$attrs.value = item[optionValueKey || 'value']
+      this.dispatch('Change', e)
+    }
 
     const { placeholder } = attrs
     const hasPlaceholder = typeof placeholder !== 'undefined'
@@ -53,7 +50,7 @@ mixin(Select, class {
         {...attrs}
         className={this.className}
         style={this.style}
-        onChange={this.handleChange}
+        onChange={onChange}
         ref={el => isRef(inputRef) && (inputRef.current = el)}
       >
         {hasPlaceholder ? <option disabled hidden value="">{placeholder || ''}</option> : null}

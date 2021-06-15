@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import ListSection from '../../lib/elements/list-section.jsx'
 import { Component } from '../../lib/component.js'

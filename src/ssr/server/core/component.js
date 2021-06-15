@@ -1,4 +1,4 @@
-import React, { cloneElement } from 'react'
+import { cloneElement } from 'react'
 import { mixin, isFunction, isInheritedOf } from 'ts-fns'
 import { PrimitiveComponent, Component } from '../../../lib/component.js'
 

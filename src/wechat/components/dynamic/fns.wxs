@@ -1,0 +1,7 @@
+function isType(v, t) {
+  return v.constructor === t
+}
+
+module.exports = {
+  isType: isType,
+}

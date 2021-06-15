@@ -318,15 +318,7 @@ export class Navigation {
     const combineParams = { ...routeParams, ...params }
 
     const { path } = route
-    const url = path.replace(new RegExp(':([a-zA-Z0-9]+)\\??([(?=\\\/)|$])', 'g'), (matched, key, tail) => {
-      if (!inObject(key, combineParams)) {
-        return tail === '/' ? 'undefined/' : ''
-      }
-
-      const value = combineParams[key]
-      const text = value + (tail === '/' ? '/' : '')
-      return text
-    })
+    const url = this.makeUrl(path, combineParams)
     const clearUrl = url.replace(/\/+$/, '') || '/'
 
     return {
@@ -455,6 +447,19 @@ export class Navigation {
       url: uri,
       route,
     }
+  }
+
+  makeUrl(to, params = {}) {
+    const url = to.replace(new RegExp(':([a-zA-Z0-9]+)\\??([(?=\\\/)|$])', 'g'), (matched, key, tail) => {
+      if (!inObject(key, params)) {
+        return tail === '/' ? 'undefined/' : ''
+      }
+
+      const value = params[key]
+      const text = value + (tail === '/' ? '/' : '')
+      return text
+    })
+    return url
   }
 
   makeHref(state) {

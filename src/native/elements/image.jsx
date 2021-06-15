@@ -1,4 +1,4 @@
-import React from 'react'
+import { Children } from 'react'
 import { mixin, isString } from 'ts-fns'
 import { Image as NativeImage, ImageBackground } from 'react-native'
 import Image from '../../lib/elements/image.jsx'
@@ -10,7 +10,7 @@ mixin(Image, class {
     const children = this.children
     const src = isString(source) ? { uri: source } : source
 
-    if (React.Children.count(children)) {
+    if (Children.count(children)) {
       return <ImageBackground source={src} style={styles} {...rest}>{children}</ImageBackground>
     }
     else {

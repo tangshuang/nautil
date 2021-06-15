@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import { View } from 'react-native'
 import Checkbox from '../../lib/elements/checkbox.jsx'

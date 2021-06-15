@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import { Text as NativeText } from 'react-native'
 import Text from '../../lib/elements/text.jsx'

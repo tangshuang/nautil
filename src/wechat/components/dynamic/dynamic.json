@@ -1,0 +1,12 @@
+{
+  "_require": {
+    "setting": {
+      "es6": true
+    },
+    "libVersion": "2.7.1"
+  },
+  "component": true,
+  "usingComponents": {
+    "dynamic": "./dynamic"
+  }
+}

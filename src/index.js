@@ -1,5 +1,5 @@
 import * as TySheMo from 'tyshemo'
-import React from 'react'
+import * as React from 'react'
 import produce from 'immer'
 
 export { TySheMo, React, produce }

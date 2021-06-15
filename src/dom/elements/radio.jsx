@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import Radio from '../../lib/elements/radio.jsx'
 

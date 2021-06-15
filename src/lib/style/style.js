@@ -57,5 +57,9 @@ export class Style {
     const rules = Style.ensure(style)
     return rules
   }
+
+  static stringify(rules) {
+    // should be override
+  }
 }
 export default Style

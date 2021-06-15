@@ -1,4 +1,9 @@
-import React, { isValidElement } from 'react'
+import {
+  isValidElement,
+  Component as ReactComponent,
+  cloneElement,
+  Children,
+} from 'react'
 import {
   each,
   getConstructorOf,
@@ -22,7 +27,7 @@ import Css from './style/css.js'
 import { Binding, Handling } from './types.js'
 import { noop, isRef, isShallowEqual } from './utils.js'
 
-export class PrimitiveComponent extends React.Component {
+export class PrimitiveComponent extends ReactComponent {
   constructor(props) {
     super(props)
 
@@ -87,11 +92,11 @@ export class PrimitiveComponent extends React.Component {
       const { children } = props
       const subtree = modify(children)
 
-      return React.cloneElement(node, { ...pollutedProps }, subtree)
+      return cloneElement(node, { ...pollutedProps }, subtree)
     }
     const modify = (tree) => {
       if (isArray(tree)) {
-        const modifed = React.Children.map(tree, map)
+        const modifed = Children.map(tree, map)
         return modifed
       }
       else {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { mixin } from 'ts-fns'
 import { TextInput } from 'react-native'
 import Input from '../../lib/elements/input.jsx'

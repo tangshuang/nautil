@@ -96,8 +96,8 @@ function findReactComponent(item) {
 
 function findReactProps(component) {
     if (!component) return undefined;
-    if (component.memoizedProps) return component.memoizedProps; // React 16 Fiber
-    if (component._currentElement && component._currentElement.props) return component._currentElement.props; // React <=15
+    if (component.memoizedProps) return component.memoizedProps; // 16 Fiber
+    if (component._currentElement && component._currentElement.props) return component._currentElement.props; // <=15
 
 }
 
