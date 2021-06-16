@@ -107,7 +107,7 @@ const fs = require('fs')
         count ++
       })
       if (count === subdirs.length) {
-        fs.rmdir(path.resolve(nodeModules, dir), () => {})
+        fs.rmdir(path.resolve(nodeModules, dir), { recursive: true, force: true }, () => {})
       }
       return
     }
