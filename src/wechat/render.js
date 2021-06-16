@@ -15,8 +15,8 @@ const {
   unstable_now: now,
 } = scheduler
 
-const rootHostContext = {}
-const childHostContext = {}
+const context = {}
+
 const container = {
   root: null,
   data: null,
@@ -159,10 +159,10 @@ const HostConfig = {
     return instance
   },
   getRootHostContext(container) {
-    return rootHostContext
+    return context
   },
   getChildHostContext(parentHostContext, type, container) {
-    return childHostContext
+    return context
   },
 
   createInstance(type, props, container, context, fiber) {
@@ -316,37 +316,34 @@ export function render(element, { mounted, updated, created }) {
   })
 }
 
-
-const context = {}
-
 export function registerApp(register) {
   const options = register ? register(context) : {}
   App(options)
 }
 
-export function registerPage(Component, register) {
+export function registerPage(register, dataKey, Component, props) {
   const options = register ? register(context) : {}
-  const { data = {} } = options
+  const behavior = dataKey && Component ? createBehavior(dataKey, Component, props) : null
+  const behaviors = behavior ? [behavior] : []
   Page({
     ...options,
-    data: {
-      ...data,
-      data: null,
-    },
+    behaviors: [...(options.behaviors || []), ...behaviors],
     onLoad(...args) {
-      render(createElement(Component), {
-        created: (container) => {
-          options.created && options.created(container)
-        },
-        mounted: (data) => {
-          options.mounted && options.mounted(data)
-          this.setData({ data })
-        },
-        updated: (data) => {
-          options.updated && options.updated(data)
-          this.setData({ data })
-        },
-      })
+      if (Component) {
+        render(createElement(Component, props), {
+          created: (container) => {
+            options.created && options.created(container)
+          },
+          mounted: (data) => {
+            options.mounted && options.mounted(data)
+            this.setData({ data })
+          },
+          updated: (data) => {
+            options.updated && options.updated(data)
+            this.setData({ data })
+          },
+        })
+      }
       if (options.onLoad) {
         options.onLoad.call(this, ...args)
       }

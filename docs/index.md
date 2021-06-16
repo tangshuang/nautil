@@ -114,3 +114,4 @@
   - [DOM](renderers/dom.md)
   - [Native](renderers/native.md)
   - [Web-component](renderers/web-component.md)
+  - [Wechat](renderers/wechat.md)

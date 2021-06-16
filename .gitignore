@@ -10,3 +10,4 @@ node_modules/
 .test/
 .tmp/
 /dist/
+/wechat/

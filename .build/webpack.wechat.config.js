@@ -20,7 +20,10 @@ const main = {
   externals: [
     ...externals,
     function(context, request, callback) {
-      if (request.indexOf('../lib/') > -1) {
+      if (
+        request.indexOf('../lib/') > -1
+        && path.resolve(context, request).indexOf(path.resolve(__dirname, '../src/lib') === 0)
+      ) {
         return callback(null, 'commonjs2 ../index.js')
       }
       callback(null)
