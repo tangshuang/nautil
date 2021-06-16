@@ -1,3 +1,6 @@
+## 0.31.23 (Jun. 16, 2021)
+- supports wechat miniprogram by a React renderer
+
 ## 0.31.5 (May. 15, 2021)
 
 - add `evolve` operator

@@ -26,6 +26,7 @@ npm i nautil
 ```js
 import { createBehavior } from 'nautil/wechat'
 // 由于微信小程序不支持直接使用jsx，我们必须使用createElement代替jsx进行编程
+// 如果你已经有写好的组件文件，又不想改动，那么可以全局替换 import React from 'react' 为 import { React } from 'nautil'，然后再编译
 import { createElement } from 'nautil'
 
 function Some() {
