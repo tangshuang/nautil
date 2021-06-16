@@ -5,26 +5,33 @@ const fs = require('fs')
   const projDir = path.resolve(__dirname, '../../..')
   const projFile = path.resolve(projDir, 'project.config.json')
   const appFile = path.resolve(projDir, 'app.json')
+  const nodeModules = path.resolve(projDir, 'node_modules')
+
+  function removeScripts() {
+    fs.rmdir(path.resolve(nodeModules, 'nautil/.scripts'), { recursive: true, force: true }, () => {})
+  }
 
   if (!fs.existsSync(appFile)) {
+    removeScripts()
     return
   }
 
   if (!fs.existsSync(projFile)) {
+    removeScripts()
     return
   }
 
   const appJson = require(appFile)
   if (!('pages' in appJson)) {
+    removeScripts()
     return
   }
 
   const projJson = require(projFile)
   if (!('appid' in projJson && 'compileType' in projJson)) {
+    removeScripts()
     return
   }
-
-  const nodeModules = path.resolve(projDir, 'node_modules')
 
   function getDeps(pkgFile) {
     const { dependencies = {}, devDependencies = {}, optionalDependencies = {} } = require(pkgFile)
@@ -57,6 +64,7 @@ const fs = require('fs')
 
   const ntFile = path.resolve(nodeModules, 'nautil/package.json')
   if (!fs.existsSync(ntFile)) {
+    removeScripts()
     return
   }
   const ntDeps = findDeps(ntFile)
