@@ -6,7 +6,7 @@ const {
   optimization,
 } = require('./webpack.config.js')
 
-module.exports = {
+const wechat = {
   mode: 'production',
   target: 'node',
   entry: path.resolve(__dirname, '../src/wechat/index.js'),
@@ -32,3 +32,15 @@ module.exports = {
   module: mod,
   optimization,
 }
+
+const dynamic = {
+  ...wechat,
+  entry: path.resolve(__dirname, '../src/wechat/components/dynamic/dynamic.js'),
+  output: {
+    path: path.join(__dirname, '../dist/wechat/components/dynamic'),
+    filename: 'dynamic.js',
+    libraryTarget: 'commonjs2',
+  },
+}
+
+module.exports = [wechat, dynamic]
