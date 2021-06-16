@@ -115,6 +115,11 @@ const fs = require('fs')
     removePkg(dir)
   })
 
+  const nouseDirs = ['dom', 'lib', 'native', 'ssr', 'web-component', 'wechat', '.scripts']
+  nouseDirs.forEach((dir) => {
+    fs.rmdir(path.resolve(nodeModules, 'nautil', dir), { recursive: true, force: true }, () => {})
+  })
+
   if (removeItems.length) {
     console.log('Nautil: 这些包由于用不到，已被删除', removeItems)
   }
