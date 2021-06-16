@@ -8,8 +8,8 @@
     "clean": "rimraf dist dom lib native ssr web-component wechat index.js",
     "build": "npm run build:cjs && npm run build:dist && npm run build:wechat",
     "build:cjs": "npm run clean && babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
-    "build:dist": "webpack --config .build/webpack.config.js",
-    "build:wechat": "webpack --config .build/webpack.wechat.config.js && babel src/wechat/components --out-dir dist/wechat/components --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
+    "build:dist": "NODE_ENV=production webpack --config .build/webpack.config.js",
+    "build:wechat": "NODE_ENV=production webpack --config .build/webpack.wechat.config.js && babel src/wechat/components --out-dir dist/wechat/components --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
     "dev": "webpack-dev-server --config .examples/app/webpack.config.js"
   },
   "repository": {
@@ -28,14 +28,14 @@
   },
   "homepage": "https://github.com/tangshuang/nautil#readme",
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
-    "i18next": "^20.2.1",
-    "immer": "^9.0.1",
+    "@babel/runtime": "^7.14.6",
+    "i18next": "^20.3.1",
+    "immer": "^9.0.3",
     "react": "^17.0.2",
     "rxjs": "^6.6.7",
-    "scopex": "^2.1.1",
-    "ts-fns": "^10.3.0",
-    "tyshemo": "^11.2.10"
+    "scopex": "^3.0.2",
+    "ts-fns": "^10.3.2",
+    "tyshemo": "^11.4.4"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": "^1.14.1",

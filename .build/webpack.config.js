@@ -1,19 +1,6 @@
 const path = require('path')
 const babelConfig = require('./babel.config.js')
 
-const externals = [
-  {
-    react: 'react/cjs/react.production.min.js',
-    'react/jsx-dev-runtime': 'react/cjs/react-jsx-dev-runtime.production.min.js',
-    'react/jsx-runtime': 'react/cjs/react-jsx-runtime.production.min.js',
-    'react-reconciler': 'react-reconciler/cjs/react-reconciler.production.min.js',
-    scheduler: 'scheduler/cjs/scheduler.production.min.js',
-    immer: 'immer/dist/immer.cjs.production.min.js',
-    'ts-fns': true,
-    tyshemo: true,
-  },
-]
-
 module.exports = {
   mode: 'production',
   target: 'node',
@@ -26,10 +13,23 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'ts-fns': 'ts-fns/es',
+      'ts-fns': path.resolve(__dirname, '../node_modules/ts-fns/es'),
+      scopex: path.resolve(__dirname, '../node_modules/scopex'),
+      immer: path.resolve(__dirname, '../node_modules/immer'),
     },
   },
-  externals,
+  // externals: [
+  //   {
+  //     react: 'react/cjs/react.production.min.js',
+  //     'react/jsx-dev-runtime': 'react/cjs/react-jsx-dev-runtime.production.min.js',
+  //     'react/jsx-runtime': 'react/cjs/react-jsx-runtime.production.min.js',
+  //     'react-reconciler': 'react-reconciler/cjs/react-reconciler.production.min.js',
+  //     scheduler: 'scheduler/cjs/scheduler.production.min.js',
+  //     immer: 'immer/dist/immer.cjs.production.min.js',
+  //     'ts-fns': true,
+  //     tyshemo: true,
+  //   },
+  // ],
   module: {
     rules: [
       {

@@ -1,8 +1,12 @@
 const path = require('path')
-const babelConfig = require('./babel.config.js')
-const { externals } = require('./webpack.config.js')
+const {
+  // externals,
+  resolve,
+  module: mod,
+  optimization,
+} = require('./webpack.config.js')
 
-const main = {
+module.exports = {
   mode: 'production',
   target: 'node',
   entry: path.resolve(__dirname, '../src/wechat/index.js'),
@@ -12,13 +16,9 @@ const main = {
     library: 'nautil/wechat',
     libraryTarget: 'commonjs2',
   },
-  resolve: {
-    alias: {
-      'ts-fns': 'ts-fns/es',
-    },
-  },
+  resolve,
   externals: [
-    ...externals,
+    // ...externals,
     function(context, request, callback) {
       if (
         request.indexOf('../lib/') > -1
@@ -29,19 +29,6 @@ const main = {
       callback(null)
     },
   ],
-  module: {
-    rules: [
-      {
-        test: /\.js|jsx$/,
-        loader: 'babel-loader',
-        options: babelConfig,
-      },
-    ],
-  },
-  optimization: {
-    minimize: true,
-    usedExports: true,
-    sideEffects: true,
-  },
+  module: mod,
+  optimization,
 }
-module.exports = [main]
