@@ -11,6 +11,7 @@ mixin(Form, class {
       bindreset={e => this.dispatch('Reset', e)}
       bindsubmit={e => this.dispatch('Submit', e)}
 
+      class={this.className}
       style={Style.stringify(this.style)}
     >{this.children}</form>
   }

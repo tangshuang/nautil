@@ -8,13 +8,11 @@ mixin(Button, class {
     return <button
       {...attrs}
 
-      form-type={type}
-
       bindtap={e => this.dispatch('Hit', e)}
-
       bindtapstart={e => this.dispatch('HitStart', e)}
       bindtapend={e => this.dispatch('HitEnd', e)}
 
+      class={this.className}
       style={Style.stringify(this.style)}
     >{this.children}</button>
   }

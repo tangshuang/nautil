@@ -22,6 +22,7 @@ mixin(Input, class {
       bindblur={e => this.dispatch('Blur', e)}
       bindselect={e => this.dispatch('Select', e)}
 
+      class={this.className}
       style={Style.stringify(this.style)}
     />
   }

@@ -7,7 +7,14 @@ mixin(Webview, class {
     const { source, width, height, ...rest } = this.attrs
     const style = { width, height, ...this.style }
     const src = isString(source) ? source : source.uri
-    return <web-view {...rest} src={src} style={Style.stringify(style)} class={this.className}></web-view>
+    return (
+      <web-view
+        {...rest}
+        src={src}
+        style={Style.stringify(style)}
+        class={this.className}
+      ></web-view>
+    )
   }
 })
 

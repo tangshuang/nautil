@@ -8,7 +8,14 @@ mixin(Audio, class {
     const style = { width, height, ...this.style }
     const src = isString(source) ? source : source.uri
     return (
-      <audio {...rest} src={src} style={Style.stringify(style)} class={this.className}>
+      <audio
+        {...rest}
+
+        src={src}
+
+        style={Style.stringify(style)}
+        class={this.className}
+      >
         {this.children}
       </audio>
     )

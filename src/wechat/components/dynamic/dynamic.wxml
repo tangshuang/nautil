@@ -56,17 +56,33 @@
     class="{{props.class}}"
     style="{{props.style}}"
     hidden="{{props.hidden}}"
+    type="{{props.theme}}"
     size="{{props.size}}"
     disabled="{{props.disabled}}"
     form-type="{{props.type}}"
     lang="{{props.lang}}"
+    open-type="{{props['open-type']}}"
     hover-class="{{props['hover-class']}}"
-    hover-stop-propagation="{{true}}"
+    hover-stop-propagation="{{props['hover-stop-propagation']}}"
+    hover-start-time="{{props['hover-start-time']}}"
+    hover-stay-time="{{props['hover-stay-time']}}"
+    session-from="{{props['session-form']}}"
+    send-message-title="{{props['send-message-title']}}"
+    send-message-path="{{props['send-message-path']}}"
+    send-message-img="{{props['send-message-img']}}"
+    app-parameter="{{props['app-parameter']}}"
+    show-message-card="{{props['show-message-card']}}"
     bindtap="bindtap"
     bindtapstart="bindtapstart"
     bindtapmove="bindtapmove"
     bindtapend="bindtapend"
     bindlongpress="bindlongpress"
+    bindgetuserinfo="bindgetuserinfo"
+    bindcontact="bindcontact"
+    bindgetphonenumber="bindgetphonenumber"
+    binderror="binderror"
+    bindopensetting="bindopensetting"
+    bindlaunchapp="bindlaunchapp"
     data-private-owner-id="{{nodeId}}"
     data-private-page-id="{{pageId}}"
   >
@@ -77,4 +93,261 @@
       data="{{item}}"
     />
   </button>
+</block>
+
+<block wx:elif="{{type === 'audio'}}">
+  <audio
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    hidden="{{props.hidden}}"
+    src="{{props.src}}"
+    loop="{{props.loop}}"
+    controls="{{props.controls}}"
+    poster="{{props.poster}}"
+    name="{{props.name}}"
+    author="{{props.author}}"
+    binderror="binderror"
+    bindplay="bindplay"
+    bindpause="bindpause"
+    bindtimeupdate="bindtimeupdate"
+    bindended="bindended"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+  />
+</block>
+
+<block wx:elif="{{type === 'checkbox'}}">
+  <checkbox
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    value="{{props.value}}"
+    disabled="{{props.disabled}}"
+    checked="{{props.checked}}"
+    color="{{props.color}}"
+    bindchange="bindchange"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+  />
+</block>
+
+<block wx:elif="{{type === 'form'}}">
+  <form
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    report-submit="{{props['report-submit']}}"
+    report-submit-timeout="{{props['report-submit-timeout']}}"
+    bindsubmit="bindsubmit"
+    bindreset="bindreset"
+    bindchange="bindchange"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+  ></form>
+</block>
+
+<block wx:elif="{{type === 'image'}}">
+  <image
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+    src="{{props.src}}"
+    mode="{{props.mode}}"
+    webp="{{props.webp}}"
+    lazy-load="{{props['lazy-load']}}"
+    show-menu-by-longpress="{{props['show-menu-by-longpress']}}"
+    binderror="binderror"
+    bindload="bindload"
+  />
+</block>
+
+<block wx:elif="{{type === 'input'}}">
+  <input
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+    value="{{props.value}}"
+    type="{{props.type}}"
+    password="{{props.password}}"
+    placeholder="{{props.placeholder}}"
+    placeholder-style="{{props['placeholder-style']}}"
+    placeholder-class="{{props['placeholder-class']}}"
+    disabled="{{props.disabled}}"
+    maxlength="{{props.maxlength}}"
+    cursor-spacing="{{props['cursor-spacing']}}"
+    auto-focus="{{props['auto-focus']}}"
+    focus="{{props.focus}}"
+    confirm-type="{{props['confirm-type']}}"
+    always-embed="{{props['always-embed']}}"
+    confirm-hold="{{props['confirm-hold']}}"
+    cursor="{{props.cursor}}"
+    selection-start="{{props['selection-start']}}"
+    selection-end="{{props['selection-end']}}"
+    adjust-position="{{props['adjust-position']}}"
+    hold-keyboard="{{props['hold-keyboard']}}"
+    bindinput="bindinput"
+    bindfocus="bindfocus"
+    bindblur="bindblur"
+    bindconfirm="bindconfirm"
+    bindkeyboardheightchange="bindkeyboardheightchange"
+    bindchange="bindchange"
+    bindselect="bindselect"
+  />
+</block>
+
+<block wx:elif="{{type === 'radio'}}">
+  <radio
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+    value="{{props.value}}"
+    disabled="{{props.disabled}}"
+    checked="{{props.checked}}"
+    color="{{props.color}}"
+    bindchange="bindchange"
+  />
+</block>
+
+<block wx:elif="{{type === 'picker'}}">
+  <picker
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+    header-text="{{props['header-text']}}"
+    mode="{{props.mode}}"
+    disabled="{{props.disabled}}"
+    range="{{props.range}}"
+    range-key="{{props['range-key']}}"
+    value="{{props.value}}"
+    bindchange="bindchange"
+    bindcancel="bindcancel"
+  >
+    <dynamic
+      wx:if="{{fns.isType(children, 'Array')}}"
+      wx:for="{{children}}"
+      wx:key="id"
+      data="{{item}}"
+    />
+  </picker>
+</block>
+
+<block wx:elif="{{type === 'textarea'}}">
+  <textarea
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+    value="{{props.value}}"
+    placeholder="{{props.placeholder}}"
+    placeholder-style="{{props['placeholder-style']}}"
+    placeholder-class="{{props['placeholder-class']}}"
+    disabled="{{props.disabled}}"
+    maxlength="{{props.maxlength}}"
+    cursor-spacing="{{props['cursor-spacing']}}"
+    auto-focus="{{props['auto-focus']}}"
+    focus="{{props.focus}}"
+    auto-height="{{props['auto-height']}}"
+    fixed="{{props.fixed}}"
+    confirm-type="{{props['confirm-type']}}"
+    always-embed="{{props['always-embed']}}"
+    confirm-hold="{{props['confirm-hold']}}"
+    cursor="{{props.cursor}}"
+    selection-start="{{props['selection-start']}}"
+    selection-end="{{props['selection-end']}}"
+    adjust-position="{{props['adjust-position']}}"
+    hold-keyboard="{{props['hold-keyboard']}}"
+    show-confirm-bar="{{props['show-confirm-bar']}}"
+    disable-default-padding="{{props['disable-default-padding']}}"
+    bindinput="bindinput"
+    bindfocus="bindfocus"
+    bindblur="bindblur"
+    bindconfirm="bindconfirm"
+    bindkeyboardheightchange="bindkeyboardheightchange"
+    bindchange="bindchange"
+    bindselect="bindselect"
+  />
+</block>
+
+<block wx:elif="{{type === 'video'}}">
+  <video
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+    src="{{props.src}}"
+    duration="{{props.duration}}"
+    controls="{{props.controls}}"
+    danmu-list="{{props['danmu-list']}}"
+    danmu-btn="{{props['danmu-btn']}}"
+    enable-danmu="{{props['enable-danmu']}}"
+    autoplay="{{props.autoplay}}"
+    loop="{{props.loop}}"
+    muted="{{props.muted}}"
+    initial-time="{{props['initial-time']}}"
+    page-gesture="{{props['page-gesture']}}"
+    direction="{{props.direction}}"
+    show-progress="{{props['show-progress']}}"
+    show-fullscreen-btn="{{props['show-fullscreen-btn']}}"
+    show-play-btn="{{props['show-play-btn']}}"
+    show-center-play-btn="{{props['show-center-play-btn']}}"
+    enable-progress-gesture="{{props['enable-progress-gesture']}}"
+    object-fit="{{props['object-fit']}}"
+    poster="{{props.poster}}"
+    show-mute-btn="{{props['show-mute-btn']}}"
+    title="{{props.title}}"
+    play-btn-position="{{props['play-btn-position']}}"
+    enable-play-gesture="{{props['enable-play-gesture']}}"
+    auto-pause-if-navigate="{{props['auto-pause-if-navigate']}}"
+    auto-pause-if-open-native="{{props['auto-pause-if-open-native']}}"
+    vslide-gesture="{{props['vslide-gesture']}}"
+    vslide-gesture-in-fullscreen="{{props['vslide-gesture-in-fullscreen']}}"
+    ad-unit-id="{{props['ad-unit-id']}}"
+    poster-for-crawler="{{props['poster-for-crawler']}}"
+    show-casting-button="{{props['show-casting-button']}}"
+    picture-in-picture-mode="{{props['picture-in-picture-mode']}}"
+    picture-in-picture-show-progress="{{props['picture-in-picture-show-progress']}}"
+    enable-auto-rotation="{{props['enable-auto-rotation']}}"
+    show-screen-lock-button="{{props['show-screen-lock-button']}}"
+    show-snapshot-button="{{props['show-snapshot-button']}}"
+    show-background-playback-button="{{props['show-background-playback-button']}}"
+    background-poster="{{props['background-poster']}}"
+    bindplay="bindplay"
+    bindpause="bindpause"
+    bindended="bindended"
+    bindtimeupdate="bindtimeupdate"
+    bindfullscreenchange="bindfullscreenchange"
+    bindwaiting="bindwaiting"
+    binderror="binderror"
+    bindprogress="bindprogress"
+    bindloadedmetadata="bindloadedmetadata"
+    bindcontrolstoggle="bindcontrolstoggle"
+    bindenterpictureinpicture="bindenterpictureinpicture"
+    bindleavepictureinpicture="bindleavepictureinpicture"
+    bindseekcomplete="bindseekcomplete"
+  />
+</block>
+
+<block wx:elif="{{type === 'web-view'}}">
+  <web-view
+    id="{{nodeId}}"
+    class="{{props.class}}"
+    style="{{props.style}}"
+    data-private-owner-id="{{nodeId}}"
+    data-private-page-id="{{pageId}}"
+    src="{{props.src}}"
+    bindmessage="bindmessage"
+    bindload="bindload"
+    binderror="binderror"
+  />
 </block>

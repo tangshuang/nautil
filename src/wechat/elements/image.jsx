@@ -14,6 +14,8 @@ mixin(Image, class {
       return (
         <view
           {...rest}
+
+          class={this.className}
           style={Style.stringify({
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
@@ -28,7 +30,10 @@ mixin(Image, class {
       return (
         <image
           {...rest}
+
           src={src}
+
+          class={this.className}
           style={Style.stringify(style)}
         />
       )

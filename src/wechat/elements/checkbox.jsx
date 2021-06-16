@@ -25,6 +25,7 @@ mixin(Checkbox, class {
       checked={checked}
       bindchange={onChange}
 
+      class={this.className}
       style={Style.stringify(this.style)}
     />
   }

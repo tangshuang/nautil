@@ -8,7 +8,14 @@ mixin(Video, class {
     const style = { width, height, ...this.style }
     const src = isString(source) ? source : source.uri
     return (
-      <video {...rest} src={src} style={Style.stringify(style)} class={this.className}>
+      <video
+        {...rest}
+
+        src={src}
+
+        style={Style.stringify(style)}
+        class={this.className}
+      >
         {this.children}
       </video>
     )
