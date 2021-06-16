@@ -34,9 +34,9 @@
     "immer": "^9.0.3",
     "react": "^17.0.2",
     "rxjs": "^6.6.7",
-    "scopex": "^3.0.2",
+    "scopex": "^3.0.3",
     "ts-fns": "^10.3.2",
-    "tyshemo": "^11.4.4"
+    "tyshemo": "^11.4.6"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": "^1.14.1",

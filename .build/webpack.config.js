@@ -15,6 +15,7 @@ module.exports = {
     alias: {
       'ts-fns': path.resolve(__dirname, '../node_modules/ts-fns/es'),
       scopex: path.resolve(__dirname, '../node_modules/scopex'),
+      tyshemo: path.resolve(__dirname, '../node_modules/tyshemo'),
       immer: path.resolve(__dirname, '../node_modules/immer'),
     },
   },
