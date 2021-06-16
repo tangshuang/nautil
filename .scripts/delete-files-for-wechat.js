@@ -37,7 +37,6 @@ const fs = require('fs')
     function push(pkgFile) {
       const deps = getDeps(pkgFile)
 
-      console.log(pkgFile, deps, res)
       deps.forEach((dep) => {
         if (res.includes(dep)) {
           return
