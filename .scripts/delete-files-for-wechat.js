@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 
 ;(function() {
-  const projDir = path.resolve(__dirname, '../..')
+  const projDir = path.resolve(__dirname, '../../..')
   const projFile = path.resolve(projDir, 'project.config.json')
   const appFile = path.resolve(projDir, 'app.json')
 
@@ -24,52 +24,99 @@ const fs = require('fs')
     return
   }
 
+  const nodeModules = path.resolve(projDir, 'node_modules')
+
+  function getDeps(pkgFile) {
+    const { dependencies = {}, devDependencies = {}, optionalDependencies = {} } = require(pkgFile)
+    const deps = Object.keys(dependencies).concat(Object.keys(devDependencies)).concat(Object.keys(optionalDependencies))
+    return deps
+  }
+
   function findDeps(pkgFile) {
-    const items = []
+    const res = []
     function push(pkgFile) {
-      const { dependencies = {}, devDependencies = {}, optionalDependencies = {} } = require(pkgFile)
-      const deps = Object.keys(dependencies).concat(Object.keys(devDependencies)).concat(Object.keys(optionalDependencies))
+      const deps = getDeps(pkgFile)
+
+      console.log(pkgFile, deps, res)
       deps.forEach((dep) => {
-        if (dep === 'nautil') {
+        if (res.includes(dep)) {
           return
         }
 
-        const pkgFile = path.resolve(projDir, 'node_modules', dep, 'package.json')
-        if (!fs.existsSync(pkgFile)) {
+        const depFile = path.resolve(nodeModules, dep, 'package.json')
+        if (!fs.existsSync(depFile)) {
           return
         }
 
-        items.push(dep)
-        push(pkgFile)
+        res.push(dep)
+        push(depFile)
       })
     }
     push(pkgFile)
-    return items
+    return res
   }
 
-  const pkgFile = path.resolve(projDir, 'package.json')
-  if (!fs.existsSync(pkgFile)) {
-    return
-  }
-
-  const ntFile = path.resolve(projDir, 'node_modules', 'nautil/package.json')
+  const ntFile = path.resolve(nodeModules, 'nautil/package.json')
   if (!fs.existsSync(ntFile)) {
     return
   }
-
-  const deps = findDeps(pkgFile)
   const ntDeps = findDeps(ntFile)
 
+  const _deps = getDeps(path.resolve(projDir, 'package.json'))
+  const others = _deps.filter(item => item !== 'nautil' && item.indexOf('.') !== 0)
+  const excludes = []
+  others.forEach((dep) => {
+    const pkgFile = path.resolve(nodeModules, dep, 'package.json')
+    if (!fs.existsSync(pkgFile)) {
+      return
+    }
+    const pkgDeps = findDeps(pkgFile)
+    excludes.push(...pkgDeps)
+  })
+
   const removeItems = []
-  ntDeps.forEach((dep) => {
-    if (deps.includes(dep)) {
+
+  function removePkg(pkg) {
+    if (!ntDeps.includes(pkg)) {
       return
     }
 
-    const dir = path.resolve(projDir, 'node_modules', dep)
-    fs.rmdir(dir, { recursive: true, force: true })
-    removeItems.push(dep)
+    if (excludes.includes(pkg)) {
+      return
+    }
+
+    const dir = path.resolve(projDir, 'node_modules', pkg)
+    fs.rmdir(dir, { recursive: true, force: true }, () => {})
+    removeItems.push(pkg)
+  }
+
+  const dirs = fs.readdirSync(nodeModules)
+  dirs.forEach((dir) => {
+    if (dir.indexOf('.') === 0) {
+      return
+    }
+
+    if (dir.indexOf('@') === 0) {
+      const subdirs = fs.readdirSync(path.resolve(nodeModules, dir))
+      let count = 0
+      subdirs.forEach((subdir) => {
+        if (subdir.indexOf('.') === 0) {
+          return
+        }
+
+        removePkg(dir + '/' + subdir)
+        count ++
+      })
+      if (count === subdirs.length) {
+        fs.rmdir(path.resolve(nodeModules, dir), () => {})
+      }
+      return
+    }
+
+    removePkg(dir)
   })
 
-  console.log('Nautil: 这些包由于用不到，已被删除', removeItems)
+  if (removeItems.length) {
+    console.log('Nautil: 这些包由于用不到，已被删除', removeItems)
+  }
 })();
