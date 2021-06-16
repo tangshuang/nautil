@@ -10,7 +10,8 @@
     "build:cjs": "npm run clean && babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
     "build:dist": "NODE_ENV=production webpack --config .build/webpack.config.js",
     "build:wechat": "NODE_ENV=production webpack --config .build/webpack.wechat.config.js && babel src/wechat/components --out-dir dist/wechat/components --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
-    "dev": "webpack-dev-server --config .examples/app/webpack.config.js"
+    "dev": "webpack-dev-server --config .examples/app/webpack.config.js",
+    "postinstall": "node .scripts/delete-files-for-wechat.js"
   },
   "repository": {
     "type": "git",
