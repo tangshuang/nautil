@@ -21,7 +21,6 @@ const main = {
   },
   externals: [
     {
-      react: true,
       // react: 'react/cjs/react.production.min.js',
       // 'react/jsx-dev-runtime': 'react/cjs/react-jsx-dev-runtime.production.min.js',
       // 'react/jsx-runtime': 'react/cjs/react-jsx-runtime.production.min.js',
