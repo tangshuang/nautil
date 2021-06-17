@@ -21,7 +21,7 @@ export { Webview } from './elements/webview.jsx'
 
 export { Navigation } from './navi/navigation.js'
 export { Storage } from './storage/storage.js'
-export { Transform } from '../dom/style/transform.js'
+export { Transform } from './style/transform.js'
 export { Style } from './style/style.js'
 
 export { registerApp, registerPage, createBehavior } from './render.js'
