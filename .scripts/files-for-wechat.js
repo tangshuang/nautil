@@ -144,8 +144,8 @@ const fs = require('fs')
   }
 
   moveFile(path.resolve(nodeModules, 'react/cjs/react.production.min.js'), path.resolve(nodeModules, 'react/index.js'))
-  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-dev-runtime.production.min.js'), path.resolve(nodeModules, 'react/react-jsx-dev-runtime.js'))
-  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-runtime.production.min.js'), path.resolve(nodeModules, 'react/react-jsx-runtime.js'))
+  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-dev-runtime.production.min.js'), path.resolve(nodeModules, 'react/jsx-dev-runtime.js'))
+  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-runtime.production.min.js'), path.resolve(nodeModules, 'react/jsx-runtime.js'))
   removeFile(path.resolve(nodeModules, 'react/cjs'))
   removeFile(path.resolve(nodeModules, 'react/umd'))
   console.log("Nautil: 已经处理react相关文件，你可以在代码中直接import * as React from 'react'而不会报错")
