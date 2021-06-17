@@ -63,28 +63,17 @@ const wechat = {
     library: 'nautil/wechat',
     libraryTarget: 'commonjs2',
   },
-  externals: [
-    function(context, request, callback) {
-      if (
-        request.indexOf('../lib/') > -1
-        && path.resolve(context, request).indexOf(path.resolve(__dirname, '../src/lib') === 0)
-      ) {
-        return callback(null, 'commonjs2 ../index.js')
-      }
-      callback(null)
-    },
-  ],
+  externals: undefined,
 }
 
 const dynamic = {
-  ...main,
+  ...wechat,
   entry: path.resolve(__dirname, '../src/wechat/components/dynamic/dynamic.js'),
   output: {
     path: path.join(__dirname, '../miniprogram_dist/wechat/components/dynamic'),
     filename: 'dynamic.js',
     libraryTarget: 'commonjs2',
   },
-  externals: undefined,
 }
 
 module.exports = [main, wechat, dynamic]
