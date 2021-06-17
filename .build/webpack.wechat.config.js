@@ -68,7 +68,6 @@ const wechat = {
       if (
         request.indexOf('../lib/') > -1
         && path.resolve(context, request).indexOf(path.resolve(__dirname, '../src/lib') === 0)
-        && request.indexOf('/style/') === -1 // 不包含style部分
       ) {
         return callback(null, 'commonjs2 ../index.js')
       }
