@@ -137,7 +137,9 @@ const fs = require('fs')
   }
 
   function moveFile(src, to) {
-    fs.rmSync(to, { force: true })
+    if (fs.existsSync(to)) {
+      fs.rmSync(to, { force: true })
+    }
     fs.renameSync(src, to)
   }
 
