@@ -83,8 +83,17 @@ const fs = require('fs')
 
   const removeItems = []
 
+  function isDir(file) {
+    return fs.lstatSync(file).isDirectory()
+  }
+
   function removeFile(file) {
-    fs.rmdir(file, { recursive: true, force: true }, () => {})
+    if (isDir(file)) {
+      fs.rmdirSync(file, { recursive: true, force: true })
+    }
+    else {
+      fs.unlinkSync(file)
+    }
   }
 
   function removePkg(pkg) {
@@ -97,7 +106,7 @@ const fs = require('fs')
     }
 
     const dir = path.resolve(projDir, 'node_modules', pkg)
-    removeFile(dir, { recursive: true, force: true }, () => {})
+    removeFile(dir)
     removeItems.push(pkg)
   }
 
