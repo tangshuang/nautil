@@ -70,7 +70,7 @@ const fs = require('fs')
   const ntDeps = findDeps(ntFile)
 
   const _deps = getDeps(path.resolve(projDir, 'package.json'))
-  const others = _deps.filter(item => item !== 'nautil' && item.indexOf('.') !== 0)
+  const others = _deps.filter(item => item !== 'nautil' && item.indexOf('.') !== 0).concat('react')
   const excludes = []
   others.forEach((dep) => {
     excludes.push(dep)
@@ -146,19 +146,19 @@ const fs = require('fs')
     console.log('Nautil: 这些包由于用不到，已被删除', removeItems)
   }
 
-  // function moveFile(src, to) {
-  //   if (fs.existsSync(to)) {
-  //     fs.rmSync(to, { force: true })
-  //   }
-  //   fs.renameSync(src, to)
-  // }
+  function moveFile(src, to) {
+    if (fs.existsSync(to)) {
+      fs.rmSync(to, { force: true })
+    }
+    fs.renameSync(src, to)
+  }
 
-  // moveFile(path.resolve(nodeModules, 'react/cjs/react.production.min.js'), path.resolve(nodeModules, 'react/index.js'))
-  // moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-dev-runtime.production.min.js'), path.resolve(nodeModules, 'react/jsx-dev-runtime.js'))
-  // moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-runtime.production.min.js'), path.resolve(nodeModules, 'react/jsx-runtime.js'))
-  // removeFile(path.resolve(nodeModules, 'react/cjs'))
-  // removeFile(path.resolve(nodeModules, 'react/umd'))
-  // console.log("Nautil: 已经处理react相关文件，你可以在代码中直接import * as React from 'react'而不会报错")
+  moveFile(path.resolve(nodeModules, 'react/cjs/react.production.min.js'), path.resolve(nodeModules, 'react/index.js'))
+  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-dev-runtime.production.min.js'), path.resolve(nodeModules, 'react/jsx-dev-runtime.js'))
+  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-runtime.production.min.js'), path.resolve(nodeModules, 'react/jsx-runtime.js'))
+  removeFile(path.resolve(nodeModules, 'react/cjs'))
+  removeFile(path.resolve(nodeModules, 'react/umd'))
+  console.log("Nautil: 已经处理react相关文件，你可以在代码中直接import * as React from 'react'而不会报错")
 
   console.log('Nautil: 你需要在微信开发者工具中执行"工具 -> 构建npm"完成npm包的转移')
   console.log('')

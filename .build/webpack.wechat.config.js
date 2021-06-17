@@ -19,19 +19,19 @@ const main = {
       immer: path.resolve(__dirname, '../node_modules/immer'),
     },
   },
-  // externals: [
-  //   {
-  //     react: true,
-  //     react: 'react/cjs/react.production.min.js',
-  //     'react/jsx-dev-runtime': 'react/cjs/react-jsx-dev-runtime.production.min.js',
-  //     'react/jsx-runtime': 'react/cjs/react-jsx-runtime.production.min.js',
-  //     'react-reconciler': 'react-reconciler/cjs/react-reconciler.production.min.js',
-  //     scheduler: 'scheduler/cjs/scheduler.production.min.js',
-  //     immer: 'immer/dist/immer.cjs.production.min.js',
-  //     'ts-fns': true,
-  //     tyshemo: true,
-  //   },
-  // ],
+  externals: [
+    {
+      react: true,
+      // react: 'react/cjs/react.production.min.js',
+      // 'react/jsx-dev-runtime': 'react/cjs/react-jsx-dev-runtime.production.min.js',
+      // 'react/jsx-runtime': 'react/cjs/react-jsx-runtime.production.min.js',
+      // 'react-reconciler': 'react-reconciler/cjs/react-reconciler.production.min.js',
+      // scheduler: 'scheduler/cjs/scheduler.production.min.js',
+      // immer: 'immer/dist/immer.cjs.production.min.js',
+      // 'ts-fns': true,
+      // tyshemo: true,
+    },
+  ],
   module: {
     rules: [
       {
