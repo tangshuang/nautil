@@ -3,15 +3,14 @@
   "version": "0.31.23-9",
   "description": "A javascript reactive framework which is for building crossing-platform applications.",
   "main": "index.js",
-  "miniprogram": "dist",
+  "miniprogram": "miniprogram_dist",
   "scripts": {
-    "clean": "rimraf dist dom lib native ssr web-component wechat index.js",
-    "build": "npm run build:cjs && npm run build:dist && npm run build:wechat",
+    "clean": "rimraf dist miniprogram_dist dom lib native ssr web-component wechat index.js",
+    "build": "npm run build:cjs && npm run build:wechat",
     "build:cjs": "npm run clean && babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
-    "build:dist": "NODE_ENV=production webpack --config .build/webpack.config.js",
-    "build:wechat": "copyfiles -f src/wechat/components/dynamic/* dist/wechat/components/dynamic && NODE_ENV=production webpack --config .build/webpack.wechat.config.js",
+    "build:wechat": "copyfiles -f src/wechat/components/dynamic/* miniprogram_dist/wechat/components/dynamic && NODE_ENV=production webpack --config .build/webpack.wechat.config.js",
     "dev": "webpack-dev-server --config .examples/app/webpack.config.js",
-    "postinstall": "node .scripts/delete-files-for-wechat.js"
+    "postinstall": "node .scripts/files-for-wechat.js"
   },
   "repository": {
     "type": "git",

@@ -71,7 +71,7 @@ const fs = require('fs')
 
   const _deps = getDeps(path.resolve(projDir, 'package.json'))
   const others = _deps.filter(item => item !== 'nautil' && item.indexOf('.') !== 0)
-  const excludes = []
+  const excludes = ['react']
   others.forEach((dep) => {
     const pkgFile = path.resolve(nodeModules, dep, 'package.json')
     if (!fs.existsSync(pkgFile)) {
@@ -83,6 +83,10 @@ const fs = require('fs')
 
   const removeItems = []
 
+  function removeFile(file) {
+    fs.rmdir(file, { recursive: true, force: true }, () => {})
+  }
+
   function removePkg(pkg) {
     if (!ntDeps.includes(pkg)) {
       return
@@ -93,7 +97,7 @@ const fs = require('fs')
     }
 
     const dir = path.resolve(projDir, 'node_modules', pkg)
-    fs.rmdir(dir, { recursive: true, force: true }, () => {})
+    removeFile(dir, { recursive: true, force: true }, () => {})
     removeItems.push(pkg)
   }
 
@@ -115,7 +119,7 @@ const fs = require('fs')
         count ++
       })
       if (count === subdirs.length) {
-        fs.rmdir(path.resolve(nodeModules, dir), { recursive: true, force: true }, () => {})
+        removeFile(path.resolve(nodeModules, dir))
       }
       return
     }
@@ -125,10 +129,22 @@ const fs = require('fs')
 
   const nouseDirs = ['dom', 'lib', 'native', 'ssr', 'web-component', 'wechat', '.scripts']
   nouseDirs.forEach((dir) => {
-    fs.rmdir(path.resolve(nodeModules, 'nautil', dir), { recursive: true, force: true }, () => {})
+    removeFile(path.resolve(nodeModules, 'nautil', dir))
   })
 
   if (removeItems.length) {
     console.log('Nautil: 这些包由于用不到，已被删除', removeItems)
   }
+
+  function moveFile(src, to) {
+    fs.rmSync(to, { force: true })
+    fs.renameSync(src, to)
+  }
+
+  moveFile(path.resolve(nodeModules, 'react/cjs/react.production.min.js'), path.resolve(nodeModules, 'index.js'))
+  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-dev-runtime.production.min.js'), path.resolve(nodeModules, 'react-jsx-dev-runtime.js'))
+  moveFile(path.resolve(nodeModules, 'react/cjs/react-jsx-runtime.production.min.js'), path.resolve(nodeModules, 'react-jsx-runtime.js'))
+  removeFile(path.resolve(nodeModules, 'react/cjs'))
+  removeFile(path.resolve(nodeModules, 'react/umd'))
+  console.log("Nautil: 已经处理react相关文件，你可以在代码中直接import * as React from 'react'而不会报错")
 })();
