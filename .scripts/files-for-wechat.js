@@ -70,7 +70,7 @@ const fs = require('fs')
   const ntDeps = findDeps(ntFile)
 
   const _deps = getDeps(path.resolve(projDir, 'package.json'))
-  const others = _deps.filter(item => item !== 'nautil' && item.indexOf('.') !== 0).concat('react')
+  const others = _deps.filter(item => item !== 'nautil' && item.indexOf('.') !== 0).concat(['react'])
   const excludes = []
   others.forEach((dep) => {
     excludes.push(dep)
