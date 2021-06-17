@@ -73,6 +73,7 @@ const fs = require('fs')
   const others = _deps.filter(item => item !== 'nautil' && item.indexOf('.') !== 0)
   const excludes = []
   others.forEach((dep) => {
+    excludes.push(dep)
     const pkgFile = path.resolve(nodeModules, dep, 'package.json')
     if (!fs.existsSync(pkgFile)) {
       return
