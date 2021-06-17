@@ -1,8 +1,10 @@
 const path = require('path')
 const babelConfig = require('./babel.config.js')
 
+babelConfig.presets[0][1] = { modules: false }
+
 const main = {
-  mode: 'production',
+  mode: 'none',
   target: 'node',
   entry: path.resolve(__dirname, '../src/index.js'),
   output: {
@@ -15,33 +17,28 @@ const main = {
     alias: {
       'ts-fns': path.resolve(__dirname, '../node_modules/ts-fns/es'),
       scopex: path.resolve(__dirname, '../node_modules/scopex'),
-      tyshemo: path.resolve(__dirname, '../node_modules/tyshemo'),
+      tyshemo: path.resolve(__dirname, '../node_modules/tyshemo/src'),
       immer: path.resolve(__dirname, '../node_modules/immer'),
     },
   },
-  externals: [
-    {
-      // react: 'react/cjs/react.production.min.js',
-      // 'react/jsx-dev-runtime': 'react/cjs/react-jsx-dev-runtime.production.min.js',
-      // 'react/jsx-runtime': 'react/cjs/react-jsx-runtime.production.min.js',
-      // 'react-reconciler': 'react-reconciler/cjs/react-reconciler.production.min.js',
-      // scheduler: 'scheduler/cjs/scheduler.production.min.js',
-      // immer: 'immer/dist/immer.cjs.production.min.js',
-      // 'ts-fns': true,
-      // tyshemo: true,
-    },
-  ],
   module: {
     rules: [
       {
         test: /\.js|jsx$/,
+        exclude: {
+          test: /node_modules/,
+          not: [
+            /ts\-fns/,
+            /tyshemo/,
+          ],
+        },
         loader: 'babel-loader',
         options: babelConfig,
       },
     ],
   },
   optimization: {
-    minimize: true,
+    minimize: false,
     usedExports: true,
     sideEffects: true,
   },
@@ -57,7 +54,6 @@ const wechat = {
     libraryTarget: 'commonjs2',
   },
   externals: [
-    ...main.externals,
     function(context, request, callback) {
       if (
         request.indexOf('../lib/') > -1
