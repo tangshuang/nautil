@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Radio from '../../lib/elements/radio.jsx'
+import { Radio } from '../../lib/elements/radio.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Radio, class {

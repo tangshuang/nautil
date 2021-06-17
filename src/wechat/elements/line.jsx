@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Line from '../../lib/elements/line.jsx'
+import { Line } from '../../lib/elements/line.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Line, class {

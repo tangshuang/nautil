@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Text from '../../lib/elements/text.jsx'
+import { Text } from '../../lib/elements/text.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Text, class {

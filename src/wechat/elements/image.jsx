@@ -1,5 +1,5 @@
 import { mixin, isString } from 'ts-fns'
-import Image from '../../lib/elements/image.jsx'
+import { Image } from '../../lib/elements/image.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Image, class {

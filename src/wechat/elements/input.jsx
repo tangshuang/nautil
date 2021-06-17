@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Input from '../../lib/elements/input.jsx'
+import { Input } from '../../lib/elements/input.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Input, class {

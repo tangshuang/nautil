@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Section from '../../lib/elements/section.jsx'
+import { Section } from '../../lib/elements/section.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Section, class {

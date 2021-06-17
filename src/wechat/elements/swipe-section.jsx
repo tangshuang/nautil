@@ -1,7 +1,6 @@
 import { createRef } from 'react'
 import { mixin, throttle } from 'ts-fns'
-
-import SwipeSection from '../../lib/elements/swipe-section.jsx'
+import { SwipeSection } from '../../lib/elements/swipe-section.jsx'
 
 mixin(SwipeSection, class {
   render() {

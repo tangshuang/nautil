@@ -1,5 +1,5 @@
 import { isString, mixin } from 'ts-fns'
-import Audio from '../../lib/elements/audio.jsx'
+import { Audio } from '../../lib/elements/audio.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Audio, class {

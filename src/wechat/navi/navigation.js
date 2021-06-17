@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Navigation from '../../lib/navi/navigation.js'
+import { Navigation } from '../../lib/navi/navigation.js'
 
 mixin(Navigation, class {
   async changeLocation(state, replace = false) {

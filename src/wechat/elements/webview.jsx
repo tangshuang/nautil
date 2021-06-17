@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Webview from '../../lib/elements/webview.jsx'
+import { Webview } from '../../lib/elements/webview.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Webview, class {

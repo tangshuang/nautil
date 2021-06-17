@@ -1,5 +1,5 @@
 import { mixin, decideby } from 'ts-fns'
-import Select from '../../lib/elements/select.jsx'
+import { Select } from '../../lib/elements/select.jsx'
 import { isRef } from '../../lib/utils.js'
 import { Style } from '../../lib/style/style.js'
 

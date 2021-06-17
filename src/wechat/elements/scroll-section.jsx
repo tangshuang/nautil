@@ -1,9 +1,5 @@
-import { isObject, isString, mixin } from 'ts-fns'
-
-import Static from '../../lib/components/static.jsx'
-import { If } from '../../lib/components/if-else.jsx'
-
-import ScrollSection from '../../lib/elements/scroll-section.jsx'
+import { mixin } from 'ts-fns'
+import { ScrollSection } from '../../lib/elements/scroll-section.jsx'
 
 const { DOWN, UP, BOTH, NONE, ACTIVATE, DEACTIVATE, RELEASE, FINISH } = ScrollSection
 

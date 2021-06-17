@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Textarea from '../../lib/elements/textarea.jsx'
+import { Textarea } from '../../lib/elements/textarea.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Textarea, class {

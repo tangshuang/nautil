@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Button from '../../lib/elements/button.jsx'
+import { Button } from '../../lib/elements/button.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Button, class {

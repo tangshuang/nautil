@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Checkbox from '../../lib/elements/checkbox.jsx'
+import { Checkbox } from '../../lib/elements/checkbox.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Checkbox, class {

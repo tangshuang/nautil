@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Video from '../../lib/elements/video.jsx'
+import { Video } from '../../lib/elements/video.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Video, class {

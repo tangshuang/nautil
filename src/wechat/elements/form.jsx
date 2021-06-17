@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Form from '../../lib/elements/form.jsx'
+import { Form } from '../../lib/elements/form.jsx'
 import { Style } from '../../lib/style/style.js'
 
 mixin(Form, class {

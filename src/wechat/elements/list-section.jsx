@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import ListSection from '../../lib/elements/list-section.jsx'
+import { ListSection } from '../../lib/elements/list-section.jsx'
 
 mixin(ListSection, class {
   render() {
