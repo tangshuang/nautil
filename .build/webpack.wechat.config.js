@@ -21,6 +21,9 @@ const main = {
       immer: path.resolve(__dirname, '../node_modules/immer'),
     },
   },
+  externals: {
+    './wechat': true,
+  },
   module: {
     rules: [
       {
@@ -32,8 +35,15 @@ const main = {
             /tyshemo/,
           ],
         },
-        loader: 'babel-loader',
-        options: babelConfig,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: babelConfig,
+          },
+          {
+            loader: path.resolve(__dirname, 'wechat-exports-loader.js'),
+          },
+        ],
       },
     ],
   },
@@ -75,6 +85,7 @@ const dynamic = {
     filename: 'dynamic.js',
     libraryTarget: 'commonjs2',
   },
+  externals: undefined,
 }
 
 module.exports = [main, wechat, dynamic]
