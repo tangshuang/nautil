@@ -3,6 +3,13 @@ import { mixin } from 'ts-fns'
 import { _Link as Link } from '../../lib/navi/link.jsx'
 
 mixin(Link, class {
+  getHref() {
+    const { to, params, navigation } = this.attrs
+    const state = navigation.makeState(to, params)
+    const href = navigation.$makeHref(state)
+    return href
+  }
+
   render() {
     const { open } = this.attrs
     const href = this.getHref()

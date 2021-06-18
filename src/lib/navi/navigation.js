@@ -42,6 +42,36 @@ export class Navigation {
     return this.status > 0 ? this.state : null
   }
 
+  _getMode() {
+    const { mode = '' } = this.options
+
+    if (!mode) {
+      return { mode: 'memo', query: '', base: '' }
+    }
+
+    if (mode.indexOf('/') === 0) {
+      const base = mode
+      return { mode: 'history', query: '', base }
+    }
+
+    if (mode.indexOf('#?') === 0) {
+      const [query, base = ''] = mode.substring(2).split('=')
+      return { mode: 'hash_search', query, base }
+    }
+
+    if (mode.indexOf('#') === 0) {
+      const base = mode.substring(1)
+      return { mode: 'hash', query: '', base }
+    }
+
+    if (mode.indexOf('?') === 0) {
+      const [query, base = ''] = mode.substring(1).split('=')
+      return { mode: 'search', query, base }
+    }
+
+    return { mode: 'storage', query: '', base: '' }
+  }
+
   _parseDefaultRoute(defaultRoute) {
     if (isArray(defaultRoute)) {
       const [name, params = {}] = defaultRoute
@@ -73,16 +103,22 @@ export class Navigation {
   }
 
   async init() {
-    const { mode } = this.options
-    const state = await Storage.getItem('historyState')
-    if (mode === 'storage' && state) {
-      const { route, name, params } = state
-      const { redirect } = route
-      if (redirect) {
-        this.go(redirect, params, true)
-        return
+    const { mode } = this._getMode()
+    if (mode === 'storage') {
+      const state = await Storage.getItem('historyState')
+      if (state) {
+        const { route, name, params } = state
+        const { redirect } = route
+        if (redirect) {
+          this.go(redirect, params, true)
+        }
+        else {
+          this.go(name, params)
+        }
       }
-      this.go(name, params)
+      else {
+        this._goDefaultRoute()
+      }
     }
     else {
       this._goDefaultRoute()
@@ -99,6 +135,7 @@ export class Navigation {
     this._listeners.push({ match, callback, exact })
     return this
   }
+
   off(match, callback) {
     if (isArray(match)) {
       const matches = match
@@ -122,17 +159,17 @@ export class Navigation {
       if (match === '*') {
         dispatchers.push(callback)
       }
-      // bind events i.e. on('$onEnter', callback)
+      // bind events i.e. on('$enter', callback)
       else if (match === event) {
         callback.call(this, state)
       }
       // i.e. on('!', callback)
-      else if (event === '$onNotFound') {
+      else if (event === '$notFound') {
         if (match === '!') {
           callback.call(this, state)
         }
       }
-      else if (event === '$onEnter') {
+      else if (event === '$enter') {
         if (this.is(match, exact)) {
           callback.call(this, this.state)
         }
@@ -148,8 +185,9 @@ export class Navigation {
     if (route && route.onLeave) {
       onLeave.call(this, state)
     }
-    this._dispatch('$onLeave', state)
+    this._dispatch('$leave', state)
   }
+
   _onEnter() {
     const state = this.state
     const { route } = state
@@ -157,19 +195,20 @@ export class Navigation {
       onEnter.call(this, state)
     }
     this.status = 1
-    this._dispatch('$onEnter', state)
+    this._dispatch('$enter', state)
   }
+
   _onNotFound() {
     if (this.options.onNotFound) {
       this.options.onNotFound.call(this)
     }
     this.status = 0
-    this._dispatch('$onNotFound')
+    this._dispatch('$notFound')
   }
 
   /**
    * check whether match the current state
-   * @param {string} match
+   * @param {string} match base + path + search
    * @param {boolean} exact
    */
   is(match, exact = false) {
@@ -185,8 +224,8 @@ export class Navigation {
       return true
     }
 
-    const { state } = this
-    const { name, url } = state
+    const state = this.getState()
+    const { name, path } = state
 
     if (isString(match)) {
       if (match === name) {
@@ -195,10 +234,10 @@ export class Navigation {
       if (name.indexOf(match + '.') === 0 && !exact) {
         return true
       }
-      if (match === url) {
+      if (match === path) {
         return true
       }
-      if (url.indexOf(match) === 0 && !exact) {
+      if (path.indexOf(match) === 0 && !exact) {
         return true
       }
 
@@ -211,7 +250,7 @@ export class Navigation {
       }
     }
     if (match instanceof RegExp) {
-      return match.test(url)
+      return match.test(path)
     }
     if (isFunction(match)) {
       return match(state)
@@ -223,7 +262,7 @@ export class Navigation {
   go(name, params = {}, replace = false) {
     const state = this.makeState(name, params)
 
-    this._dispatch('$onForward', state)
+    this._dispatch('$forward', state)
 
     if (state) {
       let { route } = state
@@ -240,9 +279,13 @@ export class Navigation {
     else {
       this.push(state)
     }
+
+    this._dispatch('$change', state)
   }
 
-  open(url, params) {}
+  open(url, params) {
+    // sideEffects
+  }
 
   back(count = -1) {
     const len = this._history.length
@@ -251,11 +294,11 @@ export class Navigation {
 
     if (this._history.length) {
       const latest = this._history.pop()
-      this._dispatch('$onBack', latest)
+      this._dispatch('$back', latest)
       this.push(latest)
     }
     else {
-      this._dispatch('$onBackEmpty')
+      this._dispatch('$backEmpty')
       const { defaultRoute } = this.options
       if (defaultRoute) {
         const parsed = this._parseDefaultRoute(defaultRoute)
@@ -285,6 +328,7 @@ export class Navigation {
 
     this._onEnter()
   }
+
   replace(state, changeLocation = true) {
     if (!state) {
       this._onNotFound()
@@ -323,35 +367,35 @@ export class Navigation {
 
     return {
       name,
+      path: clearUrl,
       params: combineParams,
-      url: clearUrl,
       route,
     }
   }
 
-  parseSearchToParams(search) {
-    const params = {}
-    const segs = search.replace(/^\?/, '').split('&')
-    for (let i = 0, len = segs.length; i < len; i ++) {
-      if (segs[i]) {
-        let p = segs[i].split('=')
-        params[p[0]] = p[1]
+  makeUrl(to, params = {}) {
+    const url = to.replace(new RegExp(':([a-zA-Z0-9]+)\\??([(?=\\\/)|$])', 'g'), (_, key, tail) => {
+      if (!inObject(key, params)) {
+        return tail === '/' ? 'undefined/' : ''
       }
-    }
-    return params
+
+      const value = params[key]
+      const text = value + (tail === '/' ? '/' : '')
+      return text
+    })
+    return url
   }
 
   /**
+   * @param {string} url the whole url which generated by navigation (base + path + search, without hash)
    * @return {object} state
    */
   parseUrlToState(url) {
-    let uri = url
-    let search = ''
-    if (url.indexOf('?') > -1) {
-      [uri, search] = url.split('?')
-    }
-
+    const { path, search } = this.$parseUrl(url)
+    const { base } = this._getMode()
+    const uri = path.replace(base, '')
     const params = {}
+
     const diffBlocks = (route, target) => {
       // if the given url is more than route needs, it does not match this route
       if (target.length > route.length) {
@@ -436,79 +480,39 @@ export class Navigation {
       return
     }
 
-    const searchParams = this.parseSearchToParams(search)
+    const searchParams = this.$parseSearchToParams(search)
     const routeParams = route.params || {}
     // route params have higher priority then search query
     const combineParams = { ...searchParams, ...routeParams, ...params }
 
     return {
       name: route.name,
+      path: uri,
       params: combineParams,
-      url: uri,
       route,
     }
   }
 
-  makeUrl(to, params = {}) {
-    const url = to.replace(new RegExp(':([a-zA-Z0-9]+)\\??([(?=\\\/)|$])', 'g'), (matched, key, tail) => {
-      if (!inObject(key, params)) {
-        return tail === '/' ? 'undefined/' : ''
-      }
-
-      const value = params[key]
-      const text = value + (tail === '/' ? '/' : '')
-      return text
-    })
-    return url
+  $parseUrl(url) {
+    const [path, hash = ''] = url.split('#')
+    const [pathname, search = ''] = path.split('?')
+    return { path, pathname, search, hash }
   }
 
-  makeHref(state) {
-    if (!state) {
-      return '#!'
-    }
-
-    const { url } = state
-    const { mode, base = '/', searchQuery = '_url' } = this.options
-
-    if (mode === 'history') {
-      const href = base === '/' ? url : base + url
-      return href
-    }
-    else if (mode === 'hash') {
-      const href = '#' + url
-      return href
-    }
-    else if (mode === 'search') {
-      const target = url
-      const encoded = encodeURIComponent(target)
-      const hash = location.hash
-      if (!hash) {
-        const href = '#?' + searchQuery + '=' + encoded
-        return href
-      }
-      else if (hash.indexOf('?') === -1) {
-        const href = hash + '?' + searchQuery + '=' + encoded
-        return
-      }
-      else {
-        const search = hash.split('?').pop()
-        if (search.indexOf(searchQuery + '=') === -1) {
-          const href = hash + '&' + searchQuery + '=' + encoded
-          return href
-        }
-        else {
-          const href = hash.replace(new RegExp(searchQuery + '=(.*?)(\&|$)'), searchQuery + '=' + encoded)
-          return href
-        }
+  $parseSearchToParams(search) {
+    const params = {}
+    const segs = search.replace(/^\?/, '').split('&')
+    for (let i = 0, len = segs.length; i < len; i ++) {
+      if (segs[i]) {
+        let p = segs[i].split('=')
+        params[p[0]] = p[1]
       }
     }
-    else {
-      return url
-    }
+    return params
   }
 
-  async changeLocation(state, replace = false) {
-    await Storage.setItem('historyState', state)
+  changeLocation(nextState, replace = false) {
+    // sideEffects
   }
 
   static defaultOptions = {

@@ -374,3 +374,14 @@ export function createBehavior(dataKey, Component, props) {
     },
   })
 }
+
+let count = 0
+export function runApp(App, regApp, regPage) {
+  if (!count) {
+    registerApp(regApp)
+  }
+  else {
+    registerPage(regPage, 'vdom', App)
+  }
+  count ++
+}

@@ -1,34 +1,35 @@
-import { each, mixin } from 'ts-fns'
+import { mixin } from 'ts-fns'
 import Navigation from '../../lib/navi/navigation.js'
 import Storage from '../../lib/storage/storage.js'
+
+const init = Navigation.prototype.init
+function rewriteHistory(type) {
+  const origin = window.history[type]
+  return function() {
+    const rv = origin.apply(this, arguments)
+    const e = new Event(type)
+    e.arguments = arguments
+    window.dispatchEvent(e)
+    return rv
+  }
+}
+window.history.pushState = rewriteHistory('pushState')
+window.history.replaceState = rewriteHistory('replaceState')
 
 mixin(Navigation, class {
   init() {
     const onLoaded = async (changeLocation = true) => {
-      const { mode } = this.options
+      const { mode } = this._getMode()
 
       // don't use browser url
-      if (['history', 'hash', 'search'].indexOf(mode) === -1) {
-        const state = await Storage.getItem('historyState')
-        if (mode === 'storage' && state) {
-          const { route, params } = state
-          const { redirect } = route
-          if (redirect) {
-            this.go(redirect, params, true)
-            return
-          }
-          this.push(state, changeLocation)
-        }
-        else {
-          this._goDefaultRoute()
-        }
-
+      if (['history', 'hash', 'search', 'hash_search'].indexOf(mode) === -1) {
+        init.call(this)
         return
       }
 
       // use browser url
       const url = this.parseLoactionToUrl()
-      const state = this.parseUrlToState(url)
+      const state = this.$parseUrlToState(url)
 
       if (state) {
         const { route, params } = state
@@ -49,7 +50,7 @@ mixin(Navigation, class {
     }
     const onUrlChanged = (e) => {
       const { mode } = this.options
-      if (['history'].indexOf(mode) === -1) {
+      if (['history', 'search'].indexOf(mode) === -1) {
         return
       }
 
@@ -68,7 +69,7 @@ mixin(Navigation, class {
     }
     const onHashChanged = () => {
       const { mode } = this.options
-      if (['hash', 'search'].indexOf(mode) === -1) {
+      if (['hash', 'hash_search'].indexOf(mode) === -1) {
         return
       }
 
@@ -85,6 +86,8 @@ mixin(Navigation, class {
     onLoaded(false)
     window.addEventListener('hashchange', onHashChanged)
     window.addEventListener('popstate', onUrlChanged)
+    window.addEventListener('replaceState', onUrlChanged)
+    window.addEventListener('pushState', onUrlChanged)
   }
 
   open(to, params) {
@@ -94,25 +97,25 @@ mixin(Navigation, class {
 
   parseLoactionToUrl() {
     const location = window.location
-    const { mode, base = '/', searchQuery = '_url' } = this.options
+    const { mode, query } = this._getMode()
     if (mode === 'history') {
       const { pathname, search } = location
-      if (pathname.indexOf(base) === 0) {
-        const url = (base !== '/' ? (pathname.replace(base, '') || '/') : pathname) + search
-        return url
-      }
-      else {
-        return ''
-      }
+      return pathname + search
     }
     else if (mode === 'hash') {
       const url = location.hash ? location.hash.substr(1) : '/'
       return url
     }
-    else if (mode === 'search') {
+    else if (mode === 'hash_search') {
       const hash = location.hash
       const search = hash.indexOf('?') > -1 ? hash.split('?').pop() : ''
-      const found = search.match(new RegExp(searchQuery + '=(.*?)(\&|$)'))
+      const found = search.match(new RegExp(query + '=(.*?)(\&|$)'))
+      const url = found ? decodeURIComponent(found[1]) : '/'
+      return url
+    }
+    else if (mode === 'search') {
+      const search = location.search
+      const found = search.match(new RegExp(query + '=(.*?)(\&|$)'))
       const url = found ? decodeURIComponent(found[1]) : '/'
       return url
     }
@@ -121,48 +124,81 @@ mixin(Navigation, class {
     }
   }
 
-  async changeLocation(state, replace = false) {
-    const { url, params, name } = state
-    const { mode, base = '/', searchQuery = '_url' } = this.options
+  async changeLocation(nextState, replace = false) {
+    const href = this.$makeHref(nextState)
 
-    if (mode === 'history') {
-      const target = base === '/' ? url : base + url
+    const { params, name } = nextState
+    const { mode } = this._getMode()
+
+    if (mode === 'history' || mode === 'search') {
       if (replace) {
-        window.history.replaceState({ name, params }, name, target)
+        window.history.replaceState({ name, params }, name, href)
       }
       else {
-        window.history.pushState({ name, params }, name, target)
+        window.history.pushState({ name, params }, name, href)
       }
     }
-    else if (mode === 'hash') {
-      const target = url
-      window.location.hash = '#' + target
+    else if (mode === 'hash' || mode === 'hash_search') {
+      window.location.hash = href
       this._changingLoactionHash = true
+    }
+    else if (mode === 'storage') {
+      await Storage.setItem('historyState', nextState)
+    }
+  }
+
+  $makeHref(state) {
+    if (!state) {
+      return '#!'
+    }
+
+    const currentUrl = window.location.href
+    const { path } = state
+    const { mode, query, base } = this._getMode()
+
+    if (mode === 'hash') {
+      const href = '#' + base + path
+      return href
     }
     else if (mode === 'search') {
-      const target = url
-      const encoded = encodeURIComponent(target)
-      const hash = location.hash
-      if (!hash) {
-        window.location.hash = '#?' + searchQuery + '=' + encoded
-      }
-      else if (hash.indexOf('?') === -1) {
-        window.location.hash = hash + '?' + searchQuery + '=' + encoded
+      const currentSearch = currentUrl.indexOf('?') > -1 ? currentUrl.split('?') : ''
+      const encoded = encodeURIComponent(base + path)
+
+      if (!currentSearch) {
+        const href = '?' + query + '=' + encoded
+        return href
       }
       else {
-        const search = hash.split('?').pop()
-        if (search.indexOf(searchQuery + '=') === -1) {
-          window.location.hash = hash + '&' + searchQuery + '=' + encoded
+        const href = '?' + currentSearch.replace(new RegExp(query + '=(.*?)(\&|$)'), query + '=' + encoded + '$2')
+        return href
+      }
+    }
+    else if (mode === 'hash_search') {
+      const currentHash = currentUrl.indexOf('#') > -1 ? currentUrl.split('#').pop() : ''
+      const encoded = encodeURIComponent(base + path)
+
+      if (!currentHash) {
+        const href = '#?' + query + '=' + encoded
+        return href
+      }
+      else if (currentHash.indexOf('?') === -1) {
+        const href = '#' + currentHash + '?' + query + '=' + encoded
+        return href
+      }
+      else {
+        const currentSearch = currentHash.split('?').pop()
+        if (currentSearch.indexOf(query + '=') === -1) {
+          const href = '#' + currentHash + '&' + query + '=' + encoded
+          return href
         }
         else {
-          const replaced = hash.replace(new RegExp(searchQuery + '=(.*?)(\&|$)'), searchQuery + '=' + encoded)
-          window.location.hash = replaced
+          const href = '#' + currentHash.replace(new RegExp(query + '=(.*?)(\&|$)'), query + '=' + encoded + '$2')
+          return href
         }
       }
-      this._changingLoactionHash = true
     }
     else {
-      await Storage.setItem('historyState', state)
+      return base + path
     }
   }
 })

@@ -76,7 +76,7 @@ class _Navigator extends Component {
     }
 
     return (
-      <Observer subscribe={dispatch => navigation.on('*', dispatch)} unsubscribe={dispatch => navigation.off('*', dispatch)} dispatch={update}>
+      <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={update}>
         {layout}
       </Observer>
     )

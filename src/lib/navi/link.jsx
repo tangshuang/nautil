@@ -18,13 +18,6 @@ export class _Link extends Component {
     open: false,
   }
 
-  getHref() {
-    const { to, params, navigation } = this.attrs
-    const state = navigation.makeState(to, params)
-    const href = navigation.makeHref(state)
-    return href
-  }
-
   goto() {
     const { to, params, replace, open, navigation } = this.attrs
 
