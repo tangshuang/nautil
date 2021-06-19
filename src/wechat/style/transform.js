@@ -4,7 +4,7 @@ import { Transform } from '../../lib/style/transform.js'
 mixin(Transform, class {
   get() {
     const rules = this.rules
-    const convert = v => isNumber(v) ? parseInt(v, 10) + 'rpx' : v
+    const convert = v => isNumber(v) ? parseInt(v, 10) + 'px' : v
 
     let text = ''
     each(rules, (value, key) => {

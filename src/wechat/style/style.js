@@ -10,7 +10,7 @@ Style.stringify = function(rules) {
     const name = key.replace(/[A-Z]/, (matched) => {
       return '-' + matched.toLocaleLowerCase()
     })
-    const value = isNumber(rule) || isNumeric(rule) ? rule + 'rpx' : rule
+    const value = isNumber(rule) || isNumeric(rule) ? rule + 'px' : rule
     str += `${name}: ${value}`
   })
 
