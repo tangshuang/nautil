@@ -25,4 +25,4 @@ export { Storage } from './storage/storage.js'
 export { Transform } from './style/transform.js'
 export { Style } from './style/style.js'
 
-export { registerApp, registerPage, createBehavior } from './render.js'
+export { registerApp, registerPage, createBehavior, runApp } from './render.js'

@@ -5,9 +5,9 @@ mixin(Link, class {
   render() {
     const { open } = this.attrs
     return (
-      <text catchtap={() => !open && this.goto()}>
+      <view catchtap={() => !open && this.goto()} style="display: inline">
         {this.children}
-      </text>
+      </view>
     )
   }
 })
