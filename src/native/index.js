@@ -1,3 +1,6 @@
+import './style/transform.js'
+import './style/style.js'
+
 export { Section } from './elements/section.jsx'
 export { Text } from './elements/text.jsx'
 export { Button } from './elements/button.jsx'
@@ -19,8 +22,6 @@ export { Audio } from './elements/audio.jsx'
 export { Video } from './elements/video.jsx'
 export { Webview } from './elements/webview.jsx'
 
-export { Transform } from './style/transform.js'
-export { Style } from './style/style.js'
 export { Navigation } from './navi/navigation.js'
 export { Link } from './navi/link.jsx'
 export { Storage } from './storage/storage.js'

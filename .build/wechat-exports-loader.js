@@ -29,7 +29,7 @@ module.exports = function(content) {
 
       const [_, file] = line.match(/from '(.*?)'/)
       if (fs.existsSync(path.resolve(__dirname, '../src/lib', file))) {
-        contents.push(`import '${file}'`)
+        contents.unshift(`import '${file}'`)
       }
       else {
         contents.push(line)
