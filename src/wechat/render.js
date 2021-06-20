@@ -328,26 +328,6 @@ export function registerPage(register, dataKey, Component, props) {
   Page({
     ...options,
     behaviors: [...(options.behaviors || []), ...behaviors],
-    onLoad(...args) {
-      if (Component) {
-        render(createElement(Component, props), {
-          created: (container) => {
-            options.created && options.created(container)
-          },
-          mounted: (data) => {
-            options.mounted && options.mounted(data)
-            this.setData({ data })
-          },
-          updated: (data) => {
-            options.updated && options.updated(data)
-            this.setData({ data })
-          },
-        })
-      }
-      if (options.onLoad) {
-        options.onLoad.call(this, ...args)
-      }
-    },
   })
 }
 
