@@ -15,32 +15,13 @@ export function useModelsReactor(models, compute, ...args) {
   const [state, setState] = useState()
 
   const { res, deps, hash } = useMemo(() => {
-    const items = models.map((model) => {
-      return { model, keys: [] }
-    })
-
-    items.forEach((item) => {
-      const { model, keys } = item
-      const collect = (keyPath) => {
-        const [root] = keyPath
-        if (!keys.includes(root)) {
-          keys.push(root)
-        }
-      }
-      item.collect = collect
-
-      model.on('get', collect)
+    models.forEach((model) => {
+      model.collect()
     })
 
     const res = compute(...args)
 
-    items.forEach((item) => {
-      const { model, collect } = item
-      model.off('get', collect)
-      delete item.collect
-    })
-
-    const deps = items.map(item => item.keys)
+    const deps = models.map((model) => model.collect(true))
     const hash = getObjectHash(deps)
 
     return { res, deps, hash }

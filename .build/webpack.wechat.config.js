@@ -4,7 +4,7 @@ const babelConfig = require('./babel.config.js')
 babelConfig.presets[0][1] = { modules: false }
 
 const main = {
-  mode: 'none',
+  mode: 'production',
   target: 'node',
   entry: path.resolve(__dirname, '../src/index.js'),
   output: {
@@ -48,7 +48,7 @@ const main = {
     ],
   },
   optimization: {
-    minimize: false,
+    minimize: true,
     usedExports: true,
     sideEffects: true,
   },
