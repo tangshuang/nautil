@@ -1,4 +1,4 @@
-import { isString, mixin } from 'ts-fns'
+import { isString, mixin, isNumeric } from 'ts-fns'
 import Style from '../../lib/style/style.js'
 import { StyleSheet, PixelRatio, Dimensions } from 'react-native'
 
@@ -28,6 +28,9 @@ mixin(Style, class {
     }
     if (isString(value) && value.indexOf('vh') > 0) {
       return vh(parseInt(value, 10))
+    }
+    if (isNumeric(value)) {
+      return +value
     }
     return value
   }
