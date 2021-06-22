@@ -21,11 +21,16 @@ safari 10
 opera 36
 ```
 
-Nautil almost exports all APIs in main entry file, however, the following are not:
+To render Nautil components, you should import renderer from different platform exports:
+
+```js
+import { mount, update, unmount } from 'nautil/dom'
+```
+
+Nautil almost exports all APIs in main/top entry file, however, the following are not:
 
 ```js
 import HyperJSONService from 'nautil/lib/services/hyperjson-service'
-import QueueService from 'nautil/lib/services/queue-service'
 ```
 
 Nautil is based on react@^16.8 and use react@17.x inside, if your project are using higher version (i.e. react@18.x), you should use inner React to render nautil components:

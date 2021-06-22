@@ -115,3 +115,7 @@
   - [Native](renderers/native.md)
   - [Web-component](renderers/web-component.md)
   - [Wechat](renderers/wechat.md)
+
+- CLI
+  - [Install](cli/install.md)
+  - [Command](cli/command.md)
