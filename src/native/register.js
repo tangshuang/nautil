@@ -1,7 +1,7 @@
-import { AppRegistry, YellowBox } from 'react-native'
+import { AppRegistry, LogBox } from 'react-native'
 
 // remove no use warning
-YellowBox.ignoreWarnings([
+LogBox.ignoreWarnings([
   'Warning: isMounted(...) is deprecated',
   'Module RCTImageLoader',
 ])
