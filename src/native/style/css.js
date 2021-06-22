@@ -7,8 +7,8 @@ const { create } = Css
 mixin(Css, class {
   static create(css) {
     const selectors = create(css)
-    const styles = StyleSheet.create({ selectors })
-    return styles.selectors
+    const styles = StyleSheet.create(selectors)
+    return styles
   }
 })
 
