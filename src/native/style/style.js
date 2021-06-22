@@ -5,33 +5,27 @@ import { StyleSheet, PixelRatio, Dimensions } from 'react-native'
 const { create } = Style
 
 mixin(Style, class {
-  static ensure(styles, iterate) {
-    const rules = map(styles, (value, key) => {
-      if (isFunction(iterate)) {
-        return iterate(value, key)
-      }
-      else if (key === 'transform' && !isBoolean(value)) {
-        const rule = Transfrom.convert(value)
-        return rule
-      }
-      else {
-        if (isString(value) && value.indexOf('rem') > 0) {
-          const size = parseInt(value, 10)
-          return PixelRatio.get() <= 2 ? 14 * size : 18 * size
-        }
-        if (isString(value) && value.indexOf('px') > 0) {
-          return parseInt(value, 10)
-        }
-        if (isString(value) && value.indexOf('vw') > 0) {
-          return vw(parseInt(value, 10))
-        }
-        if (isString(value) && value.indexOf('vh') > 0) {
-          return vh(parseInt(value, 10))
-        }
-        return value
-      }
-    })
-    return rules
+  static filter(key) {
+    if (['transition', 'animation'].includes(key)) {
+      return false
+    }
+    return true
+  }
+  static convert(value) {
+    if (isString(value) && value.indexOf('rem') > 0) {
+      const size = parseInt(value, 10)
+      return PixelRatio.get() <= 2 ? 14 * size : 18 * size
+    }
+    if (isString(value) && value.indexOf('px') > 0) {
+      return parseInt(value, 10)
+    }
+    if (isString(value) && value.indexOf('vw') > 0) {
+      return vw(parseInt(value, 10))
+    }
+    if (isString(value) && value.indexOf('vh') > 0) {
+      return vh(parseInt(value, 10))
+    }
+    return value
   }
   static create(stylesheet) {
     const rules = create(stylesheet)

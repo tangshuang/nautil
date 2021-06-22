@@ -1,5 +1,4 @@
 import './style/transform.js'
-import './style/style.js'
 
 export { Section } from './elements/section.jsx'
 export { Text } from './elements/text.jsx'
