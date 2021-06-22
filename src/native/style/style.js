@@ -1,9 +1,11 @@
 import { map, isFunction, isBoolean, isString, mixin } from 'ts-fns'
 import Style from '../../lib/style/style.js'
+import { StyleSheet } from 'react-native'
+
+const { create } = Style
 
 mixin(Style, class {
-  ensure(styles, iterate) {
-    // will be override in react-native
+  static ensure(styles, iterate) {
     const rules = map(styles, (value, key) => {
       if (isFunction(iterate)) {
         return iterate(value, key)
@@ -26,6 +28,11 @@ mixin(Style, class {
       }
     })
     return rules
+  }
+  static create(stylesheet) {
+    const rules = create(stylesheet)
+    const styles = StyleSheet.create({ rules })
+    return styles.rules
   }
 })
 
