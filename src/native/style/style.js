@@ -1,4 +1,4 @@
-import { map, isFunction, isBoolean, isString, mixin } from 'ts-fns'
+import { isString, mixin } from 'ts-fns'
 import Style from '../../lib/style/style.js'
 import { StyleSheet, PixelRatio, Dimensions } from 'react-native'
 
@@ -13,6 +13,10 @@ mixin(Style, class {
   }
   static convert(value) {
     if (isString(value) && value.indexOf('rem') > 0) {
+      const size = parseInt(value, 10)
+      return PixelRatio.get() <= 2 ? 1.4 * size : 1.8 * size
+    }
+    if (isString(value) && value.indexOf('em') > 0) {
       const size = parseInt(value, 10)
       return PixelRatio.get() <= 2 ? 14 * size : 18 * size
     }
