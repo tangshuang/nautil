@@ -119,3 +119,6 @@
 - CLI
   - [Install](cli/install.md)
   - [Command](cli/command.md)
+  - [Config](cli/config.md)
+  - [Env Vars](cli/env-vars.md)
+  - [TypeScript](cli/ts.md)
