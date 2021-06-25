@@ -1,6 +1,5 @@
 import './style/transform.js'
 import './style/style.js'
-import './style/css.js'
 
 export { Section } from './elements/section.jsx'
 export { Text } from './elements/text.jsx'

@@ -3,6 +3,7 @@
   "version": "0.32.13",
   "description": "A javascript reactive framework which is for building crossing-platform applications.",
   "main": "index.js",
+  "typings": "typings/index.d.ts",
   "miniprogram": "miniprogram_dist",
   "scripts": {
     "clean": "rimraf dist miniprogram_dist dom lib native ssr web-component wechat index.js",
@@ -29,6 +30,7 @@
   "homepage": "https://github.com/tangshuang/nautil#readme",
   "dependencies": {
     "@babel/runtime": "^7.14.6",
+    "@types/react": "^17.0.11",
     "i18next": "^20.3.1",
     "immer": "^9.0.3",
     "react": "^17.0.2",

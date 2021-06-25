@@ -23,7 +23,6 @@ import Stream from './stream.js'
 
 import Style from './style/style.js'
 import ClassName from './style/classname.js'
-import Css from './style/css.js'
 import { Binding, Handling } from './types.js'
 import { noop, isRef, isShallowEqual } from './utils.js'
 
@@ -427,7 +426,7 @@ export class Component extends PrimitiveComponent {
         className: this.className,
         style: this.style,
       }) : css
-      return Css.create(rules)
+      return { ...rules }
     })
 
     // DROP: because we may remove static props when build
