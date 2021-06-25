@@ -50,24 +50,26 @@ export interface produce<T> {
 }
 
 interface Stream {
-  subscribe(subscribe: (value: any) => void): Function;
+  subscribe(subscribe: (value?: any) => void): Function;
 }
 
-export interface Component extends ReactComponent {
+type AnyObj = { [key: string]: any }
+
+export class Component extends ReactComponent {
   $state: Proxy;
   $attrs: Proxy;
-  style: object;
+  style: AnyObj;
   className: string | undefined;
   children: ReactChildren;
-  css: { [key: string]: object };
+  css: { [key: string]: AnyObj };
 
   subscribe(name: string, affect: (stream: Stream) => Stream): Component;
   unsubscribe(name: string, affect: (stream: Stream) => Stream): Component;
-  dispatch(name: string, data: any): Component;
+  dispatch(name: string, data: AnyObj): Component;
   update(): Promise;
   update(force: true): Promise;
-  update(value: object): Promise;
-  update(key: string, value: any): Promise;
+  update(value: AnyObj): Promise;
+  update(key: string, value: AnyObj): Promise;
   update(fn: <T>(state: T) => (void | T)): Promise;
   weakUpdate(): Promise;
   forceUpdate(): Promise;
@@ -75,14 +77,14 @@ export interface Component extends ReactComponent {
 
   onInit(): void;
   onMounted(): void;
-  shouldUpdate(): boolean;
-  onNotUpdate(): void;
-  onUpdated(): void;
+  shouldUpdate(nextProps: AnyObj, nextState: AnyObj): boolean;
+  onNotUpdate(nextProps: AnyObj, nextState: AnyObj): void;
+  onUpdated(prevProps: AnyObj, prevState: AnyObj): void;
   onUnmount(): void;
   onCatch(error: ErrorInfo): void;
   onDigested(): void;
   onAffected(): void;
   onParseProps<T>(props: T): T;
 
-  static extend(props: object): Component;
+  static extend(props: AnyObj): Component;
 }
