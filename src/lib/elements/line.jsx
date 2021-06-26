@@ -2,12 +2,12 @@ import Component from '../component.js'
 
 export class Line extends Component {
   static props = {
-    length: Number,
+    width: Number,
     thick: Number,
     color: String,
   }
   static defaultProps = {
-    length: 1,
+    width: '100%',
     thick: 1,
     color: '#888888',
   }

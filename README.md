@@ -43,12 +43,12 @@ Feel free to dive in! [Open an issue](https://github.com/tangshuang/nautil/issue
 
 ## Road Map
 
-- [ ] TypeScript supports (highest priority)
+- [x] TypeScript supports (highest priority)
 - [ ] Unit test
 - [ ] Eslint rules in nautil-cli
 - [ ] testing tasks in nautil-cli
-- [ ] React Native in nautil-cli
-- [ ] Wechat/Alipay miniprogram
+- [x] React Native in nautil-cli
+- [x] Wechat miniprogram
 
 ## MIT License
 

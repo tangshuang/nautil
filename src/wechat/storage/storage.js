@@ -29,7 +29,7 @@ mixin(Storage, class {
       })
     })
   }
-  static async removeItem(key) {
+  static async delItem(key) {
     return new Promise((resolve, reject) => {
       wx.removeStorage({
         key,

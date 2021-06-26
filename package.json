@@ -3,7 +3,6 @@
   "version": "0.32.15",
   "description": "A javascript reactive framework which is for building crossing-platform applications.",
   "main": "index.js",
-  "typings": "typings/index.d.ts",
   "miniprogram": "miniprogram_dist",
   "scripts": {
     "clean": "rimraf dist miniprogram_dist dom lib native ssr web-component wechat index.js",

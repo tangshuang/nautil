@@ -9,8 +9,8 @@ mixin(Storage, class {
   static async setItem(key, value) {
     await AsyncStorage.setItem(key, value)
   }
-  static async removeItem(key) {
-    await AsyncStorage.removeItem(key)
+  static async delItem(key) {
+    await AsyncStorage.delItem(key)
   }
   static async clear() {
     await AsyncStorage.clear()

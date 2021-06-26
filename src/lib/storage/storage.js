@@ -6,7 +6,7 @@ export class Storage {
   static async setItem(key, value) {
     store[key] = value
   }
-  static async removeItem(key) {
+  static async delItem(key) {
     delete store[key]
   }
   static async clear() {

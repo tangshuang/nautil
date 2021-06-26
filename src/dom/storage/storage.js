@@ -15,8 +15,8 @@ mixin(Storage, class {
     const data = JSON.stringify(value)
     return localStorage.setItem(key, data)
   }
-  async removeItem(key) {
-    return localStorage.removeItem(key)
+  async delItem(key) {
+    return localStorage.delItem(key)
   }
   async clear() {
     return localStorage.clear()
