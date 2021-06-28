@@ -1,5 +1,3 @@
-declare module 'tyshemo';
-
 import * as TySheMo from 'tyshemo';
 import * as React from 'react';
 
@@ -55,7 +53,8 @@ export declare class Stream {
   dispatch(): void;
 }
 
-type AnyObj = { [key: string]?: any };
+type AnyObj = { [key: string]: any };
+type Proxy = AnyObj;
 
 interface OverrideProps {
   stylesheet?: string[] | AnyObj[];
@@ -63,7 +62,7 @@ interface OverrideProps {
   deprecated?: string[],
 }
 
-export declare class Component<T> extends ReactComponent<T> {
+export declare class Component<T = AnyObj> extends ReactComponent<T> {
   $state: Proxy;
   $attrs: Proxy;
   style: AnyObj;
@@ -74,13 +73,13 @@ export declare class Component<T> extends ReactComponent<T> {
   subscribe(name: string, affect: (stream: Stream) => Stream): Component;
   unsubscribe(name: string, affect: (stream: Stream) => Stream): Component;
   dispatch(name: string, data: AnyObj): Component;
-  update(): Promise;
-  update(force: true): Promise;
-  update(value: AnyObj): Promise;
-  update(key: string, value: AnyObj): Promise;
-  update(fn: <T>(state: T) => (void | T)): Promise;
-  weakUpdate(): Promise;
-  forceUpdate(): Promise;
+  update(): Promise<undefined>;
+  update(force: true): Promise<undefined>;
+  update(value: AnyObj): Promise<undefined>;
+  update(key: string, value: AnyObj): Promise<undefined>;
+  update(fn: <T>(state: T) => (void | T)): Promise<undefined>;
+  weakUpdate(): Promise<undefined>;
+  forceUpdate(): Promise<undefined>;
   nextTick(fn: () => void, ...args: any[]): void;
 
   onInit(): void;
@@ -94,8 +93,8 @@ export declare class Component<T> extends ReactComponent<T> {
   onAffected(): void;
   onParseProps<T>(props: T): T;
 
-  static extend(props: OverrideProps | (nextProps: AnyObj) => OverrideProps): Component;
-  static props: AnyObj | () => AnyObj;
+  static extend(props: OverrideProps | ((nextProps: AnyObj) => OverrideProps)): Component;
+  static props: AnyObj | (() => AnyObj);
   static defaultStylesheet: string[] | AnyObj[];
   static css: { [key: string]: AnyObj }
 }
@@ -114,12 +113,12 @@ export declare function useTwoWayBindingState(state: AnyObj): Proxy;
 
 export declare function useUniqueKeys(items: any[]): string[];
 
-export declare function useModelsReactor<T>(models: any[], compute: (...args: any[]) => T, ...args?: any[]): T;
+export declare function useModelsReactor<T>(models: any[], compute: (...args: any[]) => T, ...args: any[]): T;
 
 export declare function useShallowLatest(obj: any): any;
 
 interface ComponentGenerator {
-  (C: Component) => Component;
+  (C: Component): Component;
 }
 
 export declare function observe(subscription: string | Function | { subscribe: Function }, unsubscription: string | Function | { unsubscribe: Function }): ComponentGenerator;
@@ -128,7 +127,7 @@ export declare function evolve(collect: (nextprops: AnyObj) => AnyObj): Componen
 
 export declare function inject(prop: string, define: (props: AnyObj) => AnyObj): ComponentGenerator;
 
-export declare function pollute(component: Component, pollute: AnyObj | (props: AnyObj) => AnyObj): ComponentGenerator;
+export declare function pollute(component: Component, pollute: AnyObj | ((props: AnyObj) => AnyObj)): ComponentGenerator;
 
 interface Constructor<T> {
   new (...args: T[]);
@@ -141,9 +140,9 @@ export declare function nest(...args: [Component, AnyObj][]): ComponentGenerator
 export declare function pipe(wrappers: ((C: Component) => ComponentGenerator)[]): ComponentGenerator;
 
 interface AsyncProps {
-  await(): Promise;
-  then?(data: any): ReactElement | null;
-  cacth?(error: Error): ReactElement | null;
+  await: () => Promise<any>;
+  then?: (data: any) => ReactElement | null;
+  cacth?: (error: Error) => ReactElement | null;
   pendding?: ReactElement;
 }
 export declare class Async extends Component<AsyncProps> {}
@@ -151,49 +150,49 @@ export declare class Async extends Component<AsyncProps> {}
 interface ForProps {
   start: number;
   end: number;
-  step?: number = 1;
-  map?(i: number): any;
-  render?(data: any): ReactElement | null;
+  step?: number;
+  map?: (i: number) => any;
+  render?: (data: any) => ReactElement | null;
 }
 export declare class For extends Component<ForProps> {}
 
 interface EachProps {
   of: any[] | AnyObj;
-  map?(obj: any[] | AnyObj): any[] | AnyObj;
-  render?(obj: any[] | AnyObj): ReactElement | null;
+  map?: (obj: any[] | AnyObj) => any[] | AnyObj;
+  render?: (obj: any[] | AnyObj) => ReactElement | null;
 }
 export declare class Each extends Component<EachProps> {}
 
 interface IfProps {
   is: boolean;
-  render?(): ReactElement | null;
+  render?: () => ReactElement | null;
 }
 export declare class If extends Component<IfProps> {}
 
 interface ElseProps {
-  render?(): ReactElement | null;
+  render?: () => ReactElement | null;
 }
 export declare class Else extends Component<ElseProps> {}
 
 export declare class ElseIf extends Component<IfProps> {}
 
 interface ObserverProps {
-  subscribe(dispatch: Function): Function | void;
-  unsubscribe?(dispatch: Function): void;
-  render?(): ReactElement | null;
+  subscribe: (dispatch: Function) => Function | void;
+  unsubscribe?: (dispatch: Function) => void;
+  render?: () => ReactElement | null;
 }
 export declare class Observer extends Component<ObserverProps> {}
 
 interface PrepareProps {
   ready: Boolean;
   pending: ReactElement;
-  render?(): ReactElement;
+  render?: () => ReactElement;
 }
 export declare class Prepare extends Component<PrepareProps> {}
 
 interface StaticProps {
-  shouldUpdate(): boolean;
-  render?(): ReactElement;
+  shouldUpdate: () => boolean;
+  render?: () => ReactElement;
 }
 export declare class Static extends Component<StaticProps> {}
 
@@ -206,7 +205,7 @@ interface CaseProps {
   is: any;
   default?: boolean;
   break?: boolean;
-  render?(): ReactElement;
+  render?: () => ReactElement;
 }
 export declare class Case extends Component<CaseProps> {}
 
@@ -232,9 +231,9 @@ interface ButtonProps {
 export declare class Button extends Component<ButtonProps> {}
 
 interface LineProps {
-  width?: number | `${number}%` = '100%';
-  thick?: number = 1;
-  color?: string = '#888888';
+  width?: number | `${number}%`;
+  thick?: number;
+  color?: string;
 }
 export declare class Line extends Component<LineProps> {}
 
@@ -258,7 +257,7 @@ interface SelectProps {
 export declare class Select extends Component<SelectProps> {}
 
 interface CheckItemProps {
-  chekced?: boolean = false;
+  chekced?: boolean;
   onChange?: Handler;
   onCheck?: Handler;
   onUncheck?: Handler;
@@ -267,7 +266,7 @@ export declare class Checkbox extends Component<CheckItemProps> {}
 export declare class Radio extends Component<CheckItemProps> {}
 
 interface InputProps {
-  type: 'text' | 'number' | 'email' | 'tel' | 'url' = 'text';
+  type: 'text' | 'number' | 'email' | 'tel' | 'url';
   placeholder?: string;
   value: string | number;
   onChange?: Handler;
@@ -279,7 +278,7 @@ export declare class Input extends Component<InputProps> {}
 
 interface TextareaProps {
   value: string,
-  line: number = 3,
+  line: number,
   placeholder?: string,
   onChange?: Handler,
   onFocus?: Handler,
@@ -290,8 +289,8 @@ export declare class Textarea extends Component<TextareaProps> {}
 
 interface ImageProps {
   source: string | { uri: string };
-  width: string | number = '100%';
-  height: string | number = '100%';
+  width: string | number;
+  height: string | number;
   maxWidth?: string | number;
   maxHeight?: string | number;
   onLoad?: Handler;
@@ -308,17 +307,17 @@ export declare class SwipeSection extends Component {}
 
 interface NavigationRoute {
   name: string;
-  path: `/${string?}`;
-  redirect?: `/${string?}`;
-  component?: Component | (props: AnyObj) => ReactElement | null;
-  onEnter?(): void;
-  onLeave?(): void;
+  path: '/' | `/${string}`;
+  redirect?: '/' | `/${string}`;
+  component?: Component | ((props: AnyObj) => ReactElement) | null;
+  onEnter?: () => void;
+  onLeave?: () => void;
 }
 interface NavigationOptions {
-  maxHistoryLength?: number = 20;
-  mode?: `/${string?}` | `#?${string}` | `#${string?}` | `?${string}` | 'storage';
+  maxHistoryLength?: number;
+  mode?: '/' | `/${string}` | `#?${string}` | '#' | `#${string}` | `?${string}` | 'storage';
   defaultRoute?: string;
-  onNotFound?(): void;
+  onNotFound?: () => void;
   routes: NavigationRoute[];
 }
 interface NavigationState {
@@ -328,26 +327,26 @@ interface NavigationState {
   route: NavigationRoute;
 }
 export enum NavigationStatus {
-  Inactive = -1;
-  NotFound = 0;
-  Ok = 1;
+  Inactive = -1,
+  NotFound = 0,
+  Ok = 1,
 }
 export declare class Navigation {
-  constructor(options: NamespaceOptions);
+  constructor(options: NavigationOptions);
 
   state: NavigationState;
   status: NavigationStatus;
 
-  is(match: string | RegExp | Function, exact?: boolean = false): boolean;
-  on(match: string | RegExp | Function, callback: Function, exact?: boolean = false): Navigation;
+  is(match: string | RegExp | Function, exact?: boolean): boolean;
+  on(match: string | RegExp | Function, callback: Function, exact?: boolean): Navigation;
   off(match: string | RegExp | Function, callback: Function): Navigation;
-  go(name: string, params: AnyObj, replace?: boolean = false): void;
+  go(name: string, params: AnyObj, replace?: boolean): void;
   open(url: string, params: AnyObj): void;
-  back(count: number = -1): void;
-  push(state: NavigationState, changeLocation?: boolean = true): void;
-  replace(state: NavigationState, changeLocation?: boolean = true): void;
+  back(count: number): void;
+  push(state: NavigationState, changeLocation?: boolean): void;
+  replace(state: NavigationState, changeLocation?: boolean): void;
   makeUrl(to: string, params: AnyObj): string;
-  changeLocation(nextState: NavigationState, replace?: boolean = false): void;
+  changeLocation(nextState: NavigationState, replace?: boolean): void;
 
   static defaultOptions: NavigationOptions;
 }
@@ -355,7 +354,7 @@ export declare class Navigation {
 interface NavigatorProps {
   navigation?: Navigation;
   dispatch?: Function;
-  inside?: boolean = false;
+  inside?: boolean;
 }
 export declare class Navigator extends Component<NavigatorProps> {}
 
@@ -370,16 +369,16 @@ export declare class Route extends Component<RouteProps> {}
 interface LinkProps {
   navigation?: Navigation;
   to: string | number;
-  params?: AnyObj = {};
-  replace?: boolean = false;
-  open?: boolean = false;
+  params?: AnyObj;
+  replace?: boolean;
+  open?: boolean;
 }
 export declare class Link extends Component<LinkProps> {}
 
 interface NavigateProps {
   navigation?: Navigation;
-  map?(navigation: Navigation): AnyObj;
-  render?(data: AnyObj): ReactElement | null;
+  map?: (navigation: Navigation) => AnyObj;
+  render?: (data: AnyObj) => ReactElement | null;
 }
 export declare class Navigate extends Component<NavigateProps> {}
 
@@ -401,9 +400,9 @@ export declare class Provider extends Component<{ store: Store }> {}
 
 interface ConsumerProps {
   store: Store;
-  map?(store: Store): AnyObj;
+  map?: (store: Store) => AnyObj;
   watch?: string | string[];
-  render?(data: AnyObj | Store): ReactElement | null;
+  render?: (data: AnyObj | Store) => ReactElement | null;
 }
 export declare class Consumer extends Component<ConsumerProps> {}
 
@@ -412,30 +411,180 @@ export declare function connect(mapToProps: (store: Store) => AnyObj, watch: str
 export declare function useStore(store: Store, watch: string | string[]): Store;
 
 export declare function applyStore(store: Store): {
-  useStore(store: Store, watch: string | string[]): Store;
-  connect(mapToProps: (store: Store) => AnyObj, watch: string | string[]): ComponentGenerator;
+  useStore: (store: Store, watch: string | string[]) => Store,
+  connect: (mapToProps: (store: Store) => AnyObj, watch: string | string[]) => ComponentGenerator,
 };
 
 export declare function createStream(fn: (stream: Stream) => Stream): Stream;
 
-export declare class Service {
-  [stream$: `${string}$`]: Stream;
-  [key: string]: Model | Service;
+interface ValidatorOptions {
+  determine?: boolean | ((value: any) => boolean);
+  validate: (value: any, key: string) => boolean | Error;
+  message: string;
+  break?: boolean;
+  async?: boolean;
+}
+export declare class Validator {
+  constructor(options: ValidatorOptions);
+  static readonly required: (message: string, emptyFn: Function) => Validator;
+  static readonly maxLen: (len: number, message: string) => Validator;
+  static readonly minLen: (len: number, message: string) => Validator;
+  static readonly integer: (len: number, message: string) => Validator;
+  static readonly decimal: (len: number, message: string) => Validator;
+  static readonly max: (num: number, message: string) => Validator;
+  static readonly min: (num: number, message: string) => Validator;
+  static readonly email: (message: string) => Validator;
+  static readonly url: (message: string) => Validator;
+  static readonly date: (message: string) => Validator;
+  static readonly match: (validator: RegExp | string | number | boolean | Function | any, message: string) => Validator;
+  static readonly allOf: (validators: (Function & ThisType<Model>)[], message: string) => Validator;
+  static readonly anyOf: (validators: (Function & ThisType<Model>)[], message: string) => Validator;
+}
 
+interface MetaOptions {
+  default: any;
+  compute?: () => any;
+  type?: any;
+  message?: string;
+  force?: boolean;
+  validators?: ValidatorOptions[];
+  create?: (value: any, key: string, data: AnyObj) => any;
+  save?: (value: any, key: string, data: AnyObj) => AnyObj | any;
+  asset?: string;
+  drop?: (value: any, key: string, data: AnyObj) => boolean;
+  map?: (value: any, key: string, data: AnyObj) => any;
+  flat?: (value: any, key: string, data: AnyObj) => AnyObj;
+  to?: string;
+  setter?: (value: any, key: string) => any;
+  getter?: (value: any, key: string) => any;
+  formatter?: (value: any, key: string) => any;
+  readonly?: boolean | ((value: any, key: string) => boolean);
+  disabled?: boolean | ((value: any, key: string) => boolean);
+  hidden?: boolean | ((value: any, key: string) => boolean);
+  required?: boolean | ((value: any, key: string) => boolean);
+  empty: (value: any, key: string) => boolean;
+  watch: (e: { value: any }) => void;
+  state: () => AnyObj;
+  deps: () => { [key: string]: Meta };
+  catch: (error: Error) => void;
+  [key: string]: any;
+}
+export declare class Meta {
+  constructor(options: MetaOptions);
+}
+
+interface View {
+  key: string;
+  value: any;
+  data: any;
+  text: string;
+  state: AnyObj;
+  absKeyPath: string[];
+  errors: any[];
+  empty: boolean;
+  readonly: boolean;
+  disabled: boolean;
+  hidden: boolean;
+  required: boolean;
+}
+
+export declare class Model {
+  constructor(data: AnyObj, parent: [Model, string]);
+
+  $views: {
+    $changed: boolean,
+    readonly $errors: any[],
+    readonly $state: AnyObj,
+  } & {
+    readonly [key: string]: View,
+  };
+
+  $root: Model | null;
+  $parent: Model | null;
+  $keyPath: string[];
+  $absKeyPath: string[];
+
+  schema(Schema?: any): AnyObj;
+  state(): AnyObj;
+  attrs(): AnyObj;
+
+  restore(data: AnyObj, keysPatchToThis: string[]): Model;
+  get(keyPath: string | string[]): any;
+  use(keyPath: string | string[]): View;
+  set(keyPath: string | string[], next: any, force: boolean): Model;
+  update(data: AnyObj): Model;
+  reset(key: string): Model;
+  define(key: string, value: Function | any): any;
+  lock(): void;
+  unlock(): void;
+  setParent(parent: [Model, string]): Model;
+  setAttr(key: string): (attr: string, value: any) => void & ThisType<Model>;
+
+  watch(key: string, fn: (e: { target: string, key: string[], value: any, next: any, prev: any, active: any, invalid: any }) => void & ThisType<Model>): Model;
+  unwatch(key: string, fn: Function): Model;
+
+  fromJSON(data: AnyObj, keysPatchToThis: string[]): Model;
+  fromJSONPatch(data: AnyObj, onlyKeys: string[]): Model;
+  toJSON(): AnyObj;
+  toData(): AnyObj;
+  toParams(determine: (vale: any) => boolean): AnyObj;
+  toFormData(determine: (vale: any) => boolean): FormData;
+  validate(key: string): Error[] | any[];
+  validateAsync(key: string): Promise<Error[] | any[]>;
+
+  on(hook: string, fn: Function): Model;
+  off(hook: string, fn: Function): Model;
+  emit(hook: string, ...args: any[]): void;
+
+  toEdit(next: AnyObj): Model;
+  reflect<T>(Meta: Meta, fn: (key: string) => T & ThisType<Model>): View | T;
+
+  onInit(): void;
+  onSwitch(params: AnyObj): AnyObj;
+  onParse(data: AnyObj): AnyObj;
+  onRecord(data: AnyObj): AnyObj;
+  onExport(data: AnyObj): AnyObj;
+  onCheck(): void;
+  onError(): void;
+  onEnsure(): void;
+  onRestore(): void;
+  onRegress(): void;
+  onChange(key: string): void;
+  onEdit(): void;
+
+  static extend(next: AnyObj): Model;
+  static toEdit: Model;
+}
+
+export declare function AsyncGetter(defaultValue: any, getter: Function): {
+  $$type: 'asyncRef',
+  [key: string]: any;
+};
+
+export declare class Factory {
+  entry(entries: Model | Model[]): Model | Model[];
+  instance(model: Model, ctx: Model): Model;
+  default(fn: Function): Function;
+  type(type: any): any;
+  validators(validators: Validator[]): Validator[];
+  create(fn: (value: any, key: string) => any | any[]): (value: any, key: string) => any | any[];
+  save(fn: (value: any, key: string) => any | any[]): (value: any, key: string) => any | any[];
+  map(fn: (value: any, key: string) => any | any[]): (value: any, key: string) => any | any[];
+  setter(fn: (value: any, key: string) => any | any[]): (value: any, key: string) => any | any[];
+  getMeta(): Meta;
+  static useAttrs(Model: Model, attrs: [string, string, Function][]): Model;
+  static getMeta(entries: Model | Model[]): Meta;
+}
+
+export declare class Service {
   new(): Service;
   destroy(): void;
-
-  static [stream$: `${string}$`](stream: Stream): void;
-  static [key: string]: Model | Service;
 
   static getService(): Service;
 }
 
 export declare class Controller {
   constructor();
-
-  [stream$: `${string}$`]: Stream;
-  [key: string]: Store | Model | Service;
 
   update(): void;
 
@@ -448,9 +597,6 @@ export declare class Controller {
   onStart(): void;
   onUpdate(): void;
   onEnd(): void;
-
-  static [stream$: `${string}$`](stream: Stream): void;
-  static [key: string]: Store | Model | Service;
 }
 
 interface Source {
@@ -475,7 +621,7 @@ export declare class DataService extends Service {
 
 export declare class QueueService extends Service {
   options(): AnyObj;
-  push(defer: Function, callback?: Function, fallback?: Function, cancel?: Function): Promise;
+  push(defer: Function, callback?: Function, fallback?: Function, cancel?: Function): Promise<any>;
   stop(err?: Error): QueueService;
   clear(): QueueService;
   cancel(defer: Function): QueueService;
@@ -493,10 +639,10 @@ export declare class ShiftQueueService extends QueueService {}
 export declare class SwitchQueueService extends QueueService {}
 
 export declare class Storage {
-  static async getItem(key: string): any;
-  static async setItem(key: string, value: any): void;
-  static async delItem(key: string): void;
-  static async clear(): void;
+  static getItem(key: string): Promise<any>;
+  static setItem(key: string, value: any): Promise<undefined>;
+  static delItem(key: string): Promise<undefined>;
+  static clear(): Promise<undefined>;
 }
 
 interface I18nOptions {
@@ -533,7 +679,7 @@ export declare class Locale extends Component<LocaleProps> {}
 
 interface TProps {
   i18n?: I18n;
-  t?: string | (i18n: I18n, children: ReactChildren) => string;
+  t?: string | ((i18n: I18n, children: ReactChildren) => string);
   s?: string;
 }
 export declare class T extends Component<TProps> {}
