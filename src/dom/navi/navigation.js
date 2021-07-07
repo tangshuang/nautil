@@ -29,7 +29,7 @@ mixin(Navigation, class {
 
       // use browser url
       const url = this.parseLoactionToUrl()
-      const state = this.$parseUrlToState(url)
+      const state = this.parseUrlToState(url)
 
       if (state) {
         const { route, params } = state
