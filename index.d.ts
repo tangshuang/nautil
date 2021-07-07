@@ -59,7 +59,7 @@ type Proxy = AnyObj;
 interface OverrideProps {
   stylesheet?: string[] | AnyObj[];
   props?: AnyObj;
-  deprecated?: string[],
+  deprecated?: string[];
 }
 
 export declare class Component<T = AnyObj> extends ReactComponent<T> {
@@ -139,7 +139,7 @@ export declare function nest(...args: [Component, AnyObj][]): ComponentGenerator
 
 export declare function pipe(wrappers: ((C: Component) => ComponentGenerator)[]): ComponentGenerator;
 
-interface AsyncProps {
+interface AsyncProps extends AnyObj {
   await: () => Promise<any>;
   then?: (data: any) => ReactElement | null;
   cacth?: (error: Error) => ReactElement | null;
@@ -147,7 +147,7 @@ interface AsyncProps {
 }
 export declare class Async extends Component<AsyncProps> {}
 
-interface ForProps {
+interface ForProps extends AnyObj {
   start: number;
   end: number;
   step?: number;
@@ -156,52 +156,52 @@ interface ForProps {
 }
 export declare class For extends Component<ForProps> {}
 
-interface EachProps {
+interface EachProps extends AnyObj {
   of: any[] | AnyObj;
   map?: (obj: any[] | AnyObj) => any[] | AnyObj;
   render?: (obj: any[] | AnyObj) => ReactElement | null;
 }
 export declare class Each extends Component<EachProps> {}
 
-interface IfProps {
+interface IfProps extends AnyObj {
   is: boolean;
   render?: () => ReactElement | null;
 }
 export declare class If extends Component<IfProps> {}
 
-interface ElseProps {
+interface ElseProps extends AnyObj {
   render?: () => ReactElement | null;
 }
 export declare class Else extends Component<ElseProps> {}
 
 export declare class ElseIf extends Component<IfProps> {}
 
-interface ObserverProps {
+interface ObserverProps extends AnyObj {
   subscribe: (dispatch: Function) => Function | void;
   unsubscribe?: (dispatch: Function) => void;
   render?: () => ReactElement | null;
 }
 export declare class Observer extends Component<ObserverProps> {}
 
-interface PrepareProps {
+interface PrepareProps extends AnyObj {
   ready: Boolean;
   pending: ReactElement;
   render?: () => ReactElement;
 }
 export declare class Prepare extends Component<PrepareProps> {}
 
-interface StaticProps {
+interface StaticProps extends AnyObj {
   shouldUpdate: () => boolean;
   render?: () => ReactElement;
 }
 export declare class Static extends Component<StaticProps> {}
 
-interface SwitchProps {
+interface SwitchProps extends AnyObj {
   of: any;
 }
 export declare class Switch extends Component<SwitchProps> {}
 
-interface CaseProps {
+interface CaseProps extends AnyObj {
   is: any;
   default?: boolean;
   break?: boolean;
@@ -210,7 +210,7 @@ interface CaseProps {
 export declare class Case extends Component<CaseProps> {}
 
 type Handler = Function | Stream | Function[];
-interface SectionProps {
+interface SectionProps extends AnyObj {
   onHit?: Handler;
   onHitStart?: Handler;
   onHitMove?: Handler;
@@ -222,7 +222,7 @@ export declare class Section extends Component<SectionProps> {}
 
 export declare class Text extends Component {}
 
-interface ButtonProps {
+interface ButtonProps extends AnyObj {
   type?: string;
   onHit?: Handler;
   onHitStart?: Handler;
@@ -230,21 +230,21 @@ interface ButtonProps {
 }
 export declare class Button extends Component<ButtonProps> {}
 
-interface LineProps {
+interface LineProps extends AnyObj {
   width?: number | `${number}%`;
   thick?: number;
   color?: string;
 }
 export declare class Line extends Component<LineProps> {}
 
-interface FormProps {
+interface FormProps extends AnyObj {
   onChange?: Handler;
   onReset?: Handler;
   onSubmit?: Handler;
 }
 export declare class Form extends Component<FormProps> {}
 
-interface SelectProps {
+interface SelectProps extends AnyObj {
   options: Array<{
     text: string;
     value: any;
@@ -256,7 +256,7 @@ interface SelectProps {
 }
 export declare class Select extends Component<SelectProps> {}
 
-interface CheckItemProps {
+interface CheckItemProps extends AnyObj {
   chekced?: boolean;
   onChange?: Handler;
   onCheck?: Handler;
@@ -265,7 +265,7 @@ interface CheckItemProps {
 export declare class Checkbox extends Component<CheckItemProps> {}
 export declare class Radio extends Component<CheckItemProps> {}
 
-interface InputProps {
+interface InputProps extends AnyObj {
   type: 'text' | 'number' | 'email' | 'tel' | 'url';
   placeholder?: string;
   value: string | number;
@@ -276,7 +276,7 @@ interface InputProps {
 }
 export declare class Input extends Component<InputProps> {}
 
-interface TextareaProps {
+interface TextareaProps extends AnyObj {
   value: string,
   line: number,
   placeholder?: string,
@@ -287,7 +287,7 @@ interface TextareaProps {
 }
 export declare class Textarea extends Component<TextareaProps> {}
 
-interface ImageProps {
+interface ImageProps extends AnyObj {
   source: string | { uri: string };
   width: string | number;
   height: string | number;
@@ -351,14 +351,14 @@ export declare class Navigation {
   static defaultOptions: NavigationOptions;
 }
 
-interface NavigatorProps {
+interface NavigatorProps extends AnyObj {
   navigation?: Navigation;
   dispatch?: Function;
   inside?: boolean;
 }
 export declare class Navigator extends Component<NavigatorProps> {}
 
-interface RouteProps {
+interface RouteProps extends AnyObj {
   navigation?: Navigation;
   match: string | RegExp | Function;
   exact?: boolean;
@@ -366,7 +366,7 @@ interface RouteProps {
 }
 export declare class Route extends Component<RouteProps> {}
 
-interface LinkProps {
+interface LinkProps extends AnyObj {
   navigation?: Navigation;
   to: string | number;
   params?: AnyObj;
@@ -375,7 +375,7 @@ interface LinkProps {
 }
 export declare class Link extends Component<LinkProps> {}
 
-interface NavigateProps {
+interface NavigateProps extends AnyObj {
   navigation?: Navigation;
   map?: (navigation: Navigation) => AnyObj;
   render?: (data: AnyObj) => ReactElement | null;
@@ -398,7 +398,7 @@ export declare class Store {
 
 export declare class Provider extends Component<{ store: Store }> {}
 
-interface ConsumerProps {
+interface ConsumerProps extends AnyObj {
   store: Store;
   map?: (store: Store) => AnyObj;
   watch?: string | string[];
@@ -663,21 +663,21 @@ export declare class I18n {
   currency(num: number, currency: string, options?: any): string;
 }
 
-interface LanguageProps {
+interface LanguageProps extends AnyObj {
   i18n?: I18n;
   dispatch?: Function,
   lng?: string;
 }
 export declare class Language extends Component<LanguageProps> {}
 
-interface LocaleProps {
+interface LocaleProps extends AnyObj {
   i18n?: I18n;
   map?(i18n: I18n): any;
   render?(data: any): ReactElement | null;
 }
 export declare class Locale extends Component<LocaleProps> {}
 
-interface TProps {
+interface TProps extends AnyObj {
   i18n?: I18n;
   t?: string | ((i18n: I18n, children: ReactChildren) => string);
   s?: string;
