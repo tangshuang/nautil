@@ -50,7 +50,7 @@ export class Navigation {
     }
 
     if (mode.indexOf('/') === 0) {
-      const base = mode
+      const base = mode === '/' ? '' : mode
       return { mode: 'history', query: '', base }
     }
 
