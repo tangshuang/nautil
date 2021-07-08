@@ -24,12 +24,12 @@ export class _Navigate extends Component {
   }
 
   render() {
-    const { navigation, map, render, static } = this.attrs
+    const { navigation, map, render, static: isStatic } = this.attrs
     const fn = render ? render : this.children
     const data = map ? map(navigation) : navigation
     const output = fn(data)
 
-    if (static) {
+    if (isStatic) {
       return (
         <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.forceUpdate}>
           {output}
