@@ -13,7 +13,11 @@ export class Prepare extends Component {
   render() {
     const { ready, pendding, render } = this.attrs
     return ready
-      ? (isFunction(this.children) ? this.children() : isFunction(render) ? render() : this.children )
+      ? (
+        isFunction(render) ? render()
+        : isFunction(this.children) ? this.children()
+        : this.children
+      )
       : createPlaceholderElement(pendding)
   }
 }

@@ -52,12 +52,12 @@ export class If extends Component {
     const children = this.children
     const { is, render } = this.attrs
 
-    if (isFunction(children)) {
-      return is ? children() : null
-    }
-
     if (is && isFunction(render)) {
       return render()
+    }
+
+    if (isFunction(children)) {
+      return is ? children() : null
     }
 
     let block = {

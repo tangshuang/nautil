@@ -47,7 +47,9 @@ export class Each extends Component {
     const data = map ? map(obj) : obj
 
     each(data, (value, key) => {
-      const block = isFunction(children) ? children(value, key) : isFunction(render) ? render(value, key) : Children.map(children, child => cloneElement(child))
+      const block = isFunction(render) ? render(value, key)
+        : isFunction(children) ? children(value, key)
+        : Children.map(children, child => cloneElement(child))
       blocks.push(block)
     })
 

@@ -65,6 +65,8 @@ interface OverrideProps {
 export declare class Component<T = AnyObj> extends ReactComponent<T> {
   $state: Proxy;
   $attrs: Proxy;
+  state: AnyObj;
+  attrs: AnyObj;
   style: AnyObj;
   className: string | undefined;
   children: ReactChildren;
@@ -117,6 +119,8 @@ export declare function useModelsReactor<T>(models: any[], compute: (...args: an
 
 export declare function useShallowLatest(obj: any): any;
 
+export declare function useForceUpdate(): Function;
+
 interface ComponentGenerator {
   (C: Component): Component;
 }
@@ -128,6 +132,8 @@ export declare function evolve(collect: (nextprops: AnyObj) => AnyObj): Componen
 export declare function inject(prop: string, define: (props: AnyObj) => AnyObj): ComponentGenerator;
 
 export declare function pollute(component: Component, pollute: AnyObj | ((props: AnyObj) => AnyObj)): ComponentGenerator;
+
+export declare function hoc(HOC: Component, fields: string[], renderProp?: string): ComponentGenerator;
 
 interface Constructor<T> {
   new (...args: T[]);

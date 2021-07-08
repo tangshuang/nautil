@@ -52,7 +52,7 @@ export class Switch extends Component {
       }
 
       const { is, default: isDefault, break: isBreak, render, children } = props
-      const h = () => isFunction(children) ? children() : isFunction(render) ? render() : children
+      const h = () => isFunction(render) ? render() : isFunction(children) ? children() : children
       if (is === target) {
         const block = h()
         blocks.push(block)

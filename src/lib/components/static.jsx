@@ -14,7 +14,9 @@ export class Static extends Component {
   }
   render() {
     const { render } = this.attrs
-    return isFunction(this.children) ? this.children() : isFunction(render) ? render() : this.children
+    return isFunction(render) ? render()
+      : isFunction(this.children) ? this.children()
+      : this.children
   }
 }
 export default Static
