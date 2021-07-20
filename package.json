@@ -6,8 +6,8 @@
   "miniprogram": "miniprogram_dist",
   "scripts": {
     "clean": "rimraf dist miniprogram_dist dom lib native ssr web-component wechat index.js",
-    "build": "npm run build:cjs && npm run build:wechat",
-    "build:cjs": "npm run clean && babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
+    "build": "npm run clean && npm run build:cjs && npm run build:wechat",
+    "build:cjs": "babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
     "build:wechat": "copyfiles -f src/wechat/components/dynamic/* miniprogram_dist/wechat/components/dynamic && NODE_ENV=production webpack --config .build/webpack.wechat.config.js",
     "dev": "webpack-dev-server --config .examples/app/webpack.config.js",
     "postinstall": "node .scripts/files-for-wechat.js"
