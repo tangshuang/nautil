@@ -22,6 +22,7 @@ export {
   createContext,
   Suspense,
   lazy,
+  memo,
 } from 'react'
 export {
   Ty,
