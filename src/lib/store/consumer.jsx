@@ -1,6 +1,7 @@
 import { ifexist, Enum, List, nonable } from 'tyshemo'
 import { isArray, isInstanceOf, parse } from 'ts-fns'
 
+import { useForceUpdate } from '../hooks/force-update.js'
 import Component from '../component.js'
 import Store from './store.js'
 import { isShallowEqual } from '../utils.js'
@@ -89,7 +90,7 @@ export const connect = (mapToProps, watch) => C => {
 }
 
 export function useStore(store, watch) {
-  const [, update] = useState()
+  const update = useForceUpdate()
   useEffect(() => {
     const forceUpdate = (next, prev) => {
       if (!watch) {
@@ -106,7 +107,7 @@ export function useStore(store, watch) {
       })
 
       if (!isShallowEqual(current, latest)) {
-        update({})
+        update()
       }
     }
     store.subscribe(forceUpdate)
