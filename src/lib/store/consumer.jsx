@@ -1,5 +1,5 @@
 import { ifexist, Enum, List, nonable } from 'tyshemo'
-import { isArray, isInstanceOf, parse } from 'ts-fns'
+import { isArray, isInstanceOf, parse, isFunction } from 'ts-fns'
 import { useEffect } from 'react'
 
 import { useForceUpdate } from '../hooks/force-update.js'
@@ -95,7 +95,15 @@ export function useStore(store, watch) {
   useEffect(() => {
     const forceUpdate = (next, prev) => {
       if (!watch) {
-        update({})
+        update()
+        return
+      }
+
+      if (isFunction(watch)) {
+        const res = watch(next, prev)
+        if (res) {
+          update()
+        }
         return
       }
 
