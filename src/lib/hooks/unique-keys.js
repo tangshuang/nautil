@@ -16,25 +16,28 @@ export function useUniqueKeys(items, shouldDeepEqual) {
       const { items: prevItems, keys: prevKeys } = lastest.current
       const nextKeys = []
 
-      items.forEach((item, i) => {
-        const index = prevItems.findIndex(one => shouldDeepEqual ? isEqual(item, one) : item === one)
-        if (index > -1) {
-          nextKeys[i] = prevKeys[index]
-        }
-      })
+      items.forEach((item, index) => {
+        for (let i = 0, len = prevItems.length; i < len; i ++) {
+          const one = prevItems[i]
+          const isEqualed = shouldDeepEqual ? isEqual(item, one) : item === one
+          if (!isEqualed) {
+            continue
+          }
 
-      items.forEach((_, i) => {
-        if (!nextKeys[i]) {
           const prevKey = prevKeys[i]
-          if (!prevKey) {
-            nextKeys[i] = createRandomString(8)
+          // this is the key line
+          // there may be two same value in the list, for example: [1, 0, 1, 1] -> [1, 1, 0, 1]
+          // TODO: O(n^3) -> O(n^2)
+          if (nextKeys.includes(prevKey)) {
+            continue
           }
-          else if (nextKeys.includes(prevKey)) {
-            nextKeys[i] = createRandomString(8)
-          }
-          else {
-            nextKeys[i] = prevKey
-          }
+
+          nextKeys[index] = prevKey
+          break
+        }
+
+        if (!nextKeys[index]) {
+          nextKeys[index] = createRandomString(8)
         }
       })
 
