@@ -7,29 +7,21 @@ const fs = require('fs')
   const appFile = path.resolve(projDir, 'app.json')
   const nodeModules = path.resolve(projDir, 'node_modules')
 
-  function removeScripts() {
-    fs.rmdir(path.resolve(nodeModules, 'nautil/.scripts'), { recursive: true, force: true }, () => {})
-  }
-
   if (!fs.existsSync(appFile)) {
-    removeScripts()
     return
   }
 
   if (!fs.existsSync(projFile)) {
-    removeScripts()
     return
   }
 
   const appJson = require(appFile)
   if (!('pages' in appJson)) {
-    removeScripts()
     return
   }
 
   const projJson = require(projFile)
   if (!('appid' in projJson && 'compileType' in projJson)) {
-    removeScripts()
     return
   }
 
@@ -64,7 +56,6 @@ const fs = require('fs')
 
   const ntFile = path.resolve(nodeModules, 'nautil/package.json')
   if (!fs.existsSync(ntFile)) {
-    removeScripts()
     return
   }
   const ntDeps = findDeps(ntFile)
@@ -89,20 +80,18 @@ const fs = require('fs')
   }
 
   function removeFile(file) {
-    if (isDir(file)) {
-      fs.rmdirSync(file, { recursive: true, force: true })
+    try {
+      if (isDir(file)) {
+        fs.rmdirSync(file, { recursive: true, force: true })
+      }
+      else {
+        fs.unlinkSync(file)
+      }
     }
-    else {
-      fs.unlinkSync(file)
+    catch (e) {
+      console.error(`请手动删除 ${file}`)
     }
   }
-
-  // function moveFile(src, to) {
-  //   if (fs.existsSync(to)) {
-  //     fs.rmSync(to, { force: true })
-  //   }
-  //   fs.renameSync(src, to)
-  // }
 
   function removePkg(pkg) {
     if (!ntDeps.includes(pkg)) {
