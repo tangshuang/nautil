@@ -29,6 +29,7 @@ export class Navigation {
     })
     this.routes = routes
 
+    this._replace = false
     this.status = -1
     this.state = {}
 
@@ -152,6 +153,7 @@ export class Navigation {
   }
 
   _dispatch(event, state) {
+    const replace = this._replace
     const dispatchers = []
     this._listeners.forEach((item) => {
       const { match, callback, exact } = item
@@ -161,22 +163,22 @@ export class Navigation {
       }
       // bind events i.e. on('$enter', callback)
       else if (match === event) {
-        callback.call(this, state)
+        callback.call(this, state, replace)
       }
       // i.e. on('!', callback)
       else if (event === '$notFound') {
         if (match === '!') {
-          callback.call(this, state)
+          callback.call(this, state, replace)
         }
       }
       else if (event === '$enter') {
         if (this.is(match, exact)) {
-          callback.call(this, this.state)
+          callback.call(this, this.state, replace)
         }
       }
     })
     // call '*' at last
-    dispatchers.forEach((callback) => callback.call(this, state))
+    dispatchers.forEach((callback) => callback.call(this, state, replace))
   }
 
   _onLeave() {
@@ -262,8 +264,6 @@ export class Navigation {
   go(name, params = {}, replace = false) {
     const state = this.makeState(name, params)
 
-    this._dispatch('$forward', state)
-
     if (state) {
       let { route } = state
       let { redirect } = route
@@ -279,8 +279,6 @@ export class Navigation {
     else {
       this.push(state)
     }
-
-    this._dispatch('$change', state)
   }
 
   open(url, params) {
@@ -317,6 +315,8 @@ export class Navigation {
 
     this._onLeave()
 
+    this._dispatch('$forward', state)
+
     this.state = state
     this._history.push(state)
     if (this.options.maxHistoryLength && this._history.length > this.options.maxHistoryLength) {
@@ -327,15 +327,21 @@ export class Navigation {
     }
 
     this._onEnter()
+
+    this._dispatch('$change', state)
   }
 
   replace(state, changeLocation = true) {
+    this._replace = true
     if (!state) {
       this._onNotFound()
+      this._replace = false
       return
     }
 
     this._onLeave()
+
+    this._dispatch('$forward', state)
 
     this.state = state
     this._history.pop()
@@ -345,6 +351,9 @@ export class Navigation {
     }
 
     this._onEnter()
+
+    this._dispatch('$change', state)
+    this._replace = false
   }
 
   /**

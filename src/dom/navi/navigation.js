@@ -49,7 +49,7 @@ mixin(Navigation, class {
       }
     }
     const onUrlChanged = (e) => {
-      const { mode } = this.options
+      const { mode } = this._getMode()
       if (['history', 'search'].indexOf(mode) === -1) {
         return
       }
@@ -68,7 +68,7 @@ mixin(Navigation, class {
       }
     }
     const onHashChanged = () => {
-      const { mode } = this.options
+      const { mode } = this._getMode()
       if (['hash', 'hash_search'].indexOf(mode) === -1) {
         return
       }
