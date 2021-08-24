@@ -374,14 +374,11 @@ export class Navigation {
   }
 
   makeUrl(to, params = {}) {
-    const url = to.replace(new RegExp(':([a-zA-Z0-9]+)\\??([(?=\\\/)|$])', 'g'), (_, key, tail) => {
-      if (!inObject(key, params)) {
-        return tail === '/' ? 'undefined/' : ''
+    const url = to.replace(new RegExp(':([a-z][a-zA-Z0-9]+)', 'g'), (matched, key) => {
+      if (inObject(key, params)) {
+        return params[key]
       }
-
-      const value = params[key]
-      const text = value + (tail === '/' ? '/' : '')
-      return text
+      return matched
     })
     return url
   }
