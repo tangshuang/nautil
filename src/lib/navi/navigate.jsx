@@ -4,9 +4,11 @@ import Navigation from './navigation.js'
 import Component from '../component.js'
 import { Observer } from '../components/observer.jsx'
 
-export class _Navigate extends Component {
+import { Consumer } from './context.js'
+
+export class Navigate extends Component {
   static props = {
-    navigation: Navigation,
+    navigation: ifexist(Navigation),
     map: ifexist(Function),
     render: ifexist(Function),
     static: ifexist(Boolean),
@@ -24,26 +26,27 @@ export class _Navigate extends Component {
   }
 
   render() {
-    const { navigation, map, render, static: isStatic } = this.attrs
-    const fn = render ? render : this.children
-    const data = map ? map(navigation) : navigation
-    const output = fn(data)
+    return (
+      <Consumer>
+        {(provided) => {
+          const { navigation, map, render, static: isStatic } = this.attrs
+          const fn = render ? render : this.children
+          const navi = navigation || provided
+          const data = map ? map(navi) : navi
+          const output = fn(data)
 
-    if (isStatic) {
-      return (
-        <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.forceUpdate}>
-          {output}
-        </Observer>
-      )
-    }
+          if (isStatic) {
+            return (
+              <Observer subscribe={dispatch => navi.on('$change', dispatch)} unsubscribe={dispatch => navi.off('$change', dispatch)} dispatch={this.forceUpdate}>
+                {output}
+              </Observer>
+            )
+          }
 
-    return output
-  }
-}
-
-export class Navigate extends Component {
-  render() {
-    return <_Navigate {...this.props} />
+          return output
+        }}
+      </Consumer>
+    )
   }
 }
 

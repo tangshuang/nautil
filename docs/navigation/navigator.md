@@ -72,8 +72,3 @@ Here, I use `Route` to render different route view. In fact, you can use any com
 ## render mode priority
 
 Configuration > Function > Elements
-
-## Auto pollute
-
-The `Route` `Link` components in a `Navigator` component will be polluted with `navigation` prop.
-You do not need to pass `navigation` prop to `Route` manually.

@@ -1,21 +1,21 @@
 import Component from '../component.js'
 import Store from './store.js'
-import { pollute } from '../operators/operators.js'
 
-import { _Consumer } from './consumer.jsx'
+import { Provider } from './context.js'
 
-class _Provider extends Component {
+export class Provider extends Component {
   static props = {
     store: Store,
   }
 
   render() {
-    return this.children
+    const { store } = this.props
+    return (
+      <Provider value={store}>
+        {this.children}
+      </Provider>
+    )
   }
 }
-
-export const Provider = pollute(_Consumer, ({ store }) => {
-  return { store }
-})(_Provider)
 
 export default Provider

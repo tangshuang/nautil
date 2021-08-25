@@ -704,3 +704,17 @@ interface AppOptions {
 export declare function createApp(options: AppOptions): NautilComponent;
 
 export declare function createAsyncComponent(fn: () => Promise<{ [Symbol.toStringTag]: 'Module', default: JSXComponent } | JSXComponent>): JSXComponent;
+
+interface AnimationProps {
+  show: boolean;
+  enter: string;
+  leave: string;
+  loop?: boolean;
+  onEnterStart?: Handler;
+  onEnterUpdate?: Handler;
+  onEnterStop?: Handler;
+  onLeaveStart?: Handler;
+  onLeaveUpdate?: Handler;
+  onLeaveStop?: Handler;
+}
+export declare class Animation extends Component<AnimationProps> {}

@@ -1,12 +1,14 @@
-import { enumerate } from 'tyshemo'
+import { enumerate, ifexist } from 'tyshemo'
 import { isNumber } from 'ts-fns'
 
 import Component from '../component.js'
 import Navigation from './navigation.js'
 
-export class _Link extends Component {
+import { Consumer } from './context.js'
+
+export class Link extends Component {
   static props = {
-    navigation: Navigation,
+    navigation: ifexist(Navigation),
     to: enumerate([String, Number]),
     params: Object,
     replace: Boolean,
@@ -18,24 +20,39 @@ export class _Link extends Component {
     open: false,
   }
 
-  goto() {
+  goto(provided) {
     const { to, params, replace, open, navigation } = this.attrs
+    const navi = navigation || provided
 
     if (isNumber(to) && to < 0) {
-      navigation.back(to)
+      navi.back(to)
     }
     else if (open) {
-      navigation.open(to, params)
+      navi.open(to, params)
     }
     else {
-      navigation.go(to, params, replace)
+      navi.go(to, params, replace)
     }
   }
-}
 
-export class Link extends Component {
   render() {
-    return <_Link {...this.props} />
+    return (
+      <Consumer>
+        {(provided) => {
+          const { navigation } = this.attrs
+          const navi = navigation || provided
+          return (
+            <Observer subscribe={dispatch => navi.on('$change', dispatch)} unsubscribe={dispatch => navi.off('$change', dispatch)} dispatch={this.weakUpdate}>
+              {this.$render(navi)}
+            </Observer>
+          )
+        }}
+      </Consumer>
+    )
+  }
+
+  $render() {
+    throw new Error('Link $render method should be overrided.')
   }
 }
 

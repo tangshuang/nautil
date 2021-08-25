@@ -1,12 +1,12 @@
 import { mixin } from 'ts-fns'
-import { _Link as Link } from '../../lib/navi/link.jsx'
+import { Link } from '../../lib/navi/link.jsx'
 import { TouchableOpacity } from 'react-native'
 
 mixin(Link, class {
-  render() {
+  $render(navigation) {
     const { open } = this.attrs
     return (
-      <TouchableOpacity onPress={e => !open && (e.preventDefault(),this.goto())}>
+      <TouchableOpacity onPress={e => !open && (e.preventDefault(),this.goto(navigation))}>
         {this.children}
       </TouchableOpacity>
     )

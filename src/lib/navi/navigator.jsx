@@ -3,19 +3,16 @@ import { isFunction, isObject, isInstanceOf } from 'ts-fns'
 
 import Component from '../component.js'
 import Navigation from './navigation.js'
-import { pipe } from '../operators/combiners.js'
-import { pollute } from '../operators/operators.js'
 import Observer from '../components/observer.jsx'
 
-import { _Route } from './route.jsx'
-import { _Navigate } from './navigate.jsx'
-import { _Link } from './link.jsx'
+import { Route } from './route.jsx'
+import { Provider } from './context.js'
 
 /**
  * @example use children
  * <Navigator navigation={navigation} dispatch={this.weakUpdate}>
- *   <_Route match="home" component={Home} props={{ title: 'Home Page' }} />
- *   <_Route match="page1" component={Page1} props={{ title: 'Page1' }} />
+ *   <Route match="home" component={Home} props={{ title: 'Home Page' }} />
+ *   <Route match="page1" component={Page1} props={{ title: 'Page1' }} />
  * </Navigator>
  *
  * @example I use Route directly previously, in fact, Route can be use anywhere inside Navigator
@@ -26,7 +23,7 @@ import { _Link } from './link.jsx'
  * @example use components inside navigation
  * <Navigator navigation={navigation} inside />
  */
-class _Navigator extends Component {
+export class Navigator extends Component {
   static props = {
     navigation: Navigation,
     dispatch: ifexist(Function),
@@ -44,16 +41,16 @@ class _Navigator extends Component {
       const { notFound, routes } = options
       const views = routes.map((route) => {
         const { component, props = {}, animation = 0, name } = route
-        return component ? <_Route key={name} component={component} match={name} navigation={navigation} animation={animation} {...props} /> : null
+        return component ? <Route key={name} component={component} match={name} navigation={navigation} animation={animation} {...props} /> : null
       })
       if (notFound) {
         if (isObject(notFound) && notFound.component) {
           const { component, props = {}, animation = 0 } = notFound
-          const not = <_Route key="!" match="!" component={component} navigation={navigation} animation={animation} {...props} />
+          const not = <Route key="!" match="!" component={component} navigation={navigation} animation={animation} {...props} />
           views.push(not)
         }
         else if (isInstanceOf(notFound, Component) || isFunction(notFound)) {
-          const not = <_Route key="!" match="!" component={notFound} navigation={navigation} />
+          const not = <Route key="!" match="!" component={notFound} navigation={navigation} />
           views.push(not)
         }
       }
@@ -76,17 +73,13 @@ class _Navigator extends Component {
     }
 
     return (
-      <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={update}>
-        {layout}
-      </Observer>
+      <Provider value={navigation}>
+        <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={update}>
+          {layout}
+        </Observer>
+      </Provider>
     )
   }
 }
-
-export const Navigator = pipe([
-  pollute(_Route, ({ navigation }) => ({ navigation })),
-  pollute(_Navigate, ({ navigation }) => ({ navigation })),
-  pollute(_Link, ({ navigation }) => ({ navigation })),
-])(_Navigator)
 
 export default Navigator

@@ -4,9 +4,11 @@ import { isFunction } from 'ts-fns'
 import Component from '../component.js'
 import Navigation from './navigation.js'
 
-export class _Route extends Component {
+import { Consumer } from './context.js'
+
+export class Route extends Component {
   static props = {
-    navigation: Navigation,
+    navigation: ifexist(Navigation),
     match: Any,
     exact: ifexist(Boolean),
     animation: ifexist(Number),
@@ -59,42 +61,43 @@ export class _Route extends Component {
   }
 
   render() {
-    const { navigation, component, props = {}, match, exact } = this.attrs
-    const { show, display } = this.state
-    const matched = navigation.is(match, exact)
+    return (
+      <Consumer>
+        {(provided) => {
+          const { navigation, component, props = {}, match, exact } = this.attrs
+          const { show, display } = this.state
+          const navi = navigation || provided
+          const matched = navigation.is(match, exact)
 
-    // in SSR, the first time render should not use sync-render
-    if (this._isMounted) {
-      if (!display) {
-        return null
-      }
-    }
-    else if (!matched) {
-      return null
-    }
+          // in SSR, the first time render should not use sync-render
+          if (this._isMounted) {
+            if (!display) {
+              return null
+            }
+          }
+          else if (!matched) {
+            return null
+          }
 
-    const children = this.children
-    if (component) {
-      const RouteComponent = component
-      return <RouteComponent show={show} {...props}>{children}</RouteComponent>
-    }
-    else if (isFunction(this.children)) {
-      return this.children({ navigation, show })
-    }
-    else if (children) {
-      return children
-    }
-    else {
-      const { route } = navigation.state
-      const { component: RouteComponent, props = {} } = route
-      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
-    }
-  }
-}
-
-export class Route extends Component {
-  render() {
-    return <_Route {...this.props} />
+          const children = this.children
+          if (component) {
+            const RouteComponent = component
+            return <RouteComponent show={show} {...props}>{children}</RouteComponent>
+          }
+          else if (isFunction(this.children)) {
+            return this.children({ navigation, show })
+          }
+          else if (children) {
+            return children
+          }
+          else {
+            const { route } = navigation.state
+            const { component: RouteComponent, props = {} } = route
+            return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
+          }
+        }}
+      </Consumer>
+    )
   }
 }
 

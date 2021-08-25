@@ -1,8 +1,6 @@
 import {
   isValidElement,
   Component as ReactComponent,
-  cloneElement,
-  Children,
 } from 'react'
 import {
   each,
@@ -45,67 +43,9 @@ export class PrimitiveComponent extends ReactComponent {
         tree = render()
       }
 
-      const polluted = this._polluteRenderTree(tree)
-      return polluted
+      return tree
     }
     define(this, 'render', { value: proxyRender })
-  }
-
-  _getPollutedComponents() {
-    let pollutedComponents = this._pollutedComponents || []
-
-    const fiber = this._reactInternalFiber || this._reactInternals
-    // pollute children tree by using parent fiber tree
-    let parent = fiber.return
-    while (parent) {
-      const node = parent.stateNode
-      if (node) {
-        const parentPollutedComponents = node._pollutedComponents || []
-        pollutedComponents = [...parentPollutedComponents, ...pollutedComponents]
-      }
-      parent = parent.return
-    }
-    return pollutedComponents
-  }
-
-  _polluteRenderTree(tree) {
-    const pollutedComponents = this._getPollutedComponents()
-    const map = (node) => {
-      if (!node || typeof node !== 'object') {
-        return node
-      }
-
-      const { type, props } = node
-      if (!type) {
-        return node
-      }
-
-      const pollutedProps = {}
-      pollutedComponents.forEach((item) => {
-        const { component, props } = item
-        if (component === type || Object.getPrototypeOf(type) === component) {
-          Object.assign(pollutedProps, props)
-        }
-      })
-
-      const { children } = props
-      const subtree = modify(children)
-
-      return cloneElement(node, { ...pollutedProps }, subtree)
-    }
-    const modify = (tree) => {
-      if (isArray(tree)) {
-        const modifed = Children.map(tree, map)
-        return modifed
-      }
-      else {
-        const modifed = map(tree)
-        return modifed
-      }
-    }
-
-    const output = modify(tree)
-    return output
   }
 }
 

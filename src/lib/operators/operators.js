@@ -83,25 +83,6 @@ export function inject(prop, define) {
 }
 
 /**
- * Change some component's defaultProps
- * @param {*} component
- * @param {function|object} pollute
- */
-export function pollute(component, pollute) {
-  return (C) => class extends Component {
-    init() {
-      const pollutedProps = isFunction(pollute) ? pollute(this.props) : pollute
-      this._pollutedComponents = [
-        { component, props: pollutedProps }
-      ]
-    }
-    render() {
-      return <C {...this.props} />
-    }
-  }
-}
-
-/**
  * Initialize a Constructor when the component initialize
  * @param {*} prop
  * @param {*} Constructor

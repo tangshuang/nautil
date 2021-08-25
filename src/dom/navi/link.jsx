@@ -1,24 +1,25 @@
 import { mixin } from 'ts-fns'
 
-import { _Link as Link } from '../../lib/navi/link.jsx'
+import { Link } from '../../lib/navi/link.jsx'
 
 mixin(Link, class {
-  getHref() {
+  getHref(provided) {
     const { to, params, navigation } = this.attrs
-    const state = navigation.makeState(to, params)
-    const href = navigation.$makeHref(state)
+    const navi = navigation || provided
+    const state = navi.makeState(to, params)
+    const href = navi.$makeHref(state)
     return href
   }
 
-  render() {
+  $render(navigation) {
     const { open } = this.attrs
-    const href = this.getHref()
+    const href = this.getHref(navigation)
     return <a
       href={href}
       target={open ? '_blank' : '_self'}
       className={this.className}
       style={this.style}
-      onClick={e => !open && (e.preventDefault(),this.goto())}
+      onClick={e => !open && (e.preventDefault(),this.goto(navigation))}
     >{this.children}</a>
   }
 })

@@ -1,11 +1,11 @@
 import { mixin } from 'ts-fns'
-import { _Link as Link } from '../../lib/navi/link.jsx'
+import { Link } from '../../lib/navi/link.jsx'
 
 mixin(Link, class {
-  render() {
+  $render(navigation) {
     const { open } = this.attrs
     return (
-      <view catchtap={() => !open && this.goto()} style="display: inline">
+      <view catchtap={() => !open && this.goto(navigation)} style="display: inline">
         {this.children}
       </view>
     )

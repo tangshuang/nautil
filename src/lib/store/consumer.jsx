@@ -6,17 +6,17 @@ import { useForceUpdate } from '../hooks/force-update.js'
 import Component from '../component.js'
 import Store from './store.js'
 import { isShallowEqual } from '../utils.js'
+import { Observer } from '../components/observer.jsx'
 
-export class _Consumer extends Component {
+import { Consumer } from './context.js'
+
+export class Consumer extends Component {
   static props = {
     store: Store,
     map: nonable(Function),
     watch: nonable(new Enum([String, new List([String])])),
     render: ifexist(Function),
   }
-
-  _latestState = null
-  _latestMapped = null
 
   watch = (next, prev) => {
     const { watch } = this.attrs
@@ -56,21 +56,24 @@ export class _Consumer extends Component {
   }
 
   render() {
-    const { store, map, render } = this.attrs
-    const fn = render ? render : this.children
+    return (
+      <Consumer>
+        {(provided) => {
+          const { store: givenStore, map, render } = this.attrs
+          const store = givenStore || provided
+          const fn = render ? render : this.children
 
-    const currentState = store.getState()
-    const data = map ? (this._latestState && this._latestMapped && this._latestState === currentState ? this._latestMapped : map(store)) : store
+          const data = map ? map(store) : store.getState()
 
-    this._latestState = currentState
-    this._latestMapped = data
-
-    return fn(data)
-  }
-}
-export class Consumer extends Component {
-  render() {
-    return <_Consumer {...this.props} />
+          return (
+            <Observer
+              subscribe={() => store.subscribe(this.watch)}
+              unsubscribe={() => store.unsubscribe(this.watch)}
+            >{fn(data)}</Observer>
+          )
+        }}
+      </Consumer>
+    )
   }
 }
 

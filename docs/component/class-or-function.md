@@ -9,7 +9,7 @@ Although we are try to support react completely, we had some difficulty to face.
 If you want to use custom polluted components, you should use them in class components.
 
 ```js
-import { pollute, Component, Text } from 'nautil'
+import { Component, Text } from 'nautil'
 
 function MyComponent(props) {
   return <Text>{props.test}</Text>

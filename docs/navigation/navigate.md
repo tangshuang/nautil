@@ -12,5 +12,3 @@ import { Navigate } from 'nautil/components'
   }
 />
 ```
-
-It will be polluted by `Navigator`, so you can ignore navigation prop.
