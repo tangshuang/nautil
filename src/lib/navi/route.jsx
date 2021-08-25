@@ -65,7 +65,7 @@ class _Route extends Component {
   render() {
     const { navigation, component, props = {}, match, exact } = this.attrs
     return (
-      <Observer susbcribe={dispatch => navigation.watch('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.weakUpdate}>
+      <Observer subscribe={dispatch => navigation.watch('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.weakUpdate}>
         {() => {
           const { show, display } = this.state
           const matched = navigation.is(match, exact)
