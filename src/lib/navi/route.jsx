@@ -4,6 +4,7 @@ import { isFunction } from 'ts-fns'
 import Component from '../component.js'
 import Navigation from './navigation.js'
 
+import { Observer } from '../components/observer.jsx'
 import { Consumer } from './context.js'
 import { decorate } from '../operators/operators.js'
 
@@ -63,35 +64,41 @@ class _Route extends Component {
 
   render() {
     const { navigation, component, props = {}, match, exact } = this.attrs
-    const { show, display } = this.state
-    const matched = navigation.is(match, exact)
+    return (
+      <Observer susbcribe={dispatch => navigation.watch('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.weakUpdate}>
+        {() => {
+          const { show, display } = this.state
+          const matched = navigation.is(match, exact)
 
-    // in SSR, the first time render should not use sync-render
-    if (this._isMounted) {
-      if (!display) {
-        return null
-      }
-    }
-    else if (!matched) {
-      return null
-    }
+          // in SSR, the first time render should not use sync-render
+          if (this._isMounted) {
+            if (!display) {
+              return null
+            }
+          }
+          else if (!matched) {
+            return null
+          }
 
-    const children = this.children
-    if (component) {
-      const RouteComponent = component
-      return <RouteComponent show={show} {...props}>{children}</RouteComponent>
-    }
-    else if (isFunction(this.children)) {
-      return this.children({ navigation: navigation, show })
-    }
-    else if (children) {
-      return children
-    }
-    else {
-      const { route } = navigation.state
-      const { component: RouteComponent, props = {} } = route
-      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
-    }
+          const children = this.children
+          if (component) {
+            const RouteComponent = component
+            return <RouteComponent show={show} {...props}>{children}</RouteComponent>
+          }
+          else if (isFunction(this.children)) {
+            return this.children({ navigation: navigation, show })
+          }
+          else if (children) {
+            return children
+          }
+          else {
+            const { route } = navigation.state
+            const { component: RouteComponent, props = {} } = route
+            return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
+          }
+        }}
+      </Observer>
+    )
   }
 }
 

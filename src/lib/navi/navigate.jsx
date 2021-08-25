@@ -28,19 +28,23 @@ class _Navigate extends Component {
 
   render() {
     const { navigation, map, render, static: isStatic } = this.attrs
-    const fn = render ? render : this.children
-    const data = map ? map(navigation) : navigation
-    const output = fn(data)
+
+    const gen = () => {
+      const fn = render ? render : this.children
+      const data = map ? map(navigation) : navigation
+      const output = fn(data)
+      return output
+    }
 
     if (isStatic) {
       return (
         <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.forceUpdate}>
-          {output}
+          {gen}
         </Observer>
       )
     }
 
-    return output
+    return gen()
   }
 }
 

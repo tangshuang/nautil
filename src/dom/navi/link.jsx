@@ -10,7 +10,7 @@ mixin(_Link, class {
     return href
   }
 
-  $render() {
+  render() {
     const { open } = this.attrs
     const href = this.getHref()
     return <a

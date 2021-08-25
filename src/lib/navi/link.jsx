@@ -34,19 +34,6 @@ export class _Link extends Component {
       navigation.go(to, params, replace)
     }
   }
-
-  render() {
-    const { navigation } = this.attrs
-    return (
-      <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.weakUpdate}>
-        {this.$render()}
-      </Observer>
-    )
-  }
-
-  $render() {
-    throw new Error('Link $render method should be overrided.')
-  }
 }
 
 export const Link = decorate(Consumer, ['navigation'])(_Link)
