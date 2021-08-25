@@ -1,7 +1,7 @@
 import Component from '../component.js'
 import Store from './store.js'
 
-import { Provider } from './context.js'
+import { Provider as ContextProvider } from './context.js'
 
 export class Provider extends Component {
   static props = {
@@ -11,9 +11,9 @@ export class Provider extends Component {
   render() {
     const { store } = this.props
     return (
-      <Provider value={store}>
+      <ContextProvider value={store}>
         {this.children}
-      </Provider>
+      </ContextProvider>
     )
   }
 }
