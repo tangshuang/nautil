@@ -8,7 +8,7 @@ import Store from './store.js'
 import { isShallowEqual } from '../utils.js'
 import { Observer } from '../components/observer.jsx'
 
-import { Consumer } from './context.js'
+import { Consumer as ContextConsumer } from './context.js'
 
 export class Consumer extends Component {
   static props = {
@@ -57,7 +57,7 @@ export class Consumer extends Component {
 
   render() {
     return (
-      <Consumer>
+      <ContextConsumer>
         {(provided) => {
           const { store: givenStore, map, render } = this.attrs
           const store = givenStore || provided
@@ -72,7 +72,7 @@ export class Consumer extends Component {
             >{fn(data)}</Observer>
           )
         }}
-      </Consumer>
+      </ContextConsumer>
     )
   }
 }
