@@ -118,7 +118,7 @@ export function initialize(prop, Constructor, ...args) {
 export function decorate(HOC, params, renderProp) {
   return (C) => class extends Component {
     render() {
-      const outProps = this.props
+      const givenProps = this.props
       const fn = (...args) => {
         const localProps = {}
         if (params && isArray(params)) {
@@ -135,8 +135,8 @@ export function decorate(HOC, params, renderProp) {
         }
 
         const finalProps = {
-          ...outProps,
           ...localProps,
+          ...givenProps,
         }
         return <C {...finalProps} />
       }
