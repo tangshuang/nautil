@@ -1,7 +1,7 @@
 import { mixin } from 'ts-fns'
-import { Link } from '../../lib/navi/link.jsx'
+import { _Link, Link } from '../../lib/navi/link.jsx'
 
-mixin(Link, class {
+mixin(_Link, class {
   $render(navigation) {
     const { open } = this.attrs
     return (

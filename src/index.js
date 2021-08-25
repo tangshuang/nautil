@@ -53,7 +53,7 @@ export { useModelsReactor } from './lib/hooks/models-reactor.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
 
-export { observe, evolve, inject, initialize, nest, hoc } from './lib/operators/operators.js'
+export { observe, evolve, inject, initialize, nest, decorate } from './lib/operators/operators.js'
 export { pipe } from './lib/operators/combiners.js'
 
 export { Async } from './lib/components/async.jsx'

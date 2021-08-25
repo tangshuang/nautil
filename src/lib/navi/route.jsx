@@ -5,10 +5,11 @@ import Component from '../component.js'
 import Navigation from './navigation.js'
 
 import { Consumer } from './context.js'
+import { decorate } from '../operators/operators.js'
 
-export class Route extends Component {
+class _Route extends Component {
   static props = {
-    navigation: ifexist(Navigation),
+    navigation: Navigation,
     match: Any,
     exact: ifexist(Boolean),
     animation: ifexist(Number),
@@ -61,44 +62,38 @@ export class Route extends Component {
   }
 
   render() {
-    return (
-      <Consumer>
-        {(provided) => {
-          const { navigation, component, props = {}, match, exact } = this.attrs
-          const { show, display } = this.state
-          const navi = navigation || provided
-          const matched = navigation.is(match, exact)
+    const { navigation, component, props = {}, match, exact } = this.attrs
+    const { show, display } = this.state
+    const matched = navigation.is(match, exact)
 
-          // in SSR, the first time render should not use sync-render
-          if (this._isMounted) {
-            if (!display) {
-              return null
-            }
-          }
-          else if (!matched) {
-            return null
-          }
+    // in SSR, the first time render should not use sync-render
+    if (this._isMounted) {
+      if (!display) {
+        return null
+      }
+    }
+    else if (!matched) {
+      return null
+    }
 
-          const children = this.children
-          if (component) {
-            const RouteComponent = component
-            return <RouteComponent show={show} {...props}>{children}</RouteComponent>
-          }
-          else if (isFunction(this.children)) {
-            return this.children({ navigation, show })
-          }
-          else if (children) {
-            return children
-          }
-          else {
-            const { route } = navigation.state
-            const { component: RouteComponent, props = {} } = route
-            return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
-          }
-        }}
-      </Consumer>
-    )
+    const children = this.children
+    if (component) {
+      const RouteComponent = component
+      return <RouteComponent show={show} {...props}>{children}</RouteComponent>
+    }
+    else if (isFunction(this.children)) {
+      return this.children({ navigation: navigation, show })
+    }
+    else if (children) {
+      return children
+    }
+    else {
+      const { route } = navigation.state
+      const { component: RouteComponent, props = {} } = route
+      return RouteComponent ? <RouteComponent navigation={navigation} show={show} {...props} /> : null
+    }
   }
 }
 
+export const Route = decorate(Consumer, ['navigation'])(_Route)
 export default Route

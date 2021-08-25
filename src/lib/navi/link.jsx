@@ -1,14 +1,15 @@
-import { enumerate, ifexist } from 'tyshemo'
+import { enumerate } from 'tyshemo'
 import { isNumber } from 'ts-fns'
 
 import Component from '../component.js'
 import Navigation from './navigation.js'
 
 import { Consumer } from './context.js'
+import { decorate } from '../operators/operators.js'
 
-export class Link extends Component {
+export class _Link extends Component {
   static props = {
-    navigation: ifexist(Navigation),
+    navigation: Navigation,
     to: enumerate([String, Number]),
     params: Object,
     replace: Boolean,
@@ -20,34 +21,26 @@ export class Link extends Component {
     open: false,
   }
 
-  goto(provided) {
+  goto() {
     const { to, params, replace, open, navigation } = this.attrs
-    const navi = navigation || provided
 
     if (isNumber(to) && to < 0) {
-      navi.back(to)
+      navigation.back(to)
     }
     else if (open) {
-      navi.open(to, params)
+      navigation.open(to, params)
     }
     else {
-      navi.go(to, params, replace)
+      navigation.go(to, params, replace)
     }
   }
 
   render() {
+    const { navigation } = this.attrs
     return (
-      <Consumer>
-        {(provided) => {
-          const { navigation } = this.attrs
-          const navi = navigation || provided
-          return (
-            <Observer subscribe={dispatch => navi.on('$change', dispatch)} unsubscribe={dispatch => navi.off('$change', dispatch)} dispatch={this.weakUpdate}>
-              {this.$render(navi)}
-            </Observer>
-          )
-        }}
-      </Consumer>
+      <Observer subscribe={dispatch => navigation.on('$change', dispatch)} unsubscribe={dispatch => navigation.off('$change', dispatch)} dispatch={this.weakUpdate}>
+        {this.$render()}
+      </Observer>
     )
   }
 
@@ -56,4 +49,5 @@ export class Link extends Component {
   }
 }
 
+export const Link = decorate(Consumer, ['navigation'])(_Link)
 export default Link

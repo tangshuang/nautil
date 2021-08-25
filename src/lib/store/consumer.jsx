@@ -63,7 +63,7 @@ export class Consumer extends Component {
           const store = givenStore || provided
           const fn = render ? render : this.children
 
-          const data = map ? map(store) : store.getState()
+          const data = map ? map(store) : store
 
           return (
             <Observer

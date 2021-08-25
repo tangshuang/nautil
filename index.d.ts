@@ -136,7 +136,7 @@ export declare function inject(prop: string, define: (props: AnyObj) => AnyObj):
 
 export declare function pollute(component: NautilComponent, pollute: AnyObj | ((props: AnyObj) => AnyObj)): ComponentGenerator;
 
-export declare function hoc(HOC: JSXComponent, fields: string[], renderProp?: string): ComponentGenerator;
+export declare function decorate(HOC: JSXComponent, fields: string[], renderProp?: string): ComponentGenerator;
 
 export declare function initialize<T>(prop: string, Constructor: Constructor<T>, ...args: T[]): ComponentGenerator;
 

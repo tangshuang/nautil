@@ -108,21 +108,21 @@ export function initialize(prop, Constructor, ...args) {
 /**
  * wrap a component by a HOC
  * @param {ReactComponent} HOC
- * @param {Array<string|null>} fields
+ * @param {Array<string|null>} params
  * @param {string} renderProp
  * @returns
  * @example
- * hoc(Consumer, ['state', 'dispatch'])(MyComponent)
+ * decorate(Consumer, ['state', 'dispatch'])(MyComponent)
  * -> props => <Consumer>(state, dispatch) => <MyComponent {...props} state={state} dispatch={dispatch} /></Consumer>
  */
-export function hoc(HOC, fields, renderProp) {
+export function decorate(HOC, params, renderProp) {
   return (C) => class extends Component {
     render() {
       const outProps = this.props
       const fn = (...args) => {
         const localProps = {}
-        if (fields && isArray(fields)) {
-          fields.forEach((field, i) => {
+        if (params && isArray(params)) {
+          params.forEach((field, i) => {
             if (i >= args.length) {
               return
             }

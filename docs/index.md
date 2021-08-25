@@ -95,6 +95,7 @@
   - [initialize](operators/initialize.md)
   - [nest](operators/nest.md)
   - [pipe](operators/pipe.md)
+  - [decorate](operators/decorate.md)
 
 - hooks
   - [useTwoWayBinding](hooks/use-two-way-binding.md)
