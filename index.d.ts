@@ -314,7 +314,7 @@ interface NavigationRoute {
   name: string;
   path: '/' | `/${string}`;
   redirect?: '/' | `/${string}`;
-  component?: Component | ((props: AnyObj) => ReactElement) | null;
+  component?: JSXComponent | ((props: AnyObj) => ReactElement) | null;
   onEnter?: () => void;
   onLeave?: () => void;
 }
@@ -600,7 +600,7 @@ export declare class Controller {
 
   update(): void;
 
-  turn(component: Component, collect?: (nextprops: AnyObj) => AnyObj): Component;
+  turn(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): Component;
   observe(observer: Store | Model | Function): {
     stop: Function,
   };
