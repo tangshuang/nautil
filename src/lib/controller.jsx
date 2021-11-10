@@ -117,8 +117,8 @@ export class Controller {
     }, true)
 
     each(this, (value, key) => {
-      if (isObject(value) && value.$$type === 'turner' && value.component && value.collect) {
-        this[key] = this.turn(value.component, value.collect.bind(this))
+      if (isObject(value) && value.$$type === 'turner' && value.component) {
+        this[key] = this.turn(value.component, typeof value.collect === 'function' ? value.collect.bind(this) : null)
       }
     })
 
