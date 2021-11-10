@@ -592,14 +592,17 @@ export declare class Service {
 }
 
 export declare class Controller {
-  constructor();
+  private observers;
+  private on;
+  private off;
+  private active;
+  private inactive;
 
   update(): void;
 
-  turn(component: Component, collect: (nextprops: AnyObj) => AnyObj): Component | {
-    $$type: 'turner',
-    component: Component,
-    collect: (nextprops: AnyObj) => AnyObj,
+  turn(component: Component, collect?: (nextprops: AnyObj) => AnyObj): Component;
+  observe(observer: Store | Model | Function): {
+    stop: Function,
   };
 
   onStart(): void;
