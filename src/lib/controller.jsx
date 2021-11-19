@@ -30,7 +30,7 @@ export class Controller {
     this.observers = []
 
     const emitters = []
-    this.update = throttle((TurnedComponent) => {
+    this.updateOnly = throttle((TurnedComponent) => {
       let flag = false
       emitters.forEach(({ fn, component }) => {
         if (TurnedComponent && TurnedComponent !== component) {
@@ -42,6 +42,10 @@ export class Controller {
       if (flag) {
         this.onUpdate()
       }
+    }, 16)
+    this.update = throttle(() => {
+      emitters.forEach(({ fn }) => fn())
+      this.onUpdate()
     }, 16)
     this.on = (fn, component) => {
       emitters.push({ fn, component })
