@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Model } from './model.js'
 import { Store } from './store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, throttle } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, throttle, uniqueArray } from 'ts-fns'
 import Component from './component.js'
 import { Stream } from './stream.js'
 import { Service } from './service.js'
@@ -30,19 +30,6 @@ export class Controller {
     this.observers = []
 
     const emitters = []
-    this.updateOnly = throttle((TurnedComponent) => {
-      let flag = false
-      emitters.forEach(({ fn, component }) => {
-        if (TurnedComponent && TurnedComponent !== component) {
-          return
-        }
-        flag = true
-        fn()
-      })
-      if (flag) {
-        this.onUpdate()
-      }
-    }, 16)
     this.update = throttle(() => {
       emitters.forEach(({ fn }) => fn())
       this.onUpdate()
@@ -56,6 +43,21 @@ export class Controller {
           emitters.splice(i, 1)
         }
       })
+    }
+
+    const queue = []
+    const run = throttle(() => {
+      const components = uniqueArray(queue)
+      const fns = emitters.filter(({ component }) => components.includes(component)).map(({ fn }) => fn)
+      if (fns.length) {
+        fns.forEach((fn) => fn())
+        this.onUpdate()
+      }
+      queue.length = 0 // clear the queue
+    }, 16)
+    this.updateOnly = (component) => {
+      queue.push(component)
+      run()
     }
 
     let activeComponents = 0
