@@ -30,16 +30,25 @@ export class Controller {
     this.observers = []
 
     const emitters = []
-    this.update = throttle(() => {
-      emitters.forEach(fn => fn())
-      this.onUpdate()
+    this.update = throttle((TurnedComponent) => {
+      let flag = false
+      emitters.forEach(({ fn, component }) => {
+        if (TurnedComponent && TurnedComponent !== component) {
+          return
+        }
+        flag = true
+        fn()
+      })
+      if (flag) {
+        this.onUpdate()
+      }
     }, 16)
-    this.on = (fn) => {
-      emitters.push(fn)
+    this.on = (fn, component) => {
+      emitters.push({ fn, component })
     }
     this.off = (fn) => {
       emitters.forEach((item, i) => {
-        if (fn === item) {
+        if (fn === item.fn) {
           emitters.splice(i, 1)
         }
       })
@@ -140,7 +149,7 @@ export class Controller {
     const controller = this
     class G extends Component {
       onMounted() {
-        controller.on(this.weakUpdate)
+        controller.on(this.weakUpdate, G)
         controller.active()
       }
       onUnmount() {

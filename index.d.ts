@@ -599,6 +599,7 @@ export declare class Controller {
   private inactive;
 
   update(): void;
+  update(component: any): void;
 
   turn(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
   observe(observer: Store | Model | Function): {
