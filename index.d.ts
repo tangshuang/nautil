@@ -78,7 +78,7 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   className: string | undefined;
   children: ReactChildren;
 
-  css(classNames: string | string[]): string | any[];
+  css(classNames: string | string[]): string;
 
   subscribe(name: string, affect: (stream: Stream) => Stream): this;
   unsubscribe(name: string, affect: (stream: Stream) => Stream): this;
