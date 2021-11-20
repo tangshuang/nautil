@@ -129,3 +129,9 @@ export function isShallowEqual(objA, objB, isEqaul) {
 export function isRef(obj) {
   return obj && isObject(obj) && isEqual(Object.keys(obj), ['current'])
 }
+
+export function camelCase(str) {
+  const items = str.split(/\W|_/).filter(item => item)
+  const text = items.reduce((text, curr) => text + curr.replace(curr[0], curr[0].toUpperCase()))
+  return text
+}

@@ -8,6 +8,7 @@ import {
   isArray,
   isInstanceOf,
   isFunction,
+  isString,
   makeKeyChain,
   assign,
   createProxy,
@@ -22,7 +23,7 @@ import Stream from './stream.js'
 import Style from './style/style.js'
 import ClassName from './style/classname.js'
 import { Binding, Handling } from './types.js'
-import { noop, isRef, isShallowEqual } from './utils.js'
+import { noop, isRef, isShallowEqual, camelCase } from './utils.js'
 
 export class PrimitiveComponent extends ReactComponent {
   constructor(props) {
@@ -311,6 +312,19 @@ export class Component extends PrimitiveComponent {
       }
     }
 
+    // import css and transform css rules
+    this.cssRules = decideby(() => {
+      if (!css) {
+        return {}
+      }
+      const rules = isFunction(css) ? css({
+        attrs: this.attrs,
+        className: this.className,
+        style: this.style,
+      }) : css
+      return { ...rules }
+    })
+
     // format stylesheet by using stylesheet, className, style props
     this.className = decideby(() => {
       const classNameQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(className)
@@ -358,16 +372,6 @@ export class Component extends PrimitiveComponent {
         },
       })
     }
-
-    // import css and transform css rules
-    this.css = decideby(() => {
-      const rules = isFunction(css) ? css({
-        attrs: this.attrs,
-        className: this.className,
-        style: this.style,
-      }) : css
-      return { ...rules }
-    })
 
     // DROP: because we may remove static props when build
     // // make sure the handler can be called in component
@@ -479,6 +483,40 @@ export class Component extends PrimitiveComponent {
     })
 
     this.onDigested()
+  }
+
+  css(classNames) {
+    let items = []
+    if (isString(classNames)) {
+      items = classNames.split(' ').map((className) => {
+        if (this.cssRules[className]) {
+          return this.cssRules[className]
+        }
+
+        const key = camelCase(className)
+        if (this.cssRules[key]) {
+          return this.cssRules[key]
+        }
+
+        // use self
+        return className
+      })
+    }
+    else if (isArray(classNames)) {
+      items = classNames.map(item => this.sheet(item)).reduce((items, arr) => items.push(...arr), [])
+    }
+
+    // return stylesheet with objects
+    // only used when passed into `stylesheet` of internal components
+    // i.e. <Section stylesheet={this.css('some-1 some-2')}></Section>
+    if (items.some(item => !isString(item))) {
+      return items
+    }
+    // return string class list
+    // only used in DOM
+    else {
+      return items.join(' ')
+    }
   }
 
   componentDidMount(...args) {
