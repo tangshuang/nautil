@@ -1,14 +1,17 @@
 import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
 import { Stream } from './stream.js'
 import { Model } from './model.js'
+import { SingleInstanceBase } from './utils.js'
 
-export class Service {
+export class Service extends SingleInstanceBase {
   constructor() {
+    super()
+
     const Constructor = getConstructorOf(this)
     const streams = []
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, Service)) {
-        this[key] = Item.getService()
+        this[key] = Item.instance()
       }
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
@@ -25,33 +28,5 @@ export class Service {
   }
 
   init() {}
-
-  new() {
-    const Constructor = getConstructorOf(this)
-    return new Constructor()
-  }
-  destroy() {
-    each(this, (value, key) => {
-      if (isInstanceOf(value, Stream)) {
-        value.complete()
-      }
-      delete this[key]
-    })
-    const Constructor = getConstructorOf(this)
-    if (Constructor.__instance === this) {
-      delete Constructor.__instance
-    }
-  }
-  static getService() {
-    const Constructor = this
-    if (Constructor.__instance) {
-      return Constructor.__instance
-    }
-    else {
-      const instance = new Constructor()
-      Constructor.__instance = instance
-      return instance
-    }
-  }
 }
 export default Service

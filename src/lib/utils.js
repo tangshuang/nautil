@@ -1,6 +1,7 @@
 import { assign, createProxy, isFunction, isObject, isEqual, isArray } from 'ts-fns'
 import produce from 'immer'
 import { isValidElement } from 'react'
+import { Stream } from './stream.js'
 
 /**
  * noop
@@ -134,4 +135,43 @@ export function camelCase(str) {
   const items = str.split(/\W|_/).filter(item => item)
   const text = items.reduce((text, curr) => text + curr.replace(curr[0], curr[0].toUpperCase()))
   return text
+}
+
+export class SingleInstanceBase {
+  destroy() {
+    each(this, (value, key) => {
+      if (isInstanceOf(value, Stream)) {
+        value.complete()
+      }
+      delete this[key]
+    })
+    const Constructor = getConstructorOf(this)
+    if (Constructor.__instance === this) {
+      delete Constructor.__instance
+    }
+  }
+
+  new() {
+    const Constructor = getConstructorOf(this)
+    return new Constructor()
+  }
+
+  static instance() {
+    const Constructor = this
+    if (Constructor.__instance) {
+      return Constructor.__instance
+    }
+    else {
+      const instance = new Constructor()
+      Constructor.__instance = instance
+      return instance
+    }
+  }
+
+  static destroy() {
+    const Constructor = this
+    if (delete Constructor.__instance) {
+      delete delete Constructor.__instance
+    }
+  }
 }

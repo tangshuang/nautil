@@ -545,7 +545,13 @@ export declare class Model implements AnyObj {
   emit(hook: string, ...args: any[]): void;
 
   toEdit(next: AnyObj): this;
+
   reflect<T>(Meta: Meta, fn?: (key: string) => T): View | T;
+  memo<T, U>(
+    getter: (() => T) & ThisType<this>,
+    compare: ((prev: U) => boolean) & ThisType<this>,
+    depend?: ((value: T) => U) & ThisType<this>,
+  )
 
   onInit(): void;
   onSwitch(params: AnyObj): AnyObj;
@@ -581,18 +587,25 @@ export declare class Factory {
   map(fn: (value: any, key: string) => any | any[]): (value: any, key: string) => any | any[];
   setter(fn: (value: any, key: string) => any | any[]): (value: any, key: string) => any | any[];
   getMeta(): Meta;
+
   static useAttrs(Model: NautilModel, attrs: [string, string, Function][]): NautilModel;
   static getMeta(entries: NautilModel | NautilModel[]): Meta;
 }
 
-export declare class Service {
-  new(): Service;
+class SingleInstanceBase {
+  new<T>(): T;
   destroy(): void;
 
-  static getService(): Service;
+  static instance<T>(): T;
+  static destroy(): void;
 }
 
-export declare class Controller {
+export declare class Service extends SingleInstanceBase {
+  new<T extends Service = this>(): T;
+  static instance<T extends Service = Service>(): T;
+}
+
+export declare class Controller extends SingleInstanceBase {
   private observers;
   private on;
   private off;
@@ -610,6 +623,9 @@ export declare class Controller {
   onStart(): void;
   onUpdate(): void;
   onEnd(): void;
+
+  new<T extends Controller = this>(): T;
+  static instance<T extends Controller = Controller>(): T;
 }
 
 interface Source {

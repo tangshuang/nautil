@@ -7,6 +7,7 @@ import { Stream } from './stream.js'
 import { Service } from './service.js'
 import { DataService } from './services/data-service.js'
 import { evolve } from './operators/operators.js'
+import { SingleInstanceBase } from './utils.js'
 
 /**
  * class SomeController extends Constroller {
@@ -25,8 +26,10 @@ import { evolve } from './operators/operators.js'
  *   }
  * }
  */
-export class Controller {
+export class Controller extends SingleInstanceBase {
   constructor() {
+    super()
+
     this.observers = []
 
     const emitters = []
@@ -81,14 +84,14 @@ export class Controller {
     const streams = []
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, DataService)) {
-        this[key] = Item.getService()
+        this[key] = Item.instance()
         this.observe((dispatch) => {
           this[key].subscribe(dispatch)
           return () => this[key].unsubscribe(dispatch)
         })
       }
       else if (Item && isInheritedOf(Item, Service)) {
-        this[key] = Item.getService()
+        this[key] = Item.instance()
       }
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
@@ -219,6 +222,7 @@ export class Controller {
   }
 
   init() {}
+
   onStart() {}
   onUpdate() {}
   onEnd() {}

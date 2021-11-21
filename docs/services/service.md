@@ -11,7 +11,7 @@ class SomeService extends Service {
   }
 }
 
-const service = SomeService.getService()
+const service = SomeService.instance()
 ```
 
-Use `getService` static method to get a shared instance of service in your application.
+Use `instance` static method to get a shared instance of service in your application.
