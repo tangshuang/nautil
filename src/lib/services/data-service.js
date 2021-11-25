@@ -63,6 +63,16 @@ export class DataService extends Service {
     }
   }
 
+  get(cell, ...params) {
+    const [data] = this.query(cell, ...params)
+    return data
+  }
+
+  renew(cell, ...params) {
+    const [, next] = this.query(cell, ...params)
+    next()
+  }
+
   _querySource(cell, ...params) {
     const { atoms, value, get } = cell
     const hash = getObjectHash(params)
