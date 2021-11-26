@@ -105,19 +105,15 @@ updateBook(bookSource) // if you compose any other Source inside compose's produ
 
 ### setup(fn: Function): Context<{ stop: Function, next: Function, value: any }>
 
-To make DataService work, you should must run all your code inside `setup`:
+Setup effects when data sources change:
 
 ```js
-const [data] = this.query(source) // not working
-
 this.setup(() => {
-  const [data] = this.query(source) // working
+  const [data] = this.query(source)
 })
 ```
 
-However, you do not need to do this inside Controller, we have done that internel.
-
-> The deep theory of DataService is following React's hooks. To make `query` work, you should must run all your code inside `setup`, the given function of `setup` will be run again if your invoke `renew`, so that the function of `setup` will be run again to make `query` return new data.
+> The deep theory of DataService is following React's hooks. Tohe given function of `setup` will be run again if your invoke `renew`, so that the function of `setup` will be run again to make `query` return new data.
 
 ## Hooks
 

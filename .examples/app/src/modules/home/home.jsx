@@ -3,38 +3,26 @@ import {
   Component,
   Section,
   Text,
-  Controller,
-  DataService,
 } from 'nautil'
 import Header from '../../components/header/header.jsx'
 import NavBar from '../../components/nav-bar/nav-bar.jsx'
+import { HomeController } from './home.controller.js'
 
-class HomeDataService extends DataService {
-  items = this.source(() => [
-    { name: '1' },
-    { name: '2' },
-  ], [])
-}
+export class Home extends Component {
+  controller = new HomeController()
 
-class HomeController extends Controller {
-  static dataService = HomeDataService
-
-  HomeCover() {
-    const [items] = this.dataService.query('items')
+  HomeCover = this.controller.turn(() => {
+    const items = this.controller.articles
     return (
       <Section>
         <Text>Home</Text>
         {JSON.stringify(items)}
       </Section>
     )
-  }
-}
-
-export class Home extends Component {
-  controller = new HomeController()
+  })
 
   render() {
-    const { HomeCover } = this.controller
+    const { HomeCover } = this
     return (
       <>
         <Header />
