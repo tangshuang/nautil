@@ -636,9 +636,10 @@ export declare class DataService extends Service {
   source(get: (...args: any[]) => any, value: any): Source;
   compose(get: (...args: any[]) => any): Source;
   query(source: Source, ...params: any[]): [any, Function];
+  release(sources: object[]|object): void;
 
   get(source: Source, ...params: any[]): any;
-  renew(source: Source, ...params: any[]): void;
+  renew(source: Source, ...params: any[]): Promise<any>;
 
   subscribe(fn: (source: Source, params: any[], value: any) => void): void;
   unsubscribe(fn: Function): void;
