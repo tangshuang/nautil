@@ -11,7 +11,7 @@ import { HomeController } from './home.controller.js'
 export class Home extends Component {
   controller = new HomeController()
 
-  HomeCover = this.controller.turn(() => {
+  HomeCover = this.controller.reactive(() => {
     const items = this.controller.articles
     return (
       <Section>

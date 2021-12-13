@@ -6,7 +6,7 @@ import { useShallowLatest } from './shallow-latest.js'
  * compute with models and recompute when the models change
  * @param {*} models
  * @param {*} compute
- * @param  {...any} args
+ * @param  {...any} args args passed into compute
  * @returns
  */
 export function useModelsReactor(models, compute, ...args) {

@@ -55,9 +55,9 @@ export class DataService extends Service {
     })
   }
 
-  _dispatch(cell, params, value) {
-    this._subscribers.forEach((callback) => {
-      callback(cell, params, value)
+  _dispatch(source, params, value) {
+    this._subscribers.forEach((fn) => {
+      fn(source, params, value)
     })
   }
 

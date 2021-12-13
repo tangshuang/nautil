@@ -43,7 +43,7 @@ class SomeController extends Controller {
 
   // a component
   // this component will be rendered only when this.someModel's order_count and price properties changed
-  Order = this.turn(
+  Order = this.reactive(
     (props) => {
       const { order_count, price } = this.someModel
       return (
@@ -52,7 +52,7 @@ class SomeController extends Controller {
         </Section>
       )
     },
-    // this.turn use evolve operator to controll rerenderer
+    // this.reactive use evolve operator to controll rerenderer
     (props) => {
       const { order_count, price } = this.someModel
       return { order_count, price }
@@ -65,9 +65,9 @@ class SomeController extends Controller {
 class Some extends Component {
   controller = new SomeController()
 
-  // create a component outside controller with `turn`,
+  // create a component outside controller with `reactive`,
   // this component will reacted by controller's changes
-  SomeAny = this.controller.turn((props) => {
+  SomeAny = this.controller.reactive((props) => {
     return (
       <div>
         {this.controller.model.someText}
@@ -97,12 +97,12 @@ The exported components from a controller can be used in other components in Nau
 
 ## API
 
-### turn(component: Component | Function, collect?) -> NewComponent
+### reactive(component: Component | Function, collect?) -> NewComponent
 
 Turn a component to be a new component which will reacted by controller inside actions.
 
 ```js
-const MyComponent = controller.turn(
+const MyComponent = controller.reactive(
   (props) => {}, // a component class or function
   (props) => {}, // function passed into evolve
 )

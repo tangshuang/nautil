@@ -19,6 +19,7 @@ const main = {
       scopex: path.resolve(__dirname, '../node_modules/scopex'),
       tyshemo: path.resolve(__dirname, '../node_modules/tyshemo/src'),
       immer: path.resolve(__dirname, '../node_modules/immer'),
+      algeb: path.resolve(__dirname, '../node_modules/algeb/src'),
     },
   },
   externals: {

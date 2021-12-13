@@ -131,12 +131,12 @@ export class Controller extends SingleInstanceBase {
       }
 
       const Gen = isInstanceOf(value, Component) ? value : memo(value.bind(this))
-      this[key] = this.turn(Gen)
+      this[key] = this.reactive(Gen)
     }, true)
 
     each(this, (value, key) => {
-      if (isObject(value) && value.$$type === 'turner' && value.component) {
-        this[key] = this.turn(value.component, typeof value.collect === 'function' ? value.collect.bind(this) : null)
+      if (isObject(value) && value.$$type === 'reactive' && value.component) {
+        this[key] = this.reactive(value.component, typeof value.collect === 'function' ? value.collect.bind(this) : null)
       }
     })
 
@@ -144,10 +144,10 @@ export class Controller extends SingleInstanceBase {
     this.init()
   }
 
-  turn(component, collect) {
+  reactive(component, collect) {
     if (!this.update) {
       return {
-        $$type: 'turner',
+        $$type: 'reactive',
         component,
         collect,
       }

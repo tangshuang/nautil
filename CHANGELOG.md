@@ -1,3 +1,8 @@
+## 2021-12-13
+
+- Rename `Controller.turn` to `Controller.reactive`
+- Use `algeb` as `DataService` driver
+
 ## 0.31.23 (Jun. 16, 2021)
 - supports wechat miniprogram by a React renderer
 

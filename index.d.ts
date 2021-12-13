@@ -615,7 +615,7 @@ export declare class Controller extends SingleInstanceBase {
   update(): void;
   updateOnly(component: any): void;
 
-  turn(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
+  reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
   observe(observer: Store | Model | Function): {
     stop: Function,
   };
