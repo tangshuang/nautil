@@ -641,7 +641,7 @@ interface Source {
 export declare class DataService extends Service {
   source(get: (...args: any[]) => any, value: any): Source;
   compose(get: (...args: any[]) => any): Source;
-  query(source: Source, ...params: any[]): [any, Function];
+  query(source: Source | string, ...params: any[]): [any, Function];
   release(sources: object[]|object): void;
 
   get(source: Source, ...params: any[]): any;
