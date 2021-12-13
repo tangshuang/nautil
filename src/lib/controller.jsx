@@ -226,4 +226,13 @@ export class Controller extends SingleInstanceBase {
   onStart() {}
   onUpdate() {}
   onEnd() {}
+
+  /**
+   * @deprecated
+   * @param  {...any} args
+   * @returns
+   */
+  turn(...args) {
+    return this.reactive(...args)
+  }
 }
