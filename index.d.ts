@@ -640,19 +640,25 @@ interface Source {
   $$type: symbol;
   [key: string]: any;
 }
+interface SourceRunner {
+  (): void;
+  stop(): void;
+  value: any;
+}
+
 export declare class DataService extends Service {
   source(get: (...args: any[]) => any, value: any): Source;
   compose(get: (...args: any[]) => any): Source;
   query(source: Source | string, ...params: any[]): [any, Function];
   release(sources: object[]|object): void;
 
-  get(source: Source, ...params: any[]): any;
-  renew(source: Source, ...params: any[]): Promise<any>;
+  get(source: Source | string, ...params: any[]): any;
+  renew(source: Source | string, ...params: any[]): Promise<any>;
 
   subscribe(fn: (source: Source, params: any[], value: any) => void): void;
   unsubscribe(fn: Function): void;
 
-  setup(run: Function): Function;
+  setup(run: Function): SourceRunner;
 
   staticaffect(invoke: Function, deps?: any[]): void;
   select(compute: Function, deps: any[]): any;
@@ -667,7 +673,7 @@ export declare class DataService extends Service {
   static get(source: Source, ...params: any[]): any;
   static renew(source: Source, ...params: any[]): Promise<any>;
 
-  static setup(run: Function): Function;
+  static setup(run: Function): SourceRunner;
 
   static affect(invoke: Function, deps?: any[]): void;
   static select(compute: Function, deps: any[]): any;
