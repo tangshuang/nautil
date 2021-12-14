@@ -1,13 +1,14 @@
 import { memo } from 'react'
 import { Model } from './model.js'
 import { Store } from './store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, throttle, uniqueArray } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, throttle, uniqueArray, isArray } from 'ts-fns'
 import Component from './component.js'
 import { Stream } from './stream.js'
 import { Service } from './service.js'
 import { DataService } from './services/data-service.js'
 import { evolve } from './operators/operators.js'
 import { SingleInstanceBase } from './utils.js'
+import { query } from 'algeb'
 
 /**
  * class SomeController extends Constroller {
@@ -85,6 +86,8 @@ export class Controller extends SingleInstanceBase {
     each(Constructor, (Item, key) => {
       if (Item && isInheritedOf(Item, DataService)) {
         this[key] = Item.instance()
+        // notice that, any data source change will trigger the rerender
+        // so you should must pass collect to determine when to rerender, look into example of `reactive`
         this.observe((dispatch) => {
           this[key].subscribe(dispatch)
           return () => this[key].unsubscribe(dispatch)
@@ -144,6 +147,26 @@ export class Controller extends SingleInstanceBase {
     this.init()
   }
 
+  /**
+   *
+   * @param {*} component
+   * @param {function|array} collect
+   * function: collect passed into evovle;
+   * array: data sources which to subscribe;
+   * @returns
+   * @example
+   *
+   * this.controller.reactive(
+   *   () => {
+   *     const some = this.controller.dataService.get('some')
+   *     return <span>{some.name}</span>
+   *   },
+   *   () => {
+   *     const some = this.controller.dataService.get('some')
+   *     return [some]
+   *   },
+   * )
+   */
   reactive(component, collect) {
     if (!this.update) {
       return {

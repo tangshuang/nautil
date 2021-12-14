@@ -1,6 +1,7 @@
 import { Service } from '../service.js'
 import { isString, isObject } from 'ts-fns'
 import { source, query, compose, setup, release, affect, select, apply, ref } from 'algeb'
+
 export class DataService extends Service {
   _subscribers = []
 
@@ -84,6 +85,52 @@ export class DataService extends Service {
   }
 
   ref(value) {
+    return ref(value)
+  }
+
+  static source(get, value) {
+    return source(get, value)
+  }
+
+  static compose(get) {
+    return compose(get)
+  }
+
+  static query(source, ...params) {
+    return query(source, ...params)
+  }
+
+  static get(source, ...params) {
+    const [data] = query(source, ...params)
+    return data
+  }
+
+  static renew(source, ...params) {
+    const [, renew] = query(source, ...params)
+    return renew()
+  }
+
+  static setup(run) {
+    return setup(run)
+  }
+
+  static release(sources) {
+    return release(sources)
+  }
+
+  static affect(invoke, deps) {
+    return affect(invoke, deps)
+  }
+
+  static select(compute, deps) {
+    return select(compute, deps)
+  }
+
+  static apply(get, value) {
+    return apply(get, value)
+  }
+
+  static ref(value) {
     return ref(value)
   }
 }

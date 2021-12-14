@@ -129,6 +129,8 @@ export declare function useShallowLatest(obj: any): any;
 
 export declare function useForceUpdate(): Function;
 
+export declare function useSourceQuery(source: Source, ...params?: any[]): [any, Function];
+
 export declare function observe(subscription: string | Function | { subscribe: Function }, unsubscription: string | Function | { unsubscribe: Function }): ComponentGenerator;
 
 export declare function evolve(collect: (nextprops: AnyObj) => AnyObj): ComponentGenerator;
@@ -652,10 +654,25 @@ export declare class DataService extends Service {
 
   setup(run: Function): Function;
 
-  affect(invoke: Function, deps?: any[]): void;
+  staticaffect(invoke: Function, deps?: any[]): void;
   select(compute: Function, deps: any[]): any;
   apply(get: Function, value: any): Function;
   ref(value: any): { value: any };
+
+  static source(get: (...args: any[]) => any, value: any): Source;
+  static compose(get: (...args: any[]) => any): Source;
+  static query(source: Source | string, ...params: any[]): [any, Function];
+  static release(sources: object[]|object): void;
+
+  static get(source: Source, ...params: any[]): any;
+  static renew(source: Source, ...params: any[]): Promise<any>;
+
+  static setup(run: Function): Function;
+
+  static affect(invoke: Function, deps?: any[]): void;
+  static select(compute: Function, deps: any[]): any;
+  static apply(get: Function, value: any): Function;
+  static ref(value: any): { value: any };
 }
 
 export declare class QueueService extends Service {

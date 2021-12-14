@@ -52,6 +52,7 @@ export { useUniqueKeys } from './lib/hooks/unique-keys.js'
 export { useModelsReactor } from './lib/hooks/models-reactor.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
+export { useSourceQuery } from './lib/hooks/source-query.js'
 
 export { observe, evolve, inject, initialize, nest, decorate } from './lib/operators/operators.js'
 export { pipe } from './lib/operators/combiners.js'
