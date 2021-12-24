@@ -1,6 +1,8 @@
 import { inObject, isArray, isString, isFunction, isObject } from 'ts-fns'
 import Storage from '../storage/storage.js'
 
+let currentUrl = ''
+
 export class Navigation {
   constructor(options = {}) {
     this.options = { ...Navigation.defaultOptions, ...options }
@@ -32,45 +34,59 @@ export class Navigation {
     this._replace = false
     this.status = -1
     this.state = null
+    this.abs = ''
 
     this._listeners = []
     this._history = []
 
-    this.init(options)
+    this.init()
   }
 
   getState() {
     return this.status > 0 ? this.state : null
   }
 
-  _getMode() {
-    const { mode = '' } = this.options
+  getMode() {
+    const { mode } = this.options
+    const { abs } = this
 
     if (!mode) {
-      return { mode: 'memo', query: '', base: '' }
+      const base = createBase('')
+      return this.mapMode({ mode: 'memo', query: '', base })
     }
 
+    const createBase = (root) => abs && abs !== '/' && abs[0] === '/' ? abs + root : root
+
     if (mode.indexOf('/') === 0) {
-      const base = mode === '/' ? '' : mode
-      return { mode: 'history', query: '', base }
+      const root = mode === '/' ? '' : mode
+      const base = createBase(root)
+      return this.mapMode({ mode: 'history', query: '', base })
     }
 
     if (mode.indexOf('#?') === 0) {
-      const [query, base = ''] = mode.substring(2).split('=')
-      return { mode: 'hash_search', query, base }
+      const [query, root = ''] = mode.substring(2).split('=')
+      const base = createBase(root)
+      return this.mapMode({ mode: 'hash_search', query, base })
     }
 
     if (mode.indexOf('#') === 0) {
-      const base = mode.substring(1)
-      return { mode: 'hash', query: '', base }
+      const root = mode.substring(1)
+      const base = createBase(root)
+      return this.mapMode({ mode: 'hash', query: '', base })
     }
 
     if (mode.indexOf('?') === 0) {
-      const [query, base = ''] = mode.substring(1).split('=')
-      return { mode: 'search', query, base }
+      const [query, root = ''] = mode.substring(1).split('=')
+      const base = createBase(root)
+      return this.mapMode({ mode: 'search', query, base })
     }
 
-    return { mode: 'storage', query: '', base: '' }
+    const base = createBase('')
+    return this.mapMode({ mode: 'storage', query: '', base })
+  }
+
+  mapMode(mode) {
+    return mode
   }
 
   _parseDefaultRoute(defaultRoute) {
@@ -104,9 +120,10 @@ export class Navigation {
   }
 
   async init() {
-    const { mode } = this._getMode()
+    const { mode } = this.getMode()
     if (mode === 'storage') {
-      const state = await Storage.getItem('historyState')
+      const url = await this.getCurrentUrl()
+      const state = this.parseUrlToState(url)
       if (state) {
         const { route, name, params } = state
         const { redirect } = route
@@ -121,8 +138,23 @@ export class Navigation {
         this._goDefaultRoute()
       }
     }
+    else if (['history', 'hash', 'search', 'hash_search'].indexOf(mode) > -1) {
+      this.initBrowserListener()
+    }
     else {
       this._goDefaultRoute()
+    }
+  }
+
+  async reload() {
+    const url = await this.getCurrentUrl()
+    const state = this.parseUrlToState(url)
+
+    if (state) {
+      this.replace(state)
+    }
+    else {
+      this._onNotFound()
     }
   }
 
@@ -281,10 +313,6 @@ export class Navigation {
     }
   }
 
-  open(url, params) {
-    // sideEffects
-  }
-
   back(count = -1) {
     const len = this._history.length
     const point = len + count
@@ -307,7 +335,7 @@ export class Navigation {
     }
   }
 
-  push(state, changeLocation = true) {
+  push(state, changeUrl = true) {
     if (!state) {
       this._onNotFound()
       return
@@ -322,8 +350,8 @@ export class Navigation {
     if (this.options.maxHistoryLength && this._history.length > this.options.maxHistoryLength) {
       this._history.shift()
     }
-    if (changeLocation) {
-      this.changeLocation(state)
+    if (changeUrl) {
+      this.setCurrentUrl(state)
     }
 
     this._onEnter()
@@ -331,7 +359,7 @@ export class Navigation {
     this._dispatch('$change', state)
   }
 
-  replace(state, changeLocation = true) {
+  replace(state, changeUrl = true) {
     this._replace = true
     if (!state) {
       this._onNotFound()
@@ -346,8 +374,8 @@ export class Navigation {
     this.state = state
     this._history.pop()
     this._history.push(state)
-    if (changeLocation) {
-      this.changeLocation(state, true)
+    if (changeUrl) {
+      this.setCurrentUrl(state, true)
     }
 
     this._onEnter()
@@ -361,7 +389,7 @@ export class Navigation {
    * @param {*} params
    * @return {object} state
    */
-  makeState(name, params) {
+  makeState(name, params = {}) {
     const route = this.routes.find(item => item.name === name)
     if (!route) {
       return
@@ -397,8 +425,12 @@ export class Navigation {
    * @return {object} state
    */
   parseUrlToState(url) {
+    if (!url || typeof url !== 'string') {
+      return
+    }
+
     const { path, search } = this.$parseUrl(url)
-    const { base } = this._getMode()
+    const { base } = this.getMode()
     const uri = path.replace(base, '')
     const params = {}
 
@@ -517,13 +549,53 @@ export class Navigation {
     return params
   }
 
-  changeLocation(nextState, replace = false) {
-    // sideEffects
+  async setCurrentUrl(nextState, replace = false) {
+    const { path } = nextState
+    const { mode, base } = this.getMode()
+    const url = base && base !== '/' ? base + path : path
+
+    if (mode === 'storage') {
+      await Storage.setItem('currentUrl', url)
+      return
+    }
+
+    if (['history', 'hash', 'search', 'hash_search'].indexOf(mode) > -1) {
+      this.setBrowserUrl(nextState, replace)
+      return
+    }
+
+    currentUrl = url
+  }
+
+  async getCurrentUrl() {
+    const { mode } = this.getMode()
+    if (mode === 'storage') {
+      return await Storage.getItem('currentUrl')
+    }
+    if (['history', 'hash', 'search', 'hash_search'].indexOf(mode) > -1) {
+      return this.getBrowserUrl()
+    }
+    return currentUrl
+  }
+
+  getBrowserUrl() {
+    throw new Error(`Navigation.getBrowserUrl should must be overwrite.`)
+  }
+
+  setBrowserUrl(nextState, replace) {
+    throw new Error(`Navigation.setBrowserUrl should must be overwrite.`)
+  }
+
+  initBrowserListener() {
+    throw new Error(`Navigation.initBrowserListener should must be overwrite.`)
+  }
+
+  open(url, params) {
+    throw new Error(`Navigation.open should must be overwrite.`)
   }
 
   static defaultOptions = {
     maxHistoryLength: 20,
-    outlet: false, // wheather to use `inside` for Navigator
   }
 }
 export default Navigation

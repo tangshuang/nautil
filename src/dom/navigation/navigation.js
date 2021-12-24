@@ -1,8 +1,6 @@
 import { mixin } from 'ts-fns'
 import Navigation from '../../lib/navigation/navigation.js'
-import Storage from '../../lib/storage/storage.js'
 
-const init = Navigation.prototype.init
 function rewriteHistory(type) {
   const origin = window.history[type]
   return function() {
@@ -17,18 +15,9 @@ window.history.pushState = rewriteHistory('pushState')
 window.history.replaceState = rewriteHistory('replaceState')
 
 mixin(Navigation, class {
-  init() {
+  initBrowserListener() {
     const onLoaded = async (changeLocation = true) => {
-      const { mode } = this._getMode()
-
-      // don't use browser url
-      if (['history', 'hash', 'search', 'hash_search'].indexOf(mode) === -1) {
-        init.call(this)
-        return
-      }
-
-      // use browser url
-      const url = this.parseLoactionToUrl()
+      const url = this.getBrowserUrl()
       const state = this.parseUrlToState(url)
 
       if (state) {
@@ -49,11 +38,6 @@ mixin(Navigation, class {
       }
     }
     const onUrlChanged = (e) => {
-      const { mode } = this._getMode()
-      if (['history', 'search'].indexOf(mode) === -1) {
-        return
-      }
-
       const _state = e.state
       if (_state) {
         const { name, params } = _state
@@ -68,11 +52,6 @@ mixin(Navigation, class {
       }
     }
     const onHashChanged = () => {
-      const { mode } = this._getMode()
-      if (['hash', 'hash_search'].indexOf(mode) === -1) {
-        return
-      }
-
       if (this._changingLoactionHash) {
         this._changingLoactionHash = false
       }
@@ -95,7 +74,7 @@ mixin(Navigation, class {
     window.open(url, '_blank')
   }
 
-  parseLoactionToUrl() {
+  getBrowserUrl() {
     const location = window.location
     const { mode, query } = this._getMode()
     if (mode === 'history') {
@@ -124,7 +103,7 @@ mixin(Navigation, class {
     }
   }
 
-  async changeLocation(nextState, replace = false) {
+  async setBrowserUrl(nextState, replace = false) {
     const href = this.$makeHref(nextState)
 
     const { params, name } = nextState
@@ -141,9 +120,6 @@ mixin(Navigation, class {
     else if (mode === 'hash' || mode === 'hash_search') {
       window.location.hash = href
       this._changingLoactionHash = true
-    }
-    else if (mode === 'storage') {
-      await Storage.setItem('historyState', nextState)
     }
   }
 

@@ -1,6 +1,5 @@
 import { mixin } from 'ts-fns'
 import { Navigation } from '../../lib/navigation/navigation.js'
-import { Storage } from '../../lib/storage/storage.js'
 
 mixin(Navigation, class {
   // used by .is()
@@ -28,54 +27,36 @@ mixin(Navigation, class {
     return state
   }
 
-  _getMode() {
-    const { mode = '' } = this.options
-
-    if (!mode) {
-      return { mode: 'memo', query: '', base: '' }
+  mapMode(info) {
+    const { mode } = info
+    if (mode === 'hash' || mode === 'history') {
+      return { ...info, mode: 'search', query: 'url' }
     }
-
-    if (mode.indexOf('#?') === 0) {
-      const [query, base = ''] = mode.substring(2).split('=')
-      return { mode: 'search', query, base }
+    if (mode === 'hash_search') {
+      return { ...info, mode: 'search' }
     }
-
-    if (mode.indexOf('?') === 0) {
-      const [query, base = ''] = mode.substring(1).split('=')
-      return { mode: 'search', query, base }
-    }
-
-    if (mode.indexOf('/') === 0 || mode.indexOf('#') === 0) {
-      return { mode: 'search', query: 'url', base: '' }
-    }
-
-    return { mode: 'storage', query: '', base: '' }
+    return info
   }
 
-  async changeLocation(nextState, replace = false) {
-    const { mode, query, base } = this._getMode()
-    if (mode === 'storage') {
-      await Storage.setItem('historyState', nextState)
-    }
-    else if (mode === 'search') {
-      const { path } = nextState
-      const href = encodeURIComponent(base + path)
-      const pages = getCurrentPages()
-      const currentPage = pages[pages.length - 1]
-      const { route } = currentPage
-      const page = route.split('/').pop()
-      const url = page + '?' + query + '=' + href
+  async setBrowserUrl(nextState, replace = false) {
+    const { query, base } = this.getMode()
+    const { path } = nextState
+    const href = encodeURIComponent(base + path)
+    const pages = getCurrentPages()
+    const currentPage = pages[pages.length - 1]
+    const { route } = currentPage
+    const page = route.split('/').pop()
+    const url = page + '?' + query + '=' + href
 
-      if (replace) {
-        wx.redirectTo({
-          path: url,
-        })
-      }
-      else {
-        wx.navigateTo({
-          path: url,
-        })
-      }
+    if (replace) {
+      wx.redirectTo({
+        path: url,
+      })
+    }
+    else {
+      wx.navigateTo({
+        path: url,
+      })
     }
   }
 

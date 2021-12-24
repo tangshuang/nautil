@@ -4,14 +4,14 @@ import { Navigation } from '../../lib/navigation/navigation.js'
 import { Storage } from '../../lib/storage/storage.js'
 
 mixin(Navigation, class {
-  _getMode() {
-    const { mode = '' } = this.options
+  mapMode(info) {
+    const { mode = '' } = info
 
-    if (!mode) {
-      return { mode: 'memo', query: '', base: '' }
+    if (mode !== 'storage') {
+      return { ...info, mode: 'memo', query: '' }
     }
 
-    return { mode: 'storage', query: '', base: '' }
+    return info
   }
 
   async open(to, params) {
@@ -22,13 +22,6 @@ mixin(Navigation, class {
     }
     const res = await Linking.openURL(url)
     return res
-  }
-
-  async changeLocation(nextState, replace = false) {
-    const { mode } = this._getMode()
-    if (mode === 'storage') {
-      await Storage.setItem('historyState', nextState)
-    }
   }
 })
 
