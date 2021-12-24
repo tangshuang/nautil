@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import { _Link, Link } from '../../lib/navi/link.jsx'
+import { _Link, Link } from '../../lib/navigation/link.jsx'
 import { TouchableOpacity } from 'react-native'
 
 mixin(_Link, class {

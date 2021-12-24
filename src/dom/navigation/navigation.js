@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Navigation from '../../lib/navi/navigation.js'
+import Navigation from '../../lib/navigation/navigation.js'
 import Storage from '../../lib/storage/storage.js'
 
 const init = Navigation.prototype.init
@@ -103,7 +103,7 @@ mixin(Navigation, class {
       return pathname + search
     }
     else if (mode === 'hash') {
-      const url = location.hash ? location.hash.substr(1) : '/'
+      const url = location.hash ? location.hash.substring(1) : '/'
       return url
     }
     else if (mode === 'hash_search') {

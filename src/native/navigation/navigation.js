@@ -1,6 +1,6 @@
 import { mixin } from 'ts-fns'
 import { Linking } from 'react-native'
-import { Navigation } from '../../lib/navi/navigation.js'
+import { Navigation } from '../../lib/navigation/navigation.js'
 import { Storage } from '../../lib/storage/storage.js'
 
 mixin(Navigation, class {

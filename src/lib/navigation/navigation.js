@@ -31,7 +31,7 @@ export class Navigation {
 
     this._replace = false
     this.status = -1
-    this.state = {}
+    this.state = null
 
     this._listeners = []
     this._history = []
@@ -251,10 +251,10 @@ export class Navigation {
         return true
       }
     }
-    if (match instanceof RegExp) {
+    else if (match instanceof RegExp) {
       return match.test(path)
     }
-    if (isFunction(match)) {
+    else if (isFunction(match)) {
       return match(state)
     }
 
@@ -523,6 +523,7 @@ export class Navigation {
 
   static defaultOptions = {
     maxHistoryLength: 20,
+    outlet: false, // wheather to use `inside` for Navigator
   }
 }
 export default Navigation

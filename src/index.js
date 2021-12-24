@@ -86,11 +86,11 @@ export { Audio } from './lib/elements/audio.jsx'
 export { Video } from './lib/elements/video.jsx'
 export { Webview } from './lib/elements/webview.jsx'
 
-export { Navigation } from './lib/navi/navigation.js'
-export { Navigator } from './lib/navi/navigator.jsx'
-export { Route } from './lib/navi/route.jsx'
-export { Link } from './lib/navi/link.jsx'
-export { Navigate } from './lib/navi/navigate.jsx'
+export { Navigation } from './lib/navigation/navigation.js'
+export { Navigator } from './lib/navigation/navigator.jsx'
+export { Route } from './lib/navigation/route.jsx'
+export { Link } from './lib/navigation/link.jsx'
+export { Navigate } from './lib/navigation/navigate.jsx'
 
 export { Animation } from './lib/animate/animation.jsx'
 
@@ -114,4 +114,4 @@ export { Locale } from './lib/i18n/locale.jsx'
 export { T } from './lib/i18n/t.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createApp, createAsyncComponent } from './lib/create-app.js'
+export { createApp, createAsyncComponent } from './lib/app.js'

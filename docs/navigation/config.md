@@ -14,21 +14,14 @@ const config = {
   /**
    * which mode to use, notice that, we will build a cross-platform application,
    * so sometimes, it is not work in react-native or wechat-miniprogram.
-   * - none: keep navigation state in memory, when you refresh your page, it diswork any more
+   * - memo: as default, keep navigation state in memory
    * - storage: keep navigation state in localStore or AsyncStore
-   * - history: use url path to determine navigation state
-   * - hash: use url hash to determine navigation state
-   * - search: use url query search to determine navigation's state
+   * - /{baseURI}: history mode, use browser history to determine navigation state
+   * - #/{baseURI}: hash mode, use browser location hash to determine
+   * - ?{query}=/${baseURI}: search mode, use url query search to determine navigation's state
+   * - #?{query}=/{baseURI}: hash_search mode, use browser location hash to determine, and use url query search to generate baseUrl
    */
-  mode: 'history|hash|search|storage|none', // optional
-  searchQuery: '_url', // optional, only works when mode=search, ?_url=urlencode(xxxx)
-
-  /**
-   * base path
-   * sometimes, your site is in a sub path, for example, your site is visited by http://xx.com/site/
-   * you should set `base` to be `/site/`
-   */
-  base: '/', // optional
+  mode: 'memo',
 
   /**
    * to define routes of your application

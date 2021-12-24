@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Navigation from '../../lib/navi/navigation.js'
+import Navigation from '../../lib/navigation/navigation.js'
 
 mixin(Navigation, class {
   init() {}

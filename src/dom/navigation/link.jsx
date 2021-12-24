@@ -1,6 +1,6 @@
 import { mixin } from 'ts-fns'
 
-import { _Link, Link } from '../../lib/navi/link.jsx'
+import { _Link, Link } from '../../lib/navigation/link.jsx'
 
 mixin(_Link, class {
   getHref() {
