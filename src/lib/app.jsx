@@ -1,7 +1,7 @@
 import { Component } from './component.js'
 import { createContext, useContext } from 'react'
-import { Provider as I18nProvider } from './i18n/context.js'
 import { RouterProvider } from './router/router.jsx'
+import { I18nProvider } from './i18n/i18n.jsx'
 
 const bootstrapperContext = createContext()
 export function createBootstrap(options) {

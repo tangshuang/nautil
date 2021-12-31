@@ -105,5 +105,5 @@ export { Storage } from './lib/storage/storage.js'
 export { I18n, useLang } from './lib/i18n/i18n.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createBootstrap, createAsyncComponent, importAsyncComponent } from './lib/app.js'
+export { createBootstrap, createAsyncComponent, importAsyncComponent } from './lib/app.jsx'
 export { Router } from './lib/router/router.jsx'

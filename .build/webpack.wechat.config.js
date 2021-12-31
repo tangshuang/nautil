@@ -30,7 +30,9 @@ const main = {
       {
         test: /\.js|jsx$/,
         exclude: {
-          test: /node_modules/,
+          and: [
+            /node_modules/,
+          ],
           not: [
             /ts\-fns/,
             /tyshemo/,
