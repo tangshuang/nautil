@@ -56,8 +56,8 @@ export class I18n {
 
     const forceUpdate = useForceUpdate()
     useEffect(() => {
-      const package = this.packages[lng]
-      if (package) {
+      const pkg = this.packages[lng]
+      if (pkg) {
         return
       }
 
@@ -71,20 +71,20 @@ export class I18n {
       })
     }, [lng])
 
-    const package = useMemo(() => {
+    const pkg = useMemo(() => {
       return this.packages[lng] || {}
     }, [this.packages[lng]])
 
     const t = useCallback((key, params) => {
       if (isArray(key)) {
-        const entryKey = key.find(k => package[k])
+        const entryKey = key.find(k => pkg[k])
         if (!entryKey) {
           return key[key.length - 1]
         }
         return t(entryKey, params)
       }
       else {
-        const entry = package[entryKey]
+        const entry = pkg[entryKey]
         if (!entry) {
           return entryKey
         }
