@@ -22,8 +22,7 @@ export { Audio } from './elements/audio.jsx'
 export { Video } from './elements/video.jsx'
 export { Webview } from './elements/webview.jsx'
 
-export { Navigation } from './navigation/navigation.js'
-export { Link } from './navigation/link.jsx'
 export { Storage } from './storage/storage.js'
+export { Router } from './router/router.jsx'
 
 export { register, registerConfig } from './register.js'

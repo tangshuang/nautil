@@ -1,43 +1,9 @@
-import Navigator from './navigation/navigator.jsx'
-import Provider from './store/provider.jsx'
-import Language from './i18n/language.jsx'
-import { nest } from './operators/operators.js'
-import { Ty } from 'tyshemo'
-import Navigation from './navigation/navigation.js'
 import { Component } from './component.js'
 import { createContext, useContext } from 'react'
-import { Provider as RouterProvider } from './router/context.js'
 import { Provider as I18nProvider } from './i18n/context.js'
-
-export function createApp(options = {}, fn) {
-  const { navigation, store, i18n } = options
-  const None = () => null
-
-  const items = []
-
-  if (store) {
-    items.push([Provider, { store }])
-  }
-  if (i18n) {
-    items.push([Language, { i18n }])
-  }
-
-  if (process.env.NODE_ENV !== 'production') {
-    Ty.expect(navigation).to.be(Navigation)
-  }
-
-  items.push([Navigator, { navigation, inside: true }])
-
-  if (fn) {
-    fn(items, options)
-  }
-
-  const Component = nest(...items)(None)
-  return Component
-}
+import { RouterProvider } from './router/router.jsx'
 
 const bootstrapperContext = createContext()
-
 export function createBootstrap(options) {
   const { router, i18n } = options
   return function(C) {
@@ -62,35 +28,7 @@ export function createBootstrap(options) {
   }
 }
 
-export function createAsyncComponent(fn) {
-  return class extends Component {
-    component = null
-    onMounted() {
-      fn().then((res) => {
-        let component = null
-        if (res && res[Symbol.toStringTag] === 'Module') {
-          component = res.default
-        }
-        else {
-          component = res
-        }
-
-        this.component = component
-        this.update()
-      })
-    }
-    render() {
-      if (!this.component) {
-        return null
-      }
-
-      const C = this.component
-      return <C {...this.props} />
-    }
-  }
-}
-
-export function importModule(options) {
+export function importAsyncComponent(options) {
   const { prefetch, source, pending } = options
 
   let loadedComponent = null
@@ -157,4 +95,8 @@ export function importModule(options) {
   }
 
   return ModuleComponent
+}
+
+export function createAsyncComponent(source) {
+  return importAsyncComponent({ source })
 }

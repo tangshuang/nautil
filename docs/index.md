@@ -20,16 +20,9 @@
   - [Lifecircle](component/lifecircle.md)
   - [Class or Functionn](component/class-or-function.md)
 
-- Navigation
-  - [Configuration](navigation/config.md)
-  - [State and status](navigation/state-and-status.md)
-  - [Watch](navigation/watch.md)
-  - [Events](navigation/events.md)
-  - [Is](navigation/is.md)
-  - [Navigator](navigation/navigator.md)
-  - [Route](navigation/route.md)
-  - [Link](navigation/link.md)
-  - [Navigate](navigation/navigate.md)
+- Router
+  - [Configuration](router/config.md)
+  - [Router API](router/api.md)
 
 - Components
   - [If/ElseIf/Else](components/if-else.md)
@@ -106,7 +99,9 @@
   - [useSourceQuery](hooks/use-source-query.md)
 
 - Top-Level-Api
-  - [createApp](api/create-app.md)
+  - [importAsyncComponent](api/import-async-component.md)
+  - [createAsyncComponent](api/create-async-component.md)
+  - [createBootstrap](api/create-bootstrap.md)
   - [createTwoWayBinding](api/create-two-way-binding.md)
   - [Storage](api/storage.md)
   - [Animation](api/animation.md)

@@ -194,43 +194,29 @@ export function parseSearch(search) {
   return params
 }
 
-export function resolveUrl(baseUrl, uri) {
-  if (uri.indexOf('/') === 0) {
-    return uri
-  }
-
-  const isRoot = baseUrl === '/'
-  const isAbs = /^\/[a-z]/.test(baseUrl)
-  const isDir = baseUrl[baseUrl.length - 1] === '/'
-
-  if (/^(\?|&|#)$/.test(uri[0])) {
-    return baseUrl + uri
-  }
-
-  let dir = '';
-  if (baseUrl[baseUrl.length - 1] === '/') {
-    dir = baseUrl.substring(0, baseUrl.length - 1);
-  }
-  else {
-    const chain = baseUrl.split('/');
-    const tail = chain.pop();
-    dir = tail.indexOf('.') === -1 ? baseUrl : chain.join('/');
-  }
-
-  const roots = dir.split('/');
-  const blocks = uri.split('/');
+export function resolveUrl(dir, to) {
+  const roots = (dir || '').split('/')
+  const blocks = (to || '').split('/')
   while (true) {
-    const block = blocks[0];
+    const block = blocks[0]
     if (block === '..') {
+      blocks.shift()
+      roots.pop()
+    }
+    else if (block === '.') {
       blocks.shift();
-      roots.pop();
-    } else if (block === '.') {
-      blocks.shift();
-    } else {
-      break;
+    }
+    else {
+      break
     }
   }
 
-  const url = `${roots.join('/')}/${blocks.join('/')}`;
-  return url;
+  const url = `${roots.length ? '/' : ''}${roots.join('/')}${blocks.length ? '/' : ''}${blocks.join('/')}`
+  return url
+}
+
+export function revokeUrl(abs, url) {
+  const href = abs ? url.replace(abs, '') : url
+  // /a/b -> a/b
+  return href ? href.substring(1) : ''
 }

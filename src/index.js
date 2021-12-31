@@ -86,12 +86,6 @@ export { Audio } from './lib/elements/audio.jsx'
 export { Video } from './lib/elements/video.jsx'
 export { Webview } from './lib/elements/webview.jsx'
 
-export { Navigation } from './lib/navigation/navigation.js'
-export { Navigator } from './lib/navigation/navigator.jsx'
-export { Route } from './lib/navigation/route.jsx'
-export { Link } from './lib/navigation/link.jsx'
-export { Navigate } from './lib/navigation/navigate.jsx'
-
 export { Animation } from './lib/animate/animation.jsx'
 
 export { Store } from './lib/store/store.js'
@@ -114,4 +108,5 @@ export { Locale } from './lib/i18n/locale.jsx'
 export { T } from './lib/i18n/t.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createApp, createAsyncComponent, importModule } from './lib/app.js'
+export { createBootstrap, createAsyncComponent, importAsyncComponent } from './lib/app.js'
+export { Router } from './lib/router/router.jsx'
