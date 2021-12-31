@@ -9,7 +9,7 @@ const routerContext = createContext()
 export function RouterProvider({ value, children }) {
   const parent = useContext(routerContext)
   if (parent) {
-    throw new Error('[Nautil]: RouterProvider can only be used on your root application component')
+    throw new Error('[Nautil]: RouterProvider can only be used on your root application component with createBootstrap')
   }
 
   const getMode = (mode) => {

@@ -1,6 +1,4 @@
 export class LanguageDetector {
-  getDetector() {
-    return {}
-  }
+  static getLang() {}
 }
 export default LanguageDetector

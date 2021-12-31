@@ -23,5 +23,6 @@ export { Webview } from './elements/webview.jsx'
 
 export { Router } from './router/router.jsx'
 export { Storage } from './storage/storage.js'
+export { LanguageDetector } from './i18n/language-detector.js'
 
 export { registerApp, registerPage, createBehavior, runApp } from './render.js'

@@ -8,6 +8,7 @@ const bootstrap = createBootstrap({
     mode: '/',
   },
   i18n: {
+    // default language name
     lang: LanguageDetector,
   },
 })

@@ -8,10 +8,9 @@ export function createBootstrap(options) {
   const { router, i18n } = options
   return function(C) {
     return function Bootstrapper(props) {
-      const ctx = useContext(bootstrapperContext)
-
-      if (ctx) {
-        throw new Error('You should must use createBootstrap for your root application component.')
+      const parent = useContext(bootstrapperContext)
+      if (parent) {
+        throw new Error('You should must use createBootstrap for your root application component only once.')
       }
 
       const { Provider } = bootstrapperContext

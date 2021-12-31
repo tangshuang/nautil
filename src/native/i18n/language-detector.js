@@ -1,12 +1,14 @@
 import { LanguageDetector } from '../../lib/i18n/language-detector.js'
-import { mixin } from 'ts-fns'
-import RNLanguageDetector from 'i18next-react-native-language-detector'
+import { NativeModules, Platform } from 'react-native';
 
-mixin(LanguageDetector, class {
-  getDetector() {
-    return RNLanguageDetector
-  }
-})
+LanguageDetector.getLang = () => {
+  const deviceLanguage =
+    Platform.OS === 'ios'
+      ? NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
+      : NativeModules.I18nManager.localeIdentifier
+  return deviceLanguage
+}
 
 export { LanguageDetector }
 export default LanguageDetector

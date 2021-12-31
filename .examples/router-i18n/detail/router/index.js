@@ -19,9 +19,6 @@ export const { Outlet, Link, useMatch, useLocation, useParams, useNavigate, useL
       component: NotFound,
     },
   ],
-  // resolve({ href, pathname, search, params, query }) {
-  //   return pathname
-  // },
 })
 
 function Basic() {

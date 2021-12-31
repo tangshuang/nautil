@@ -76,9 +76,6 @@
 
 - I18n
   - [I18n](i18n/i18n.md)
-  - [Language](i18n/language.md)
-  - [Locale](i18n/locale.md)
-  - [T](i18n/t.md)
   - [LanguageDetector](i18n/detector.md)
 
 - operators

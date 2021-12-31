@@ -102,10 +102,7 @@ export { QueueService, SerialQueueService, ParallelQueueService, ShiftQueueServi
 
 export { Storage } from './lib/storage/storage.js'
 
-export { I18n } from './lib/i18n/i18n.js'
-export { Language } from './lib/i18n/language.jsx'
-export { Locale } from './lib/i18n/locale.jsx'
-export { T } from './lib/i18n/t.jsx'
+export { I18n, useLang } from './lib/i18n/i18n.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
 export { createBootstrap, createAsyncComponent, importAsyncComponent } from './lib/app.js'
