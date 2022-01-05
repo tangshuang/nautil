@@ -2,22 +2,36 @@
 
 A little different from react, Nautil has its own lifecircle:
 
-- init: when `constructor` run, should always be override insteadof using `constructor` with `super`
-- onDigested: after this.attrs, this.className, this.style... generated
-- onInit: after this.$state generated
+- ===== mount: =======
+- init
+- onDigested
+- onInit
+- detectAffect
+- onAffect
 - onMounted
-- onAffected: will be invoked after mounted/updated, like useEffect do
-- =============
+- onAffected
+- ====== update: =======
 - shouldUpdate
 - onNotUpdate
 - onUpdate
 - onDigested
+- detectAffect
+- onAffect
 - onUpdated
 - onAffected
-- =============
+- ====== unmount: =======
 - onUnmount
-- =============
+- ====== error: =======
 - onCatch
+
+Details:
+
+- init: when `constructor` run, use `init` so that you do not need to call `super` in `constructor`
+- onDigested: after this.attrs, this.className, this.style... generated
+- onInit: after this.$state generated
+- detectAffect: detect whether to affect, should must return an array
+- onAffect: will be invoked before onMounted/onUpdated
+- onAffected: be invoked after onAffect and onMounted/onUpdated
 
 ![](../assets/nautil-lifecircle.jpg)
 

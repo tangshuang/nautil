@@ -54,13 +54,15 @@ export class Component extends PrimitiveComponent {
   constructor(props) {
     super(props)
 
-    this._effectors = []
+    this._schedulers = []
 
     this._tasksQueue = []
     this._tasksRunner = null
 
     this._isMounted = false
     this._isUnmounted = false
+
+    this._effectors = null
 
     define(this, 'update', { value: this.update.bind(this) })
     define(this, 'forceUpdate', { value: this.forceUpdate.bind(this) })
@@ -91,7 +93,7 @@ export class Component extends PrimitiveComponent {
 
   subscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._effectors.push({
+    this._schedulers.push({
       name: upperCaseName,
       affect,
     })
@@ -100,9 +102,9 @@ export class Component extends PrimitiveComponent {
 
   unsubscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._effectors.forEach((item, i) => {
+    this._schedulers.forEach((item, i) => {
       if (upperCaseName === item.name && (!affect || affect === item.affect)) {
-        this._effectors.splice(i, 1)
+        this._schedulers.splice(i, 1)
       }
     })
     return this
@@ -385,7 +387,7 @@ export class Component extends PrimitiveComponent {
     // }
 
     const affect = (name, subject) => {
-      this._effectors.forEach((item) => {
+      this._schedulers.forEach((item) => {
         if (name === item.name) {
           subject = item.affect(subject) || subject
           if (process.env.NDOE_ENV !== 'production') {
@@ -519,10 +521,22 @@ export class Component extends PrimitiveComponent {
     }
   }
 
+  _affect(fn) {
+    const nextEffectors = this.detectAffect(this.props)
+    if (nextEffectors === true || !isShallowEqual(this._effectors, nextEffectors)) {
+      const deferer = Promise.resolve(this.onAffect())
+      const runner = Promise.resolve(fn())
+      deferer.then(() => runner).then(() => this.onAffected()).catch(noop)
+      this._effectors = nextEffectors
+    }
+    else {
+      fn()
+    }
+  }
+
   componentDidMount(...args) {
     this._isMounted = true
-    this.onMounted(...args)
-    this.onAffected()
+    this._affect(() => this.onMounted(...args))
     this._runTasks()
   }
   shouldComponentUpdate(nextProps, ...args) {
@@ -538,8 +552,7 @@ export class Component extends PrimitiveComponent {
     }
   }
   componentDidUpdate(...args) {
-    this.onUpdated(...args)
-    this.onAffected()
+    this._affect(() => this.onUpdated(...args))
     this._runTasks()
   }
   componentWillUnmount(...args) {
@@ -574,6 +587,10 @@ export class Component extends PrimitiveComponent {
   onUnmount() {}
   onCatch() {}
   onDigested() {}
+  detectAffect() {
+    return true
+  }
+  onAffect() {}
   onAffected() {}
   onParseProps(props) {
     return props
