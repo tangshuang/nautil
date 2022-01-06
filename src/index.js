@@ -114,4 +114,4 @@ export { Locale } from './lib/i18n/locale.jsx'
 export { T } from './lib/i18n/t.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createApp, createAsyncComponent } from './lib/app.js'
+export { createApp, createAsyncComponent, importModule } from './lib/app.js'

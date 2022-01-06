@@ -175,3 +175,62 @@ export class SingleInstanceBase {
     }
   }
 }
+
+export function parseUrl(url) {
+  const [path, hash = ''] = url.split('#')
+  const [pathname, search = ''] = path.split('?')
+  return { path, pathname, search, hash }
+}
+
+export function parseSearch(search) {
+  const params = {}
+  const segs = search.replace(/^\?/, '').split('&')
+  for (let i = 0, len = segs.length; i < len; i ++) {
+    if (segs[i]) {
+      let p = segs[i].split('=')
+      params[p[0]] = p[1]
+    }
+  }
+  return params
+}
+
+export function resolveUrl(baseUrl, uri) {
+  if (uri.indexOf('/') === 0) {
+    return uri
+  }
+
+  const isRoot = baseUrl === '/'
+  const isAbs = /^\/[a-z]/.test(baseUrl)
+  const isDir = baseUrl[baseUrl.length - 1] === '/'
+
+  if (/^(\?|&|#)$/.test(uri[0])) {
+    return baseUrl + uri
+  }
+
+  let dir = '';
+  if (baseUrl[baseUrl.length - 1] === '/') {
+    dir = baseUrl.substring(0, baseUrl.length - 1);
+  }
+  else {
+    const chain = baseUrl.split('/');
+    const tail = chain.pop();
+    dir = tail.indexOf('.') === -1 ? baseUrl : chain.join('/');
+  }
+
+  const roots = dir.split('/');
+  const blocks = uri.split('/');
+  while (true) {
+    const block = blocks[0];
+    if (block === '..') {
+      blocks.shift();
+      roots.pop();
+    } else if (block === '.') {
+      blocks.shift();
+    } else {
+      break;
+    }
+  }
+
+  const url = `${roots.join('/')}/${blocks.join('/')}`;
+  return url;
+}

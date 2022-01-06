@@ -5,6 +5,9 @@ import { nest } from './operators/operators.js'
 import { Ty } from 'tyshemo'
 import Navigation from './navigation/navigation.js'
 import { Component } from './component.js'
+import { createContext, useContext } from 'react'
+import { Provider as RouterProvider } from './router/context.js'
+import { Provider as I18nProvider } from './i18n/context.js'
 
 export function createApp(options = {}, fn) {
   const { navigation, store, i18n } = options
@@ -31,6 +34,32 @@ export function createApp(options = {}, fn) {
 
   const Component = nest(...items)(None)
   return Component
+}
+
+const bootstrapperContext = createContext()
+
+export function createBootstrap(options) {
+  const { router, i18n } = options
+  return function(C) {
+    return function Bootstrapper(props) {
+      const ctx = useContext(bootstrapperContext)
+
+      if (ctx) {
+        throw new Error('You should must use createBootstrap for your root application component.')
+      }
+
+      const { Provider } = bootstrapperContext
+      return (
+        <Provider value={true}>
+          <RouterProvider value={router}>
+            <I18nProvider value={i18n}>
+              <C {...props} />
+            </I18nProvider>
+          </RouterProvider>
+        </Provider>
+      )
+    }
+  }
 }
 
 export function createAsyncComponent(fn) {
