@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useCallback, useState } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
-import { isArray, interpolate } from 'ts-fns'
+import { isArray, interpolate, isObject } from 'ts-fns'
 import { LanguageDetector } from './language-detector.js'
 
 const i18nContext = createContext()
@@ -56,8 +56,7 @@ export class I18n {
 
     const forceUpdate = useForceUpdate()
     useEffect(() => {
-      const pkg = this.packages[lng]
-      if (pkg) {
+      if (this.packages[lng]) {
         return
       }
 
@@ -65,13 +64,24 @@ export class I18n {
         return
       }
 
-      this.resources[lng]().then((pkg) => {
+      if (typeof this.resources[lng] !== 'function') {
+        return
+      }
+
+      Promise.resolve(this.resources[lng]()).then((pkg) => {
+        if (!isObject(pkg)) {
+          return
+        }
+
         this.packages[lng] = pkg
         forceUpdate()
       })
     }, [lng])
 
     const pkg = useMemo(() => {
+      if (typeof this.resources[lng] !== 'function' && isObject(this.resources[lng])) {
+        this.packages[lng] = this.resources[lng]
+      }
       return this.packages[lng] || {}
     }, [this.packages[lng]])
 
