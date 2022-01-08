@@ -83,7 +83,8 @@ class BrowserHistory extends History {
   }
   $makeUrl(to, abs, mode) {
     const { type, query, base } = mode
-    const url = resolveUrl(base, resolveUrl(abs, to))
+    const root = resolveUrl(base, abs)
+    const url = resolveUrl(root, to)
     const encoded = encodeURIComponent(url)
 
     const { hash, search, pathname } = location

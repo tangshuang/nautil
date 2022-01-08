@@ -1,7 +1,7 @@
 import { mixin } from 'ts-fns'
 import { Router } from '../../lib/router/router.jsx'
 import { History } from '../../lib/router/history.js'
-import { revokeUrl } from '../../lib/utils.js'
+import { resolveUrl, revokeUrl } from '../../lib/utils.js'
 
 class WechatHistory extends History {
   $getUrl(abs, mode) {
@@ -31,7 +31,8 @@ class WechatHistory extends History {
   }
   $makeUrl(to, abs, mode) {
     const { query, base } = mode
-    const url = resolveUrl(base, resolveUrl(abs, to))
+    const root = resolveUrl(base, abs)
+    const url = resolveUrl(root, to)
     const encoded = encodeURIComponent(url)
 
     const pages = getCurrentPages()

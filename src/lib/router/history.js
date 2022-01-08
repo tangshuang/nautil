@@ -61,7 +61,8 @@ export class History {
    */
   $makeUrl(to, abs, mode) {
     const { base } = mode
-    return resolveUrl(base, resolveUrl(abs, to))
+    const root = resolveUrl(base, abs)
+    return resolveUrl(root, to)
   }
 
   replace() {
