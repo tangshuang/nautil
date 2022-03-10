@@ -20,10 +20,10 @@ import { Ty, Rule, ifexist } from 'tyshemo'
 import produce from 'immer'
 import Stream from './stream.js'
 
-import Style from './style/style.js'
-import ClassName from './style/classname.js'
-import { Binding, Handling } from './types.js'
-import { noop, isRef, isShallowEqual, camelCase } from './utils.js'
+import Style from '../style/style.js'
+import ClassName from '../style/classname.js'
+import { Binding, Handling } from '../types.js'
+import { noop, isRef, isShallowEqual, camelCase } from '../utils.js'
 
 export class PrimitiveComponent extends ReactComponent {
   constructor(props) {
