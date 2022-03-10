@@ -1,6 +1,6 @@
 import { ifexist } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class Textarea extends Component {
   static props = {

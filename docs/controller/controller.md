@@ -1,8 +1,8 @@
 # Controller
 
-What is Controller in Nautil? It is in fact a type of special model, which controls view's data and reactive (events). In Nautil, a controller hold the view's data, so that you can use one controller to act different views in different scenes.
+What is Controller in Nautil? It is in fact a type of special model, which controls view's data and reactive (event handlers). In Nautil, a controller orient a business scenes.
 
-In many business situations, we have a same controller, but should act different views. The Controller is the way to keep the business logic same in one system, and be used in different views. For example, you have a payment module in your system, and have PC and App clients, however, business logic should must be same on both client sides. Here, you should create a controller which contains the same business logic, and use it on both client side views.
+In many business scenes, we have a same controller, but should act different views. The Controller is the way to keep the business logic same in one system, and be used in different views. For example, you have a payment module in your system, and have PC and App clients, however, business logic should must be same on both client sides. Here, you should create a controller which contains the same business logic, and use it on both client side views.
 
 ## Usage
 
@@ -26,65 +26,68 @@ class SomeController extends Controller {
   handleRemove() {
     ...
   }
+}
+```
 
-  // a component
-  // this component will be automaticly rerendered when the controller's models, stores, dataServices changed
-  Price(props) {
+To use the previous Controller:
+
+
+```js
+import { Section, Button, useState } from 'nautil'
+
+class Some extends Component {
+  // initialize the controller
+  controller = new SomeController()
+
+  // a component, which use controller inside
+  Count = (props) => {
     const value = useState(0) // can use hooks
+    const [, update] = useState()
+
+    useEffect(() => {
+      const forceUpdate = () => update({})
+      this.controller.subscribe(forceUpdate)
+      return () => this.conntroller.unsubscribe(forceUpdate)
+    }, [])
 
     return (
       <Section>
-        <Text>{this.someModel.price}</Text>
+        <Text>{this.controller.someModel.count}</Text>
         <Input $value={value} />
-        <Button onHit={this.increase$}>+</Button>
+        <Button onHit={this.controller.increase$}>+</Button>
       </Section>
     )
   }
 
   // a component
   // this component will be rendered only when this.someModel's order_count and price properties changed
-  Order = this.reactive(
-    (props) => {
-      const { order_count, price } = this.someModel
-      return (
-        <Section>
-          <Text>Total Price: {order_count * price}</Text>
-        </Section>
-      )
-    },
-    // this.reactive use evolve operator to controll rerenderer
-    (props) => {
-      const { order_count, price } = this.someModel
-      return { order_count, price }
-    },
-  )
-}
-```
+  Order = (props) => {
+    const [, update] = useState()
 
-```js
-class Some extends Component {
-  controller = new SomeController()
+    useEffect(() => {
+      const forceUpdate = () => update({})
+      this.controller.subscribe(forceUpdate)
+      return () => this.conntroller.unsubscribe(forceUpdate)
+    }, [])
 
-  // create a component outside controller with `reactive`,
-  // this component will reacted by controller's changes
-  SomeAny = this.controller.reactive((props) => {
+    const { order_count, price } = this.someModel
     return (
-      <div>
-        {this.controller.model.someText}
-      </div>
+      <Section>
+        <Text>Total Price: {order_count * price}</Text>
+      </Section>
     )
-  })
+  }
 
   render() {
-    const { Price, Order } = this.controller
-    const { SomeAny } = this
+    const { Count, Order } = this.controller
+    const { IncreaseButton } = this
 
     return (
       <Section>
         ...
         <Price />
         <Order />
-        <SomeAny />
+        <IncreaseButton />
       </Section>
     )
   }
@@ -94,6 +97,31 @@ class Some extends Component {
 `Controller` is a helpfull tool in nautil, it is designed to control a business area in one place.
 In a controller, you can define Model, Service, Events, Components and scoped handlers.
 The exported components from a controller can be used in other components in Nautil, the exported components are treated as business components but with small code size.
+
+When define a Controller, you should `extends` from `Controller` class, and given static properties. For example:
+
+```js
+class SomeController extends Controller {
+  static someModel = SomeModel // Model -> this.someModel
+  static someDataService = SomeDataService // DataService -> this.someDataService
+  static someService = SomeService // Service -> this.someService (single instance)
+  static count$(stream$) { // stream$() -> this.count$
+    // here you can use this point to Controller instance
+    stream$.pipe(...).subscribe(...)
+  }
+  static store = Store // Store -> this.store, used as state helper
+
+  // after Controller initialized
+  init() {}
+
+  // provide an API method
+  decreaseCount() {
+    this.count$.next(...)
+  }
+}
+```
+
+**You should never operate UI in controller.** A controller is an API set to provide to views, so you should keep in mind that it is an independent system from UI operation. And this is the way to seperate business logic from React components, make business logic management as an independent job.
 
 ## API
 

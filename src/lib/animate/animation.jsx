@@ -1,7 +1,7 @@
 import { isNumeric } from 'ts-fns'
 import { ifexist } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 import { noop } from '../utils.js'
 import { Section } from '../elements/section.jsx'
 import Transition from './transition.js'

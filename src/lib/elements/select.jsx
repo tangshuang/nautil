@@ -1,6 +1,6 @@
 import { Any, list, ifexist } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class Select extends Component {
   static props = {

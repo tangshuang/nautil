@@ -1,7 +1,7 @@
 import { assign, createProxy, isFunction, isObject, isEqual, isArray } from 'ts-fns'
 import produce from 'immer'
 import { isValidElement } from 'react'
-import { Stream } from './stream.js'
+import { Stream } from './core/stream.js'
 
 /**
  * noop

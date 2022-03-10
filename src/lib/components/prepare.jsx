@@ -1,7 +1,7 @@
 import { Any, ifexist } from 'tyshemo'
 import { isFunction } from 'ts-fns'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 import { createPlaceholderElement } from '../utils.js'
 
 export class Prepare extends Component {

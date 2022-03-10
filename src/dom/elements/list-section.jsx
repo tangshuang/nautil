@@ -1,6 +1,6 @@
 import { mixin } from 'ts-fns'
 import ListSection from '../../lib/elements/list-section.jsx'
-import { Component } from '../../lib/component.js'
+import { Component } from '../../lib/core/component.js'
 import { ifexist } from 'tyshemo'
 
 // fork from https://github.com/jwarning/react-scrollable-list

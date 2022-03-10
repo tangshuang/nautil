@@ -123,7 +123,7 @@ export declare function useTwoWayBindingState(state: AnyObj): Proxy;
 
 export declare function useUniqueKeys(items: any[]): string[];
 
-export declare function useModelsReactor<T>(models: any[], compute: (...args: any[]) => T, ...args: any[]): T;
+export declare function useModelReactor<T>(models: any[], compute: (...args: any[]) => T, ...args: any[]): T;
 
 export declare function useShallowLatest(obj: any): any;
 
@@ -608,32 +608,29 @@ export declare class Service extends SingleInstanceBase {
 }
 
 export declare class Controller extends SingleInstanceBase {
-  private observers;
-  private on;
-  private off;
-  private active;
-  private inactive;
+  subscribe(fn: Function): void;
+  unsubcribe(fn: Function): void;
 
-  update(): void;
-  updateOnly(component: any): void;
-
-  /**
-   * @deprecated
-   * @alias this.reactive
-   */
-  turn(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
-
-  reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
   observe(observer: Store | Model | Function): {
     stop: Function,
   };
+
+  new<T extends Controller = this>(): T;
+  static instance<T extends Controller = Controller>(): T;
+}
+
+export declare class View extends SingleInstanceBase {
+  update(): void;
+  updateOnly(component: any): void;
+
+  reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
 
   onStart(): void;
   onUpdate(): void;
   onEnd(): void;
 
-  new<T extends Controller = this>(): T;
-  static instance<T extends Controller = Controller>(): T;
+  new<T extends View = this>(): T;
+  static instance<T extends View = View>(): T;
 }
 
 interface Source {

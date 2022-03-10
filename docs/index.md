@@ -69,6 +69,9 @@
 - Controller
   - [Controller](controller/controller.md)
 
+- View
+  - [View](view/view.md)
+
 - Service
   - [Service](services/service.md)
   - [DataService](services/data-service.md)
@@ -91,7 +94,7 @@
   - [useTwoWayBinding](hooks/use-two-way-binding.md)
   - [useUniqueKeys](hooks/use-unique-keys.md)
   - [useShallowLatest](hooks/use-shallow-lastest.md)
-  - [useModelsReactor](hooks/use-models-reactor.md)
+  - [useModelReactor](hooks/use-model-reactor.md)
   - [useForceUpdate](hooks/use-force-update.md)
   - [useSourceQuery](hooks/use-source-query.md)
 

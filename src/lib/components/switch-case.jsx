@@ -12,7 +12,7 @@ import { Any, ifexist } from 'tyshemo'
 import { isFunction } from 'ts-fns'
 import { Children, isValidElement } from 'react'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class Case extends Component {
   static props = {

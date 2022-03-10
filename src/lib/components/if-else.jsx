@@ -19,7 +19,7 @@ import { ifexist } from 'tyshemo'
 import { isFunction } from 'ts-fns'
 import { Children, createElement, Fragment } from 'react'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class Else extends Component {
   static props = {

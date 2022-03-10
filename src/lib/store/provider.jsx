@@ -1,4 +1,4 @@
-import Component from '../component.js'
+import Component from '../core/component.js'
 import Store from './store.js'
 
 import { Provider as ContextProvider } from './context.js'

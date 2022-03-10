@@ -4,7 +4,7 @@ import {
   isArray,
 } from 'ts-fns'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 import Observer from '../components/observer.jsx'
 import { isShallowEqual } from '../utils.js'
 

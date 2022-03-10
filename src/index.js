@@ -43,13 +43,13 @@ export {
   Zero,
 } from 'tyshemo'
 
-export { Component } from './lib/component.js'
+export { Component } from './lib/core/component.js'
 
 export { createTwoWayBinding, isShallowEqual, isRef, noop } from './lib/utils.js'
 
 export { useTwoWayBinding, useTwoWayBindingState } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
-export { useModelsReactor } from './lib/hooks/models-reactor.js'
+export { useModelReactor } from './lib/hooks/model-reactor.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
 export { useSourceQuery } from './lib/hooks/source-query.js'
@@ -93,17 +93,18 @@ export { Provider } from './lib/store/provider.jsx'
 export { Consumer, connect, useStore } from './lib/store/consumer.jsx'
 export { applyStore } from './lib/store/shared.js'
 
-export { Model, Meta, Validator, AsyncGetter, Factory } from './lib/model.js'
-export { Stream, createStream } from './lib/stream.js'
-export { Controller } from './lib/controller.jsx'
-export { Service } from './lib/service.js'
+export { Model, Meta, Validator, AsyncGetter, Factory } from './lib/core/model.js'
+export { Stream, createStream } from './lib/core/stream.js'
+export { Service } from './lib/core/service.js'
 export { DataService } from './lib/services/data-service.js'
 export { QueueService, SerialQueueService, ParallelQueueService, ShiftQueueService, SwitchQueueService } from './lib/services/queue-service.js'
+export { Controller } from './lib/core/controller.js'
+export { View } from './lib/core/view.jsx'
 
 export { Storage } from './lib/storage/storage.js'
 
 export { I18n, useLang } from './lib/i18n/i18n.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { createBootstrap, createAsyncComponent, importAsyncComponent } from './lib/app.jsx'
 export { Router } from './lib/router/router.jsx'
+export { createBootstrap, createAsyncComponent, importAsyncComponent } from './lib/core/app.jsx'

@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import { PrimitiveComponent, Component } from '../../../lib/component.js'
+import { PrimitiveComponent, Component } from '../../../lib/core/component.js'
 
 mixin(PrimitiveComponent, class {
 })

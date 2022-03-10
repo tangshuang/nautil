@@ -1,6 +1,6 @@
 import { enumerate, ifexist, dict } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 import { Unit } from '../types.js'
 
 export class Image extends Component {

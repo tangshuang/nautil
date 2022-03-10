@@ -1,6 +1,6 @@
 import { enumerate } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class SwipeSection extends Component {
   static props = {

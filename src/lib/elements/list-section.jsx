@@ -1,6 +1,6 @@
 import { list } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class ListSection extends Component {
   static props = {

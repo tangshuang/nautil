@@ -3,7 +3,7 @@ import { isArray, isInstanceOf, parse, isFunction } from 'ts-fns'
 import { useEffect } from 'react'
 
 import { useForceUpdate } from '../hooks/force-update.js'
-import Component from '../component.js'
+import Component from '../core/component.js'
 import Store from './store.js'
 import { isShallowEqual } from '../utils.js'
 import { Observer } from '../components/observer.jsx'

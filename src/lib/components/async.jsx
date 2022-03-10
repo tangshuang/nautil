@@ -1,7 +1,7 @@
 import { ifexist, Any, Enum } from 'tyshemo'
 import { isFunction } from 'ts-fns'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 import { createPlaceholderElement, noop } from '../utils.js'
 
 export class Async extends Component {

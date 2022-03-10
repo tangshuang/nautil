@@ -1,4 +1,4 @@
-import { Service } from '../service.js'
+import { Service } from '../core/service.js'
 import { isString, isObject } from 'ts-fns'
 import { source, query, compose, setup, release, affect, select, apply, ref } from 'algeb'
 

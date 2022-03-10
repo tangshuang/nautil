@@ -1,4 +1,4 @@
-import { Component } from '../component.js'
+import { Component } from '../core/component.js'
 import { useStore as originUseStore, Consumer } from './consumer.jsx'
 
 export function applyStore(store) {

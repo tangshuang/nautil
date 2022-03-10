@@ -2,7 +2,7 @@ import { enumerate, ifexist } from 'tyshemo'
 import { each, isFunction } from 'ts-fns'
 import { cloneElement, Children } from 'react'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class For extends Component {
   static props = {

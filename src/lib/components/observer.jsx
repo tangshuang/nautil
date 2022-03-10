@@ -1,6 +1,6 @@
 import { ifexist, Ty } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 import { noop } from '../utils.js'
 import { isFunction } from 'ts-fns'
 

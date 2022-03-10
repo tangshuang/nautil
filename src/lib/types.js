@@ -4,7 +4,7 @@ import {
   Tuple,
   Any,
 } from 'tyshemo'
-import { Stream } from './stream.js'
+import { Stream } from './core/stream.js'
 
 export const Handling = new Enum([
   Function,

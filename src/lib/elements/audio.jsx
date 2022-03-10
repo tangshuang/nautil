@@ -1,6 +1,6 @@
 import { enumerate } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 import { Unit } from '../types.js'
 
 export class Audio extends Component {

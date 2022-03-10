@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo } from 'react'
-import { getObjectHash } from 'ts-fns'
+import { useEffect, useMemo } from 'react'
+import { getObjectHash, isArray } from 'ts-fns'
 import { useShallowLatest } from './shallow-latest.js'
+import { useForceUpdate } from './force-update.js'
 
 /**
  * compute with models and recompute when the models change
@@ -9,10 +10,12 @@ import { useShallowLatest } from './shallow-latest.js'
  * @param  {...any} args args passed into compute
  * @returns
  */
-export function useModelsReactor(models, compute, ...args) {
+export function useModelReactor(model, compute, ...args) {
+  const models = isArray(model) ? model : [model]
+
   const latest = useShallowLatest(models)
   const latestArgs = useShallowLatest(args)
-  const [state, setState] = useState()
+  const forceUpdate = useForceUpdate()
 
   const { res, deps, hash } = useMemo(() => {
     models.forEach((model) => {
@@ -28,7 +31,6 @@ export function useModelsReactor(models, compute, ...args) {
   }, [state, latest, latestArgs])
 
   useEffect(() => {
-    const forceUpdate = () => setState({})
     models.forEach((model, i) => {
       const keys = deps[i]
       keys.forEach((key) => {

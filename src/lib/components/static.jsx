@@ -1,7 +1,7 @@
 import { isFunction } from 'ts-fns'
 import { Any, ifexist } from 'tyshemo'
 
-import Component from '../component.js'
+import Component from '../core/component.js'
 
 export class Static extends Component {
   static props = {
