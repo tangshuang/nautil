@@ -55,7 +55,7 @@ export function RouterProvider({ value, children }) {
     return {
       history,
       mode: {
-        tpye,
+        type,
         query,
         base,
       },
