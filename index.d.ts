@@ -313,82 +313,6 @@ export declare class ListSection extends Component {}
 export declare class ScrollSection extends Component {}
 export declare class SwipeSection extends Component {}
 
-interface NavigationRoute {
-  name: string;
-  path: '/' | `/${string}`;
-  redirect?: '/' | `/${string}`;
-  component?: JSXComponent | ((props: AnyObj) => ReactElement) | null;
-  onEnter?: () => void;
-  onLeave?: () => void;
-}
-interface NavigationOptions {
-  maxHistoryLength?: number;
-  mode?: '/' | `/${string}` | `#?${string}` | '#' | `#${string}` | `?${string}` | 'storage';
-  defaultRoute?: string;
-  onNotFound?: () => void;
-  routes: NavigationRoute[];
-}
-interface NavigationState {
-  name: string;
-  path: `/${string}`;
-  params: AnyObj;
-  route: NavigationRoute;
-}
-export enum NavigationStatus {
-  Inactive = -1,
-  NotFound = 0,
-  Ok = 1,
-}
-export declare class Navigation {
-  constructor(options: NavigationOptions);
-
-  state: NavigationState;
-  status: NavigationStatus;
-
-  is(match: string | RegExp | Function, exact?: boolean): boolean;
-  on(match: string | RegExp | Function, callback: Function, exact?: boolean): Navigation;
-  off(match: string | RegExp | Function, callback: Function): Navigation;
-  go(name: string, params: AnyObj, replace?: boolean): void;
-  open(url: string, params: AnyObj): void;
-  back(count: number): void;
-  push(state: NavigationState, changeLocation?: boolean): void;
-  replace(state: NavigationState, changeLocation?: boolean): void;
-  makeUrl(to: string, params: AnyObj): string;
-  changeLocation(nextState: NavigationState, replace?: boolean): void;
-
-  static defaultOptions: NavigationOptions;
-}
-
-interface NavigatorProps extends AnyObj {
-  navigation?: Navigation;
-  dispatch?: Function;
-  inside?: boolean;
-}
-export declare class Navigator extends Component<NavigatorProps> {}
-
-interface RouteProps extends AnyObj {
-  navigation?: Navigation;
-  match: string | RegExp | Function;
-  exact?: boolean;
-  animation?: number;
-}
-export declare class Route extends Component<RouteProps> {}
-
-interface LinkProps extends AnyObj {
-  navigation?: Navigation;
-  to: string | number;
-  params?: AnyObj;
-  replace?: boolean;
-  open?: boolean;
-}
-export declare class Link extends Component<LinkProps> {}
-
-interface NavigateProps extends AnyObj {
-  navigation?: Navigation;
-  map?: (navigation: Navigation) => AnyObj;
-  render?: (data: AnyObj) => ReactElement | null;
-}
-export declare class Navigate extends Component<NavigateProps> {}
 
 export declare class Store {
   constructor(initState: AnyObj);
@@ -697,6 +621,29 @@ export declare class ParallelQueueService extends QueueService {}
 export declare class ShiftQueueService extends QueueService {}
 export declare class SwitchQueueService extends QueueService {}
 
+export declare interface RouterOptions {
+  routes: Array<{
+    path: string;
+    component: JSXComponent;
+  }>;
+}
+export declare class Router {
+  constructor(options: RouterOptions);
+  Outlet: JSXComponent;
+  Link: JSXComponent;
+  useMatch: (pattern: string | RegExp) => boolean;
+  useLocation: () => ({
+    pathname: string;
+    search: string;
+    hash: string;
+    query: AnyObj;
+    url: string;
+  });
+  useParams: () => AnyObj;
+  useNavigate: () => (target: string, replace: boolean) => void;
+  useListen: (callback: Function) => void;
+}
+
 export declare class Storage {
   static getItem(key: string): Promise<any>;
   static setItem(key: string, value: any): Promise<undefined>;
@@ -747,14 +694,24 @@ export declare class LanguageDetector {
   getDetector(): AnyObj;
 }
 
-interface AppOptions {
-  navigation: Navigation;
-  store?: Store;
-  i18n?: I18n;
+interface AsyncComponentOptions {
+  source: () => Promise<any>;
+  pendding: () => any;
+  prefetch: (props: any) => Array<string>;
 }
-export declare function createApp(options: AppOptions): NautilComponent;
+export declare function importAsyncComponent(options: AsyncComponentOptions): JSXComponent;
 
 export declare function createAsyncComponent(fn: () => Promise<{ [Symbol.toStringTag]: 'Module', default: JSXComponent } | JSXComponent>): JSXComponent;
+
+interface BootstrapOptions {
+  router: {
+    mode: string;
+  },
+  i18n: {
+    lang: string | AnyObj;
+  },
+}
+export declare function createBootstrap(options: BootstrapOptions): (C: JSXComponent) => JSXComponent;
 
 interface AnimationProps {
   show: boolean;
