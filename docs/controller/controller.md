@@ -29,71 +29,6 @@ class SomeController extends Controller {
 }
 ```
 
-To use the previous Controller:
-
-
-```js
-import { Section, Button, useState } from 'nautil'
-
-class Some extends Component {
-  // initialize the controller
-  controller = new SomeController()
-
-  // a component, which use controller inside
-  Count = (props) => {
-    const value = useState(0) // can use hooks
-    const [, update] = useState()
-
-    useEffect(() => {
-      const forceUpdate = () => update({})
-      this.controller.subscribe(forceUpdate)
-      return () => this.conntroller.unsubscribe(forceUpdate)
-    }, [])
-
-    return (
-      <Section>
-        <Text>{this.controller.someModel.count}</Text>
-        <Input $value={value} />
-        <Button onHit={this.controller.increase$}>+</Button>
-      </Section>
-    )
-  }
-
-  // a component
-  // this component will be rendered only when this.someModel's order_count and price properties changed
-  Order = (props) => {
-    const [, update] = useState()
-
-    useEffect(() => {
-      const forceUpdate = () => update({})
-      this.controller.subscribe(forceUpdate)
-      return () => this.conntroller.unsubscribe(forceUpdate)
-    }, [])
-
-    const { order_count, price } = this.someModel
-    return (
-      <Section>
-        <Text>Total Price: {order_count * price}</Text>
-      </Section>
-    )
-  }
-
-  render() {
-    const { Count, Order } = this.controller
-    const { IncreaseButton } = this
-
-    return (
-      <Section>
-        ...
-        <Price />
-        <Order />
-        <IncreaseButton />
-      </Section>
-    )
-  }
-}
-```
-
 `Controller` is a helpfull tool in nautil, it is designed to control a business area in one place.
 In a controller, you can define Model, Service, Events, Components and scoped handlers.
 The exported components from a controller can be used in other components in Nautil, the exported components are treated as business components but with small code size.
@@ -124,17 +59,6 @@ class SomeController extends Controller {
 **You should never operate UI in controller.** A controller is an API set to provide to views, so you should keep in mind that it is an independent system from UI operation. And this is the way to seperate business logic from React components, make business logic management as an independent job.
 
 ## API
-
-### reactive(component: Component | Function, collect?) -> NewComponent
-
-Turn a component to be a new component which will reacted by controller inside actions.
-
-```js
-const MyComponent = controller.reactive(
-  (props) => {}, // a component class or function
-  (props) => {}, // function passed into evolve
-)
-```
 
 ### observe(observer: Model | Store | Function) -> { start, stop }
 

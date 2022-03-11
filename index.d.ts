@@ -543,18 +543,8 @@ export declare class Controller extends SingleInstanceBase {
   static instance<T extends Controller = Controller>(): T;
 }
 
-export declare class View extends SingleInstanceBase {
-  update(): void;
-  updateOnly(component: any): void;
-
+export declare class View extends Component {
   reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
-
-  onStart(): void;
-  onUpdate(): void;
-  onEnd(): void;
-
-  new<T extends View = this>(): T;
-  static instance<T extends View = View>(): T;
 }
 
 interface Source {

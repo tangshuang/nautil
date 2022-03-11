@@ -46,7 +46,7 @@ class WechatHistory extends History {
 History.implement('search', WechatHistory)
 
 mixin(Router, class {
-  $createLink(data) {
+  static $createLink(data) {
     const { children, href, open, navigate, ...attrs } = data
     const handleClick = () => {
       if (open) {

@@ -87,7 +87,7 @@ export class Router {
     const query = parseSearch(search)
 
     const params = {}
-    const blocks = []
+    let blocks = []
 
     const diffBlocks = (route, target) => {
       // if the given url is less than required, it does not match this route
@@ -141,7 +141,7 @@ export class Router {
     // not found
     if (!route) {
       const notFound = routes.find(item => item.path === '!')
-      const routeParams = route.params || {}
+      const routeParams = notFound?.params || {}
       return {
         path: '!',
         component: notFound ? notFound.component : () => null,
@@ -166,6 +166,11 @@ export class Router {
     }
   }
 
+  Link = Link
+  useListener = useHistoryListener
+  useLocation = useLocation
+  useNavigate = useNavigate
+
   Outlet = (props) => {
     const abs = useContext(absContext)
     const { history, mode } = useContext(routerContext)
@@ -174,7 +179,7 @@ export class Router {
     const state = this.parseUrlToState(url)
 
     const forceUpdate = useForceUpdate()
-    this.useListen(forceUpdate)
+    this.useListener(forceUpdate)
 
     const { component: C, path, params } = state
     const { Provider } = absContext
@@ -182,33 +187,17 @@ export class Router {
 
     return (
       <Provider value={absPath}>
-        <C {...params} {...props} />
+        <C params={params} {...props} />
       </Provider>
     )
-  }
-
-  Link = (props) => {
-    const { to, replace, open, ...attrs } = props
-
-    const abs = useContext(absContext)
-    const { history, mode } = useContext(routerContext)
-
-    const href = history.$makeUrl(to, abs, mode)
-    const navigate = () => history.$setUrl(to, abs, mode, replace)
-    return this.$createLink({ ...attrs, href, open, navigate })
-  }
-
-  useListen = (fn) => {
-    const { history } = useContext(routerContext)
-    useEffect(() => {
-      history.listen(fn)
-      return () => history.unlisten(fn)
-    }, [])
   }
 
   useParams = () => {
     const abs = useContext(absContext)
     const { history, mode } = useContext(routerContext)
+
+    const forceUpdate = useForceUpdate()
+    this.useListener(forceUpdate)
 
     const url = history.$getUrl(abs, mode)
     const state = this.parseUrlToState(url)
@@ -216,45 +205,76 @@ export class Router {
     return params
   }
 
-  useMatch = (pattern) => {
+  useMatch = () => {
     const abs = useContext(absContext)
     const { history, mode } = useContext(routerContext)
 
-    const url = history.$getUrl(abs, mode)
-    const state = this.parseUrlToState(url)
-    const { path } = state
+    const forceUpdate = useForceUpdate()
+    this.useListener(forceUpdate)
 
-    if (pattern === path) {
-      return true
-    }
+    return (pattern) => {
+      const url = history.$getUrl(abs, mode)
+      const state = this.parseUrlToState(url)
+      const { path } = state
 
-    if (pattern instanceof RegExp && pattern.test(path)) {
-      return true
-    }
+      if (pattern === path) {
+        return true
+      }
 
-    return false
-  }
+      if (pattern instanceof RegExp && pattern.test(path)) {
+        return true
+      }
 
-  useLocation() {
-    const abs = useContext(absContext)
-    const { history, mode } = useContext(routerContext)
-
-    const url = history.$getUrl(abs, mode)
-    const { pathname, search, hash } = parseUrl(url)
-    const query = parseSearch(search)
-
-    return { pathname, search, query, hash, url }
-  }
-
-  useNavigate = () => {
-    const abs = useContext(absContext)
-    const { history, mode } = useContext(routerContext)
-    return (to, replace) => {
-      history.$setUrl(to, abs, mode, replace)
+      return false
     }
   }
 
-  $createLink(data) {
-    throw new Error('[Nautil]: Navigator.$createLink should must be override.')
+  static $createLink(data) {
+    throw new Error('[Nautil]: Router.$createLink should must be override.')
   }
+}
+
+export function Link(props) {
+  const { to, replace, open, ...attrs } = props
+
+  const abs = useContext(absContext)
+  const { history, mode } = useContext(routerContext)
+
+  const href = history.$makeUrl(to, abs, mode)
+  const navigate = () => history.$setUrl(to, abs, mode, replace)
+  return Router.$createLink({ ...attrs, href, open, navigate })
+}
+
+export function useNavigate() {
+  const abs = useContext(absContext)
+  const { history, mode } = useContext(routerContext)
+
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
+
+  return (to, replace) => {
+    history.$setUrl(to, abs, mode, replace)
+  }
+}
+
+export function useLocation() {
+  const abs = useContext(absContext)
+  const { history, mode } = useContext(routerContext)
+
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
+
+  const url = history.$getUrl(abs, mode)
+  const { pathname, search, hash } = parseUrl(url)
+  const query = parseSearch(search)
+
+  return { pathname, search, query, hash, url }
+}
+
+function useHistoryListener(fn) {
+  const { history } = useContext(routerContext)
+  useEffect(() => {
+    history.listen(fn)
+    return () => history.unlisten(fn)
+  }, [])
 }

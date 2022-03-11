@@ -10,8 +10,8 @@ A component to display view based on router context.
 
 Which component to display is determined by router's routes, the component will receive props:
 
-- props you pass into `Outlet`
-- params parsed by router, params will be overrided by props
+- ...props: you pass into `Outlet`
+- params: parsed by router, params will be overrided by props
 
 ## Link
 
@@ -30,7 +30,8 @@ A component to create a hyperlink to certain route and display its component.
 Give a path or RegExp to check whether it match current route context.
 
 ```js
-const bool = useMatch('detail')
+const match = useMatch()
+const bool = match('detail')
 ```
 
 ## useLocation
@@ -59,12 +60,12 @@ navigate(`detail/${id}`, false)
 navigate(to:string, replace:boolean)
 ```
 
-## useListen
+## useListener
 
 Listen to router history change.
 
 ```js
-useListen(() => {
+useListener(() => {
   // ...
 })
 ```

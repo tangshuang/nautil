@@ -8,7 +8,6 @@ import {
   isArray,
   isInstanceOf,
   isFunction,
-  isString,
   makeKeyChain,
   assign,
   createProxy,
@@ -23,7 +22,7 @@ import Stream from './stream.js'
 import Style from '../style/style.js'
 import ClassName from '../style/classname.js'
 import { Binding, Handling } from '../types.js'
-import { noop, isRef, isShallowEqual, camelCase } from '../utils.js'
+import { noop, isRef, isShallowEqual, parseClassNames } from '../utils.js'
 
 export class PrimitiveComponent extends ReactComponent {
   constructor(props) {
@@ -488,37 +487,7 @@ export class Component extends PrimitiveComponent {
   }
 
   css(classNames) {
-    let items = []
-    if (isString(classNames)) {
-      items = classNames.split(' ').map((className) => {
-        if (this.cssRules[className]) {
-          return this.cssRules[className]
-        }
-
-        const key = camelCase(className)
-        if (this.cssRules[key]) {
-          return this.cssRules[key]
-        }
-
-        // use self
-        return className
-      })
-    }
-    else if (isArray(classNames)) {
-      items = classNames.map(item => this.sheet(item)).reduce((items, arr) => items.push(...arr), [])
-    }
-
-    // return stylesheet with objects
-    // only used when passed into `stylesheet` of internal components
-    // i.e. <Section stylesheet={this.css('some-1 some-2')}></Section>
-    if (items.some(item => !isString(item))) {
-      return items
-    }
-    // return string class list
-    // only used in DOM
-    else {
-      return items.join(' ')
-    }
+    return parseClassNames(classNames, this.cssRules)
   }
 
   _affect(fn) {

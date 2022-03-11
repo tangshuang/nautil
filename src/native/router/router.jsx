@@ -3,7 +3,7 @@ import { Linking, TouchableOpacity } from 'react-native'
 import { Router } from '../../lib/router/router.jsx'
 
 mixin(Router, class {
-  $createLink(data) {
+  static $createLink(data) {
     const { children, href, open, navigate, ...attrs } = data
     const handleClick = async () => {
       if (open) {

@@ -22,22 +22,6 @@ export class Controller extends SingleInstanceBase {
     this.observers = []
     this.emitters = []
 
-    let activeCount = 0
-    this.active = () => {
-      if (!activeCount) {
-        this.observers.forEach(({ start }) => start())
-        this.onStart()
-      }
-      activeCount ++
-    }
-    this.inactive = () => {
-      activeCount --
-      if (!activeCount) {
-        this.observers.forEach(({ stop }) => stop())
-        this.onEnd()
-      }
-    }
-
     const Constructor = getConstructorOf(this)
     const streams = []
     each(Constructor, (Item, key) => {
@@ -70,6 +54,9 @@ export class Controller extends SingleInstanceBase {
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([fn, stream$]) => fn.call(this, stream$))
 
+    // start
+    this.observers.forEach(({ start }) => start())
+
     // developers should must extends Controller and overwrite `init` method to initailize
     this.init()
   }
@@ -90,11 +77,19 @@ export class Controller extends SingleInstanceBase {
     })
   }
 
+  destroy() {
+    this.observers.forEach(({ stop }) => stop())
+    this.observers = null
+    this.emitters = null
+    super.destroy()
+  }
+
   observe(observer) {
     if (isInstanceOf(observer, Store)) {
       const subscription = {
         start: () => observer.subscribe(this.dispatch),
         stop: () => observer.unsubscribe(this.dispatch),
+        observer,
       }
       this.observers.push(subscription)
     }
@@ -108,6 +103,7 @@ export class Controller extends SingleInstanceBase {
           observer.unwatch('*', this.dispatch)
           observer.unwatch('!', this.dispatch)
         },
+        observer,
       }
       this.observers.push(subscription)
     }
@@ -123,6 +119,7 @@ export class Controller extends SingleInstanceBase {
             unsubscribe = null
           }
         },
+        observer,
       }
       this.observers.push(subscription)
     }
@@ -131,6 +128,7 @@ export class Controller extends SingleInstanceBase {
       const subscription = {
         start: () => subscribe(this.dispatch),
         stop: () => isFunction(unsubscribe) ? unsubscribe(this.dispatch) : null,
+        observer,
       }
       this.observers.push(subscription)
     }

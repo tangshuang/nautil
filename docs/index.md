@@ -21,6 +21,7 @@
   - [Class or Functionn](component/class-or-function.md)
 
 - Router
+  - [Router](router/router.md)
   - [Configuration](router/config.md)
   - [Router API](router/api.md)
 

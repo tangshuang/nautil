@@ -23,7 +23,9 @@ class BrowserHistory extends History {
     return { href, pathname, search, query, hash }
   }
   init() {
-    const onUrlChanged = () => this.dispatch(window.location.href)
+    const onUrlChanged = () => {
+      this.dispatch(window.location.href)
+    }
 
     window.addEventListener('popstate', onUrlChanged)
     window.addEventListener('replaceState', onUrlChanged)
@@ -42,9 +44,15 @@ class BrowserHistory extends History {
     window.history.forward()
   }
   push(url) {
+    if (window.location.href === url) {
+      return
+    }
     window.history.pushState(null, null, url)
   }
   replace() {
+    if (window.location.href === url) {
+      return
+    }
     window.history.replaceState(null, null, url)
   }
   $getUrl(abs, mode) {
@@ -94,25 +102,26 @@ class BrowserHistory extends History {
     }
 
     if (type === 'hash_search') {
+      const reg = new RegExp('(&|\\?)' + query + '=(.*?)(&|$)')
       const hasSearch = hash.indexOf('?') > 0
       if (hasSearch) {
-        const found = hash.match(new RegExp('(\&|\?)' + query + '=(.*?)(\&|$)'))
+        const found = hash.match(reg)
         if (found) {
-          return pathname + search + hash.replace(new RegExp('(\&|\?)' + query + '=(.*?)(\&|$)'), `$1${query}=${encoded}$3`)
+          return pathname + search + hash.replace(reg, `$1${query}=${encoded}$3`)
         }
         return pathname + search + hash + `&${query}=${encoded}`
       }
       if (hash) {
         return pathname + search + hash + `?${query}=${encoded}`
       }
-      return pathname + search `#?${query}=${encoded}`
+      return pathname + search + `#?${query}=${encoded}`
     }
 
     if (type === 'search') {
-      const encoded = encodeURIComponent(url)
-      const found = search.match(new RegExp('(\&|\?)' + query + '=(.*?)(\&|$)'))
+      const reg = new RegExp('(&|\\?)' + query + '=(.*?)(&|$)')
+      const found = search.match(reg)
       if (found) {
-        return pathname + search.replace(new RegExp('(\&|\?)' + query + '=(.*?)(\&|$)'), `$1${query}=${encoded}$3`) + hash
+        return pathname + search.replace(reg, `$1${query}=${encoded}$3`) + hash
       }
       if (search) {
         return pathname + search + `&${query}=${encoded}` + hash
@@ -124,7 +133,7 @@ class BrowserHistory extends History {
   }
   $setUrl(to, abs, mode, replace) {
     const url = this.$makeUrl(to, abs, mode)
-    this.history[replace ? 'replace' : 'push'](url)
+    this[replace ? 'replace' : 'push'](url)
   }
 }
 
@@ -134,7 +143,7 @@ History.implement('search', BrowserHistory)
 History.implement('hash_search', BrowserHistory)
 
 mixin(Router, class {
-  $createLink(data) {
+  static $createLink(data) {
     const { children, href, open, navigate, ...attrs } = data
     const handleClick = (e) => {
       e.preventDefault()

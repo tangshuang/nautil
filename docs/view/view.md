@@ -1,11 +1,11 @@
 # View
 
-A `View` is a set of components which are as APIs in code level. Why? When we use Controller, we will use it in Components to controll the UX parts. However, this is heavy, we have to `this.controller.reactive()` many times in a component, and in fact, we find that the reactive components are not strong relative to current component. So we need a `View` to manage this special reactive components which based on controller.
+A View is a super Component which is reactive for Controller, Model, and streams. Why we need a super Component? Because we need to combine all parts together. In a View, you can do what you do in a Component, and you can also combine with Controller so that the View will rerender when Controller trigger something.
 
 ## Usage
 
 ```js
-import { Controller, View, Component } from 'nautil'
+import { Controller, View } from 'nautil'
 
 // create a controller
 class SomeController extends Controller {
@@ -14,7 +14,15 @@ class SomeController extends Controller {
 
 // create a view with previous controller
 class SomeView extends View {
-  static controller = SomeController
+  static controller = SomeController // Controller -> this.controller
+  static someModel = SomeModel // Model -> this.someModel
+  static someDataService = SomeDataService // DataService -> this.someDataService
+  static someService = SomeService // Service -> this.someService (single instance)
+  static count$(stream$) { // stream$() -> this.count$
+    // here you can use this point to Controller instance
+    stream$.pipe(...).subscribe(...)
+  }
+  static store = Store // Store -> this.store, used as state helper
 
   // a component
   // this component will be automaticly rerendered when the controller's models, stores, dataServices changed
@@ -34,7 +42,7 @@ class SomeView extends View {
   // this component will be rendered only when this.someModel's order_count and price properties changed
   Order = this.reactive(
     (props) => {
-      const { order_count, price } = this.someModel
+      const { order_count, price } = this.controller.someModel
       return (
         <Section>
           <Text>Total Price: {order_count * price}</Text>
@@ -43,18 +51,13 @@ class SomeView extends View {
     },
     // this.reactive use evolve operator to controll rerenderer
     (props) => {
-      const { order_count, price } = this.someModel
+      const { order_count, price } = this.controller.someModel
       return { order_count, price }
     },
   )
-}
-
-// use the view
-class SomeComponent extends Component {
-  view = new SomeView()
 
   render() {
-    const { Count, Order } = this.view
+    const { Count, Order } = this
 
     return (
       <>
@@ -66,4 +69,19 @@ class SomeComponent extends Component {
 }
 ```
 
-A `View` can not only be used in a Component, it can be used anywhere, it is a set of components to provide UI elements of business, so you do not need to worry about the business actions in real React UI components development.
+## API
+
+### reactive(component: Component | Function, collect?) -> NewComponent
+
+Turn a component to be a new component which will reacted by controller inside actions.
+
+```js
+const MyComponent = controller.reactive(
+  (props) => {}, // a component class or function
+  (props) => {}, // function passed into evolve
+)
+```
+
+## Notice
+
+View has no `init` hook method.

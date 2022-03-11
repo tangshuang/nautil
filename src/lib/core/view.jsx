@@ -1,11 +1,14 @@
-import { memo } from 'react'
+import { memo, Component as ReactComponent } from 'react'
 import { Store } from '../store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, throttle } from 'ts-fns'
-import Component from './component.js'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
+import { Component } from './component.js'
 import { Stream } from './stream.js'
 import { evolve } from '../operators/operators.js'
-import { SingleInstanceBase } from '../utils.js'
 import { Controller } from './controller.js'
+import { Service } from './service.js'
+import { DataService } from '../services/data-service.js'
+import { Model } from './model.js'
+import { SingleInstanceBase } from '../utils.js'
 
 /**
  * class SomeView extends View {
@@ -20,86 +23,77 @@ import { Controller } from './controller.js'
  *   }
  * }
  */
-export class View extends SingleInstanceBase {
-  constructor() {
-    super()
-
-    this.observers = []
-    this.emitters = []
-
-    this.update = throttle(() => {
-      this.emitters.forEach(({ component }) => component.weakUpdate())
-      this.onUpdate()
-    }, 16)
-
-    const queue = []
-    const run = throttle(() => {
-      const components = emitters.filter(({ component }) => queue.includes(component)).map(({ component }) => component)
-      if (components.length) {
-        components.forEach((component) => component.weakUpdate())
-      }
-      this.onUpdate()
-      queue.length = 0 // clear the queue
-    }, 16)
-    this.updateOnly = (component) => {
-      queue.push(component)
-      run()
-    }
-
-    let activeCount = 0
-    this.active = () => {
-      if (!activeCount) {
-        this.onStart()
-      }
-      activeCount ++
-    }
-    this.inactive = () => {
-      activeCount --
-      if (!activeCount) {
-        this.destroy()
-        this.onEnd()
-      }
-    }
+export class View extends Component {
+  init() {
+    const components = []
+    const observers = []
 
     const Constructor = getConstructorOf(this)
     const streams = []
     each(Constructor, (Item, key) => {
-      if (Item && (Item === Store || isInheritedOf(Item, Store))) {
+      if (Item && isInheritedOf(Item, DataService)) {
+        this[key] = Item.instance()
+        // notice that, any data source change will trigger the rerender
+        // so you should must pass collect to determine when to rerender, look into example of `reactive`
+        observers.push(this[key])
+      }
+      else if (Item && isInheritedOf(Item, Service)) {
+        this[key] = Item.instance()
+      }
+      else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
-        this.observers.push(this[key])
+        observers.push({
+          subscribe: () => {
+            this[key].watch('*', this.weakUpdate, true)
+            this[key].watch('!', this.weakUpdate, true)
+          },
+          unsubscribe: () => {
+            this[key].unwatch('*', this.weakUpdate)
+            this[key].unwatch('!', this.weakUpdate)
+          },
+        })
+      }
+      else if (Item && (Item === Store || isInheritedOf(Item, Store))) {
+        this[key] = new Item()
+        observers.push(this[key])
       }
       else if (Item && isInheritedOf(Item, Controller)) {
-        this[key] = new Controller()
-        this.observers.push(this[key])
+        this[key] = Item.instance()
+        observers.push(this[key])
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
         this[key] = stream$
         streams.push([Item, stream$])
       }
-      else if (isFunction(Item) || isInstanceOf(Item, Component)) {
+      else if (isFunction(Item) || isInstanceOf(Item, ReactComponent)) {
         const charCode = key.charCodeAt(0)
         // if not uppercase, make it as a method
         if (charCode >= 65 && charCode <= 90) {
-          const Gen = isInstanceOf(Item, Component) ? Item : memo(Item.bind(this))
-          this[key] = this.reactive(Gen)
+          const C = isInstanceOf(Item, ReactComponent) ? Item : Item.bind(this)
+          components.push([key, C])
         }
       }
     })
+
+    // subscribe to observers
+    // should must before components registering
+    this.observers = observers
+
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([fn, stream$]) => fn.call(this, stream$))
+
+    // register components
+    components.forEach(([key, C]) => {
+      this[key] = this.reactive(C)
+    })
 
     each(this, (value, key) => {
       if (isObject(value) && value.$$type === 'reactive' && value.component) {
         this[key] = this.reactive(value.component, typeof value.collect === 'function' ? value.collect.bind(this) : null)
       }
     })
-
-    // developers should must extends Controller and overwrite `init` method to initailize
-    this.init()
   }
-
-  init() {}
 
   /**
    *
@@ -110,7 +104,7 @@ export class View extends SingleInstanceBase {
    * @returns
    * @example
    *
-   * this.controller.reactive(
+   * this.reactive(
    *   () => {
    *     const some = this.controller.dataService.get('some')
    *     return <span>{some.name}</span>
@@ -135,10 +129,14 @@ export class View extends SingleInstanceBase {
     const view = this
     class G extends Component {
       onMounted() {
-        view.watch(this)
+        view.observers.forEach((observer) => {
+          observer.subscribe(this.weakUpdate)
+        })
       }
       onUnmount() {
-        view.unwatch(this)
+        view.observers.forEach((observer) => {
+          observer.unsubscribe(this.weakUpdate)
+        })
       }
       render() {
         const attrs = { ...this.props }
@@ -147,36 +145,25 @@ export class View extends SingleInstanceBase {
       }
     }
 
-    return G
+    return memo(G)
   }
 
-  watch(component) {
-    const dispatch = () => this.updateOnly(component)
-    this.emitters.push({
-      component,
-      dispatch,
-    })
+  componentDidMount(...args) {
     this.observers.forEach((observer) => {
-      observer.subscribe(dispatch)
+      observer.subscribe(this.weakUpdate)
     })
+    super.componentDidMount(...args)
   }
 
-  unwatch(component) {
-    this.emitters.forEach(({ component: c, dispatch }, i) => {
-      if (component !== c) {
-        return
+  componentWillUnmount(...args) {
+    this.observers.forEach((observer) => {
+      observer.unsubscribe(this.weakUpdate)
+      // destroy single instances
+      if (isInstanceOf(observer, SingleInstanceBase)) {
+        observer.destroy()
       }
-
-      this.observers.forEach((observer) => {
-        observer.unsubscribe(dispatch)
-      })
-
-      // delete this emitter
-      this.emitters.splice(i, 1)
     })
+    this.observers = null
+    super.componentWillUnmount(...args)
   }
-
-  onStart() {}
-  onUpdate() {}
-  onEnd() {}
 }

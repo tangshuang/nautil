@@ -1,4 +1,4 @@
-import { assign, createProxy, isFunction, isObject, isEqual, isArray } from 'ts-fns'
+import { assign, createProxy, isFunction, isObject, isEqual, isArray, isString, each, isInstanceOf, getConstructorOf } from 'ts-fns'
 import produce from 'immer'
 import { isValidElement } from 'react'
 import { Stream } from './core/stream.js'
@@ -143,11 +143,17 @@ export class SingleInstanceBase {
       if (isInstanceOf(value, Stream)) {
         value.complete()
       }
-      delete this[key]
+      // auto destroy refer objects, if it is a single instance, it will trigger its static destroy
+      if (value && isFunction(value.destroy) && !value.destroy.length) {
+        value.destroy()
+      }
+      this[key] = null
     })
+
+    // destroy single instance
     const Constructor = getConstructorOf(this)
     if (Constructor.__instance === this) {
-      delete Constructor.__instance
+      Constructor.destroy()
     }
   }
 
@@ -158,6 +164,10 @@ export class SingleInstanceBase {
 
   static instance() {
     const Constructor = this
+
+    Constructor.__instanced = Constructor.__instanced || 0
+    Constructor.__instanced ++
+
     if (Constructor.__instance) {
       return Constructor.__instance
     }
@@ -170,8 +180,12 @@ export class SingleInstanceBase {
 
   static destroy() {
     const Constructor = this
-    if (delete Constructor.__instance) {
-      delete delete Constructor.__instance
+
+    Constructor.__instanced = Constructor.__instanced || 0
+    Constructor.__instanced --
+
+    if (Constructor.__instance && Constructor.__instanced <= 0) {
+      Constructor.__instance = null
     }
   }
 }
@@ -194,9 +208,15 @@ export function parseSearch(search) {
   return params
 }
 
+/**
+ * resolve the url
+ * @param {string} dir relative to this dir path
+ * @param {string} to given target path
+ * @returns url path begin with /
+ */
 export function resolveUrl(dir, to) {
-  const roots = (dir || '').split('/')
-  const blocks = (to || '').split('/')
+  const roots = (dir || '').split('/').filter(item => item)
+  const blocks = (to || '').split('/').filter(item => item)
   while (true) {
     const block = blocks[0]
     if (block === '..') {
@@ -211,7 +231,7 @@ export function resolveUrl(dir, to) {
     }
   }
 
-  const url = `${roots.length ? '/' : ''}${roots.join('/')}${blocks.length ? '/' : ''}${blocks.join('/')}`
+  const url = `${roots.length ? '/' : ''}${roots.join('/')}${blocks.length ? '/' : ''}${blocks.join('/')}` || '/'
   return url
 }
 
@@ -219,4 +239,41 @@ export function revokeUrl(abs, url) {
   const href = abs ? url.replace(abs, '') : url
   // /a/b -> a/b
   return href ? href.substring(1) : ''
+}
+
+export function parseClassNames(classNames, cssRules) {
+  let items = []
+  if (isString(classNames)) {
+    items = classNames.split(' ').map((className) => {
+      if (cssRules[className]) {
+        return cssRules[className]
+      }
+
+      const key = camelCase(className)
+      if (cssRules[key]) {
+        return cssRules[key]
+      }
+
+      // use self
+      return className
+    })
+  }
+  else if (isArray(classNames)) {
+    items = classNames
+      .map(item => isString(item) ? parseClassNames(item, cssRules) : item)
+      .filter(item => isString(item) || isObject(item))
+      .reduce((items, arr) => items.push(...arr), [])
+  }
+
+  // return stylesheet with objects
+  // only used when passed into `stylesheet` of internal components
+  // i.e. <Section stylesheet={this.css('some-1 some-2')}></Section>
+  if (items.some(item => isObject(item))) {
+    return items
+  }
+  // return string class list
+  // only used in DOM
+  else {
+    return items.join(' ')
+  }
 }
