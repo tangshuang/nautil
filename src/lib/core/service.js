@@ -9,7 +9,8 @@ export class Service extends SingleInstanceBase {
 
     const Constructor = getConstructorOf(this)
     const streams = []
-    each(Constructor, (Item, key) => {
+    each(Constructor, (_, key) => {
+      const Item = Constructor[key]
       if (Item && isInheritedOf(Item, Service)) {
         this[key] = Item.instance()
       }
@@ -21,7 +22,7 @@ export class Service extends SingleInstanceBase {
         this[key] = stream$
         streams.push([stream$, Item])
       }
-    })
+    }, true)
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([stream$, fn]) => fn.call(this, stream$))
     this.init()

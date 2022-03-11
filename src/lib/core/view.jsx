@@ -30,7 +30,8 @@ export class View extends Component {
 
     const Constructor = getConstructorOf(this)
     const streams = []
-    each(Constructor, (Item, key) => {
+    each(Constructor, (_, key) => {
+      const Item = Constructor[key]
       if (Item && isInheritedOf(Item, DataService)) {
         this[key] = Item.instance()
         // notice that, any data source change will trigger the rerender
@@ -74,7 +75,7 @@ export class View extends Component {
           components.push([key, C])
         }
       }
-    })
+    }, true)
 
     // subscribe to observers
     // should must before components registering
@@ -126,15 +127,15 @@ export class View extends Component {
 
     const E = collect ? evolve(collect)(component) : component
 
-    const view = this
+    const observers = this.observers
     class G extends Component {
       onMounted() {
-        view.observers.forEach((observer) => {
+        observers.forEach((observer) => {
           observer.subscribe(this.weakUpdate)
         })
       }
       onUnmount() {
-        view.observers.forEach((observer) => {
+        observers.forEach((observer) => {
           observer.unsubscribe(this.weakUpdate)
         })
       }
@@ -163,7 +164,6 @@ export class View extends Component {
         observer.destroy()
       }
     })
-    this.observers = null
     super.componentWillUnmount(...args)
   }
 }

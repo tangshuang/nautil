@@ -139,21 +139,28 @@ export function camelCase(str) {
 
 export class SingleInstanceBase {
   destroy() {
-    each(this, (value, key) => {
-      if (isInstanceOf(value, Stream)) {
-        value.complete()
-      }
-      // auto destroy refer objects, if it is a single instance, it will trigger its static destroy
-      if (value && isFunction(value.destroy) && !value.destroy.length) {
-        value.destroy()
-      }
-      this[key] = null
-    })
-
     // destroy single instance
     const Constructor = getConstructorOf(this)
     if (Constructor.__instance === this) {
       Constructor.destroy()
+      this.isDied = Constructor.__instanced <= 0
+    }
+    else {
+      this.isDied = true
+    }
+
+    if (this.isDied) {
+      each(this, (value, key) => {
+        if (isInstanceOf(value, Stream)) {
+          value.complete()
+          this[key] = null
+        }
+        // auto destroy refer objects, if it is a single instance, it will trigger its static destroy
+        else if (value && isFunction(value.destroy) && !value.destroy.length) {
+          value.destroy()
+          this[key] = null
+        }
+      })
     }
   }
 
@@ -172,6 +179,9 @@ export class SingleInstanceBase {
       return Constructor.__instance
     }
     else {
+      if (Constructor.__instanceDefer) {
+        clearTimeout(Constructor.__instanceDefer)
+      }
       const instance = new Constructor()
       Constructor.__instance = instance
       return instance
@@ -185,7 +195,10 @@ export class SingleInstanceBase {
     Constructor.__instanced --
 
     if (Constructor.__instance && Constructor.__instanced <= 0) {
-      Constructor.__instance = null
+      // delay delete, because we may create a instance in a short time
+      Constructor.__instanceDefer = setTimeout(() => {
+        Constructor.__instance = null
+      }, 32)
     }
   }
 }

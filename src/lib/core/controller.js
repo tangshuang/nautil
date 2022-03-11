@@ -24,7 +24,8 @@ export class Controller extends SingleInstanceBase {
 
     const Constructor = getConstructorOf(this)
     const streams = []
-    each(Constructor, (Item, key) => {
+    each(Constructor, (_, key) => {
+      const Item = Constructor[key]
       if (Item && isInheritedOf(Item, DataService)) {
         this[key] = Item.instance()
         // notice that, any data source change will trigger the rerender
@@ -50,7 +51,7 @@ export class Controller extends SingleInstanceBase {
         this[key] = stream$
         streams.push([Item, stream$])
       }
-    })
+    }, true)
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([fn, stream$]) => fn.call(this, stream$))
 
@@ -68,6 +69,9 @@ export class Controller extends SingleInstanceBase {
   }
 
   unsubscribe(fn) {
+    if (this.isDied) {
+      return
+    }
     this.emitters = this.emitters.filter(item => item !== fn)
   }
 
@@ -78,10 +82,14 @@ export class Controller extends SingleInstanceBase {
   }
 
   destroy() {
-    this.observers.forEach(({ stop }) => stop())
-    this.observers = null
-    this.emitters = null
     super.destroy()
+
+    // when controller is not active, clear all
+    if (this.isDied) {
+      this.observers.forEach(({ stop }) => stop())
+      this.observers = null
+      this.emitters = null
+    }
   }
 
   observe(observer) {
