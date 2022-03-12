@@ -21,8 +21,7 @@ export { Audio } from '../dom/elements/audio.jsx'
 export { Video } from '../dom/elements/video.jsx'
 export { Webview } from '../dom/elements/webview.jsx'
 
-export { Navigation } from '../dom/navigation/navigation.js'
-export { Link } from '../dom/navigation/link.jsx'
 export { Storage } from '../dom/storage/storage.js'
+export { Router } from '../dom/router/router.jsx'
 
 export { define } from './define.js'
