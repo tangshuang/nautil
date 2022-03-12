@@ -334,15 +334,11 @@ export function useRouteMatch() {
   }
 
   return (pattern) => {
-    if (!currentPath) {
-      return false
-    }
-
     if (pattern === currentPath) {
       return true
     }
 
-    if (pattern instanceof RegExp && pattern.test(currentPath)) {
+    if (pattern && pattern instanceof RegExp && pattern.test(currentPath)) {
       return true
     }
 
