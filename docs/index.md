@@ -23,7 +23,6 @@
 - Router
   - [Router](router/router.md)
   - [Configuration](router/config.md)
-  - [Router API](router/api.md)
 
 - Components
   - [If/ElseIf/Else](components/if-else.md)

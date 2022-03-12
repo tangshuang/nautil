@@ -1,6 +1,6 @@
 import { Component } from './component.js'
 import { createContext, useContext } from 'react'
-import { RouterProvider } from '../router/router.jsx'
+import { RouterRootProvider } from '../router/router.jsx'
 import { I18nProvider } from '../i18n/i18n.jsx'
 
 const bootstrapperContext = createContext()
@@ -16,11 +16,11 @@ export function createBootstrap(options) {
       const { Provider } = bootstrapperContext
       return (
         <Provider value={true}>
-          <RouterProvider value={router}>
+          <RouterRootProvider value={router}>
             <I18nProvider value={i18n}>
               <C {...props} />
             </I18nProvider>
-          </RouterProvider>
+          </RouterRootProvider>
         </Provider>
       )
     }

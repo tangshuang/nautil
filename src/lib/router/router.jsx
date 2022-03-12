@@ -3,13 +3,19 @@ import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
 
-const absContext = createContext('')
-const routerContext = createContext()
+const rootContext = createContext()
+const absContext = createContext({
+  abs: '',
+  deep: [],
+})
+const routeContext = createContext({})
+const routerContext = createContext({})
 
-export function RouterProvider({ value, children }) {
-  const parent = useContext(routerContext)
+export function RouterRootProvider({ value, children }) {
+  // this Provider can only be used once in one application
+  const parent = useContext(rootContext)
   if (parent) {
-    throw new Error('[Nautil]: RouterProvider can only be used on your root application component with createBootstrap')
+    throw new Error('[Nautil]: RouterRootProvider can only be used on your root application component with createBootstrap')
   }
 
   const getMode = (mode) => {
@@ -62,7 +68,7 @@ export function RouterProvider({ value, children }) {
     }
   }, [value])
 
-  const { Provider } = routerContext
+  const { Provider } = rootContext
 
   return (
     <Provider value={ctx}>
@@ -166,67 +172,66 @@ export class Router {
     }
   }
 
-  Link = Link
-  useListener = useHistoryListener
-  useLocation = useLocation
-  useNavigate = useNavigate
+  Link = Link.bind(this)
+  useLocation = useLocation.bind(this)
+  useNavigate = useNavigate.bind(this)
+  useListener = useHistoryListener.bind(this)
+  useParams = useRouteParams.bind(this)
+  useMatch = useRouteMatch.bind(this)
 
   Outlet = (props) => {
-    const abs = useContext(absContext)
-    const { history, mode } = useContext(routerContext)
+    const forceUpdate = useForceUpdate()
+    useHistoryListener(forceUpdate)
+
+    const { history, mode } = useContext(rootContext)
+    const { abs, deep } = useContext(absContext)
+    const { current: parent } = useContext(routerContext)
 
     const url = history.$getUrl(abs, mode)
     const state = this.parseUrlToState(url)
-
-    const forceUpdate = useForceUpdate()
-    this.useListener(forceUpdate)
 
     const { component: C, path, params } = state
-    const { Provider } = absContext
-    const absPath = resolveUrl(abs, path)
+
+    const absInfo = useMemo(() => {
+      const newAbs = resolveUrl(abs, path)
+      const newDeep = [...deep, path]
+      return {
+        abs: newAbs,
+        deep: newDeep,
+      }
+    }, [url])
+
+    const routeInfo = useMemo(() => {
+      return {
+        abs,
+        url,
+        path,
+        params,
+      }
+    }, [url])
+
+    const routerInfo = useMemo(() => {
+      return {
+        abs,
+        deep,
+        current: this,
+        parent,
+      }
+    }, [abs])
+
+    const { Provider: AbsProvider } = absContext
+    const { Provider: RouteProvider } = routeContext
+    const { Provider: RouterProvider } = routerContext
 
     return (
-      <Provider value={absPath}>
-        <C params={params} {...props} />
-      </Provider>
+      <AbsProvider value={absInfo}>
+        <RouterProvider value={routerInfo}>
+          <RouteProvider value={routeInfo}>
+            <C {...props} />
+          </RouteProvider>
+        </RouterProvider>
+      </AbsProvider>
     )
-  }
-
-  useParams = () => {
-    const abs = useContext(absContext)
-    const { history, mode } = useContext(routerContext)
-
-    const forceUpdate = useForceUpdate()
-    this.useListener(forceUpdate)
-
-    const url = history.$getUrl(abs, mode)
-    const state = this.parseUrlToState(url)
-    const { params } = state
-    return params
-  }
-
-  useMatch = () => {
-    const abs = useContext(absContext)
-    const { history, mode } = useContext(routerContext)
-
-    const forceUpdate = useForceUpdate()
-    this.useListener(forceUpdate)
-
-    return (pattern) => {
-      const url = history.$getUrl(abs, mode)
-      const state = this.parseUrlToState(url)
-      const { path } = state
-
-      if (pattern === path) {
-        return true
-      }
-
-      if (pattern instanceof RegExp && pattern.test(path)) {
-        return true
-      }
-
-      return false
-    }
   }
 
   static $createLink(data) {
@@ -235,46 +240,112 @@ export class Router {
 }
 
 export function Link(props) {
-  const { to, replace, open, ...attrs } = props
+  const { to, replace, open, params, ...attrs } = props
 
-  const abs = useContext(absContext)
-  const { history, mode } = useContext(routerContext)
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
 
-  const href = history.$makeUrl(to, abs, mode)
-  const navigate = () => history.$setUrl(to, abs, mode, replace)
+  const { history, mode } = useContext(rootContext)
+  const { abs } = useContext(absContext)
+  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+
+  const navigateTo = useNavigate()
+
+  const href = history.$makeUrl(to, currentRouterAbs, mode, params)
+  const navigate = () => navigateTo(to, params, replace)
   return Router.$createLink({ ...attrs, href, open, navigate })
 }
 
 export function useNavigate() {
-  const abs = useContext(absContext)
-  const { history, mode } = useContext(routerContext)
-
   const forceUpdate = useForceUpdate()
   useHistoryListener(forceUpdate)
 
-  return (to, replace) => {
-    history.$setUrl(to, abs, mode, replace)
+  const { history, mode } = useContext(rootContext)
+  const { abs } = useContext(absContext)
+  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+
+  return (to, params, replace) => {
+    history.$setUrl(to, currentRouterAbs, mode, params, replace)
   }
 }
 
 export function useLocation() {
-  const abs = useContext(absContext)
-  const { history, mode } = useContext(routerContext)
-
   const forceUpdate = useForceUpdate()
   useHistoryListener(forceUpdate)
 
-  const url = history.$getUrl(abs, mode)
-  const { pathname, search, hash } = parseUrl(url)
-  const query = parseSearch(search)
+  const { deep } = useContext(absContext)
+  const { history } = useContext(rootContext)
 
-  return { pathname, search, query, hash, url }
+  return {
+    ...history.location,
+    route: deep,
+  }
 }
 
-function useHistoryListener(fn) {
-  const { history } = useContext(routerContext)
+export function useHistoryListener(fn) {
+  const { history } = useContext(rootContext)
   useEffect(() => {
     history.listen(fn)
     return () => history.unlisten(fn)
   }, [])
+}
+
+export function useRouteParams() {
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
+
+  const { abs } = useContext(absContext)
+  const { history, mode } = useContext(rootContext)
+  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+  const { params: routeParams } = useContext(routeContext)
+
+  // top level use
+  if (this && this instanceof Router) {
+    const url = history.$getUrl(currentRouterAbs, mode)
+    const { params } = this.parseUrlToState(url)
+    return params
+  }
+  else if (routeParams) {
+    return routeParams
+  }
+  else {
+    return {}
+  }
+}
+
+export function useRouteMatch() {
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
+
+  const { abs } = useContext(absContext)
+  const { history, mode } = useContext(rootContext)
+  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+  const { path: routePath } = useContext(routeContext)
+
+  let currentPath = null
+  // top level use
+  if (this && this instanceof Router) {
+    const url = history.$getUrl(currentRouterAbs, mode)
+    const { path } = this.parseUrlToState(url)
+    currentPath = path
+  }
+  else if (routePath) {
+    currentPath = routePath
+  }
+
+  return (pattern) => {
+    if (!currentPath) {
+      return false
+    }
+
+    if (pattern === currentPath) {
+      return true
+    }
+
+    if (pattern instanceof RegExp && pattern.test(currentPath)) {
+      return true
+    }
+
+    return false
+  }
 }

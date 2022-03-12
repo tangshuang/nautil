@@ -65,6 +65,9 @@ export class Controller extends SingleInstanceBase {
   init() {}
 
   subscribe(fn) {
+    if (this.isDied) {
+      return
+    }
     this.emitters.push(fn)
   }
 
@@ -86,7 +89,7 @@ export class Controller extends SingleInstanceBase {
 
     // when controller is not active, clear all
     if (this.isDied) {
-      this.observers.forEach(({ stop }) => stop())
+      this.observers?.forEach(({ stop }) => stop())
       this.observers = null
       this.emitters = null
     }

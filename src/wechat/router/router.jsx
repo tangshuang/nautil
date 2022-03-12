@@ -1,7 +1,7 @@
 import { mixin } from 'ts-fns'
 import { Router } from '../../lib/router/router.jsx'
 import { History } from '../../lib/router/history.js'
-import { resolveUrl, revokeUrl } from '../../lib/utils.js'
+import { resolveUrl, revokeUrl, paramsToUrl } from '../../lib/utils.js'
 
 class WechatHistory extends History {
   $getUrl(abs, mode) {
@@ -16,8 +16,8 @@ class WechatHistory extends History {
     const url = decodeURIComponent(search)
     return revokeUrl(root, url)
   }
-  $setUrl(to, abs, mode, replace) {
-    const url = this.$makeUrl(to, abs, mode)
+  $setUrl(to, abs, mode, params, replace) {
+    const url = this.$makeUrl(to, abs, mode, params)
     if (replace) {
       wx.redirectTo({
         path: url,
@@ -29,10 +29,10 @@ class WechatHistory extends History {
       })
     }
   }
-  $makeUrl(to, abs, mode) {
-    const { query, base } = mode
-    const root = resolveUrl(base, abs)
-    const url = resolveUrl(root, to)
+  $makeUrl(to, abs, mode, params) {
+    const { query } = mode
+
+    const url = this.$discernUrl(to, abs, mode, params)
     const encoded = encodeURIComponent(url)
 
     const pages = getCurrentPages()

@@ -290,3 +290,7 @@ export function parseClassNames(classNames, cssRules) {
     return items.join(' ')
   }
 }
+
+export function paramsToUrl(params) {
+  return Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
+}

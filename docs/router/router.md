@@ -14,7 +14,7 @@ const bootstrap = createBootstrap({
   i18n: {},
 })
 
-const { Outlet, Link, useMatch, useLocation, useParams, useNavigate, useListen } = new Router(config)
+const { Outlet } = new Router(config)
 ```
 
 For a Module it always handle multiple views which is managed by Router. Use `Outlet` to placement at view area. After `History` changed, `Outlet` will give the mathed component view.
@@ -52,6 +52,12 @@ The last 4 modes support passing base url, for example:
 
 With this, your application will be visited by `/web/app/page1` which begin with `/web`.
 
+## Outlet
+
+A component to display view based on router context.
+
+Which component to display is determined by router's routes, the component will receive props which you pass into `Outlet`.
+
 ## Link
 
 ```js
@@ -63,11 +69,11 @@ A component to create a hyperlink to certain route and display its component.
 - to: path of certain route
 - replace: boolean, whether replace current router history state
 - open: boolean, whether open the target in a new view
+- params: path search query to url after to path
 
 ```js
 <Link to={`detail/${id}`} replace>Detail</Link>
 ```
-
 
 ## useLocation
 
@@ -75,13 +81,13 @@ A component to create a hyperlink to certain route and display its component.
 import { useLocation } from 'nautil'
 ```
 
-Get current route context location.
+Get current location info.
 
 ```js
-const { pathname, search, hash, query, url } = useLocation()
+const { pathname, search, hash, query, href, route } = useLocation()
 ```
 
-For exmaple, current route is `{ path: 'detail/:id' }`, you may get `pathname=detail/1`.
+`route` give you the info about router deep path.
 
 ## useNavigate
 
@@ -92,9 +98,58 @@ import { useNavigate } from 'nautil'
 ```js
 const navigate = useNavigate()
 
-navigate(`detail/${id}`, false)
+navigate(`detail/${id}`, {}, false)
 ```
 
 ```
-navigate(to:string, replace:boolean)
+navigate(to:string, params:object, replace:boolean)
 ```
+
+**cross modules**
+
+`navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `///abs/path` as `to`. Begining with `///` and absolute url path will trigger history change with absolute path.
+
+## useRouteMatch
+
+Give a path or RegExp to check whether it match current route context.
+
+```js
+import { useRouteMatch } from 'nautil'
+
+const match = useRouteMatch()
+const bool = match('detail')
+```
+
+## useRouteParams
+
+Get current route context params. However, params are passed by props.
+
+```js
+import { useRouteParams } from 'nautil'
+
+const params = useRouteParams()
+```
+
+## useHistoryListener
+
+Listen to router history change.
+
+```js
+import { useHistoryListener } from 'nautil'
+
+useHistoryListener(() => {
+  // ...
+})
+```
+
+## API
+
+A Router instance has the followings:
+
+- Outlet
+- Link
+- useLocation
+- useNavigate
+- useListener -> useHistoryListener
+- useParams -> useRouteParams
+- useMatch -> useHistoryListener

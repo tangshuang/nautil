@@ -1,4 +1,4 @@
-import { parseUrl, parseSearch, resolveUrl, revokeUrl } from '../utils.js'
+import { parseUrl, parseSearch, resolveUrl, revokeUrl, paramsToUrl } from '../utils.js'
 import { isInheritedOf } from 'ts-fns'
 import { Storage } from '../storage/storage.js'
 
@@ -47,8 +47,8 @@ export class History {
    * @param {*} abs
    * @param {*} mode
    */
-  $setUrl(to, abs, mode, replace) {
-    const url = this.$makeUrl(to, abs, mode)
+  $setUrl(to, abs, mode, params, replace) {
+    const url = this.$makeUrl(to, abs, mode, params)
     return this[replace ? 'replace' : 'push'](url)
   }
 
@@ -59,10 +59,21 @@ export class History {
    * @param {*} mode
    * @returns
    */
-  $makeUrl(to, abs, mode) {
+  $makeUrl(to, abs, mode, params) {
+    return this.$discernUrl(to, abs, mode, params)
+  }
+  $discernUrl(to, abs, mode, params) {
+    const search = (params ? '?' + paramsToUrl(params) : '')
+
+    if (to.indexOf('///') === 0) {
+      const url = to.substring(2)
+      return url + search
+    }
+
     const { base } = mode
     const root = resolveUrl(base, abs)
-    return resolveUrl(root, to)
+    const url = resolveUrl(root, to)
+    return url + search
   }
 
   replace() {
