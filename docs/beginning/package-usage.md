@@ -4,9 +4,7 @@
 import { Component } from 'nautil'
 ```
 
-You should must use building tools to transform the source code, we did not provide runtime package.
-
-We recommand use `nautil-cli` to build even through it is not nessesary.
+We recommand use `nautil-cli` to build even though it is not nessesary.
 Your building tool should must support rewrite `process.env.NODE_ENV` to real env vars.
 
 Nautil is using ES6 `Proxy` to implement reactive system, so your building targets should must support `Proxy`.
@@ -25,12 +23,6 @@ To render Nautil components, you should import renderer from different platform 
 
 ```js
 import { mount, update, unmount } from 'nautil/dom'
-```
-
-Nautil almost exports all APIs in main/top entry file, however, the following are not:
-
-```js
-import HyperJSONService from 'nautil/lib/services/hyperjson-service'
 ```
 
 Nautil is based on react@^16.8 and use react@17.x inside, if your project are using higher version (i.e. react@18.x), you should use inner React to render nautil components:

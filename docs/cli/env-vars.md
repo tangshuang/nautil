@@ -1,6 +1,6 @@
 # Env Vars
 
-You can use `process.env.VAR_NAME` in your code and it will be replaced with given env vars.
+You can use `process.env.NODE_ENV` in your code and it will be replaced with given env vars.
 
 There are 3 way to give env vars:
 
@@ -9,6 +9,8 @@ There are 3 way to give env vars:
 Create a `.env` file into your project root dir.
 
 It should follow [dotenv](https://www.npmjs.com/package/dotenv) rules.
+
+You will find a `.env_sample` file in your project dir after init.
 
 **export**
 

@@ -18,10 +18,6 @@ class SomeView extends View {
   static someModel = SomeModel // Model -> this.someModel
   static someDataService = SomeDataService // DataService -> this.someDataService
   static someService = SomeService // Service -> this.someService (single instance)
-  static count$(stream$) { // stream$() -> this.count$
-    // here you can use this point to Controller instance
-    stream$.pipe(...).subscribe(...)
-  }
   static store = Store // Store -> this.store, used as state helper
 
   // a component

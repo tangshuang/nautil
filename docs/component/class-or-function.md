@@ -99,3 +99,15 @@ class Some extends Component {
   }
 }
 ```
+
+## extend
+
+Create a new Component by using `extend` static method:
+
+```js
+const NewSomeComponent = SomeComponent.extend({
+  stylesheet: [], // merge this stylesheet to origin stylesheet
+  props: {}, // merge these props to origin props
+  deprecated: [], // delete props from these prop names
+})
+```

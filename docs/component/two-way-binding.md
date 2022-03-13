@@ -1,6 +1,6 @@
 # Two-Way-Binding
 
-In nautil.js we can use two-way-binding props. The props which begin with `$` are two-way-binding props.
+In Nautil.Component we can use two-way-binding props. The props which begin with `$` are two-way-binding props.
 
 To know more, we should follow:
 
@@ -11,6 +11,7 @@ React primitive components and functional components do not support two-way-bind
 - $prop: pass a prop with `$` beginning outside a class component which extended from Nautil.Component
 - this.attrs: receive original attributes
 - this.$attrs: proxied attributes which can be modified directly (even in deep nodes)
+- this.$state: proxied state which can be modified directly (event in deep nodes)
 
 ```js
 import { Component } from 'nautil'
@@ -70,12 +71,12 @@ The props which begin with `$` will be treated as two-way-binding.
 No matter whether the component will receive the prop as two-way-binding prop or not, nautil will parse it as two-way-binding. (So don't define your normal prop begin with `$`.)
 
 ```js
-import { createTwoWayBinding } from 'nautil'
+import { useTwoWayBindingAttrs } from 'nautil'
 
 function B(props) {
   // we pass show as a two-way-binding prop outside the component
-  const show = createTwoWayBinding(props.show, show => props.toggle(show))
-  return <A $show={show} />
+  const [attrs, $attrs] = useTwoWayBindingAttrs(props)
+  return <A $show={[attrs.show, show => $attrs.show = show]} />
 }
 
 function C(props) {
@@ -170,45 +171,3 @@ function C() {
 ```
 
 As you seen, we use two-way-binding with `useState` excellently. This is the most prefect way in function components.
-
-**createTwoWayBinding**
-
-```
-const proxy = createTwoWayBinding(value, updator?)
-const $twoWayBinding:[value, updator] = proxy.myProp // $twoWayBinding is a tuple description of 'myProp' for two-way-binding prop
-```
-
-This function is a special function to get a two-way-binding object which is going to be passed into sub components.
-
-```js
-class D extends Component {
-  state = {
-    show: false,
-  }
-  render() {
-    const $state = createTwoWayBinding(this.$state) // this.$state is a proxy for this.state
-    // $state.show -> [state.show, show => state.show = show]
-    return <A $show={$state.show} />
-  }
-}
-```
-
-In the previous code, when inside `A` change the `show`'s value, `store.state.show` will be changed.
-
-It can receive two arguments:
-
-- data: object, which to be proxied
-- update: opitonal, function to be called when state.show changed
-
-We only pass `update` when we pass a normal object as `data`.
-
-**useTwoWayBinding**
-
-Sometimes, you want to use two-way-binding in functional components, you can use `useTwoWayBinding` hook.
-
-```js
-function MyComponent(props) {
-  const [attrs, $attrs] = useTwoWayBinding(props)
-  // ...
-}
-```

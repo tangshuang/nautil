@@ -1,5 +1,4 @@
-import { assign, createProxy, isFunction, isObject, isEqual, isArray, isString, each, isInstanceOf, getConstructorOf } from 'ts-fns'
-import produce from 'immer'
+import { createProxy, isFunction, isObject, isEqual, isArray, isString, each, isInstanceOf, getConstructorOf } from 'ts-fns'
 import { isValidElement } from 'react'
 import { Stream } from './core/stream.js'
 
@@ -9,51 +8,18 @@ import { Stream } from './core/stream.js'
 export function noop() {}
 
 /**
- * create a two-way-bind value:
- * pass:
- *   <Some $value={[state.value, value => state.value = value]} />
- * now:
- *   const $state = createTwoWayBinding(state)
- *   <Some $value={$state.value} />
- * @param {*} data
- * @param {*} update
+ * @param {object} data
+ * @param {function} updator (data, key, value) => void
+ * @param {boolean} [formalized] whether to generate formalized two-way-binding like [value, update]
  */
-export function createTwoWayBinding(data, update) {
-  const reactive = (data, keyPath, value) => {
-    // use passed update
-    if (isFunction(update)) {
-      const next = produce(data, data => {
-        assign(data, keyPath, value)
-      })
-      update(next, keyPath, value)
-    }
-    // update data directly
-    else {
-      assign(data, keyPath, value)
-    }
-  }
+export function createTwoWayBinding(data, updator, formalized) {
   const proxy = createProxy(data, {
     get(keyPath, value) {
-      return [value, value => reactive(data, keyPath, value)]
+      return formalized ? [value, value => updator(data, keyPath, value)] : value
     },
-    receive(...args) {
-      const [keyPath, value] = args
-      // delete a property
-      if (args.length === 1) {
-        // use passed update
-        if (isFunction(update)) {
-          const next = produce(data, data => {
-            remove(data, keyPath)
-          })
-          update(next, keyPath)
-        }
-        // update data directly
-        else {
-          remove(data, keyPath)
-        }
-      }
-      else {
-        reactive(data, keyPath, value)
+    receive(keyPath, value) {
+      if (!formalized) {
+        updator(value, keyPath, data)
       }
     },
     writable() {
@@ -64,6 +30,20 @@ export function createTwoWayBinding(data, update) {
     },
   })
   return proxy
+}
+
+export function ensureTwoWayBinding(origin, binding) {
+  return new Proxy(origin, {
+    get: (_, key) => {
+      return [origin[key], value => binding[key] = value]
+    },
+    set: () => {
+      return false
+    },
+    deleteProperty: () => {
+      return false
+    },
+  })
 }
 
 export function createPlaceholderElement(placeholder) {

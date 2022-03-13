@@ -17,10 +17,10 @@ You should run `nautil init` in an empty directory or an exisiting project direc
 ## build
 
 ```
-nautil build <source>
+nautil build <app>
 ```
 
-Build a source, `source` stands for a dir name in `src` dir. The dest dir is `dist/<source>`.
+Build a app, `app` stands for a dir name in `src/apps` dir. The dest dir is `dist/<app>`.
 
 Notice, `NODE_ENV` makes sense. For example:
 
@@ -33,7 +33,7 @@ This will make your code without minified.
 ## dev
 
 ```
-nautil dev <source>
+nautil dev <app>
 ```
 
 Setup a devserver / watching task to help you develop and preview.
@@ -55,15 +55,19 @@ Install some dependencies:
 ## run
 
 ```
-nautil run <os> [source]
+nautil run <app> <io>
 ```
 
-If you are developing a native app, you can use this command instead of `dev` command. For example:
+`io` can be `android` `ios` `electron`.
 
 ```
-nautil run ios
+nautil run my-app ios
 ```
 
 This will serve up a metro building to preview an ios app.
 
-`source` is optional, because it only works for native sources.
+## pack
+
+```
+nautil pack <app> <io>
+```

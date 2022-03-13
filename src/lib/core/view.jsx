@@ -2,7 +2,6 @@ import { memo, Component as ReactComponent } from 'react'
 import { Store } from '../store/store.js'
 import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
 import { Component } from './component.js'
-import { Stream } from './stream.js'
 import { evolve } from '../operators/operators.js'
 import { Controller } from './controller.js'
 import { Service } from './service.js'
@@ -61,11 +60,6 @@ export class View extends Component {
       else if (Item && isInheritedOf(Item, Controller)) {
         this[key] = Item.instance()
         observers.push(this[key])
-      }
-      else if (isFunction(Item) && key[key.length - 1] === '$') {
-        const stream$ = new Stream()
-        this[key] = stream$
-        streams.push([Item, stream$])
       }
       else if (isFunction(Item) || isInstanceOf(Item, ReactComponent)) {
         const charCode = key.charCodeAt(0)

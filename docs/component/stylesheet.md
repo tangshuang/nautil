@@ -80,7 +80,7 @@ class MyComponent extends Component {
 
   render() {
     return (
-      <Section stylesheet={[this.css.a, this.css.b, this.css.c]}>
+      <Section stylesheet={this.css('a b c')}>
         ...
       </Section>
     )

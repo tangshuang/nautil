@@ -59,3 +59,16 @@ Read [more](https://tyshemo.js.org) for type checking.
 ## Optimization
 
 `props` static property only works in development mode, when you run CLI in production mode, props checking will be dropped, and the `props` static property will be removed from source code by Nautil-CLI.
+
+## Async Checking
+
+If you give `props` as a function, props type checking will run asyncly.
+
+```js
+class SomeComponent extends Component {
+  static props = () => ({
+    name: String,
+    age: Number,
+  })
+}
+```

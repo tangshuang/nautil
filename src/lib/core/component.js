@@ -22,7 +22,7 @@ import Stream from './stream.js'
 import Style from '../style/style.js'
 import ClassName from '../style/classname.js'
 import { Binding, Handling } from '../types.js'
-import { noop, isRef, isShallowEqual, parseClassNames } from '../utils.js'
+import { noop, isRef, isShallowEqual, parseClassNames, createTwoWayBinding } from '../utils.js'
 
 export class PrimitiveComponent extends ReactComponent {
   constructor(props) {
@@ -67,19 +67,30 @@ export class Component extends PrimitiveComponent {
     define(this, 'forceUpdate', { value: this.forceUpdate.bind(this) })
     define(this, 'weakUpdate', { value: this.weakUpdate.bind(this) })
 
+    // state should be declare here
     this.init()
 
     this._digest(props)
 
-    this.$state = this.state && createProxy(this.state, {
-      receive: (keyPath, value) => {
-        this.update(keyPath, value)
-      },
-      writable() {
-        return false
-      },
-      disable(_, value) {
-        return isValidElement(value) || isRef(value)
+    let $state = null
+    define(this, '$state', () => {
+      if ($state) {
+        return $state
+      }
+      if (this.state) {
+        $state = createTwoWayBinding(this.state, (value, keyPath) => {
+          this.update(keyPath, value)
+        })
+        return $state
+      }
+      return null
+    })
+
+    const setState = this.setState.bind(this)
+    define(this, 'setState', {
+      value: (...args) => {
+        $state = null // clear $state in order to rebuild $state
+        return setState(...args)
       },
     })
 

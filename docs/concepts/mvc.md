@@ -7,7 +7,7 @@ In Nautil, you have `Model` `Controller` `Component` `Service` to build a system
 `Rxjs` is used to response users' inputing in `Controller`, for example:
 
 ```js
-import { React, Controller, Component, Store, Section, Input, Text } from 'nautil'
+import { Controller, Store, View } from 'nautil'
 
 class MyController extends Controller {
   // Controller will initialize this.store of Store, and subscribe the changes to trigger rerendering
@@ -38,44 +38,44 @@ class MyController extends Controller {
       this.store.setState({ price, count, total })
     })
   }
+}
+
+class MyView extends View {
+  static controller = MyController
 
   // a method whose name begins with uppercase will be treated as a component
-  InputPrice() {
-    const { price } = this.store.getState()
+  static InputPrice() {
+    const { price } = this.controller.store.getState()
     return (
       <Section>
         <Text>Price:</Text>
-        <Input value={price} onChange={this.price$} />
+        <Input value={price} onChange={this.controller.price$} />
       </Section>
     )
   }
 
-  InputCount() {
-    const { count } = this.store.getState()
+  static InputCount() {
+    const { count } = this.controller.store.getState()
     return (
       <Section>
         <Text>Count:</Text>
-        <Input value={count} onChange={this.count$} />
+        <Input value={count} onChange={this.controller.count$} />
       </Section>
     )
   }
 
-  ShowTotal() {
-    const { total } = this.store.getState()
+  static ShowTotal() {
+    const { total } = this.controller.store.getState()
     return (
       <Section>
         <Text>Total: {total}</Text>
       </Section>
     )
   }
-}
-
-class MyComponent extends Component {
-  controller = new MyController()
 
   render() {
     // components defined by controller can be destructed
-    const { InputPrice, InputCount, ShowTotal } = this.controller
+    const { InputPrice, InputCount, ShowTotal } = this
 
     return (
       <Section>

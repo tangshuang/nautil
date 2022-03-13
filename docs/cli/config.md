@@ -4,24 +4,63 @@ Nautil-CLI is customized by a config file which lay at `.nautil/cli-config.json`
 
 ```json
 {
-  "version": "0.13.12",
-  "platforms": [
-    "dom"
-  ],
-  "typescript": true,
-  "alias": null,
-  "dll": false,
-  "chunks": false,
-  "define": null,
-  "clear": false,
+  // cli
+  "version": "CLI_VERSION", // the version of nautil-cli when init
+  "typescript": false, // whether support typescript?
+
+
+  // build
+  "alias": {
+    "react": "../node_modules/react", // relative to .nautil/cli-config.json
+  },
+  "chunks": false, // split chunks
+  "dll": false, // generate dll, higher priority than chunks
+  "define": {
+    "process.env.NODE_ENV": "process.env.NODE_ENV",
+    "MY_CONSTANT": "aaaa",
+    "SOME_VAR": "process.env.SOME_VAR"
+  },
+  "clear": true, // whether to clear dist dir before build
   "analyer": false,
   "sourceMap": true,
-  "devServer": null,
-  "hot": false,
+  "cache": false, // when true, nautil-cli will use cache feature
+
+
+  // dev server
+  "port": 9000,
+  "host": "127.0.0.1",
   "live": true,
-  "cache": false,
-  "env": {},
-  "source": {}
+  "hot": false, // override live
+  "proxy": {
+    "/api": "http://localhost:3000"
+  },
+
+
+  // env override
+  "env": {
+    "development": { // to override configs
+      "clear": false,
+      "analyer": true
+    }
+  },
+
+
+  // app configs
+  "apps": {
+    // you can run `nautil build my-app` to bundle scripts in `src/apps/my-app`
+    "my-app": {
+      "platform": "dom",
+
+      // build configs
+      "extensions": [
+        ".mobile.tsx",
+        ".mobile.jsx"
+      ],
+      "libaray": "my-app",
+      "libraryTarget": "umd",
+      "globalObject": "globalThis"
+    }
+  },
 }
 ```
 
@@ -122,12 +161,12 @@ Override configs with different env. For example:
 }
 ```
 
-**source**
+**apps**
 
 If you add a new directory into src and want to build it as a source, you should MUST define it here. For example:
 
 ```
-"source": {
+"apps": {
   "wx": {
     "platform": "dom",
     "extensions": [".esm"],
@@ -137,5 +176,3 @@ If you add a new directory into src and want to build it as a source, you should
   }
 }
 ```
-
-You can even use source to override an exisiting source configuration, for example `dom` `native` `wechat`.
