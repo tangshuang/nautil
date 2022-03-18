@@ -1,11 +1,23 @@
 import produce from 'immer'
-import { isObject } from 'ts-fns'
+import { isObject, getConstructorOf, assign } from 'ts-fns'
+import { createTwoWayBinding } from '../utils.js'
 
 export class Store {
-  constructor(initState = {}) {
-    this.state = initState
+  constructor(initState) {
+    const Constructor = getConstructorOf(this)
+    const origin = initState ? initState : Constructor.initState ? Constructor.initState() : {}
+
+    this.state = origin
     this._subscribers = []
-    this._origin = initState
+    this._origin = origin
+
+    if (origin && typeof origin === 'object') {
+      this.$state = createTwoWayBinding(this.state, (_, keyPath, value) => {
+        this.dispatch((state) => {
+          assign(state, keyPath, value)
+        })
+      })
+    }
 
     // bind to store, so that we can destruct from store
     this.dispatch = this.dispatch.bind(this)
@@ -40,6 +52,18 @@ export class Store {
     const prev = this.state
     const next = typeof update === 'function' ? produce(prev, update) : update
     this.state = next
+
+    if (next && typeof next === 'object') {
+      this.$state = createTwoWayBinding(this.state, (_, keyPath, value) => {
+        this.dispatch((state) => {
+          assign(state, keyPath, value)
+        })
+      })
+    }
+    else {
+      delete this.$state
+    }
+
     this._subscribers.forEach((fn) => {
       fn(next, prev)
     })

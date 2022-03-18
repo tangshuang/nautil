@@ -29,6 +29,15 @@ store.unsubscribe(fn)
 const state = store.getState()
 ```
 
+```js
+const { state } = store
+```
+
+```js
+const $state = store.$state
+$state.age ++ // -> store.dispatch(state => state.age ++)
+```
+
 ### resetState()
 
 Restore initialize state as current state.
@@ -70,3 +79,21 @@ function MyComponent() {
 ```
 
 Use `useStore` amoung different components.
+
+## static initState()
+
+```js
+class MyStore extends Store {
+  static initState() {
+    return {
+      name: 'tomy',
+      age: 10,
+    }
+  }
+}
+
+const store = new MyStore()
+store.$state.age ++
+
+store.state.age === 11
+```
