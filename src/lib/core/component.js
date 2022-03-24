@@ -67,6 +67,8 @@ export class Component extends PrimitiveComponent {
     define(this, 'forceUpdate', { value: this.forceUpdate.bind(this) })
     define(this, 'weakUpdate', { value: this.weakUpdate.bind(this) })
 
+    this.__init()
+
     // state should be declare here
     this.init()
 

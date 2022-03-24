@@ -38,7 +38,7 @@
     "react-native": "^0.66.4",
     "rxjs": "^7.5.1",
     "ts-fns": "^10.7.0",
-    "tyshemo": "^11.21.0"
+    "tyshemo": "^11.24.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",

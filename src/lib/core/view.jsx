@@ -2,6 +2,7 @@ import { memo, Component as ReactComponent } from 'react'
 import { Store } from '../store/store.js'
 import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
 import { Component } from './component.js'
+import { Stream } from './stream.js'
 import { evolve } from '../operators/operators.js'
 import { Controller } from './controller.js'
 import { Service } from './service.js'
@@ -23,7 +24,7 @@ import { SingleInstanceBase } from '../utils.js'
  * }
  */
 export class View extends Component {
-  init() {
+  __init() {
     const components = []
     const observers = []
 
@@ -43,13 +44,13 @@ export class View extends Component {
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
         observers.push({
-          subscribe: () => {
-            this[key].watch('*', this.weakUpdate, true)
-            this[key].watch('!', this.weakUpdate, true)
+          subscribe: (dispatch) => {
+            this[key].watch('*', dispatch, true)
+            this[key].watch('!', dispatch, true)
           },
-          unsubscribe: () => {
-            this[key].unwatch('*', this.weakUpdate)
-            this[key].unwatch('!', this.weakUpdate)
+          unsubscribe: (dispatch) => {
+            this[key].unwatch('*', dispatch)
+            this[key].unwatch('!', dispatch)
           },
         })
       }
@@ -60,6 +61,11 @@ export class View extends Component {
       else if (Item && isInheritedOf(Item, Controller)) {
         this[key] = Item.instance()
         observers.push(this[key])
+      }
+      else if (isFunction(Item) && key[key.length - 1] === '$') {
+        const stream$ = new Stream()
+        this[key] = stream$
+        streams.push([Item, stream$])
       }
       else if (isFunction(Item) || isInstanceOf(Item, ReactComponent)) {
         const charCode = key.charCodeAt(0)
@@ -125,11 +131,17 @@ export class View extends Component {
     class G extends Component {
       onMounted() {
         observers.forEach((observer) => {
+          if (observer.only === 'this') {
+            return
+          }
           observer.subscribe(this.weakUpdate)
         })
       }
       onUnmount() {
         observers.forEach((observer) => {
+          if (observer.only === 'this') {
+            return
+          }
           observer.unsubscribe(this.weakUpdate)
         })
       }
@@ -159,5 +171,18 @@ export class View extends Component {
       }
     })
     super.componentWillUnmount(...args)
+  }
+
+  /**
+   * observe actions only works for current component, not for inner component
+   * @param {*} observer
+   */
+  observe(observer) {
+    if (this._isMounted) {
+      observer.subscribe(this.weakUpdate)
+    }
+    if (!this._isUnmounted) {
+      this.observers.push({ ...observer, only: 'this' })
+    }
   }
 }

@@ -78,6 +78,24 @@ const MyComponent = controller.reactive(
 )
 ```
 
-## Notice
+### observe(observer)
 
-View has no `init` hook method.
+```
+observer: {
+  subscribe(dispatch): void;
+  unsubscribe(dispatch): void;
+}
+```
+
+```js
+class SomeView extends View {
+  static events = SomeEventService
+
+  init() {
+    this.observe({
+      subscribe: dispatch => this.events.on('SomeEvent', dispatch),
+      unsubscribe: dispatch => this.events.off('SomeEvent', dispatch),
+    })
+  }
+}
+```

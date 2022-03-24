@@ -2,8 +2,13 @@ import { Service } from '../core/service.js'
 import { isString, isObject } from 'ts-fns'
 import { source, query, compose, setup, release, affect, select, apply, ref } from 'algeb'
 
+const subscribersKey = Symbol()
+
 export class DataService extends Service {
-  _subscribers = []
+  constructor() {
+    super()
+    this[subscribersKey] = []
+  }
 
   source(get, value) {
     return source(get, value)
@@ -45,19 +50,19 @@ export class DataService extends Service {
   }
 
   subscribe(fn) {
-    this._subscribers.push(fn)
+    this[subscribersKey].push(fn)
   }
 
   unsubscribe(fn) {
-    this._subscribers.forEach((item, i) => {
+    this[subscribersKey].forEach((item, i) => {
       if (item === fn) {
-        this._subscribers.splice(i, 1)
+        this[subscribersKey].splice(i, 1)
       }
     })
   }
 
   _dispatch(source, params, value) {
-    this._subscribers.forEach((fn) => {
+    this[subscribersKey].forEach((fn) => {
       fn(source, params, value)
     })
   }
