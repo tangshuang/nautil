@@ -22,7 +22,7 @@ A module is a specific file which exports certain APIs.
 // `export navigator` should be a function which is like hook function to return current module's navigator info
 // return data should contain `title` and `path`
 // - title: current navigator's title
-// - path: current navigator's location path, we can navigate to this path by using router
+// - path: optional, current navigator's location path, we can navigate to this path by using router, if not give, we will use current location href as path by using useLocation
 export function navigator(props) {
   const [title, setTitle] = useState('')
   useEffect(() => {
@@ -30,11 +30,9 @@ export function navigator(props) {
       setTitle(data.title)
     })
   }, [])
-  const { href } = useLocation()
 
   return {
     title,
-    path: href,
   }
 }
 

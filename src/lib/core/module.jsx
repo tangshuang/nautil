@@ -1,8 +1,9 @@
 import { Component } from './component.js'
 import { createContext, useContext, useMemo } from 'react'
-import { RouterRootProvider } from '../router/router.jsx'
+import { RouterRootProvider, useLocation } from '../router/router.jsx'
 import { I18nProvider } from '../i18n/i18n.jsx'
 import { Ty } from 'tyshemo'
+import { useShallowLatest } from '../hooks/shallow-latest.js'
 
 const bootstrapperContext = createContext()
 export function createBootstrap(options) {
@@ -152,9 +153,21 @@ export function importModule(options) {
 
     Render() {
       const previousNaivgators = useContext(navigatorContext)
+      const previous = useShallowLatest(previousNaivgators)
       const { navigator: useNavigator, component } = this.state
+      const { href } = useLocation()
       const navigator = useNavigator(this.props)
-      const navigators = useMemo(() => [...previousNaivgators, navigator], [navigator, previousNaivgators])
+      const nav = useShallowLatest(navigator)
+      const navi = useMemo(() => {
+        if (!nav.path) {
+          return {
+            ...nav,
+            path: href,
+          }
+        }
+        return nav
+      }, [nav, href])
+      const navigators = useMemo(() => [...previous, navi], [navi, previous])
 
       if (!component && !pending) {
         return null

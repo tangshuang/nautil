@@ -620,19 +620,30 @@ export declare interface RouterOptions {
 export declare class Router {
   constructor(options: RouterOptions);
   Outlet: JSXComponent;
-  Link: JSXComponent;
-  useMatch: (pattern: string | RegExp) => boolean;
-  useLocation: () => ({
-    pathname: string;
-    search: string;
-    hash: string;
-    query: AnyObj;
-    url: string;
-  });
-  useParams: () => AnyObj;
-  useNavigate: () => (target: string, replace: boolean) => void;
-  useListen: (callback: Function) => void;
 }
+
+export declare type Link = FunctionComponent<{
+  to: string;
+  replace: boolean;
+  open: boolean;
+  params: AnyObj;
+} & HTMLLinkElement>;
+
+export declare function useNavigate(): (target: string, replace: boolean) => void;
+
+export declare function useLocation(): {
+  pathname: string;
+  search: string;
+  hash: string;
+  query: AnyObj;
+  url: string;
+};
+
+export declare function useHistoryListener(callback: Function): void;
+
+export declare function useRouteParams(): AnyObj;
+
+export declare function useRouteMatch(): (pattern: string | RegExp) => boolean;
 
 export declare class Storage {
   static getItem(key: string): Promise<any>;
@@ -716,3 +727,12 @@ interface AnimationProps {
   onLeaveStop?: Handler;
 }
 export declare class Animation extends Component<AnimationProps> {}
+
+export declare function importAsyncComponent(options: AsyncComponentOptions): JSXComponent;
+
+interface INavigator {
+  title: string;
+  path: string;
+  params?: AnyObj;
+}
+export declare function useModuleNavigator(): INavigator[];
