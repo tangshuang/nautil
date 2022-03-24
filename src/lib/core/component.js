@@ -99,6 +99,10 @@ export class Component extends PrimitiveComponent {
     this.onInit()
   }
 
+  __init() {
+    // should be override
+  }
+
   init() {
     // should be override
   }
