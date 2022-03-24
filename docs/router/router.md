@@ -107,7 +107,7 @@ navigate(to:string, params:object, replace:boolean)
 
 **cross modules**
 
-`navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `///abs/path` as `to`. Begining with `///` and absolute url path will trigger history change with absolute path.
+`navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `/abs/path` as `to`. Begining with `/` and absolute url path will trigger history change with absolute path.
 
 ## useRouteMatch
 

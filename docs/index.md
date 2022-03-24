@@ -77,6 +77,12 @@
   - [DataService](services/data-service.md)
   - [QueueService](services/queue-service.md)
 
+- Module
+  - [createBootstrap](module/create-bootstrap.md)
+  - [importAsyncComponent](module/import-async-component.md)
+  - [importAsyncModule](module/import-async-module.md)
+  - [useModuleNavigator](module/use-module-navigator.md)
+
 - I18n
   - [I18n](i18n/i18n.md)
   - [LanguageDetector](i18n/detector.md)
@@ -99,9 +105,7 @@
   - [useSourceQuery](hooks/use-source-query.md)
 
 - Top-Level-Api
-  - [importAsyncComponent](api/import-async-component.md)
   - [createAsyncComponent](api/create-async-component.md)
-  - [createBootstrap](api/create-bootstrap.md)
   - [createTwoWayBinding](api/create-two-way-binding.md)
   - [Storage](api/storage.md)
   - [Animation](api/animation.md)
