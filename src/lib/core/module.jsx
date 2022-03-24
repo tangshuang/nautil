@@ -2,7 +2,7 @@ import { Component } from './component.js'
 import { createContext, useContext, useMemo } from 'react'
 import { RouterRootProvider, useRouteLocation } from '../router/router.jsx'
 import { I18nProvider } from '../i18n/i18n.jsx'
-import { Ty } from 'tyshemo'
+import { Ty, ifexist } from 'tyshemo'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
 
 const bootstrapperContext = createContext()
@@ -162,7 +162,7 @@ export function importModule(options) {
       const previous = useShallowLatest(previousNaivgators)
       const { navigator: useNavigator, component } = this.state
       const { abs } = useRouteLocation()
-      const navigator = useNavigator ? useNavigator(this.props) : []
+      const navigator = useNavigator ? useNavigator(this.props) : {}
       const nav = useShallowLatest(navigator)
       const navi = useMemo(() => {
         if (!nav.path) {
@@ -211,7 +211,7 @@ export function useModuleNavigator() {
   const navigators = useContext(navigatorContext)
   if (process.env.NODE_ENV !== 'production') {
     Ty.expect(navigators).to.be([{
-      title: String,
+      title: ifexist(String),
       path: String,
     }])
   }
