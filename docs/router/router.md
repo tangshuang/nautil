@@ -130,6 +130,16 @@ import { useRouteParams } from 'nautil'
 const params = useRouteParams()
 ```
 
+## useRouteLocation()
+
+Give the current route location info.
+
+```js
+import { useRouteLocation } from 'nautil'
+
+const { path, abs, route, params } = useRouteLocation()
+```
+
 ## useHistoryListener
 
 Listen to router history change.
@@ -148,7 +158,7 @@ A Router instance has the followings:
 
 - Outlet
 - Link
-- useLocation
+- useLocation -> useRouteLocation
 - useNavigate
 - useListener -> useHistoryListener
 - useParams -> useRouteParams

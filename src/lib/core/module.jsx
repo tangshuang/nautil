@@ -1,6 +1,6 @@
 import { Component } from './component.js'
 import { createContext, useContext, useMemo } from 'react'
-import { RouterRootProvider, useLocation } from '../router/router.jsx'
+import { RouterRootProvider, useRouteLocation } from '../router/router.jsx'
 import { I18nProvider } from '../i18n/i18n.jsx'
 import { Ty } from 'tyshemo'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
@@ -105,7 +105,7 @@ export function createAsyncComponent(source) {
 const navigatorContext = createContext([])
 
 export function importModule(options) {
-  const { prefetch, source, pending } = options
+  const { prefetch, source, pending, name } = options
 
   let loadedComponent = null
   let loadedNavigator = null
@@ -117,6 +117,12 @@ export function importModule(options) {
     }
 
     prefetchLinks = []
+
+    __init() {
+      if (name) {
+        this.name = name
+      }
+    }
 
     componentDidMount() {
       if (!loadedComponent) {
@@ -151,22 +157,22 @@ export function importModule(options) {
       }
     }
 
-    Render() {
+    Final = () => {
       const previousNaivgators = useContext(navigatorContext)
       const previous = useShallowLatest(previousNaivgators)
       const { navigator: useNavigator, component } = this.state
-      const { href } = useLocation()
-      const navigator = useNavigator(this.props)
+      const { abs } = useRouteLocation()
+      const navigator = useNavigator ? useNavigator(this.props) : []
       const nav = useShallowLatest(navigator)
       const navi = useMemo(() => {
         if (!nav.path) {
           return {
             ...nav,
-            path: href,
+            path: abs,
           }
         }
         return nav
-      }, [nav, href])
+      }, [nav, abs])
       const navigators = useMemo(() => [...previous, navi], [navi, previous])
 
       if (!component && !pending) {
@@ -185,6 +191,16 @@ export function importModule(options) {
           <LoadedComponent {...this.props} />
         </Provider>
       )
+    }
+
+    render() {
+      const { navigator, component } = this.state
+      if (!component) {
+        return null
+      }
+
+      const { Final } = this
+      return <Final />
     }
   }
 

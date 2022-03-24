@@ -645,6 +645,13 @@ export declare function useRouteParams(): AnyObj;
 
 export declare function useRouteMatch(): (pattern: string | RegExp) => boolean;
 
+export declare function useRouteLocation(): {
+  path: string;
+  abs: string;
+  route: string[];
+  params: AnyObj;
+};
+
 export declare class Storage {
   static getItem(key: string): Promise<any>;
   static setItem(key: string, value: any): Promise<undefined>;

@@ -65,13 +65,12 @@ export class History {
   $discernUrl(to, abs, mode, params) {
     const search = (params ? '?' + paramsToUrl(params) : '')
 
-    if (to.indexOf('/') === 0) {
-      const url = to.substring(2)
-      return url + search
+    if (/^[a-z]+:\/\//.test(to)) {
+      return to + search
     }
 
-    if (/^[a-z]+:\/\//.test(to)) {
-      return url + search
+    if (/^\/[a-z]/.test(to)) {
+      return to + search
     }
 
     const { base } = mode
@@ -115,7 +114,7 @@ class MemoHistory extends History {
     this.curr = 0
   }
 
-  location() {
+  get location() {
     const href = this.stack[this.curr]
     const { pathname, search, hash } = parseUrl(href)
     const query = parseSearch(search)

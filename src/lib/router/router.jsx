@@ -173,7 +173,7 @@ export class Router {
   }
 
   Link = Link.bind(this)
-  useLocation = useLocation.bind(this)
+  useLocation = useRouteLocation.bind(this)
   useNavigate = useNavigate.bind(this)
   useListener = useHistoryListener.bind(this)
   useParams = useRouteParams.bind(this)
@@ -343,5 +343,20 @@ export function useRouteMatch() {
     }
 
     return false
+  }
+}
+
+export function useRouteLocation() {
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
+
+  const { path, params } = useContext(routeContext)
+  const { abs, deep } = useContext(absContext)
+
+  return {
+    path,
+    abs,
+    route: deep,
+    params,
   }
 }
