@@ -702,14 +702,25 @@ export declare class LanguageDetector {
   getDetector(): AnyObj;
 }
 
-interface AsyncComponentOptions {
-  source: () => Promise<any>;
+interface IModuleOptions {
+  source: () => Promise<{
+    default: JSXComponent,
+    navigator: (props: AnyObj) => {
+      title?: string;
+      path?: string;
+      params?: AnyObj;
+    },
+  }>;
   pendding: () => any;
   prefetch: (props: any) => Array<string>;
+  /**
+   * wether to use module's navigator
+   */
+  navigator: boolean;
 }
-export declare function importAsyncComponent(options: AsyncComponentOptions): JSXComponent;
+export declare function importModule(options: IModuleOptions): JSXComponent;
 
-export declare function createAsyncComponent(fn: () => Promise<{ [Symbol.toStringTag]: 'Module', default: JSXComponent } | JSXComponent>): JSXComponent;
+export declare function createAsyncComponent(fn: () => Promise<{ default: JSXComponent }>): JSXComponent;
 
 interface BootstrapOptions {
   router: {
@@ -734,8 +745,6 @@ interface AnimationProps {
   onLeaveStop?: Handler;
 }
 export declare class Animation extends Component<AnimationProps> {}
-
-export declare function importAsyncComponent(options: AsyncComponentOptions): JSXComponent;
 
 interface INavigator {
   title: string;

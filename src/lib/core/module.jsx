@@ -29,83 +29,10 @@ export function createBootstrap(options) {
   }
 }
 
-export function importAsyncComponent(options) {
-  const { prefetch, source, pending } = options
-
-  let loadedComponent = null
-
-  class ModuleComponent extends Component {
-    state = {
-      component: loadedComponent,
-    }
-
-    prefetchLinks = []
-
-    componentDidMount() {
-      if (!loadedComponent) {
-        // 拉取组件
-        source(this.props)
-          .then((mod) => {
-            if (mod[Symbol.toStringTag] === 'Module') {
-              return mod.default
-            }
-            return mod
-          })
-          .then((component) => {
-            if (typeof component === 'function') {
-              this.setState({ component })
-            }
-            loadedComponent = component
-          })
-        // 预加载
-        if (prefetch) {
-          const urls = prefetch(this.props)
-          urls.forEach((url) => {
-            const link = document.createElement('link')
-            link.rel = 'prefetch'
-            link.as = 'fetch'
-            link.href = url
-            document.head.appendChild(link)
-            this.prefetchLinks.push(link)
-          })
-        }
-      }
-    }
-
-    componentWillUnmount() {
-      if (this.prefetchLinks.length) {
-        this.prefetchLinks.forEach((link) => {
-          document.head.removeChild(link)
-        })
-      }
-    }
-
-    render() {
-      if (!this.state.component && !pending) {
-        return null
-      }
-
-      if (!this.state.component && pending) {
-        return pending(this.props)
-      }
-
-      const LoadedComponent = this.state.component
-
-      return <LoadedComponent {...this.props} />
-    }
-  }
-
-  return ModuleComponent
-}
-
-export function createAsyncComponent(source) {
-  return importAsyncComponent({ source })
-}
-
 const navigatorContext = createContext([])
 
 export function importModule(options) {
-  const { prefetch, source, pending, name } = options
+  const { prefetch, source, pending, name, navigator: needNavigator = true } = options
 
   let loadedComponent = null
   let loadedNavigator = null
@@ -157,7 +84,7 @@ export function importModule(options) {
       }
     }
 
-    Final = () => {
+    WithNavigator = () => {
       const previousNaivgators = useContext(navigatorContext)
       const previous = useShallowLatest(previousNaivgators)
       const { navigator: useNavigator, component } = this.state
@@ -175,14 +102,6 @@ export function importModule(options) {
       }, [nav, abs])
       const navigators = useMemo(() => [...previous, navi], [navi, previous])
 
-      if (!component && !pending) {
-        return null
-      }
-
-      if (!component && pending) {
-        return pending(this.props)
-      }
-
       const { Provider } = navigatorContext
       const LoadedComponent = component
 
@@ -194,17 +113,31 @@ export function importModule(options) {
     }
 
     render() {
-      const { navigator, component } = this.state
-      if (!component) {
+      const { component, navigator } = this.state
+
+      if (!component && !pending) {
         return null
       }
 
-      const { Final } = this
-      return <Final />
+      if (!component && pending) {
+        return pending(this.props)
+      }
+
+      if (!navigator || !needNavigator) {
+        const LoadedComponent = component
+        return <LoadedComponent {...this.props} />
+      }
+
+      const { WithNavigator } = this
+      return <WithNavigator />
     }
   }
 
   return ModuleComponent
+}
+
+export function createAsyncComponent(source) {
+  return importModule({ source, navigator: false })
 }
 
 export function useModuleNavigator() {

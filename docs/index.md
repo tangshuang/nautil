@@ -79,8 +79,7 @@
 
 - Module
   - [createBootstrap](module/create-bootstrap.md)
-  - [importAsyncComponent](module/import-async-component.md)
-  - [importAsyncModule](module/import-async-module.md)
+  - [importModule](module/import-module.md)
   - [useModuleNavigator](module/use-module-navigator.md)
 
 - I18n
