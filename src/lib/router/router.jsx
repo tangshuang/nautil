@@ -352,11 +352,20 @@ export function useRouteLocation() {
 
   const { path, params } = useContext(routeContext)
   const { abs, deep } = useContext(absContext)
+  const { history, mode } = useContext(rootContext)
 
-  return {
-    path,
+  const loc = {
     abs,
     route: deep,
+    path,
     params,
   }
+
+  if (this && this instanceof Router) {
+    const url = history.$getUrl(abs, mode)
+    const { path, params } = this.parseUrlToState(url)
+    Object.assign(loc, { path, params })
+  }
+
+  return loc
 }
