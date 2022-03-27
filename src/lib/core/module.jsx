@@ -1,5 +1,5 @@
 import { Component } from './component.js'
-import { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
 import { RouterRootProvider, useRouteLocation } from '../router/router.jsx'
 import { I18nProvider } from '../i18n/i18n.jsx'
 import { Ty, ifexist } from 'tyshemo'
@@ -30,17 +30,30 @@ export function createBootstrap(options) {
 }
 
 const navigatorContext = createContext([])
+const contextContext = createContext({})
 
 export function importModule(options) {
-  const { prefetch, source, pending, name, navigator: needNavigator = true } = options
+  const {
+    prefetch,
+    source,
+    pending,
+    name,
+    navigator: needNavigator = true,
+    context: sharedContext = {},
+    ready: needReady = true,
+  } = options
 
   let loadedComponent = null
   let loadedNavigator = null
+  let loadedContext = {}
+  let loadedReady = null
 
   class ModuleComponent extends Component {
     state = {
       component: loadedComponent,
       navigator: loadedNavigator,
+      context: loadedContext,
+      ready: loadedReady,
     }
 
     prefetchLinks = []
@@ -56,10 +69,12 @@ export function importModule(options) {
         // 拉取组件
         Promise.resolve(source(this.props))
           .then((mod) => {
-            const { default: component, navigator } = mod
+            const { default: component, navigator, context, ready } = mod
             loadedComponent = component
             loadedNavigator = navigator
-            this.setState({ component, navigator })
+            loadedContext = context
+            loadedReady = ready
+            this.setState({ component, navigator, context, ready })
           })
         // 预加载
         if (prefetch && document) {
@@ -84,12 +99,18 @@ export function importModule(options) {
       }
     }
 
-    WithNavigator = () => {
+    Within = () => {
+      // compute current module navigator
       const previousNaivgators = useContext(navigatorContext)
       const previous = useShallowLatest(previousNaivgators)
-      const { navigator: useNavigator, component } = this.state
+      const {
+        navigator: useThisNavigator,
+        component,
+        context: useThisContext,
+        ready: useThisReady,
+      } = this.state
       const { abs } = useRouteLocation()
-      const navigator = useNavigator ? useNavigator(this.props) : {}
+      const navigator = useThisNavigator ? useThisNavigator(this.props) : {}
       const nav = useShallowLatest(navigator)
       const navi = useMemo(() => {
         if (!nav.path) {
@@ -102,18 +123,43 @@ export function importModule(options) {
       }, [nav, abs])
       const navigators = useMemo(() => [...previous, navi], [navi, previous])
 
-      const { Provider } = navigatorContext
+      // compute current module context
+      const thisContext = useThisContext ? useThisContext(this.props) : {}
+      const context = { ...sharedContext, ...thisContext }
+      const ctx = useShallowLatest(context)
+
+      // deal with ready
+      const ready = useThisReady && needReady ? useThisReady(this.props) : true
+      if (!ready && !pending) {
+        return null
+      }
+      if (!ready && pending) {
+        return pending(this.props)
+      }
+
+      const { Provider: NavigatorProvider } = navigatorContext
+      const { Provider: ContextProvider } = contextContext
       const LoadedComponent = component
 
-      return (
-        <Provider value={navigators}>
+      const render = () => (
+        <ContextProvider value={ctx}>
           <LoadedComponent {...this.props} />
-        </Provider>
+        </ContextProvider>
+      )
+
+      if (!needNavigator) {
+        return render()
+      }
+
+      return (
+        <NavigatorProvider value={navigators}>
+          {render()}
+        </NavigatorProvider>
       )
     }
 
     render() {
-      const { component, navigator } = this.state
+      const { component } = this.state
 
       if (!component && !pending) {
         return null
@@ -123,13 +169,8 @@ export function importModule(options) {
         return pending(this.props)
       }
 
-      if (!navigator || !needNavigator) {
-        const LoadedComponent = component
-        return <LoadedComponent {...this.props} />
-      }
-
-      const { WithNavigator } = this
-      return <WithNavigator />
+      const { Within } = this
+      return <Within />
     }
   }
 
@@ -149,4 +190,9 @@ export function useModuleNavigator() {
     }])
   }
   return navigators
+}
+
+export function useModuleContext() {
+  const ctx = useContext(contextContext)
+  return ctx
 }

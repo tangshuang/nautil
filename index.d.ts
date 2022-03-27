@@ -704,19 +704,35 @@ export declare class LanguageDetector {
 
 interface IModuleOptions {
   source: () => Promise<{
-    default: JSXComponent,
-    navigator: (props: AnyObj) => {
+    default: JSXComponent;
+
+    /**
+     * support hooks
+     */
+    navigator?: (props: AnyObj) => {
       title?: string;
       path?: string;
       params?: AnyObj;
-    },
+    };
+    /**
+     * support hooks
+     */
+    context?: (props: AnyObj) => AnyObj;
+    /**
+     * support hooks
+     */
+    ready?: (props: AnyObj) => boolean;
   }>;
-  pendding: () => any;
-  prefetch: (props: any) => Array<string>;
+  pendding?: () => ReactElement;
+  prefetch?: (props: any) => string[];
   /**
-   * wether to use module's navigator
+   * whether to use module's navigator
    */
-  navigator: boolean;
+  navigator?: boolean;
+  /**
+   * provide shared value for useModuleContext
+   */
+  context?: AnyObj,
 }
 export declare function importModule(options: IModuleOptions): JSXComponent;
 
