@@ -11,6 +11,8 @@ const bootstrap = createBootstrap({
     // default language name
     lang: LanguageDetector,
   },
+  // shared this context inside all modules
+  context: {},
 })
 
 function App() {

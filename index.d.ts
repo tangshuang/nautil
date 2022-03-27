@@ -741,10 +741,11 @@ export declare function createAsyncComponent(fn: () => Promise<{ default: JSXCom
 interface BootstrapOptions {
   router: {
     mode: string;
-  },
+  };
   i18n: {
     lang: string | AnyObj;
-  },
+  };
+  context?: AnyObj;
 }
 export declare function createBootstrap(options: BootstrapOptions): (C: JSXComponent) => JSXComponent;
 

@@ -1,5 +1,5 @@
 import { Component } from './component.js'
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { RouterRootProvider, useRouteLocation } from '../router/router.jsx'
 import { I18nProvider } from '../i18n/i18n.jsx'
 import { Ty, ifexist } from 'tyshemo'
@@ -7,7 +7,7 @@ import { useShallowLatest } from '../hooks/shallow-latest.js'
 
 const bootstrapperContext = createContext()
 export function createBootstrap(options) {
-  const { router, i18n } = options
+  const { router, i18n, context = {} } = options
   return function(C) {
     return function Bootstrapper(props) {
       const parent = useContext(bootstrapperContext)
@@ -17,7 +17,7 @@ export function createBootstrap(options) {
 
       const { Provider } = bootstrapperContext
       return (
-        <Provider value={true}>
+        <Provider value={context}>
           <RouterRootProvider value={router}>
             <I18nProvider value={i18n}>
               <C {...props} />
@@ -124,8 +124,9 @@ export function importModule(options) {
       const navigators = useMemo(() => [...previous, navi], [navi, previous])
 
       // compute current module context
+      const rootContext = useContext(bootstrapperContext)
       const thisContext = useThisContext ? useThisContext(this.props) : {}
-      const context = { ...sharedContext, ...thisContext }
+      const context = { ...rootContext, ...sharedContext, ...thisContext }
       const ctx = useShallowLatest(context)
 
       // deal with ready
