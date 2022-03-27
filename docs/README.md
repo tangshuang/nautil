@@ -9,7 +9,7 @@
 
 ## What is all the Nautil?
 
-Nautil is a modern javascript frontend framework which helps you to build enterprise level business system by using familiar React syntax.
+Nautil\[ˈnɔːtɪl] is a modern javascript frontend framework which helps you to build enterprise level business system by using familiar React syntax.
 
 The purpose of Nautil is to make complex business system development more systematic, easy and efficient.
 

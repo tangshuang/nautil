@@ -81,6 +81,7 @@
   - [createBootstrap](module/create-bootstrap.md)
   - [importModule](module/import-module.md)
   - [useModuleNavigator](module/use-module-navigator.md)
+  - [useModuleContext](module/use-module-context.md)
 
 - I18n
   - [I18n](i18n/i18n.md)
