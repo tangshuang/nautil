@@ -17,7 +17,7 @@
 
 import { ifexist } from 'tyshemo'
 import { isFunction } from 'ts-fns'
-import { Children, createElement, Fragment } from 'react'
+import { Children, createElement, Fragment, Suspense, useRef } from 'react'
 
 import Component from '../core/component.js'
 
@@ -42,7 +42,7 @@ export class ElseIf extends Component {
   }
 }
 
-export class If extends Component {
+export class RealIf extends Component {
   static props = {
     is: Boolean,
     render: ifexist(Function),
@@ -107,6 +107,34 @@ export class If extends Component {
 
     return null
   }
+}
+
+export function If(props) {
+  return (
+    <Suspense fallback={null}>
+      <Troublemaker is={props.is} />
+      <RealIf {...props} />
+    </Suspense>
+  )
+}
+
+function Troublemaker(props) {
+  const { is } = props
+  const deferer = useRef()
+
+  if (!is) {
+    let resolve = null
+    const promise = new Promise((r) => {
+      resolve = r
+    })
+    deferer.current = resolve;
+    throw promise;
+  } else if (deferer.current) {
+    deferer.current()
+    deferer.current = null
+  }
+
+  return null
 }
 
 export default If
