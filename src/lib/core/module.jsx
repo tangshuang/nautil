@@ -112,16 +112,19 @@ export function importModule(options) {
       const { abs } = useRouteLocation()
       const navigator = useThisNavigator ? useThisNavigator(this.props) : {}
       const nav = useShallowLatest(navigator)
-      const navi = useMemo(() => {
-        if (!nav.path) {
-          return {
-            ...nav,
-            path: abs,
+      const navs = useMemo(() => {
+        const navs = [].concat(nav)
+        return navs.map((nav) => {
+          if (typeof nav.path === 'undefined') {
+            return {
+              path: abs,
+              ...nav,
+            }
           }
-        }
-        return nav
+          return nav;
+        })
       }, [nav, abs])
-      const navigators = useMemo(() => [...previous, navi], [navi, previous])
+      const navigators = useMemo(() => [...previous, ...navs], [navs, previous])
 
       // compute current module context
       const rootContext = useContext(bootstrapperContext)
