@@ -47,10 +47,12 @@ export class View extends Component {
           subscribe: (dispatch) => {
             this[key].watch('*', dispatch, true)
             this[key].watch('!', dispatch, true)
+            this[key].on('recover', dispatch)
           },
           unsubscribe: (dispatch) => {
             this[key].unwatch('*', dispatch)
             this[key].unwatch('!', dispatch)
+            this[key].off('recover', dispatch)
           },
         })
       }

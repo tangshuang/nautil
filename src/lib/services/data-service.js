@@ -44,7 +44,7 @@ export class DataService extends Service {
     return data
   }
 
-  renew(source, ...params) {
+  request(source, ...params) {
     const [, renew] = this.query(source, ...params)
     return renew()
   }
@@ -110,7 +110,7 @@ export class DataService extends Service {
     return data
   }
 
-  static renew(source, ...params) {
+  static request(source, ...params) {
     const [, renew] = query(source, ...params)
     return renew()
   }

@@ -109,10 +109,12 @@ export class Controller extends SingleInstanceBase {
         start: () => {
           observer.watch('*', this.dispatch, true)
           observer.watch('!', this.dispatch)
+          observer.on('recover', this.dispatch)
         },
         stop: () => {
           observer.unwatch('*', this.dispatch)
           observer.unwatch('!', this.dispatch)
+          observer.off('recover', this.dispatch)
         },
         observer,
       }
@@ -135,10 +137,11 @@ export class Controller extends SingleInstanceBase {
       this.observers.push(subscription)
     }
     else if (isObject(observer)) {
+      // notice, subscribe and unsubscribe are both required
       const { subscribe, unsubscribe } = observer
       const subscription = {
         start: () => subscribe(this.dispatch),
-        stop: () => isFunction(unsubscribe) ? unsubscribe(this.dispatch) : null,
+        stop: () => unsubscribe(this.dispatch),
         observer,
       }
       this.observers.push(subscription)
