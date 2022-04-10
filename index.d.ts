@@ -123,7 +123,11 @@ export declare function useTwoWayBindingState(state: AnyObj): Proxy;
 
 export declare function useUniqueKeys(items: any[]): string[];
 
+export declare function useModel(Model: new () => Model): Model;
+
 export declare function useModelReactor<T>(models: any[], compute: (...args: any[]) => T, ...args: any[]): T;
+
+export declare function useController(Controller: new () => Controller): Controller;
 
 export declare function useShallowLatest(obj: any): any;
 

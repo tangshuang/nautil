@@ -13,3 +13,9 @@ const total = useModelsRector(model, () => {
 ```
 
 In the previous code block, `model` should must be an instance of [Model](https://tyshemo.js.org/#/model). `total` will change only when model.price or model.count change.
+
+# useModel(Model)
+
+```
+const model = useModel(Model)
+```

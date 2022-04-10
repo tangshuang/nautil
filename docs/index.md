@@ -100,7 +100,8 @@
   - [useTwoWayBinding](hooks/use-two-way-binding.md)
   - [useUniqueKeys](hooks/use-unique-keys.md)
   - [useShallowLatest](hooks/use-shallow-latest.md)
-  - [useModelReactor](hooks/use-model-reactor.md)
+  - [useModel](hooks/use-model.md)
+  - [useController](hooks/use-controller.md)
   - [useForceUpdate](hooks/use-force-update.md)
   - [useSourceQuery](hooks/use-source-query.md)
 
