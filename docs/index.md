@@ -103,7 +103,7 @@
   - [useModel](hooks/use-model.md)
   - [useController](hooks/use-controller.md)
   - [useForceUpdate](hooks/use-force-update.md)
-  - [useSourceQuery](hooks/use-source-query.md)
+  - [useDataSource](hooks/use-data-source.md)
 
 - Top-Level-Api
   - [createAsyncComponent](api/create-async-component.md)

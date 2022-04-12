@@ -53,7 +53,7 @@ export { useModel, useModelReactor } from './lib/hooks/model.js'
 export { useController } from './lib/hooks/controller.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
-export { useSourceQuery } from './lib/hooks/source-query.js'
+export { useDataSource, useLazyDataSource } from './lib/hooks/data-source.js'
 
 export { observe, evolve, inject, initialize, nest, decorate } from './lib/operators/operators.js'
 export { pipe } from './lib/operators/combiners.js'
