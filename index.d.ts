@@ -129,7 +129,7 @@ export declare function useShallowLatest(obj: any): any;
 
 export declare function useForceUpdate(): Function;
 
-export declare function useSourceQuery(source: Source, ...params?: any[]): [any, Function];
+export declare function useSourceQuery(source: Source, ...params: any[]): [any, Function];
 
 export declare function observe(subscription: string | Function | { subscribe: Function }, unsubscription: string | Function | { unsubscribe: Function }): ComponentGenerator;
 
@@ -518,11 +518,8 @@ export declare class Factory {
   static getMeta(entries: NautilModel | NautilModel[]): Meta;
 }
 
-class SingleInstanceBase {
-  new<T>(): T;
+declare class SingleInstanceBase {
   destroy(): void;
-
-  static instance<T>(): T;
   static destroy(): void;
 }
 
