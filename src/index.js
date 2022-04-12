@@ -49,7 +49,8 @@ export { createTwoWayBinding, isShallowEqual, isRef, noop } from './lib/utils.js
 
 export { useTwoWayBinding, useTwoWayBindingState, useTwoWayBindingAttrs } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
-export { useModelReactor } from './lib/hooks/model-reactor.js'
+export { useModel, useModelReactor } from './lib/hooks/model.js'
+export { useController } from './lib/hooks/controller.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
 export { useSourceQuery } from './lib/hooks/source-query.js'

@@ -62,12 +62,12 @@ const [count, refetchCount] = this.query(countSource, '123') // here, '123' will
 
 Shot to get `data` from a source.
 
-**renew(source: Source: ...params: any[]): void**
+**request(source: Source: ...params: any[]): Promise\<any\>**
 
 Shot to get `renew` from a source.
 
 ```js
-this.renew(countSource, '123')
+const data = await this.request(countSource, '123')
 ```
 
 ### compose(produce: Function): CompoundSource

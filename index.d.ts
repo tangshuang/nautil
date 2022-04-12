@@ -123,7 +123,11 @@ export declare function useTwoWayBindingState(state: AnyObj): Proxy;
 
 export declare function useUniqueKeys(items: any[]): string[];
 
+export declare function useModel(Model: new () => Model): Model;
+
 export declare function useModelReactor<T>(models: any[], compute: (...args: any[]) => T, ...args: any[]): T;
+
+export declare function useController(Controller: new () => Controller): Controller;
 
 export declare function useShallowLatest(obj: any): any;
 
@@ -544,9 +548,9 @@ export declare class View extends Component {
   reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent;
 }
 
-interface Source {
-  $$type: symbol;
-  [key: string]: any;
+interface Source<T, U> {
+  value: T;
+  params: U;
 }
 interface SourceRunner {
   (): void;
@@ -555,38 +559,38 @@ interface SourceRunner {
 }
 
 export declare class DataService extends Service {
-  source(get: (...args: any[]) => any, value: any): Source;
-  compose(get: (...args: any[]) => any): Source;
-  query(source: Source | string, ...params: any[]): [any, Function];
-  release(sources: object[]|object): void;
+  source<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): Source<T, U>;
+  compose<T, U extends any[]>(get: (...args: U) => T): Source<T, U>;
+  query<T, U extends any[]>(source: Source<T, U> | string, ...params: U): [T, (...args: any[]) => Promise<T>];
+  release(sources: object[] | object): void;
 
-  get(source: Source | string, ...params: any[]): any;
-  renew(source: Source | string, ...params: any[]): Promise<any>;
+  get<T, U extends any[]>(source: Source<T, U> | string, ...params: U): T;
+  request<T, U extends any[]>(source: Source<T, U> | string, ...params: U): Promise<T>;
 
-  subscribe(fn: (source: Source, params: any[], value: any) => void): void;
+  subscribe(fn: Function): void;
   unsubscribe(fn: Function): void;
 
   setup(run: Function): SourceRunner;
 
-  staticaffect(invoke: Function, deps?: any[]): void;
+  affect(invoke: Function, deps?: any[]): void;
   select(compute: Function, deps: any[]): any;
-  apply(get: Function, value: any): Function;
-  ref(value: any): { value: any };
+  apply<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): [T, (...args: any[]) => Promise<T>];
+  ref(value: T): { value: T };
 
-  static source(get: (...args: any[]) => any, value: any): Source;
-  static compose(get: (...args: any[]) => any): Source;
-  static query(source: Source | string, ...params: any[]): [any, Function];
-  static release(sources: object[]|object): void;
+  static source<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): Source<T, U>;
+  static compose<T, U extends any[]>(get: (...args: U) => T): Source<T, U>;
+  static query<T, U extends any[]>(source: Source<T, U> | string, ...params: U): [T, (...args: any[]) => Promise<T>];
+  static release(sources: object[] | object): void;
 
-  static get(source: Source, ...params: any[]): any;
-  static renew(source: Source, ...params: any[]): Promise<any>;
+  static get<T, U extends any[]>(source: Source<T, U> | string, ...params: U): T;
+  static request<T, U extends any[]>(source: Source<T, U> | string, ...params: U): Promise<T>;
 
   static setup(run: Function): SourceRunner;
 
   static affect(invoke: Function, deps?: any[]): void;
   static select(compute: Function, deps: any[]): any;
-  static apply(get: Function, value: any): Function;
-  static ref(value: any): { value: any };
+  static apply<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): [T, (...args: any[]) => Promise<T>];
+  static ref(value: T): { value: T };
 }
 
 export declare class QueueService extends Service {
