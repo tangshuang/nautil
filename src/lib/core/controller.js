@@ -27,12 +27,13 @@ export class Controller extends SingleInstanceBase {
     each(Constructor, (_, key) => {
       const Item = Constructor[key]
       if (Item && isInheritedOf(Item, DataService)) {
-        this[key] = Item.instance()
+        const ins = Item.instance()
+        this[key] = ins
         // notice that, any data source change will trigger the rerender
         // so you should must pass collect to determine when to rerender, look into example of `reactive`
         this.observe((dispatch) => {
-          this[key].subscribe(dispatch)
-          return () => this[key].unsubscribe(dispatch)
+          ins.subscribe(dispatch)
+          return () => ins.unsubscribe(dispatch)
         })
       }
       else if (Item && isInheritedOf(Item, Service)) {
