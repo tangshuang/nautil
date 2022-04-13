@@ -1,6 +1,6 @@
 import { Router } from 'nautil'
 
-export const { Outlet, Link, useMatch, useLocation, useParams, useNavigate, useListen } = new Router({
+export const { Outlet, Link, useMatch, useLocation, useParams, useRouteNavigate, useListen } = new Router({
   routes: [
     {
       path: 'basic',

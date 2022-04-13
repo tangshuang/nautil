@@ -89,14 +89,14 @@ const { pathname, search, hash, query, href, route } = useLocation()
 
 `route` give you the info about router deep path.
 
-## useNavigate
+## useRouteNavigate
 
 ```js
-import { useNavigate } from 'nautil'
+import { useRouteNavigate } from 'nautil'
 ```
 
 ```js
-const navigate = useNavigate()
+const navigate = useRouteNavigate()
 
 navigate(`detail/${id}`, {}, false)
 ```
@@ -159,7 +159,9 @@ A Router instance has the followings:
 - Outlet
 - Link
 - useLocation -> useRouteLocation
-- useNavigate
+- useNavigate -> useRouteNavigate
 - useListener -> useHistoryListener
 - useParams -> useRouteParams
 - useMatch -> useHistoryListener
+
+These APIs will bind the context to the Router, not the placed context.

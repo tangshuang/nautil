@@ -632,7 +632,7 @@ export declare type Link = FunctionComponent<{
   params: AnyObj;
 } & HTMLLinkElement>;
 
-export declare function useNavigate(): (target: string, replace: boolean) => void;
+export declare function useRouteNavigate(): (target: string, replace: boolean) => void;
 
 export declare function useLocation(): {
   pathname: string;

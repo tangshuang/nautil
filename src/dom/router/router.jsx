@@ -17,78 +17,104 @@ window.history.pushState = rewriteHistory('pushState')
 window.history.replaceState = rewriteHistory('replaceState')
 
 class BrowserHistory extends History {
+  actionType = '';
+  latestState = window.history.state;
+
   get location() {
     const { href, pathname, search, hash } = window.location
     const query = parseSearch(search)
     return { href, pathname, search, query, hash }
   }
-  init() {
-    const onUrlChanged = () => {
-      this.dispatch(window.location.href)
-    }
 
-    window.addEventListener('popstate', onUrlChanged)
-    window.addEventListener('replaceState', onUrlChanged)
-    window.addEventListener('pushState', onUrlChanged)
+  init() {
+    const onUrlChanged = (e) => {
+      this.actionType = e.type;
+      const currentState = this.latestState;
+      this.latestState = window.history.state;
+      const nextState = this.latestState;
+
+      if (e.type === 'popstate') {
+        if (currentState?.prev === nextState) {
+          this.actionType = 'back';
+        } else {
+          this.actionType = 'forward';
+        }
+      }
+
+      this.dispatch(window.location.href, e);
+    };
+
+    window.addEventListener('popstate', onUrlChanged);
+    window.addEventListener('replaceState', onUrlChanged);
+    window.addEventListener('pushState', onUrlChanged);
 
     return () => {
-      window.removeEventListener('popstate', onUrlChanged)
-      window.removeEventListener('replaceState', onUrlChanged)
-      window.removeEventListener('pushState', onUrlChanged)
-    }
+      window.removeEventListener('popstate', onUrlChanged);
+      window.removeEventListener('replaceState', onUrlChanged);
+      window.removeEventListener('pushState', onUrlChanged);
+    };
   }
   back() {
-    window.history.back()
+    window.history.back();
   }
   forward() {
-    window.history.forward()
+    window.history.forward();
   }
   push(url) {
     if (window.location.href === url) {
-      return
+      return;
     }
-    window.history.pushState(null, null, url)
+    const { state } = window.history;
+    const next = { prev: state, url };
+    window.history.pushState(next, null, url);
   }
-  replace() {
+  replace(url) {
     if (window.location.href === url) {
-      return
+      return;
     }
-    window.history.replaceState(null, null, url)
+    const { state } = window.history;
+    const prev = state.prev?.state;
+    const next = { prev, url };
+    window.history.replaceState(next, null, url);
   }
+
   $getUrl(abs, mode) {
-    const { type, query, base } = mode
+    const url = window.location.href;
+    return this.$parseUrl(url, abs, mode);
+  }
+  $parseUrl(url, abs, mode) {
+    const { type, query, base } = mode;
 
-    const root = base && base !== '/' ? base + abs : abs
-    const { pathname, search, hash } = window.location
+    const root = base && base !== '/' ? base + abs : abs;
+    const { pathname, search, hash } = new URL(url);
 
-    const create = (path) => {
-      return revokeUrl(root, path)
-    }
+    const create = (path) => revokeUrl(root, path);
 
     if (type === 'hash') {
-      const url = hash ? hash.substring(1) : '/'
-      return create(url)
+      const url = hash ? hash.substring(1) : '/';
+      return create(url);
     }
 
     if (type === 'hash_search') {
-      const { hash } = location
-      const index = hash.indexOf('?')
-      const search = index > -1 ? hash.substring(index) : ''
-      const found = search.match(new RegExp('[\&\?]' + query + '=(.*?)(\&|$)'))
-      const url = found ? decodeURIComponent(found[1]) : '/'
-      return create(url)
+      const { hash } = location;
+      const index = hash.indexOf('?');
+      const search = index > -1 ? hash.substring(index) : '';
+      const found = search.match(new RegExp(`[&?]${query}=(.*?)(&|$)`));
+      const url = found ? decodeURIComponent(found[1]) : '/';
+      return create(url);
     }
 
     if (type === 'search') {
-      const { search } = location
-      const found = search.match(new RegExp('[\&\?]' + query + '=(.*?)(\&|$)'))
-      const url = found ? decodeURIComponent(found[1]) : '/'
-      return create(url)
+      const { search } = location;
+      const found = search.match(new RegExp(`[&?]${query}=(.*?)(&|$)`));
+      const url = found ? decodeURIComponent(found[1]) : '/';
+      return create(url);
     }
 
-    const path = pathname + search
-    return create(path)
+    const path = pathname + search;
+    return create(path);
   }
+
   $makeUrl(to, abs, mode, params) {
     const { type, query } = mode
 

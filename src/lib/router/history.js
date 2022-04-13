@@ -35,9 +35,12 @@ export class History {
    * @returns {string} path like: root/child/sub
    */
   $getUrl(abs, mode) {
-    const url = this.location.href
-    const { base } = mode
-    return revokeUrl(base, revokeUrl(abs, url))
+    const url = this.location.href;
+    return this.$parseUrl(url, abs, mode);
+  }
+  $parseUrl(url, abs, mode) {
+    const { base } = mode;
+    return revokeUrl(base, revokeUrl(abs, url));
   }
 
   /**

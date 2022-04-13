@@ -2,6 +2,7 @@ import { parseUrl, parseSearch, resolveUrl } from '../utils.js'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
+import { useShallowLatest } from '../hooks/shallow-latest.js'
 
 const rootContext = createContext()
 const absContext = createContext({
@@ -172,9 +173,8 @@ export class Router {
     }
   }
 
-  Link = Link
-  useNavigate = useNavigate
-
+  Link = Link.bind(this)
+  useNavigate = useRouteNavigate.bind(this)
   useLocation = useRouteLocation.bind(this)
   useListener = useHistoryListener.bind(this)
   useParams = useRouteParams.bind(this)
@@ -247,33 +247,48 @@ export class Router {
 }
 
 export function Link(props) {
-  const { to, replace, open, params, ...attrs } = props
+  const { to, replace, open, params, ...attrs } = props;
 
-  const forceUpdate = useForceUpdate()
-  useHistoryListener(forceUpdate)
+  const forceUpdate = useForceUpdate();
+  useHistoryListener(forceUpdate);
 
-  const { history, mode } = useContext(rootContext)
-  const { abs } = useContext(absContext)
-  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+  const { history, mode } = useContext(rootContext);
+  const { abs } = useContext(absContext);
+  const { abs: currentRouterAbs = abs } = useContext(routerContext);
 
-  const navigateTo = useNavigate()
+  const navigateTo = useRouteNavigate.call(this && this instanceof Router ? this : null);
+  const args = useShallowLatest(params);
 
-  const href = history.$makeUrl(to, currentRouterAbs, mode, params)
-  const navigate = () => navigateTo(to, params, replace)
-  return Router.$createLink({ ...attrs, href, open, navigate })
+  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs;
+
+  const { href, navigate } = useMemo(() => {
+    if (typeof to === 'number') {
+      const href = '#';
+      const navigate = () => (to > 0 ? history.forword() : history.back());
+      return { href, navigate };
+    }
+
+    const href = history.$makeUrl(to, finalAbs, mode, args);
+    const navigate = () => navigateTo(to, args, replace);
+    return { href, navigate };
+  }, [to, args, mode, replace, finalAbs, history]);
+
+  return Router.$createLink({ ...attrs, href, open, navigate });
 }
 
-export function useNavigate() {
-  const forceUpdate = useForceUpdate()
-  useHistoryListener(forceUpdate)
+export function useRouteNavigate() {
+  const forceUpdate = useForceUpdate();
+  useHistoryListener(forceUpdate);
 
-  const { history, mode } = useContext(rootContext)
-  const { abs } = useContext(absContext)
-  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+  const { history, mode } = useContext(rootContext);
+  const { abs } = useContext(absContext);
+  const { abs: currentRouterAbs = abs } = useContext(routerContext);
+
+  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs;
 
   return (to, params, replace) => {
-    history.$setUrl(to, currentRouterAbs, mode, params, replace)
-  }
+    history.$setUrl(to, finalAbs, mode, params, replace);
+  };
 }
 
 export function useLocation() {
