@@ -19,7 +19,7 @@ export class For extends Component {
   }
 
   render() {
-    const { start, end, step, map, render } = this.attrs
+    const { start, end, step, map, render, unique } = this.attrs
     const children = this.children
     const blocks = []
 

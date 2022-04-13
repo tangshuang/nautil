@@ -562,7 +562,7 @@ export declare class DataService extends Service {
   source<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): Source<T, U>;
   compose<T, U extends any[]>(get: (...args: U) => T): Source<T, U>;
   query<T, U extends any[]>(source: Source<T, U> | string, ...params: U): [T, (...args: any[]) => Promise<T>];
-  release(sources: object[] | object): void;
+  release(sources: any[] | any): void;
 
   get<T, U extends any[]>(source: Source<T, U> | string, ...params: U): T;
   request<T, U extends any[]>(source: Source<T, U> | string, ...params: U): Promise<T>;
@@ -580,7 +580,7 @@ export declare class DataService extends Service {
   static source<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): Source<T, U>;
   static compose<T, U extends any[]>(get: (...args: U) => T): Source<T, U>;
   static query<T, U extends any[]>(source: Source<T, U> | string, ...params: U): [T, (...args: any[]) => Promise<T>];
-  static release(sources: object[] | object): void;
+  static release(sources: any[] | any): void;
 
   static get<T, U extends any[]>(source: Source<T, U> | string, ...params: U): T;
   static request<T, U extends any[]>(source: Source<T, U> | string, ...params: U): Promise<T>;
