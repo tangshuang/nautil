@@ -110,9 +110,12 @@ export function importModule(options) {
         ready: useThisReady,
       } = this.state
       const { abs } = useRouteLocation()
-      const navigator = useThisNavigator ? useThisNavigator(this.props) : {}
+      const navigator = useThisNavigator ? useThisNavigator(this.props) : null
       const nav = useShallowLatest(navigator)
       const navs = useMemo(() => {
+        if (!nav) {
+          return []
+        }
         const navs = [].concat(nav)
         return navs.map((nav) => {
           if (typeof nav.path === 'undefined') {
