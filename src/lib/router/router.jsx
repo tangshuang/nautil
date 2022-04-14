@@ -172,12 +172,14 @@ export class Router {
     }
   }
 
-  Link = Link.bind(this)
+  Link = Link
+  useNavigate = useNavigate
+
   useLocation = useRouteLocation.bind(this)
-  useNavigate = useNavigate.bind(this)
   useListener = useHistoryListener.bind(this)
   useParams = useRouteParams.bind(this)
   useMatch = useRouteMatch.bind(this)
+  usePrefetch = useRoutePrefetch.bind(this)
 
   Outlet = (props) => {
     const forceUpdate = useForceUpdate()
@@ -227,11 +229,16 @@ export class Router {
       <AbsProvider value={absInfo}>
         <RouterProvider value={routerInfo}>
           <RouteProvider value={routeInfo}>
-            <C {...props} />
+            {this.render(C, props)}
           </RouteProvider>
         </RouterProvider>
       </AbsProvider>
     )
+  }
+
+  // can be override
+  render(C, props) {
+    return <C {...props} />
   }
 
   static $createLink(data) {
@@ -368,4 +375,33 @@ export function useRouteLocation() {
   }
 
   return loc
+}
+
+/**
+ * 基于route提前加载目标模块代码
+ * @returns
+ */
+ export function useRoutePrefetch() {
+  const { current } = useContext(routerContext);
+
+  /**
+   * 目标路由path，注意，仅限当前路由内部的path，无法做到跨父级
+   */
+  return (to) => {
+    let foundComponent = null;
+
+    if (this && this instanceof Router) {
+      const state = this.parseUrlToState(to);
+      const { component } = state;
+      foundComponent = component;
+    } else if (current && current instanceof Router) {
+      const state = current.parseUrlToState(to);
+      const { component } = state;
+      foundComponent = component;
+    }
+
+    if (foundComponent && isInheritedOf(foundComponent, Component) && foundComponent.meta?.source) {
+      foundComponent.meta.source();
+    }
+  };
 }
