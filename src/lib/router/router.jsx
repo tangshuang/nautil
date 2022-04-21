@@ -127,9 +127,17 @@ export class Router {
     const uriBlocks = pathname.split('/')
 
     let route
-    for (let i = 0, len = routes.length; i < len; i ++) {
+    let index
+    let notFound
+    for (let i = 0, len = routes.length; i < len; i++) {
       const item = routes[i]
-      const { path } =  item
+      const { path } = item
+
+      if (path === '') {
+        index = item
+      } else if (path === '!') {
+        notFound = item
+      }
 
       // index route
       if (path === '' && pathname === '') {
@@ -145,9 +153,12 @@ export class Router {
       }
     }
 
+    if (!route && index) {
+      route = index
+    }
+
     // not found
     if (!route) {
-      const notFound = routes.find(item => item.path === '!')
       const routeParams = notFound?.params || {}
       return {
         path: '!',
@@ -262,48 +273,53 @@ export class Router {
 }
 
 export function Link(props) {
-  const { to, replace, open, params, ...attrs } = props;
+  const { to, replace, open, params, ...attrs } = props
 
-  const forceUpdate = useForceUpdate();
-  useHistoryListener(forceUpdate);
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
 
-  const { history, mode } = useContext(rootContext);
-  const { abs } = useContext(absContext);
-  const { abs: currentRouterAbs = abs } = useContext(routerContext);
+  const { history, mode } = useContext(rootContext)
+  const { abs } = useContext(absContext)
+  const { abs: currentRouterAbs = abs } = useContext(routerContext)
 
-  const navigateTo = useRouteNavigate.call(this && this instanceof Router ? this : null);
-  const args = useShallowLatest(params);
+  const navigateTo = useRouteNavigate.call(this && this instanceof Router ? this : null)
+  const args = useShallowLatest(params)
 
-  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs;
+  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs
 
   const { href, navigate } = useMemo(() => {
     if (typeof to === 'number') {
-      const href = '#';
-      const navigate = () => (to > 0 ? history.forword() : history.back());
-      return { href, navigate };
+      const href = '#'
+      const navigate = () => (to > 0 ? history.forword() : history.back())
+      return { href, navigate }
     }
 
-    const href = history.$makeUrl(to, finalAbs, mode, args);
-    const navigate = () => navigateTo(to, args, replace);
-    return { href, navigate };
-  }, [to, args, mode, replace, finalAbs, history]);
+    const href = history.$makeUrl(to, finalAbs, mode, args)
+    const navigate = () => navigateTo(to, args, replace)
+    return { href, navigate }
+  }, [to, args, mode, replace, finalAbs, history])
 
-  return Router.$createLink({ ...attrs, href, open, navigate });
+  return Router.$createLink({ ...attrs, href, open, navigate })
 }
 
 export function useRouteNavigate() {
-  const forceUpdate = useForceUpdate();
-  useHistoryListener(forceUpdate);
+  const forceUpdate = useForceUpdate()
+  useHistoryListener(forceUpdate)
 
-  const { history, mode } = useContext(rootContext);
-  const { abs } = useContext(absContext);
-  const { abs: currentRouterAbs = abs } = useContext(routerContext);
+  const { history, mode } = useContext(rootContext)
+  const { abs } = useContext(absContext)
+  const { abs: currentRouterAbs = abs } = useContext(routerContext)
 
-  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs;
+  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs
 
   return (to, params, replace) => {
-    history.$setUrl(to, finalAbs, mode, params, replace);
-  };
+    if (typeof to === 'number') {
+      to > 0 ? history.forword() : history.back()
+      return
+    }
+
+    history.$setUrl(to, finalAbs, mode, params, replace)
+  }
 }
 
 export function useLocation() {
@@ -410,26 +426,70 @@ export function useRouteLocation() {
  * @returns
  */
  export function useRoutePrefetch() {
-  const { current } = useContext(routerContext);
+  const { current } = useContext(routerContext)
 
   /**
    * 目标路由path，注意，仅限当前路由内部的path，无法做到跨父级
    */
   return (to) => {
-    let foundComponent = null;
+    let foundComponent = null
 
     if (this && this instanceof Router) {
-      const state = this.parseUrlToState(to);
-      const { component } = state;
-      foundComponent = component;
+      const state = this.parseUrlToState(to)
+      const { component } = state
+      foundComponent = component
     } else if (current && current instanceof Router) {
-      const state = current.parseUrlToState(to);
-      const { component } = state;
-      foundComponent = component;
+      const state = current.parseUrlToState(to)
+      const { component } = state
+      foundComponent = component
     }
 
     if (foundComponent && isInheritedOf(foundComponent, Component) && foundComponent.meta?.source) {
-      foundComponent.meta.source();
+      foundComponent.meta.source()
     }
-  };
+  }
+}
+
+
+/**
+ * 基于路由快速获取一个拥有isRouteActive的组件，从而可以根据路由来实现一些特定效果
+ * @param path
+ * @param C
+ * @returns
+ */
+export function createRouteComponent(path, C) {
+  const {
+    useMatch,
+    useNavigate: useThisNavigate,
+    Link: ThisLink,
+  } = new Router({
+    routes: [
+      {
+        path,
+        component: () => null,
+      },
+    ],
+  })
+
+  function Outlet(props) {
+    const match = useMatch()
+    const isMatched = match(path)
+    const navigate = useThisNavigate()
+    const inactiveRoute = () => {
+      navigate(-1)
+    }
+
+    return <C {...props} isRouteActive={isMatched} inactiveRoute={inactiveRoute} />
+  }
+
+  function useActiveRoute() {
+    const navigate = useThisNavigate()
+    return (params, replace) => navigate(path, params, replace)
+  }
+
+  function Link(props) {
+    return <ThisLink {...props} to={path} />
+  }
+
+  return { Outlet, useActiveRoute, Link }
 }
