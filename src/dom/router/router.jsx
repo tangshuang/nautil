@@ -36,7 +36,8 @@ class BrowserHistory extends History {
       if (e.type === 'popstate') {
         if (currentState?.prev === nextState) {
           this.actionType = 'back';
-        } else {
+        }
+        else if (currentState?.next === nextState) {
           this.actionType = 'forward';
         }
       }
