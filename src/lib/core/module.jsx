@@ -130,7 +130,7 @@ export function importModule(options) {
         return navs.map((nav) => {
           if (typeof nav.path === 'undefined') {
             return {
-              path: abs,
+              path: abs || '/',
               ...nav,
             }
           }
