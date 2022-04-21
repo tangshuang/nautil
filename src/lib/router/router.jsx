@@ -192,7 +192,7 @@ export class Router {
     const url = history.$getUrl(abs, mode)
     const state = this.parseUrlToState(url)
 
-    const { component: C, path, params } = state
+    const { component: C, path, params, redirect } = state
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
@@ -224,6 +224,21 @@ export class Router {
     const { Provider: AbsProvider } = absContext
     const { Provider: RouteProvider } = routeContext
     const { Provider: RouterProvider } = routerContext
+
+    const navigate = this.useNavigate()
+
+    useEffect(() => {
+      if (!redirect) {
+        return
+      }
+
+      const redirectTo = typeof redirect === 'function' ? redirect(props) : redirect
+      navigate(redirectTo)
+    }, [redirect, C])
+
+    if (redirect && !C) {
+      return null
+    }
 
     return (
       <AbsProvider value={absInfo}>

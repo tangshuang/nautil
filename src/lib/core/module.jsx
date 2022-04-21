@@ -7,26 +7,36 @@ import { useShallowLatest } from '../hooks/shallow-latest.js'
 
 const bootstrapperContext = createContext()
 export function createBootstrap(options) {
-  const { router, i18n, context = {} } = options
-  return function(C) {
-    return function Bootstrapper(props) {
-      const parent = useContext(bootstrapperContext)
-      if (parent) {
-        throw new Error('You should must use createBootstrap for your root application component only once.')
-      }
+  const { router, context = {} } = options;
 
-      const { Provider } = bootstrapperContext
+  function Root(props) {
+    const { children } = props
+    const parent = useContext(bootstrapperContext)
+    if (parent) {
+      throw new Error('You should must use createBootstrap for your root application component only once.');
+    }
+
+    const { Provider } = bootstrapperContext
+    return (
+      <Provider value={context}>
+        <RouterRootProvider value={router}>{children}</RouterRootProvider>
+      </Provider>
+    )
+  }
+
+  function bootstrap(C) {
+    return function Bootstrapper(props) {
       return (
-        <Provider value={context}>
-          <RouterRootProvider value={router}>
-            <I18nProvider value={i18n}>
-              <C {...props} />
-            </I18nProvider>
-          </RouterRootProvider>
-        </Provider>
+        <Root>
+          <C {...props} />
+        </Root>
       )
     }
   }
+
+  bootstrap.Root = Root
+
+  return bootstrap
 }
 
 const navigatorContext = createContext([])
@@ -67,7 +77,7 @@ export function importModule(options) {
     componentDidMount() {
       if (!loadedComponent) {
         // 拉取组件
-        Promise.resolve(source(this.props))
+        Promise.resolve(typeof source === 'function' ? source(this.props) : source)
           .then((mod) => {
             const { default: component, navigator, context, ready } = mod
             loadedComponent = component
@@ -132,7 +142,8 @@ export function importModule(options) {
       // compute current module context
       const rootContext = useContext(bootstrapperContext)
       const thisContext = useThisContext ? useThisContext(this.props) : {}
-      const context = { ...rootContext, ...sharedContext, ...thisContext }
+      const parentContext = useContext(contextContext)
+      const context = { ...rootContext, ...sharedContext, ...parentContext, ...thisContext }
       const ctx = useShallowLatest(context)
 
       // deal with ready
