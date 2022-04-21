@@ -333,12 +333,11 @@ export function useRouteParams() {
 
   const { abs } = useContext(absContext)
   const { history, mode } = useContext(rootContext)
-  const { abs: currentRouterAbs = abs } = useContext(routerContext)
   const { params: routeParams } = useContext(routeContext)
 
   // top level use
   if (this && this instanceof Router) {
-    const url = history.$getUrl(currentRouterAbs, mode)
+    const url = history.$getUrl(abs, mode)
     const { params } = this.parseUrlToState(url)
     return params
   }
@@ -356,13 +355,12 @@ export function useRouteMatch() {
 
   const { abs } = useContext(absContext)
   const { history, mode } = useContext(rootContext)
-  const { abs: currentRouterAbs = abs } = useContext(routerContext)
   const { path: routePath } = useContext(routeContext)
 
   let currentPath = null
   // top level use
   if (this && this instanceof Router) {
-    const url = history.$getUrl(currentRouterAbs, mode)
+    const url = history.$getUrl(abs, mode)
     const { path } = this.parseUrlToState(url)
     currentPath = path
   }
