@@ -72,7 +72,7 @@ export class History {
       return to + search
     }
 
-    if (/^\/[a-z]/.test(to)) {
+    if (/^\/[a-z]?/.test(to)) {
       return to + search
     }
 
