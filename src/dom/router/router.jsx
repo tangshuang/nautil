@@ -74,7 +74,7 @@ class BrowserHistory extends History {
       return;
     }
     const { state } = window.history;
-    const prev = state.prev?.state;
+    const prev = state?.prev?.state;
     const next = { prev, url };
     window.history.replaceState(next, null, url);
   }

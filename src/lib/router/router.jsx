@@ -233,7 +233,7 @@ export class Router {
       }
 
       const redirectTo = typeof redirect === 'function' ? redirect(props) : redirect
-      navigate(redirectTo)
+      navigate(redirectTo, null, true)
     }, [redirect, C])
 
     if (redirect && !C) {
