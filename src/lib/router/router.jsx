@@ -457,7 +457,7 @@ export function useRouteLocation() {
  * @param C
  * @returns
  */
-export function createRouteComponent(path, C) {
+export function createRouteComponent(path, creator) {
   const {
     useMatch,
     useNavigate: useThisNavigate,
@@ -473,13 +473,14 @@ export function createRouteComponent(path, C) {
 
   function Outlet(props) {
     const match = useMatch()
-    const isMatched = match(path)
+    const isRouteActive = match(path)
     const navigate = useThisNavigate()
     const inactiveRoute = () => {
       navigate(-1)
     }
 
-    return <C {...props} isRouteActive={isMatched} inactiveRoute={inactiveRoute} />
+    const C = creator({ isRouteActive, inactiveRoute })
+    return <C {...props} />
   }
 
   function useActiveRoute() {

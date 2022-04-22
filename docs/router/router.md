@@ -165,3 +165,27 @@ A Router instance has the followings:
 - useMatch -> useHistoryListener
 
 These APIs will bind the context to the Router, not the placed context.
+
+**createRouteComponent**
+
+In some situation, you need to use routing to control a view but you do not want to create a Router, you can use `createRouteComponent` to control quickly.
+
+```js
+const { Outlet } = createRouteComponent('edit', ({ isRouteActive, inactiveRoute }) => (props) => {
+  return <TdesignModal visible={isRouteActive} onClose={() => inactiveRoute()}>xxx</TdesignModal>;
+})
+```
+
+当路由导航到 xxx/edit 的时候，`isRouteActive` 为 true 从而会打开这个弹出层，当 `inactiveRoute` 被触发时实际上触发了 history.back() 从而让路由导航回去，`isRouteActive` 变为 false，从而关闭了这个弹出层。
+
+```
+const { Outlet, useActiveRoute, Link } = createRouteComponent(path, creator: ({ isRouteActive: boolean, inactiveRoute: () => void }) => ComponentType)
+```
+
+- path: string, 规定路径
+- creator: ({ isRouteActive, inactiveRoute }) => Component
+  - isRouteActive: boolean，用以判定当前是否导航到了 path
+  - inactiveRoute: 函数，调用时会退出当前导航
+- Outlet: 用以展示渲染的占位组件
+- useActiveRoute: hook 函数，将返回一个 activeRoute 函数，调用该函数会触发导航，进入 path，和 navigate 类似，可以传入 params 和 replace，无需传入 to
+- Link: 组件，无需传入 to，以内置
