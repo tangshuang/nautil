@@ -51,7 +51,7 @@ export function useTwoWayBindingAttrs(props, formalized) {
         bindKeys.push(attr)
       }
       else if (!/^on[A-Z]/.test(key)) {
-        attrs[key] = data
+        attrs[key] = value
       }
     })
 
