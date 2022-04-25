@@ -643,7 +643,9 @@ export declare function useLocation(): {
   url: string;
 };
 
-export declare function useHistoryListener(callback: Function): void;
+export declare function useHistoryListener(listener: (url: string) => void): void;
+
+export declare function useHistoryProtector(protector: (resolve: Function, reject: Function) => void): void;
 
 export declare function useRouteParams(): AnyObj;
 
@@ -652,7 +654,7 @@ export declare function useRouteMatch(): (pattern: string | RegExp) => boolean;
 export declare function useRouteLocation(): {
   path: string;
   abs: string;
-  route: string[];
+  deep: string[];
   params: AnyObj;
 };
 

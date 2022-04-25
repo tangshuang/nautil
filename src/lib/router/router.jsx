@@ -1,4 +1,4 @@
-import { parseUrl, parseSearch, resolveUrl } from '../utils.js'
+import { parseUrl, parseSearch, resolveUrl, noop } from '../utils.js'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
@@ -11,6 +11,8 @@ const absContext = createContext({
 })
 const routeContext = createContext({})
 const routerContext = createContext({})
+
+const protectors = []
 
 export function RouterRootProvider({ value, children }) {
   // this Provider can only be used once in one application
@@ -331,16 +333,24 @@ export function useLocation() {
 
   return {
     ...history.location,
-    route: deep,
+    deep,
   }
 }
 
-export function useHistoryListener(fn) {
+export function useHistoryListener(fn, deps = []) {
   const { history } = useContext(rootContext)
   useEffect(() => {
-    history.listen(fn)
-    return () => history.unlisten(fn)
-  }, [])
+    history.on('change', fn)
+    return () => history.off('change', fn)
+  }, deps)
+}
+
+export function useHistoryProtector(fn, deps = []) {
+  const { history } = useContext(rootContext)
+  useEffect(() => {
+    history.on('protect', fn)
+    return () => history.off('protect', fn)
+  }, deps)
 }
 
 export function useRouteParams() {
@@ -407,7 +417,7 @@ export function useRouteLocation() {
 
   const loc = {
     abs,
-    route: deep,
+    deep,
     path,
     params,
   }

@@ -42,46 +42,72 @@ class BrowserHistory extends History {
         }
       }
 
-      this.dispatch(window.location.href, e);
+      this.emit('change', window.location.href);
     };
 
-    window.addEventListener('popstate', onUrlChanged);
-    window.addEventListener('replaceState', onUrlChanged);
-    window.addEventListener('pushState', onUrlChanged);
+    const onBeforeUnload = (e) => {
+      if (this.hasEvent('proect')) {
+        let prevented = false
+        const resolve = () => void 0
+        const reject = () => prevented = true
+
+        this.emit('protect', resolve, reject)
+
+        if (prevented) {
+          e.preventDefault()
+        }
+      }
+    }
+
+    window.addEventListener('popstate', onUrlChanged)
+    window.addEventListener('replaceState', onUrlChanged)
+    window.addEventListener('pushState', onUrlChanged)
+    window.addEventListener('beforeunload', onBeforeUnload)
 
     return () => {
-      window.removeEventListener('popstate', onUrlChanged);
-      window.removeEventListener('replaceState', onUrlChanged);
-      window.removeEventListener('pushState', onUrlChanged);
+      window.removeEventListener('popstate', onUrlChanged)
+      window.removeEventListener('replaceState', onUrlChanged)
+      window.removeEventListener('pushState', onUrlChanged)
+      window.removeEventListener('beforeunload', onBeforeUnload)
     };
   }
   back() {
-    window.history.back();
+    this.action(() => {
+      window.history.back()
+    })
   }
   forward() {
-    window.history.forward();
+    this.action(() => {
+      window.history.forward()
+    })
   }
   push(url) {
     if (window.location.href === url) {
-      return;
+      return
     }
-    const { state } = window.history;
-    const next = { prev: state, url };
-    window.history.pushState(next, null, url);
+
+    this.action(() => {
+      const { state } = window.history
+      const next = { prev: state, url }
+      window.history.pushState(next, null, url)
+    })
   }
   replace(url) {
     if (window.location.href === url) {
-      return;
+      return
     }
-    const { state } = window.history;
-    const prev = state?.prev?.state;
-    const next = { prev, url };
-    window.history.replaceState(next, null, url);
+
+    this.action(() => {
+      const { state } = window.history
+      const prev = state?.prev?.state
+      const next = { prev, url }
+      window.history.replaceState(next, null, url)
+    })
   }
 
   $getUrl(abs, mode) {
     const url = window.location.href;
-    return this.$parseUrl(url, abs, mode);
+    return this.$parseUrl(url, abs, mode)
   }
   $parseUrl(url, abs, mode) {
     const { type, query, base } = mode;

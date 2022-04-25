@@ -1,31 +1,16 @@
-import { parseUrl, parseSearch, resolveUrl, revokeUrl, paramsToUrl } from '../utils.js'
+import { parseUrl, parseSearch, resolveUrl, revokeUrl, paramsToUrl, EventBase, noop } from '../utils.js'
 import { isInheritedOf } from 'ts-fns'
 import { Storage } from '../storage/storage.js'
 
 const HISTORY_CLASSES = {}
 
-export class History {
+export class History extends EventBase {
   constructor() {
-    this.listeners = []
     this.init()
   }
 
   init() {
     // should be override
-  }
-
-  listen(fn) {
-    this.listeners.push(fn)
-  }
-
-  unlisten(fn) {
-    this.listeners = this.listeners.filter(item => item !== fn)
-  }
-
-  dispatch(url) {
-    this.listeners.forEach((fn) => {
-      fn(url)
-    })
   }
 
   /**
@@ -98,6 +83,25 @@ export class History {
     throw new Error('[Nautil]: History.forward should be implemented')
   }
 
+  action(fn) {
+    const deferer = new Promise((resolve, reject) => {
+      if (this.hasEvent('protect')) {
+        this.emit('protect', resolve, reject)
+      }
+      else {
+        resolve()
+      }
+    })
+    if (fn) {
+      deferer.then(fn).catch(noop).then((url) => {
+        if (url) {
+          this.emit('change', url)
+        }
+      })
+    }
+    return deferer
+  }
+
   static createHistory(type) {
     const HistoryClass = HISTORY_CLASSES[type] || HISTORY_CLASSES[Object.keys(HISTORY_CLASSES)[0]]
     return new HistoryClass()
@@ -125,30 +129,34 @@ class MemoHistory extends History {
   }
 
   back() {
-    this.curr --
-    const latest = this.stack[this.curr]
-    if (latest) {
-      this.dispatch(latest)
-    }
+    this.action(() => {
+      this.curr --
+      const latest = this.stack[this.curr]
+      return latest
+    })
   }
 
   forward() {
-    this.curr ++
-    const latest = this.stack[this.curr]
-    if (latest) {
-      this.dispatch(latest)
-    }
+    this.action(() => {
+      this.curr ++
+      const latest = this.stack[this.curr]
+      return latest
+    })
   }
 
   push(url) {
-    this.curr ++
-    this.stack.push(url)
-    this.dispatch(url)
+    this.action(() => {
+      this.curr ++
+      this.stack.push(url)
+      return url
+    })
   }
 
   replace(url) {
-    this.stack[this.curr] = url
-    this.dispatch(url)
+    this.action(() => {
+      this.stack[this.curr] = url
+      return url
+    })
   }
 }
 
@@ -163,37 +171,73 @@ class StorageHistory extends MemoHistory {
       this.stack = stack
       this.curr = curr
       if (stack.length || curr) {
-        this.dispatch(stack[curr])
+        this.dispatch('change', stack[curr])
       }
       resolve()
     })
   }
 
-  async push(url) {
-    await this.$ready
+  back() {
+    this.action(async () => {
+      await this.$ready
 
-    this.curr ++
-    this.stack.push(url)
+      this.curr --
+      const latest = this.stack[this.curr]
 
-    await Storage.setItem(HISTORY_KEY, {
-      curr: this.curr,
-      stack: this.stack,
+      await Storage.setItem(HISTORY_KEY, {
+        curr: this.curr,
+        stack: this.stack,
+      })
+
+      return latest
     })
-
-    this.dispatch(url)
   }
 
-  async replace(url) {
-    await this.$ready
+  forward() {
+    this.action(async () => {
+      await this.$ready
 
-    this.stack[this.curr] = url
+      this.curr ++
+      const latest = this.stack[this.curr]
 
-    await Storage.setItem(HISTORY_KEY, {
-      curr: this.curr,
-      stack: this.stack,
+      await Storage.setItem(HISTORY_KEY, {
+        curr: this.curr,
+        stack: this.stack,
+      })
+
+      return latest
     })
+  }
 
-    this.dispatch(url)
+  push(url) {
+    this.action(async () => {
+      await this.$ready
+
+      this.curr ++
+      this.stack.push(url)
+
+      await Storage.setItem(HISTORY_KEY, {
+        curr: this.curr,
+        stack: this.stack,
+      })
+
+      return url
+    })
+  }
+
+  replace(url) {
+    this.action(async () => {
+      await this.$ready
+
+      this.stack[this.curr] = url
+
+      await Storage.setItem(HISTORY_KEY, {
+        curr: this.curr,
+        stack: this.stack,
+      })
+
+      return url
+    })
   }
 }
 

@@ -274,3 +274,26 @@ export function parseClassNames(classNames, cssRules) {
 export function paramsToUrl(params) {
   return Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
 }
+
+const events = Symbol('events')
+export class EventBase {
+  constructor() {
+    this[events] = []
+  }
+  on(name, fn) {
+    this[events].push({ name, fn })
+  }
+  off(name, fn) {
+    this[events] = this[events].filter(item => !(item.name === name && item.fn === fn))
+  }
+  emit(name, ...args) {
+    this[events].forEach((item) => {
+      if (item.name === name) {
+        item.fn(...args)
+      }
+    })
+  }
+  hasEvent(name) {
+    return this[events].some(item => item.name === name)
+  }
+}
