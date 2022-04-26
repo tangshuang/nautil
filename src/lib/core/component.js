@@ -414,11 +414,13 @@ export class Component extends PrimitiveComponent {
       return subject
     }
 
+    const streams = {}
+    const subjects = {}
+
     /**
      * use the passed handler like onClick to create a stream
      * @param {*} param
      */
-    const streams = {}
     each(handlingAttrs, (param, key) => {
       const name = key.replace('on', '')
       const sign = name + '$'
@@ -450,7 +452,6 @@ export class Component extends PrimitiveComponent {
       streams[sign] = stream
     })
 
-    const subjects = {}
     // create streams from static properties
     each(Constructor, ({ value: fn }, key) => {
       if (!isFunction(fn)) {
@@ -462,13 +463,11 @@ export class Component extends PrimitiveComponent {
         return
       }
 
+      const name = key.substr(0, key.length - 1)
+
       // notice that, it will be oveerided by passed on* stream
       if (key in streams) {
-        if (this[key] && isInstanceOf(this[key], Stream)) {
-          // finish stream, free memory
-          this[key].complete()
-          delete this[key]
-        }
+        subjects[name] = [fn, streams[key]]
         return
       }
 
@@ -478,7 +477,6 @@ export class Component extends PrimitiveComponent {
       }
 
       const stream = new Stream()
-      const name = key.substr(0, key.length - 1)
       const subject = affect(name, stream)
       streams[key] = stream
       subjects[name] = [fn, subject]
@@ -499,8 +497,8 @@ export class Component extends PrimitiveComponent {
       delete this[key]
     })
     // repatch streams to this
-    each(streams, (stream, name) => {
-      this[name] = stream
+    each(streams, (stream, key) => {
+      this[key] = stream
     })
     // subjects should must be called after all streams on this has be created
     each(subjects, ([fn, subject]) => {

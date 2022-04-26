@@ -1,5 +1,7 @@
 # Event Stream
 
+**Notice: all stream names should begin will upper case.**
+
 We pass event handlers like in react.
 However, in Nautil Class Components, you can use rxjs stream to handle events.
 
@@ -57,6 +59,22 @@ const stream$ = new Stream().pipe(
 stream$.subscribe(value => this.setState({ value }))
 ```
 
+## stream on this
+
+```js
+class Some extends Component {
+  static props = {
+    onChange: true,
+  }
+
+  render() {
+    return <Input onChange={this.Change$} />
+  }
+}
+```
+
+The passed prop handler will be transformed to be a stream and patched to `this` with upper case name and `$` tail.
+
 ## stream as handler
 
 A component handler can receive a stream directly, like this:
@@ -75,13 +93,13 @@ You can define a stream as a static method on a component, like this:
 
 ```js
 class SomeComponent extends Component {
-  static some$(stream) {
+  static Some$(stream) {
     return stream.pipe(...)
   }
 
   render() {
     return (
-      <Input onChange={this.semo$} value={..} />
+      <Input onChange={this.Some$} value={..} />
     )
   }
 }
@@ -91,21 +109,21 @@ This make it possibe to relate business flow with different event action. For ex
 
 ```js
 class OrderView extends Component {
-  static submit$(stream) {
-    return stream.pipe(...).subscribe(...)
+  static Submit$(stream) {
+    stream.pipe(...).subscribe(...)
   }
 
-  static confirm$(stream) {
+  static Confirm$(stream) {
     // here, we did some logic in pipe, and trigger submit$ finally,
     // which can not be implemented before with a clearify way
-    return stream.pipe(...).subscribe(this.submit$)
+    stream.pipe(...).subscribe(this.Submit$)
   }
 
   render() {
     return (
       <>
-        <Button onHit={this.submit$}>submit</Button>
-        <Button onHit={this.confirm$}>confirm</Button>
+        <Button onHit={this.Submit$}>submit</Button>
+        <Button onHit={this.Confirm$}>confirm</Button>
       </>
     )
   }
@@ -153,7 +171,7 @@ class Some extends Component {
   // only begin with upper case will work
   // this.Remove$ is there, subscribe, dispatch works on these streams
   // `this` inside the function point to component instance
-  static remove$(stream) {
+  static Remove$(stream) {
     stream.subscribe(this.handleRemove)
   }
 
