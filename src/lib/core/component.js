@@ -450,6 +450,7 @@ export class Component extends PrimitiveComponent {
       streams[sign] = stream
     })
 
+    const subjects = {}
     // create streams from static properties
     each(Constructor, ({ value: fn }, key) => {
       if (!isFunction(fn)) {
@@ -479,10 +480,11 @@ export class Component extends PrimitiveComponent {
       const stream = new Stream()
       const name = key.substr(0, key.length - 1)
       const subject = affect(name, stream)
-      fn.call(this, subject)
       streams[key] = stream
+      subjects[name] = [fn, subject]
     }, true)
 
+    // clear previous streams on this
     each(this, (_, key) => {
       // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
       if (!/^[A-Z].*\$$/.test(key)) {
@@ -496,8 +498,13 @@ export class Component extends PrimitiveComponent {
       this[key].complete()
       delete this[key]
     })
+    // repatch streams to this
     each(streams, (stream, name) => {
       this[name] = stream
+    })
+    // subjects should must be called after all streams on this has be created
+    each(subjects, ([fn, subject]) => {
+      fn.call(this, subject)
     })
 
     this.onDigested()
