@@ -43,7 +43,7 @@
   - [Select](elements/select.md)
   - [ListSection](elements/list-section.md)
   - [ScrollSection](elements/scroll-section.md)
-  - [SwipeSection](elements/swipe-sction.md)
+  - [SwipeSection](elements/swipe-section.md)
   - [Image](elements/image.md)
   - [Audio](elements/audio.md)
   - [Video](elements/video.md)
