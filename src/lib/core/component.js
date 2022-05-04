@@ -414,11 +414,13 @@ export class Component extends PrimitiveComponent {
       return subject
     }
 
+    const streams = {}
+    const subjects = {}
+
     /**
      * use the passed handler like onClick to create a stream
      * @param {*} param
      */
-    const streams = {}
     each(handlingAttrs, (param, key) => {
       const name = key.replace('on', '')
       const sign = name + '$'
@@ -461,13 +463,11 @@ export class Component extends PrimitiveComponent {
         return
       }
 
+      const name = key.substr(0, key.length - 1)
+
       // notice that, it will be oveerided by passed on* stream
       if (key in streams) {
-        if (this[key] && isInstanceOf(this[key], Stream)) {
-          // finish stream, free memory
-          this[key].complete()
-          delete this[key]
-        }
+        subjects[name] = [fn, streams[key]]
         return
       }
 
@@ -477,12 +477,12 @@ export class Component extends PrimitiveComponent {
       }
 
       const stream = new Stream()
-      const name = key.substr(0, key.length - 1)
       const subject = affect(name, stream)
-      fn.call(this, subject)
       streams[key] = stream
+      subjects[name] = [fn, subject]
     }, true)
 
+    // clear previous streams on this
     each(this, (_, key) => {
       // notice that, developers' own component properties should never have UpperCase $ ending words, i.e. Name$, but can have name$
       if (!/^[A-Z].*\$$/.test(key)) {
@@ -496,8 +496,13 @@ export class Component extends PrimitiveComponent {
       this[key].complete()
       delete this[key]
     })
-    each(streams, (stream, name) => {
-      this[name] = stream
+    // repatch streams to this
+    each(streams, (stream, key) => {
+      this[key] = stream
+    })
+    // subjects should must be called after all streams on this has be created
+    each(subjects, ([fn, subject]) => {
+      fn.call(this, subject)
     })
 
     this.onDigested()

@@ -20,10 +20,6 @@
   - [Lifecircle](component/lifecircle.md)
   - [Class or Functionn](component/class-or-function.md)
 
-- Router
-  - [Router](router/router.md)
-  - [Configuration](router/config.md)
-
 - Components
   - [If/ElseIf/Else](components/if-else.md)
   - [Switch/Case](components/switch-case.md)
@@ -47,7 +43,7 @@
   - [Select](elements/select.md)
   - [ListSection](elements/list-section.md)
   - [ScrollSection](elements/scroll-section.md)
-  - [SwipeSection](elements/swipe-sction.md)
+  - [SwipeSection](elements/swipe-section.md)
   - [Image](elements/image.md)
   - [Audio](elements/audio.md)
   - [Video](elements/video.md)
@@ -82,6 +78,10 @@
   - [importModule](module/import-module.md)
   - [useModuleNavigator](module/use-module-navigator.md)
   - [useModuleContext](module/use-module-context.md)
+
+- Router
+  - [Router](router/router.md)
+  - [Configuration](router/config.md)
 
 - I18n
   - [I18n](i18n/i18n.md)
