@@ -36,14 +36,14 @@ export class View extends Component {
         this[key] = Item.instance()
         // notice that, any data source change will trigger the rerender
         // so you should must pass collect to determine when to rerender, look into example of `reactive`
-        observers.push(this[key])
+        observers.push({ observer: this[key] })
       }
       else if (Item && isInheritedOf(Item, Service)) {
         this[key] = Item.instance()
       }
       else if (Item && isInheritedOf(Item, Model)) {
         this[key] = new Item()
-        observers.push({
+        const observer = {
           subscribe: (dispatch) => {
             this[key].watch('*', dispatch, true)
             this[key].watch('!', dispatch, true)
@@ -54,15 +54,16 @@ export class View extends Component {
             this[key].unwatch('!', dispatch)
             this[key].off('recover', dispatch)
           },
-        })
+        }
+        observers.push({ observer })
       }
       else if (Item && (Item === Store || isInheritedOf(Item, Store))) {
         this[key] = new Item()
-        observers.push(this[key])
+        observers.push({ observer: this[key] })
       }
       else if (Item && isInheritedOf(Item, Controller)) {
         this[key] = Item.instance()
-        observers.push(this[key])
+        observers.push({ observer: this[key] })
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
@@ -132,16 +133,16 @@ export class View extends Component {
     const observers = this.observers
     class G extends Component {
       onMounted() {
-        observers.forEach((observer) => {
-          if (observer.only === 'this') {
+        observers.forEach(({ observer }) => {
+          if (observer.type === 'this') {
             return
           }
           observer.subscribe(this.weakUpdate)
         })
       }
       onUnmount() {
-        observers.forEach((observer) => {
-          if (observer.only === 'this') {
+        observers.forEach(({ observer }) => {
+          if (observer.type === 'this') {
             return
           }
           observer.unsubscribe(this.weakUpdate)
@@ -165,7 +166,7 @@ export class View extends Component {
   }
 
   componentWillUnmount(...args) {
-    this.observers.forEach((observer) => {
+    this.observers.forEach(({ observer }) => {
       observer.unsubscribe(this.weakUpdate)
       // destroy single instances
       if (isInstanceOf(observer, SingleInstanceBase)) {
@@ -184,7 +185,7 @@ export class View extends Component {
       observer.subscribe(this.weakUpdate)
     }
     if (!this._isUnmounted) {
-      this.observers.push({ ...observer, only: 'this' })
+      this.observers.push({ observer, type: 'this' })
     }
   }
 }

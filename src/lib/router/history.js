@@ -6,11 +6,49 @@ const HISTORY_CLASSES = {}
 
 export class History extends EventBase {
   constructor() {
+    this.stack = []
+    this.cursor = -1
+    this.events = []
+
     this.init()
+  }
+
+  get location() {
+    const href = this.stack[this.cursor]
+
+    if (!href) {
+      return {
+        href: '/',
+        pathname: '/',
+        search: '',
+        query: {},
+        hash: '',
+      }
+    }
+
+    const { pathname, search, hash } = parseUrl(href)
+    const query = parseSearch(search)
+    return { href, pathname, search, query, hash }
   }
 
   init() {
     // should be override
+  }
+
+  on(event, callback) {
+    this.events.push({ event, callback })
+  }
+
+  off(event, callback) {
+    this.events = this.events.filter((item) => !(item.event === event && item.callback === callback))
+  }
+
+  emit(event, ...args) {
+    this.events.forEach((item) => {
+      if (item.event === event) {
+        item.callback(...args)
+      }
+    })
   }
 
   /**
@@ -19,7 +57,7 @@ export class History extends EventBase {
    * @param {string} mode
    * @returns {string} path like: root/child/sub
    */
-  $getUrl(abs, mode) {
+  getUrl(abs, mode) {
     const url = this.location.href;
     return this.$parseUrl(url, abs, mode);
   }
@@ -35,11 +73,10 @@ export class History extends EventBase {
    * @param {*} abs
    * @param {*} mode
    */
-  $setUrl(to, abs, mode, params, replace) {
+  setUrl(to, abs, mode, params, replace) {
     const url = this.$makeUrl(to, abs, mode, params)
     return this[replace ? 'replace' : 'push'](url)
   }
-
   /**
    * create url to patch to history
    * @param {*} to
@@ -67,39 +104,29 @@ export class History extends EventBase {
     return url + search
   }
 
-  replace() {
-    throw new Error('[Nautil]: History.replace should be implemented')
+  replace(url) {
+    this.stack[this.cursor] = url
+    this.emit('change', url)
   }
 
-  push() {
-    throw new Error('[Nautil]: History.push should be implemented')
+  push(url) {
+    this.cursor ++
+    this.stack.push(url)
+    this.emit('change', url)
   }
 
   back() {
-    throw new Error('[Nautil]: History.back should be implemented')
+    if (this.cursor > 0) {
+      this.cursor --
+      this.emit('change', this.stack[this.cursor])
+    }
   }
 
   forward() {
-    throw new Error('[Nautil]: History.forward should be implemented')
-  }
-
-  action(fn) {
-    const deferer = new Promise((resolve, reject) => {
-      if (this.hasEvent('protect')) {
-        this.emit('protect', resolve, reject)
-      }
-      else {
-        resolve()
-      }
-    })
-    if (fn) {
-      deferer.then(fn).catch(noop).then((url) => {
-        if (url) {
-          this.emit('change', url)
-        }
-      })
+    if (this.cursor < this.stack.length - 1) {
+      this.cursor ++
+      this.emit('change', this.stack[this.cursor])
     }
-    return deferer
   }
 
   static createHistory(type) {
@@ -115,50 +142,7 @@ export class History extends EventBase {
   }
 }
 
-class MemoHistory extends History {
-  init() {
-    this.stack = []
-    this.curr = 0
-  }
-
-  get location() {
-    const href = this.stack[this.curr]
-    const { pathname, search, hash } = parseUrl(href)
-    const query = parseSearch(search)
-    return { href, pathname, search, query, hash }
-  }
-
-  back() {
-    this.action(() => {
-      this.curr --
-      const latest = this.stack[this.curr]
-      return latest
-    })
-  }
-
-  forward() {
-    this.action(() => {
-      this.curr ++
-      const latest = this.stack[this.curr]
-      return latest
-    })
-  }
-
-  push(url) {
-    this.action(() => {
-      this.curr ++
-      this.stack.push(url)
-      return url
-    })
-  }
-
-  replace(url) {
-    this.action(() => {
-      this.stack[this.curr] = url
-      return url
-    })
-  }
-}
+class MemoHistory extends History {}
 
 const HISTORY_KEY = 'Nautil:history'
 
@@ -167,77 +151,75 @@ class StorageHistory extends MemoHistory {
     super.init()
 
     this.$ready = new Promise(async (resolve) => {
-      const { curr = 0, stack = [] } = await Storage.getItem(HISTORY_KEY) || {}
+      const { cursor = 0, stack = [] } = await Storage.getItem(HISTORY_KEY) || {}
       this.stack = stack
-      this.curr = curr
-      if (stack.length || curr) {
-        this.dispatch('change', stack[curr])
+      this.cursor = cursor
+      if (stack.length || cursor) {
+        this.emit('change', stack[cursor])
       }
       resolve()
     })
   }
 
-  back() {
-    this.action(async () => {
-      await this.$ready
+  async back() {
+    if (this.cursor <= 0) {
+      return
+    }
 
-      this.curr --
-      const latest = this.stack[this.curr]
+    await this.$ready
 
-      await Storage.setItem(HISTORY_KEY, {
-        curr: this.curr,
-        stack: this.stack,
-      })
+    this.cursor --
 
-      return latest
+    await Storage.setItem(HISTORY_KEY, {
+      cursor: this.cursor,
+      stack: this.stack,
     })
+
+    this.emit('change', this.stack[this.cursor])
   }
 
-  forward() {
-    this.action(async () => {
-      await this.$ready
+  async forward() {
+    if (this.cursor >= this.stack.length) {
+      return
+    }
 
-      this.curr ++
-      const latest = this.stack[this.curr]
+    await this.$ready
 
-      await Storage.setItem(HISTORY_KEY, {
-        curr: this.curr,
-        stack: this.stack,
-      })
+    this.cursor ++
 
-      return latest
+    await Storage.setItem(HISTORY_KEY, {
+      cursor: this.cursor,
+      stack: this.stack,
     })
+
+    this.emit('change', this.stack[this.cursor])
   }
 
-  push(url) {
-    this.action(async () => {
-      await this.$ready
+  async push(url) {
+    await this.$ready
 
-      this.curr ++
-      this.stack.push(url)
+    this.cursor ++
+    this.stack.push(url)
 
-      await Storage.setItem(HISTORY_KEY, {
-        curr: this.curr,
-        stack: this.stack,
-      })
-
-      return url
+    await Storage.setItem(HISTORY_KEY, {
+      cursor: this.cursor,
+      stack: this.stack,
     })
+
+    this.emit('change', url)
   }
 
-  replace(url) {
-    this.action(async () => {
-      await this.$ready
+  async replace(url) {
+    await this.$ready
 
-      this.stack[this.curr] = url
+    this.stack[this.cursor] = url
 
-      await Storage.setItem(HISTORY_KEY, {
-        curr: this.curr,
-        stack: this.stack,
-      })
-
-      return url
+    await Storage.setItem(HISTORY_KEY, {
+      cursor: this.cursor,
+      stack: this.stack,
     })
+
+    this.emit('change', url)
   }
 }
 

@@ -4,7 +4,7 @@ import { History } from '../../lib/router/history.js'
 import { resolveUrl, revokeUrl, paramsToUrl } from '../../lib/utils.js'
 
 class WechatHistory extends History {
-  $getUrl(abs, mode) {
+  getUrl(abs, mode) {
     const { query, base } = mode
     const root = base && base !== '/' ? base + abs : abs
 
@@ -16,7 +16,7 @@ class WechatHistory extends History {
     const url = decodeURIComponent(search)
     return revokeUrl(root, url)
   }
-  $setUrl(to, abs, mode, params, replace) {
+  setUrl(to, abs, mode, params, replace) {
     const url = this.$makeUrl(to, abs, mode, params)
     if (replace) {
       wx.redirectTo({

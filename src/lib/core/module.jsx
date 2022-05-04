@@ -5,9 +5,11 @@ import { I18nProvider } from '../i18n/i18n.jsx'
 import { Ty, ifexist } from 'tyshemo'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
 
+export class ModuleBaseComponent extends Component {}
+
 const bootstrapperContext = createContext()
 export function createBootstrap(options) {
-  const { router, context = {} } = options;
+  const { router, context = {}, i18n } = options;
 
   function Root(props) {
     const { children } = props
@@ -19,7 +21,9 @@ export function createBootstrap(options) {
     const { Provider } = bootstrapperContext
     return (
       <Provider value={context}>
-        <RouterRootProvider value={router}>{children}</RouterRootProvider>
+        <I18nProvider value={i18n}>
+          <RouterRootProvider value={router}>{children}</RouterRootProvider>
+        </I18nProvider>
       </Provider>
     )
   }
@@ -58,7 +62,7 @@ export function importModule(options) {
   let loadedContext = {}
   let loadedReady = null
 
-  class ModuleComponent extends Component {
+  class ModuleComponent extends ModuleBaseComponent {
     state = {
       component: loadedComponent,
       navigator: loadedNavigator,

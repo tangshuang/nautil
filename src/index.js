@@ -27,7 +27,13 @@ export {
 export {
   Ty,
   Dict,
+  Tupl,
+
+  /**
+   * @deprecated
+   */
   Tuple,
+
   List,
   Enum,
   Range,
@@ -40,7 +46,13 @@ export {
   Numeric,
   Int,
   Float,
-  Zero,
+
+  createMeta,
+  Model,
+  Meta,
+  Validator,
+  AsyncGetter,
+  Factory,
 } from 'tyshemo'
 
 export { Component } from './lib/core/component.js'
@@ -50,7 +62,7 @@ export { createTwoWayBinding, isShallowEqual, isRef, noop } from './lib/utils.js
 export { useTwoWayBinding, useTwoWayBindingState, useTwoWayBindingAttrs } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
 export { useModel, useModelReactor } from './lib/hooks/model.js'
-export { useController } from './lib/hooks/controller.js'
+export { useController, applyController } from './lib/hooks/controller.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
 export { useDataSource, useLazyDataSource } from './lib/hooks/data-source.js'
@@ -94,7 +106,6 @@ export { Provider } from './lib/store/provider.jsx'
 export { Consumer, connect, useStore } from './lib/store/consumer.jsx'
 export { applyStore } from './lib/store/shared.js'
 
-export { Model, Meta, Validator, AsyncGetter, Factory } from './lib/core/model.js'
 export { Stream, createStream } from './lib/core/stream.js'
 export { Service } from './lib/core/service.js'
 export { DataService } from './lib/services/data-service.js'

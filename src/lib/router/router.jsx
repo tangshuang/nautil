@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
+import { ModuleBaseComponent } from '../core/module.jsx'
 
 const rootContext = createContext()
 const absContext = createContext({
@@ -12,79 +13,16 @@ const absContext = createContext({
 const routeContext = createContext({})
 const routerContext = createContext({})
 
-const protectors = []
-
-export function RouterRootProvider({ value, children }) {
-  // this Provider can only be used once in one application
-  const parent = useContext(rootContext)
-  if (parent) {
-    throw new Error('[Nautil]: RouterRootProvider can only be used on your root application component with createBootstrap')
-  }
-
-  const getMode = (mode) => {
-    const createBase = root => root
-
-    if (!mode) {
-      const base = createBase('')
-      return { type: 'memo', query: '', base }
-    }
-
-    if (mode.indexOf('/') === 0) {
-      const root = mode === '/' ? '' : mode
-      const base = createBase(root)
-      return { type: 'history', query: '', base }
-    }
-
-    if (mode.indexOf('#?') === 0) {
-      const [query, root = ''] = mode.substring(2).split('=')
-      const base = createBase(root)
-      return { type: 'hash_search', query, base }
-    }
-
-    if (mode.indexOf('#') === 0) {
-      const root = mode.substring(1)
-      const base = createBase(root)
-      return { type: 'hash', query: '', base }
-    }
-
-    if (mode.indexOf('?') === 0) {
-      const [query, root = ''] = mode.substring(1).split('=')
-      const base = createBase(root)
-      return { type: 'search', query, base }
-    }
-
-    const base = createBase('')
-    return { type: 'storage', query: '', base }
-  }
-
-  const ctx = useMemo(() => {
-    const { mode } = value || {}
-    const { type, query, base } = getMode(mode)
-    const history = History.createHistory(type)
-    return {
-      history,
-      mode: {
-        type,
-        query,
-        base,
-      },
-    }
-  }, [value])
-
-  const { Provider } = rootContext
-
-  return (
-    <Provider value={ctx}>
-      {children}
-    </Provider>
-  )
-}
-
 export class Router {
   constructor(options) {
     const { routes, ...opts } = options
     this.routes = routes
     this.options = opts
+    this.init()
+  }
+
+  init() {
+    // to be override
   }
 
   /**
@@ -189,7 +127,6 @@ export class Router {
   Link = Link.bind(this)
   useNavigate = useRouteNavigate.bind(this)
   useLocation = useRouteLocation.bind(this)
-  useListener = useHistoryListener.bind(this)
   useParams = useRouteParams.bind(this)
   useMatch = useRouteMatch.bind(this)
   usePrefetch = useRoutePrefetch.bind(this)
@@ -202,7 +139,7 @@ export class Router {
     const { abs, deep } = useContext(absContext)
     const { current: parent } = useContext(routerContext)
 
-    const url = history.$getUrl(abs, mode)
+    const url = history.getUrl(abs, mode)
     const state = this.parseUrlToState(url)
 
     const { component: C, path, params, redirect } = state
@@ -257,7 +194,7 @@ export class Router {
       <AbsProvider value={absInfo}>
         <RouterProvider value={routerInfo}>
           <RouteProvider value={routeInfo}>
-            {this.render(C, props)}
+            {this.render(C, props, { forceUpdate, url, history, abs, mode, path, params })}
           </RouteProvider>
         </RouterProvider>
       </AbsProvider>
@@ -265,13 +202,94 @@ export class Router {
   }
 
   // can be override
-  render(C, props) {
+  render(C, props, _extra) {
     return <C {...props} />
   }
 
   static $createLink(data) {
     throw new Error('[Nautil]: Router.$createLink should must be override.')
   }
+
+  static $createNavigate(history, abs, mode) {
+    return (to, params, replace) => {
+      if (typeof to === 'number') {
+        to > 0 ? history.forword() : history.back()
+        return
+      }
+      history.setUrl(to, abs, mode, params, replace)
+    }
+  }
+
+  static $createRootProvider(ctx, children) {
+    const { Provider } = rootContext
+    return <Provider value={ctx}>{children}</Provider>
+  }
+}
+
+export function RouterRootProvider({ value, children }) {
+  // this Provider can only be used once in one application
+  const parent = useContext(rootContext)
+  if (parent) {
+    throw new Error('[Nautil]: RouterRootProvider can only be used on your root application component with createBootstrap')
+  }
+
+  const getMode = (mode) => {
+    const createBase = root => root
+
+    if (!mode) {
+      const base = createBase('')
+      return { type: 'memo', query: '', base }
+    }
+
+    if (mode.indexOf('/') === 0) {
+      const root = mode === '/' ? '' : mode
+      const base = createBase(root)
+      return { type: 'history', query: '', base }
+    }
+
+    if (mode.indexOf('#?') === 0) {
+      const [query, root = ''] = mode.substring(2).split('=')
+      const base = createBase(root)
+      return { type: 'hash_search', query, base }
+    }
+
+    if (mode.indexOf('#') === 0) {
+      const root = mode.substring(1)
+      const base = createBase(root)
+      return { type: 'hash', query: '', base }
+    }
+
+    if (mode.indexOf('?') === 0) {
+      const [query, root = ''] = mode.substring(1).split('=')
+      const base = createBase(root)
+      return { type: 'search', query, base }
+    }
+
+    const base = createBase('')
+    return { type: 'storage', query: '', base }
+  }
+
+  const ctx = useMemo(() => {
+    const { mode } = value || {}
+    const { type, query, base } = getMode(mode)
+    const history = History.createHistory(type)
+    return {
+      history,
+      mode: {
+        type,
+        query,
+        base,
+      },
+    }
+  }, [value])
+
+  const { Provider } = rootContext
+
+  return (
+    <Provider value={ctx}>
+      {children}
+    </Provider>
+  )
 }
 
 export function Link(props) {
@@ -290,13 +308,7 @@ export function Link(props) {
   const finalAbs = this && this instanceof Router ? abs : currentRouterAbs
 
   const { href, navigate } = useMemo(() => {
-    if (typeof to === 'number') {
-      const href = '#'
-      const navigate = () => (to > 0 ? history.forword() : history.back())
-      return { href, navigate }
-    }
-
-    const href = history.$makeUrl(to, finalAbs, mode, args)
+    const href = typeof to === 'number' ? '#' : history.$makeUrl(to, finalAbs, mode, args)
     const navigate = () => navigateTo(to, args, replace)
     return { href, navigate }
   }, [to, args, mode, replace, finalAbs, history])
@@ -314,14 +326,7 @@ export function useRouteNavigate() {
 
   const finalAbs = this && this instanceof Router ? abs : currentRouterAbs
 
-  return (to, params, replace) => {
-    if (typeof to === 'number') {
-      to > 0 ? history.forword() : history.back()
-      return
-    }
-
-    history.$setUrl(to, finalAbs, mode, params, replace)
-  }
+  return Router.$createNavigate(history, finalAbs, mode)
 }
 
 export function useLocation() {
@@ -345,14 +350,6 @@ export function useHistoryListener(fn, deps = []) {
   }, deps)
 }
 
-export function useHistoryProtector(fn, deps = []) {
-  const { history } = useContext(rootContext)
-  useEffect(() => {
-    history.on('protect', fn)
-    return () => history.off('protect', fn)
-  }, deps)
-}
-
 export function useRouteParams() {
   const forceUpdate = useForceUpdate()
   useHistoryListener(forceUpdate)
@@ -363,7 +360,7 @@ export function useRouteParams() {
 
   // top level use
   if (this && this instanceof Router) {
-    const url = history.$getUrl(abs, mode)
+    const url = history.getUrl(abs, mode)
     const { params } = this.parseUrlToState(url)
     return params
   }
@@ -386,7 +383,7 @@ export function useRouteMatch() {
   let currentPath = null
   // top level use
   if (this && this instanceof Router) {
-    const url = history.$getUrl(abs, mode)
+    const url = history.getUrl(abs, mode)
     const { path } = this.parseUrlToState(url)
     currentPath = path
   }
@@ -423,7 +420,7 @@ export function useRouteLocation() {
   }
 
   if (this && this instanceof Router) {
-    const url = history.$getUrl(abs, mode)
+    const url = history.getUrl(abs, mode)
     const { path, params } = this.parseUrlToState(url)
     Object.assign(loc, { path, params })
   }
@@ -454,7 +451,7 @@ export function useRouteLocation() {
       foundComponent = component
     }
 
-    if (foundComponent && isInheritedOf(foundComponent, Component) && foundComponent.meta?.source) {
+    if (foundComponent && isInheritedOf(foundComponent, ModuleBaseComponent) && typeof foundComponent.meta?.source === 'function') {
       foundComponent.meta.source()
     }
   }
@@ -467,7 +464,7 @@ export function useRouteLocation() {
  * @param C
  * @returns
  */
-export function createRouteComponent(path, creator) {
+export function createRouteComponent(path, C) {
   const {
     useMatch,
     useNavigate: useThisNavigate,
@@ -489,8 +486,7 @@ export function createRouteComponent(path, creator) {
       navigate(-1)
     }
 
-    const C = creator({ isRouteActive, inactiveRoute })
-    return <C {...props} />
+    return <C {...props} isRouteActive={isRouteActive} inactiveRoute={inactiveRoute} />
   }
 
   function useActiveRoute() {

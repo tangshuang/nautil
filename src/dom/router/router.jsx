@@ -1,7 +1,7 @@
 import { mixin } from 'ts-fns'
 import { Router } from '../../lib/router/router.jsx'
 import { History } from '../../lib/router/history.js'
-import { revokeUrl, resolveUrl, parseSearch, paramsToUrl } from '../../lib/utils.js'
+import { revokeUrl, parseSearch } from '../../lib/utils.js'
 
 function rewriteHistory(type) {
   const origin = window.history[type]
@@ -105,10 +105,6 @@ class BrowserHistory extends History {
     })
   }
 
-  $getUrl(abs, mode) {
-    const url = window.location.href;
-    return this.$parseUrl(url, abs, mode)
-  }
   $parseUrl(url, abs, mode) {
     const { type, query, base } = mode;
 
@@ -183,10 +179,6 @@ class BrowserHistory extends History {
     }
 
     return url
-  }
-  $setUrl(to, abs, mode, params, replace) {
-    const url = this.$makeUrl(to, abs, mode, params)
-    this[replace ? 'replace' : 'push'](url)
   }
 }
 

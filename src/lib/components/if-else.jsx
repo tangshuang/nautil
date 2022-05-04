@@ -112,13 +112,13 @@ export class RealIf extends Component {
 export function If(props) {
   return (
     <Suspense fallback={null}>
-      <Troublemaker is={props.is} />
+      <TroubleMaker is={props.is} />
       <RealIf {...props} />
     </Suspense>
   )
 }
 
-function Troublemaker(props) {
+function TroubleMaker(props) {
   const { is } = props
   const deferer = useRef()
 
