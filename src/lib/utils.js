@@ -1,6 +1,12 @@
 import { createProxy, isFunction, isObject, isEqual, isArray, isString, each, isInstanceOf, getConstructorOf } from 'ts-fns'
 import { isValidElement } from 'react'
 import { Stream } from './core/stream.js'
+import {
+  Enum,
+  List,
+  Tupl,
+  Any,
+} from 'tyshemo'
 
 /**
  * noop
@@ -297,3 +303,25 @@ export class EventBase {
     return this[events].some(item => item.name === name)
   }
 }
+
+export const Handling = new Enum([
+  Function,
+  new List([Function, Stream]),
+  Stream,
+])
+
+export const Binding = new Tupl([Any, Function])
+
+/**
+ * which is always used in styles rules, such as `12px`, `15`, `center`...
+ */
+export const Unit = new Enum([
+  String,
+  Number,
+])
+
+export const StyleSheet = new Enum([
+  String,
+  Object,
+  new List([String, Object]),
+])

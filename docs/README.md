@@ -2,7 +2,7 @@
 
 <div  align="center"><img src="./assets/nautil-logo.png" width="200" height="200"></div>
 
-<div  align="center">Enterprise Level Business System Modern Frontend Framework</div>
+<div  align="center">Enterprise Level Business System Frontend Framework</div>
 
 - [Documents](https://nautil.js.org)
 - [中文文档](https://www.tangshuang.net/7273.html)

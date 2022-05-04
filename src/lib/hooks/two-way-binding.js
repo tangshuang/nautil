@@ -1,6 +1,9 @@
 import { Ty } from 'tyshemo'
-import { Binding } from '../types.js'
-import { createTwoWayBinding, ensureTwoWayBinding } from '../utils.js'
+import {
+  createTwoWayBinding,
+  ensureTwoWayBinding,
+  Binding,
+} from '../utils.js'
 import { useMemo, useState } from 'react'
 import { each, isObject } from 'ts-fns'
 import produce from 'immer'

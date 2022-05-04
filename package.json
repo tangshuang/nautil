@@ -1,14 +1,14 @@
 {
   "name": "nautil",
   "version": "0.44.6",
-  "description": "A javascript reactive framework which is for building crossing-platform applications.",
+  "description": "Enterprise Level Business System Frontend Framework",
   "main": "index.js",
   "miniprogram": "miniprogram_dist",
   "scripts": {
     "clean": "rimraf dist miniprogram_dist dom lib native ssr web-component wechat index.js",
     "build": "npm run clean && npm run build:cjs && npm run build:wechat",
-    "build:cjs": "babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
-    "build:wechat": "copyfiles -f src/wechat/components/dynamic/* miniprogram_dist/wechat/components/dynamic && NODE_ENV=production webpack --config .build/webpack.wechat.config.js",
+    "build:cjs": "cross-env NODE_ENV=production babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
+    "build:wechat": "copyfiles -f src/wechat/components/dynamic/* miniprogram_dist/wechat/components/dynamic && cross-env NODE_ENV=production webpack --config .build/webpack.wechat.config.js",
     "dev": "webpack-dev-server --config .examples/dev/webpack.config.js",
     "postinstall": "node .scripts/files-for-wechat.js"
   },
@@ -32,13 +32,13 @@
     "@react-native-async-storage/async-storage": "^1.15.14",
     "@types/react": "^17.0.11",
     "algeb": "^1.3.5",
-    "immer": "^9.0.7",
+    "immer": "^9.0.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-native": "^0.66.4",
-    "rxjs": "^7.5.1",
-    "ts-fns": "^10.7.0",
-    "tyshemo": "^11.25.10"
+    "rxjs": "^7.5.5",
+    "ts-fns": "^10.8.3",
+    "tyshemo": "^11.25.24"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
@@ -51,6 +51,7 @@
     "ansi-regex": "^6.0.1",
     "babel-loader": "^8.1.0",
     "copyfiles": "^2.4.1",
+    "cross-env": "^7.0.3",
     "css-loader": "^4.3.0",
     "glob-parent": "^6.0.2",
     "less": "^3.12.2",

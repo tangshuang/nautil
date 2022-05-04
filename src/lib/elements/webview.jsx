@@ -1,7 +1,7 @@
 import { enumerate, dict } from 'tyshemo'
 
 import Component from '../core/component.js'
-import { Unit } from '../types.js'
+import { Unit } from '../utils.js'
 
 export class Webview extends Component {
   static props = {

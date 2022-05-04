@@ -1,12 +1,12 @@
-<div  align="center"><img src="./docs/assets/nautil-logo.png" width="200" height="200"></div>
+<div align="center"><img src="./docs/assets/nautil-logo.png" width="200" height="200"></div>
 
-<div  align="center">Powerful Cross Platform Business System Frontend Framework</div>
-<div  align="center">强大的跨平台业务系统前端框架</div>
+<div align="center">Enterprise Level Business System Frontend Framework</div>
+<div align="center">企业级业务系统前端框架</div>
 
 ## Introduction
 
-Nautil (nautil.js) is a javascript frontend framework which helps you to build cross-platform business system by using familiar React syntax.<br>
-Nautil (nautil.js) 是一个基于 React 语法快速构建跨平台业务系统的前端框架。
+Nautil (nautil.js) is a javascript frontend framework which helps you to build enterprise level cross-platform business system by using familiar React syntax.<br>
+Nautil (nautil.js) 是一个基于 React 语法快速构建企业级的跨平台业务系统的前端框架。
 
 The purpose of Nautil is to make complex business system development more systematic, easy and efficient.<br>
 她的目标是使复杂业务系统的开发结构更清晰，效率更高。
@@ -43,7 +43,7 @@ Feel free to dive in! [Open an issue](https://github.com/tangshuang/nautil/issue
 
 ## Road Map
 
-- [x] TypeScript supports (highest priority)
+- [x] TypeScript declare file supports (highest priority)
 - [ ] Unit test
 - [ ] Eslint rules in nautil-cli
 - [ ] testing tasks in nautil-cli

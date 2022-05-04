@@ -21,8 +21,15 @@ import Stream from './stream.js'
 
 import Style from '../style/style.js'
 import ClassName from '../style/classname.js'
-import { Binding, Handling } from '../types.js'
-import { noop, isRef, isShallowEqual, parseClassNames, createTwoWayBinding } from '../utils.js'
+import {
+  noop,
+  isRef,
+  isShallowEqual,
+  parseClassNames,
+  createTwoWayBinding,
+  Binding,
+  Handling,
+} from '../utils.js'
 
 export class PrimitiveComponent extends ReactComponent {
   constructor(props) {
