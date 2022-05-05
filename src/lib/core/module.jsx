@@ -1,15 +1,16 @@
 import { Component } from './component.js'
-import { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext, useMemo, useEffect } from 'react'
 import { RouterRootProvider, useRouteLocation } from '../router/router.jsx'
-import { I18nProvider } from '../i18n/i18n.jsx'
+import { I18nRootProvider } from '../i18n/i18n.jsx'
 import { Ty, ifexist } from 'tyshemo'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
+import { useForceUpdate } from '../hooks/force-update.js'
 
 export class ModuleBaseComponent extends Component {}
 
 const bootstrapperContext = createContext()
 export function createBootstrap(options) {
-  const { router, context = {}, i18n } = options;
+  const { router, context = {}, i18n = {} } = options;
 
   function Root(props) {
     const { children } = props
@@ -21,9 +22,9 @@ export function createBootstrap(options) {
     const { Provider } = bootstrapperContext
     return (
       <Provider value={context}>
-        <I18nProvider value={i18n}>
+        <I18nRootProvider language={i18n.language}>
           <RouterRootProvider value={router}>{children}</RouterRootProvider>
-        </I18nProvider>
+        </I18nRootProvider>
       </Provider>
     )
   }
@@ -45,6 +46,7 @@ export function createBootstrap(options) {
 
 const navigatorContext = createContext([])
 const contextContext = createContext({})
+const i18nContext = createContext()
 
 export function importModule(options) {
   const {
@@ -61,6 +63,7 @@ export function importModule(options) {
   let loadedNavigator = null
   let loadedContext = {}
   let loadedReady = null
+  let loadedI18n = null
 
   class ModuleComponent extends ModuleBaseComponent {
     state = {
@@ -68,6 +71,7 @@ export function importModule(options) {
       navigator: loadedNavigator,
       context: loadedContext,
       ready: loadedReady,
+      i18n: loadedI18n,
     }
 
     prefetchLinks = []
@@ -83,12 +87,13 @@ export function importModule(options) {
         // 拉取组件
         Promise.resolve(typeof source === 'function' ? source(this.props) : source)
           .then((mod) => {
-            const { default: component, navigator, context, ready } = mod
+            const { default: component, navigator, context, ready, i18n } = mod
             loadedComponent = component
             loadedNavigator = navigator
             loadedContext = context
             loadedReady = ready
-            this.setState({ component, navigator, context, ready })
+            loadedI18n = i18n
+            this.setState({ component, navigator, context, ready, i18n })
           })
         // 预加载
         if (prefetch && document) {
@@ -114,15 +119,17 @@ export function importModule(options) {
     }
 
     Within = () => {
-      // compute current module navigator
-      const previousNaivgators = useContext(navigatorContext)
-      const previous = useShallowLatest(previousNaivgators)
       const {
         navigator: useThisNavigator,
         component,
         context: useThisContext,
         ready: useThisReady,
+        i18n: useThisI18n,
       } = this.state
+
+      // compute current module navigator
+      const previousNaivgators = useContext(navigatorContext)
+      const previous = useShallowLatest(previousNaivgators)
       const { abs } = useRouteLocation()
       const navigator = useThisNavigator ? useThisNavigator(this.props) : null
       const nav = useShallowLatest(navigator)
@@ -143,6 +150,9 @@ export function importModule(options) {
       }, [nav, abs])
       const navigators = useMemo(() => [...previous, ...navs], [navs, previous])
 
+      // get i18n
+      const i18n = useThisI18n ? useThisI18n(this.props) : null
+
       // compute current module context
       const rootContext = useContext(bootstrapperContext)
       const thisContext = useThisContext ? useThisContext(this.props) : {}
@@ -161,11 +171,14 @@ export function importModule(options) {
 
       const { Provider: NavigatorProvider } = navigatorContext
       const { Provider: ContextProvider } = contextContext
+      const { Provider: I18nProvider } = i18nContext
       const LoadedComponent = component
 
       const render = () => (
         <ContextProvider value={ctx}>
-          <LoadedComponent {...this.props} />
+          <I18nProvider value={i18n}>
+            <LoadedComponent {...this.props} />
+          </I18nProvider>
         </ContextProvider>
       )
 
@@ -217,4 +230,18 @@ export function useModuleNavigator() {
 export function useModuleContext() {
   const ctx = useContext(contextContext)
   return ctx
+}
+
+export function useModuleI18n() {
+  const i18n = useContext(i18nContext)
+  const forceUpdate = useForceUpdate()
+  useEffect(() => {
+    i18n.on('changeLanguage', forceUpdate)
+    i18n.on('changeResources', forceUpdate)
+    return () => {
+      i18n.off('changeLanguage', forceUpdate)
+      i18n.off('changeResources', forceUpdate)
+    }
+  }, [i18n])
+  return i18n
 }

@@ -1,20 +1,22 @@
 # Router
 
+```js
+import { Router, Link, useRouteNavigate, useLocation, useHistoryListener, useRouteParams, useRouteMatch, useRouteLocation, useRoutePrefetch, useModuleNavigator, createRouteComponent } from 'nautil'
+```
+
 In nautil, you may need `Router` to distribute UI views.
 
-## Usage
+## bootstrap
 
 ```js
-import { Router, createBootstrap } from 'nautil'
+import { createBootstrap } from 'nautil'
 
 const bootstrap = createBootstrap({
   router: {
+    // only mode is needed
     mode: '/',
   },
-  i18n: {},
 })
-
-const { Outlet } = new Router(config)
 ```
 
 For a Module it always handle multiple views which is managed by Router. Use `Outlet` to placement at view area. After `History` changed, `Outlet` will give the mathed component view.
@@ -52,11 +54,53 @@ The last 4 modes support passing base url, for example:
 
 With this, your application will be visited by `/web/app/page1` which begin with `/web`.
 
-## Outlet
+## Router
+
+```js
+import { Router } from 'nautil'
+
+const router = new Router({
+  routes: [
+    {
+      path: '',
+      component: SomeComponent,
+    },
+  ],
+})
+```
+
+**options**
+
+- routes: Array
+  - path: string
+  - component: ReactComponentType
+
+`path` should be relative to current router context, for example `a/b` `some`, notice without `/` or `./` at the beginning.
+
+**Outlet**
 
 A component to display view based on router context.
 
 Which component to display is determined by router's routes, the component will receive props which you pass into `Outlet`.
+
+```js
+const { Outlet } = router
+
+export default function App() {
+  return <Outlet />
+}
+```
+
+A Router instance has the followings:
+
+- Outlet
+- Link
+- useLocation -> useRouteLocation
+- useNavigate -> useRouteNavigate
+- useParams -> useRouteParams
+- useMatch -> useRouteMatch
+
+These APIs will bind the context to the Router, not the placed context.
 
 ## Link
 
@@ -66,7 +110,7 @@ import { Link } from 'nautil'
 
 A component to create a hyperlink to certain route and display its component.
 
-- to: path of certain route
+- to: path of certain route, negative number to go back, positive number to go forward
 - replace: boolean, whether replace current router history state
 - open: boolean, whether open the target in a new view
 - params: path search query to url after to path
@@ -75,19 +119,9 @@ A component to create a hyperlink to certain route and display its component.
 <Link to={`detail/${id}`} replace>Detail</Link>
 ```
 
-## useLocation
+**cross modules**
 
-```js
-import { useLocation } from 'nautil'
-```
-
-Get current location info.
-
-```js
-const { pathname, search, hash, query, href, route } = useLocation()
-```
-
-`route` give you the info about router deep path.
+`navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `/abs/path` as `to`. Begining with `/` and absolute url path will trigger history change with absolute path.
 
 ## useRouteNavigate
 
@@ -105,9 +139,7 @@ navigate(`detail/${id}`, {}, false)
 navigate(to:string, params:object, replace:boolean)
 ```
 
-**cross modules**
-
-`navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `/abs/path` as `to`. Begining with `/` and absolute url path will trigger history change with absolute path.
+To is like `Link` `to` prop.
 
 ## useRouteMatch
 
@@ -130,7 +162,7 @@ import { useRouteParams } from 'nautil'
 const params = useRouteParams()
 ```
 
-## useRouteLocation()
+## useRouteLocation
 
 Give the current route location info.
 
@@ -139,6 +171,32 @@ import { useRouteLocation } from 'nautil'
 
 const { path, abs, route, params } = useRouteLocation()
 ```
+
+## useRoutePrefetch
+
+Get a prefetch function to prefetch Module source code.
+
+```js
+import { useRoutePrefetch } from 'nautil'
+
+const prefetch = useRoutePrefetch()
+
+prefetch(`detail/${id}`) // -> if `detail/:id` provide a Module which is using import() to load code asyncly as component, it will load the script file
+```
+
+## useLocation
+
+```js
+import { useLocation } from 'nautil'
+```
+
+Get current location info.
+
+```js
+const { pathname, search, hash, query, href, route } = useLocation()
+```
+
+`route` give you the info about router deep path.
 
 ## useHistoryListener
 
@@ -152,40 +210,26 @@ useHistoryListener(() => {
 })
 ```
 
-## API
-
-A Router instance has the followings:
-
-- Outlet
-- Link
-- useLocation -> useRouteLocation
-- useNavigate -> useRouteNavigate
-- useListener -> useHistoryListener
-- useParams -> useRouteParams
-- useMatch -> useHistoryListener
-
-These APIs will bind the context to the Router, not the placed context.
-
-**createRouteComponent**
+## createRouteComponent
 
 In some situation, you need to use routing to control a view but you do not want to create a Router, you can use `createRouteComponent` to control quickly.
 
 ```js
-const { Outlet } = createRouteComponent('edit', ({ isRouteActive, inactiveRoute }) => (props) => {
+const { Outlet } = createRouteComponent('edit', ({ isRouteActive, inactiveRoute }) => {
   return <TdesignModal visible={isRouteActive} onClose={() => inactiveRoute()}>xxx</TdesignModal>;
 })
 ```
 
-当路由导航到 xxx/edit 的时候，`isRouteActive` 为 true 从而会打开这个弹出层，当 `inactiveRoute` 被触发时实际上触发了 history.back() 从而让路由导航回去，`isRouteActive` 变为 false，从而关闭了这个弹出层。
+When navigate to xxx/edit, `isRouteActive` will be true, so that the Modal is opened, when we invoke `inactiveRoute`, history.back() is invoked in fact, thus `isRouteActive` truns to be false, the Modal is closed.
 
 ```
-const { Outlet, useActiveRoute, Link } = createRouteComponent(path, creator: ({ isRouteActive: boolean, inactiveRoute: () => void }) => ComponentType)
+const { Outlet, useActiveRoute, Link } = createRouteComponent(path, Component: ComponentType<{ isRouteActive: boolean; inactiveRoute: () => void } & any>)
 ```
 
-- path: string, 规定路径
-- creator: ({ isRouteActive, inactiveRoute }) => Component
-  - isRouteActive: boolean，用以判定当前是否导航到了 path
-  - inactiveRoute: 函数，调用时会退出当前导航
-- Outlet: 用以展示渲染的占位组件
-- useActiveRoute: hook 函数，将返回一个 activeRoute 函数，调用该函数会触发导航，进入 path，和 navigate 类似，可以传入 params 和 replace，无需传入 to
-- Link: 组件，无需传入 to，以内置
+- path: string
+- Component: ({ isRouteActive, inactiveRoute }) => JSX
+  - isRouteActive: boolean，detect which match path
+  - inactiveRoute: function, invoke to go back
+- Outlet
+- useActiveRoute: hook function, return a `activeRoute` function to renavigate to the path, like navigate to, receive `params` and `replace`, dont pass `to`
+- Link

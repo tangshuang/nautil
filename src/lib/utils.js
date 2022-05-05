@@ -61,6 +61,12 @@ export function createPlaceholderElement(placeholder) {
   }
 }
 
+/**
+ * @param {*} objA
+ * @param {*} objB
+ * @param {function} isEqaul
+ * @returns
+ */
 export function isShallowEqual(objA, objB, isEqaul) {
   if (objA === objB) {
     return true

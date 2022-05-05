@@ -3,6 +3,7 @@ import * as React from 'react'
 import produce from 'immer'
 
 export { TySheMo, React, produce }
+
 export {
   useState,
   useEffect,
@@ -24,28 +25,25 @@ export {
   lazy,
   memo,
 } from 'react'
+
 export {
   Ty,
   Dict,
   Tupl,
-
-  /**
-   * @deprecated
-   */
   Tuple,
-
   List,
   Enum,
   Range,
   Mapping,
   SelfRef,
+  Shape,
+
   ifexist,
   nonable,
   Any,
   None,
   Numeric,
   Int,
-  Float,
 
   createMeta,
   Model,
@@ -116,8 +114,9 @@ export { View } from './lib/core/view.jsx'
 
 export { Storage } from './lib/storage/storage.js'
 
-export { I18n, useLang } from './lib/i18n/i18n.jsx'
+export { I18n } from './lib/i18n/i18n.class.js'
+export { useI18n, useLanguage, useTranslate } from './lib/i18n/i18n.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
 export { Router, Link, useRouteNavigate, useLocation, useHistoryListener, useRouteParams, useRouteMatch, useRouteLocation, useRoutePrefetch } from './lib/router/router.jsx'
-export { createBootstrap, createAsyncComponent, importModule, useModuleNavigator, useModuleContext } from './lib/core/module.jsx'
+export { createBootstrap, createAsyncComponent, importModule, useModuleNavigator, useModuleContext, useModuleI18n } from './lib/core/module.jsx'

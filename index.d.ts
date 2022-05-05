@@ -505,7 +505,7 @@ export declare function useRouteLocation(): {
 
 export declare function useRoutePrefetch(): (to: string) => void;
 
-export declare function createRouteComponent(path: string, C: JSXComponent<{ isRouteActive: boolean; inactiveRoute: () => void }>)
+export declare function createRouteComponent(path: string, C: JSXComponent<{ isRouteActive: boolean; inactiveRoute: () => void } & AnyObj>)
 
 export declare class Storage {
   static getItem(key: string): Promise<any>;
@@ -514,48 +514,38 @@ export declare class Storage {
   static clear(): Promise<undefined>;
 }
 
-interface I18nOptions {
-  use?: any[];
-  [key: string]: any;
-}
 export declare class I18n {
-  constructor(options: I18nOptions);
-  setLang(lang): any;
-  getLang(): string;
-  on(key: string, fn: Function): I18n;
-  off(key: string, fn: Function): I18n;
-  has(key: string, params: AnyObj): boolean;
-  t(key: string | string[], params: AnyObj): string;
-  text(key: string | string[], params: AnyObj): string;
-  number(num: number, options?: any): string;
-  date(date: Date, options?: any): string;
-  currency(num: number, currency: string, options?: any): string;
+  constructor(options: {
+    resources?: AnyObj,
+    language?: string | (new () => LanguageDetector),
+  });
+  setLang(lang: string): void;
+  setRes(resources: AnyObj, namespace?: string): void;
+  on(key: string, fn: Function): void;
+  off(key: string, fn: Function): Function;
+  t(key: string | string[], params?: AnyObj): string;
+  define(define: (t: Function) => AnyObj): AnyObj;
+  apply(key: string | string[]): string;
+  getKey(key: string, data: AnyObj): string;
+  getValue(key: string, data: AnyObj): any;
+  getLocaleNumber(num: number, options: any): string;
+  getLocaleDate(date: Date | string | number, options: any): string;
+  getLocaleCurrency(num: number, currency: string, options: any): string;
+  getLocaleTimezoneOffset(): number;
+  getLocaleTimezoneOffsetSTD(): number;
+  getLocaleDateByUTC(utc: string | Date | number): Date;
+  getUTCDate(): Date;
 }
-
-interface LanguageProps extends AnyObj {
-  i18n?: I18n;
-  dispatch?: Function,
-  lng?: string;
-}
-export declare class Language extends Component<LanguageProps> {}
-
-interface LocaleProps extends AnyObj {
-  i18n?: I18n;
-  map?(i18n: I18n): any;
-  render?(data: any): NautilElement;
-}
-export declare class Locale extends Component<LocaleProps> {}
-
-interface TProps extends AnyObj {
-  i18n?: I18n;
-  t?: string | ((i18n: I18n, children: ReactChildren) => string);
-  s?: string;
-}
-export declare class T extends Component<TProps> {}
 
 export declare class LanguageDetector {
   getDetector(): AnyObj;
 }
+
+export declare function useLanguage(): [string, Function];
+
+export declare function useI18n(i18n: I18n, lng?: string): I18n;
+
+export declare function useTranslate(i18n: I18n, lng?: string): (key: string | string[], params?: AnyObj) => string;
 
 interface IModuleOptions {
   source: () => Promise<{
@@ -624,3 +614,5 @@ interface INavigator {
   params?: AnyObj;
 }
 export declare function useModuleNavigator(): INavigator[];
+
+export declare function useModuleI18n(): I18n;

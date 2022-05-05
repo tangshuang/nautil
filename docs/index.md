@@ -49,44 +49,6 @@
   - [Video](elements/video.md)
   - [Webview](elements/webview.md)
 
-- Store
-  - [Store](store/store.md)
-  - [Provider](store/provider.md)
-  - [Consumer](store/consumer.md)
-
-- Model
-  - [Model](https://tyshemo.js.org/#/model)
-  - [Meta](https://tyshemo.js.org/#/meta)
-  - [Validator](https://tyshemo.js.org/#/validator)
-
-- Stream
-  - [Stream](https://rxjs.dev/guide/subject)
-
-- Controller
-  - [Controller](controller/controller.md)
-
-- View
-  - [View](view/view.md)
-
-- Service
-  - [Service](services/service.md)
-  - [DataService](services/data-service.md)
-  - [QueueService](services/queue-service.md)
-
-- Module
-  - [createBootstrap](module/create-bootstrap.md)
-  - [importModule](module/import-module.md)
-  - [useModuleNavigator](module/use-module-navigator.md)
-  - [useModuleContext](module/use-module-context.md)
-
-- Router
-  - [Router](router/router.md)
-  - [Configuration](router/config.md)
-
-- I18n
-  - [I18n](i18n/i18n.md)
-  - [LanguageDetector](i18n/detector.md)
-
 - operators
   - [observe](operators/observe.md)
   - [evolve](operators/evolve.md)
@@ -105,11 +67,49 @@
   - [useForceUpdate](hooks/use-force-update.md)
   - [useDataSource](hooks/use-data-source.md)
 
+- Store
+  - [Store](store/store.md)
+  - [Provider](store/provider.md)
+  - [Consumer](store/consumer.md)
+
+- Stream
+  - [Stream](https://rxjs.dev/guide/subject)
+
 - Top-Level-Api
   - [createAsyncComponent](api/create-async-component.md)
   - [createTwoWayBinding](api/create-two-way-binding.md)
   - [Storage](api/storage.md)
   - [Animation](api/animation.md)
+
+- Model
+  - [Model](https://tyshemo.js.org/#/model)
+  - [Meta](https://tyshemo.js.org/#/meta)
+  - [Validator](https://tyshemo.js.org/#/validator)
+
+- Controller
+  - [Controller](controller/controller.md)
+
+- View
+  - [View](view/view.md)
+
+- Service
+  - [Service](services/service.md)
+  - [DataService](services/data-service.md)
+  - [QueueService](services/queue-service.md)
+
+- Module
+  - [What is all the Module?](module/module.md)
+  - [createBootstrap](module/create-bootstrap.md)
+  - [importModule](module/import-module.md)
+  - [useModuleNavigator](module/use-module-navigator.md)
+  - [useModuleContext](module/use-module-context.md)
+  - [useModuleI18n](module/use-module-i18n.md)
+
+- Router
+  - [Router](router/router.md)
+
+- I18n
+  - [I18n](i18n/i18n.md)
 
 - Renderers
   - [DOM](renderers/dom.md)

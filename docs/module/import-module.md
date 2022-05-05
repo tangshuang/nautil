@@ -71,6 +71,14 @@ export default function Home(props) {
     ..
   )
 }
+
+/**
+ * work with useModuleI18n
+ */
+export function i18n(props) {
+  const i18n = useMemo(() => new I18n({ ... }), [])
+  return i18n
+}
 ```
 
 It will use `Home` as source.
