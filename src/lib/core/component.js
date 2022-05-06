@@ -521,7 +521,11 @@ export class Component extends PrimitiveComponent {
 
   _affect(fn) {
     const nextEffectors = this.detectAffect(this.props)
-    if (nextEffectors === true || !isShallowEqual(this._effectors, nextEffectors)) {
+    if (nextEffectors === false) {
+      fn()
+      this._effectors = false
+    }
+    else if (nextEffectors === true || this._effectors === null || !isShallowEqual(this._effectors, nextEffectors)) {
       const deferer = Promise.resolve(this.onAffect())
       const runner = Promise.resolve(fn())
       deferer.then(() => runner).then(() => this.onAffected()).catch(noop)

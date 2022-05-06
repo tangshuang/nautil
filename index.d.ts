@@ -113,6 +113,7 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   subscribe(name: string, affect: (stream: Stream) => Stream): this;
   unsubscribe(name: string, affect: (stream: Stream) => Stream): this;
   dispatch(name: string, data: AnyObj): this;
+
   update(): Promise<undefined>;
   update(force: true): Promise<undefined>;
   update(value: AnyObj): Promise<undefined>;
@@ -124,19 +125,21 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
 
   onInit(): void;
   onMounted(): void;
-  shouldUpdate(nextProps: AnyObj, nextState: AnyObj): boolean;
-  onNotUpdate(nextProps: AnyObj, nextState: AnyObj): void;
-  onUpdated(prevProps: AnyObj, prevState: AnyObj): void;
+  shouldUpdate(nextProps: T, nextState: AnyObj): boolean;
+  onNotUpdate(nextProps: T, nextState: AnyObj): void;
+  onUpdated(prevProps: T, prevState: AnyObj): void;
   onUnmount(): void;
   onCatch(error: ErrorInfo): void;
+  onParseProps(props: T): AnyObj;
   onDigested(): void;
+  onAffect(): void;
+  detectAffect(props: T): any;
   onAffected(): void;
-  onParseProps<T>(props: T): T;
 
   static extend(props: OverrideProps | ((nextProps: AnyObj) => OverrideProps)): NautilComponent;
   static props: AnyObj | (() => AnyObj);
   static defaultStylesheet: string[] | AnyObj[];
-  static css: { [key: string]: AnyObj }
+  static css: { [key: string]: AnyObj | string } | ((info: { attrs: AnyObj, style: object | undefined, className: string | undefined }) => { [key: string]: AnyObj | string })
 }
 
 export declare function createTwoWayBinding(data: AnyObj, update?: (next: AnyObj, keyPath: Array<string | symbol>, value: any) => void): Proxy;
