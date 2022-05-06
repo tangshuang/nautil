@@ -72,37 +72,27 @@ class BrowserHistory extends History {
     };
   }
   back() {
-    this.action(() => {
-      window.history.back()
-    })
+    window.history.back();
   }
   forward() {
-    this.action(() => {
-      window.history.forward()
-    })
+    window.history.forward();
   }
   push(url) {
     if (window.location.href === url) {
-      return
+      return;
     }
-
-    this.action(() => {
-      const { state } = window.history
-      const next = { prev: state, url }
-      window.history.pushState(next, null, url)
-    })
+    const { state } = window.history;
+    const next = { prev: state, url };
+    window.history.pushState(next, null, url);
   }
   replace(url) {
     if (window.location.href === url) {
-      return
+      return;
     }
-
-    this.action(() => {
-      const { state } = window.history
-      const prev = state?.prev?.state
-      const next = { prev, url }
-      window.history.replaceState(next, null, url)
-    })
+    const { state } = window.history;
+    const prev = state?.prev?.state;
+    const next = { prev, url };
+    window.history.replaceState(next, null, url);
   }
 
   $parseUrl(url, abs, mode) {

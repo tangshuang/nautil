@@ -6,6 +6,8 @@ const HISTORY_CLASSES = {}
 
 export class History extends EventBase {
   constructor() {
+    super()
+
     this.stack = []
     this.cursor = -1
     this.events = []

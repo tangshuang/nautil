@@ -93,7 +93,8 @@ export class Router {
       }
     }
 
-    if (!route && index) {
+    // not found and has no notFound item, we use index as fallback
+    if (!route && index && !notFound) {
       route = index
     }
 

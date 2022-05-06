@@ -159,7 +159,7 @@ export class View extends Component {
   }
 
   componentDidMount(...args) {
-    this.observers.forEach((observer) => {
+    this.observers.forEach(({ observer }) => {
       observer.subscribe(this.weakUpdate)
     })
     super.componentDidMount(...args)
