@@ -481,6 +481,9 @@ export declare interface RouterOptions {
   routes: Array<{
     path: string;
     component: JSXComponent;
+  } | {
+    path: string;
+    redirect: boolean;
   }>;
 }
 export declare class Router {

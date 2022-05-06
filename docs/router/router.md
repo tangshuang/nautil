@@ -73,7 +73,14 @@ const router = new Router({
 
 - routes: Array
   - path: string
+    - 'some/path' with certain path
+    - 'any/:id' with params path
+    - '' index path
+    - '!' path to fallback when not found, NOTICE if there is no '!', index path will be used as fallback
   - component: ReactComponentType
+  - redirect: boolean, redirect to when visit this path, if redirect is true, component will not work any more
+
+The routes rules has priority with its order in the given array.
 
 `path` should be relative to current router context, for example `a/b` `some`, notice without `/` or `./` at the beginning.
 
@@ -161,6 +168,8 @@ import { useRouteParams } from 'nautil'
 
 const params = useRouteParams()
 ```
+
+Search query will be parsed into params, for example, when you have a path 'some/:id', and you visit 'some/123?type=edit', the params will be `{ id: 123, type: edit }`.
 
 ## useRouteLocation
 
