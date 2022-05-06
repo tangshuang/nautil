@@ -55,17 +55,8 @@
   - [inject](operators/inject.md)
   - [initialize](operators/initialize.md)
   - [nest](operators/nest.md)
-  - [pipe](operators/pipe.md)
   - [decorate](operators/decorate.md)
-
-- hooks
-  - [useTwoWayBinding](hooks/use-two-way-binding.md)
-  - [useUniqueKeys](hooks/use-unique-keys.md)
-  - [useShallowLatest](hooks/use-shallow-latest.md)
-  - [useModel](hooks/use-model.md)
-  - [useController](hooks/use-controller.md)
-  - [useForceUpdate](hooks/use-force-update.md)
-  - [useDataSource](hooks/use-data-source.md)
+  - [pipe](operators/pipe.md)
 
 - Store
   - [Store](store/store.md)
@@ -110,6 +101,15 @@
 
 - I18n
   - [I18n](i18n/i18n.md)
+
+- hooks
+  - [useForceUpdate](hooks/use-force-update.md)
+  - [useTwoWayBinding](hooks/use-two-way-binding.md)
+  - [useUniqueKeys](hooks/use-unique-keys.md)
+  - [useShallowLatest](hooks/use-shallow-latest.md)
+  - [useModel](hooks/use-model.md)
+  - [useController](hooks/use-controller.md)
+  - [useDataSource](hooks/use-data-source.md)
 
 - Renderers
   - [DOM](renderers/dom.md)
