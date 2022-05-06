@@ -35,6 +35,7 @@ export {
   Suspense,
   lazy,
   memo,
+  forwardRef,
 } from 'react';
 
 export {

@@ -24,6 +24,7 @@ export {
   Suspense,
   lazy,
   memo,
+  forwardRef,
 } from 'react'
 
 export {
@@ -52,6 +53,7 @@ export {
   AsyncGetter,
   MemoGetter,
   createMeta,
+  createMetaGroup,
   meta,
   state,
   enhance,
