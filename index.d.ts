@@ -538,10 +538,10 @@ export declare class I18n {
 }
 
 export declare class LanguageDetector {
-  getDetector(): AnyObj;
+  static getLang(): string | Promise<string>;
 }
 
-export declare function useLanguage(): [string, Function];
+export declare function useLanguage(): [string, (lng: string) => void];
 
 export declare function useI18n(i18n: I18n, lng?: string): I18n;
 

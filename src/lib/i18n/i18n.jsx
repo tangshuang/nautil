@@ -1,23 +1,36 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { LanguageDetector } from './language-detector.js'
+import { noop } from '../utils.js'
 
 const i18nRootContext = createContext()
 export function I18nRootProvider(props) {
   const { lanuage, children } = props
-  const [lng, setLng] = useState(() => {
-    return lanuage === LanguageDetector ? LanguageDetector.getLang() : lanuage
-  })
-  useEffect(() => {
-    if (lanuage !== lng) {
+  const [lng, setLng] = useState(typeof lanuage === 'string' ? lanuage : '')
+
+  const updateLng = useCallback((lanuage) => {
+    if (lanuage === LanguageDetector) {
+      const input = lanuage.getLang()
+      updateLng(input)
+    }
+    else if (lanuage && lanuage instanceof Promise) {
+      lanuage.then(updateLng).catch(noop)
+    }
+    else if (typeof lanuage === 'string') {
       setLng(lanuage)
+    }
+  }, [])
+
+  useMemo(() => {
+    if (lanuage !== lng) {
+      updateLng(lanuage)
     }
   }, [lanuage])
 
   const ctx = useMemo(() => {
     return {
       lng,
-      setLng,
+      setLng: updateLng,
     }
   }, [lng])
 
