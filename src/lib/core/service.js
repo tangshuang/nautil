@@ -1,6 +1,6 @@
 import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
 import { Stream } from './stream.js'
-import { Model } from './model.js'
+import { Model } from 'tyshemo'
 import { SingleInstanceBase } from '../utils.js'
 
 export class Service extends SingleInstanceBase {

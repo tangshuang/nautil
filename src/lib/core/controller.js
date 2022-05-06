@@ -1,4 +1,4 @@
-import { Model } from './model.js'
+import { Model } from 'tyshemo'
 import { Store } from '../store/store.js'
 import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
 import { Stream } from './stream.js'

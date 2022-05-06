@@ -7,7 +7,7 @@ import { evolve } from '../operators/operators.js'
 import { Controller } from './controller.js'
 import { Service } from './service.js'
 import { DataService } from '../services/data-service.js'
-import { Model } from './model.js'
+import { Model } from 'tyshemo'
 import { SingleInstanceBase } from '../utils.js'
 
 /**

@@ -34,28 +34,43 @@ export {
   createContext,
   Suspense,
   lazy,
+  memo,
 } from 'react';
 
 export {
   Ty,
   Dict,
+  Tupl,
+
+  /**
+   * @deprecated
+   */
   Tuple,
+
   List,
   Enum,
   Range,
   Mapping,
   SelfRef,
+  Shape,
+
   ifexist,
   nonable,
   Any,
   None,
   Numeric,
   Int,
-  Float,
 
   Model,
   Meta,
   Validator,
+  Factory,
+  AsyncGetter,
+  MemoGetter,
+  createMeta,
+  meta,
+  state,
+  enhance,
 } from 'tyshemo';
 
 export declare function produce<T>(fn: (data: T) => (T | void)): T;

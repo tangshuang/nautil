@@ -45,12 +45,16 @@ export {
   Numeric,
   Int,
 
-  createMeta,
   Model,
   Meta,
   Validator,
-  AsyncGetter,
   Factory,
+  AsyncGetter,
+  MemoGetter,
+  createMeta,
+  meta,
+  state,
+  enhance,
 } from 'tyshemo'
 
 export { Component } from './lib/core/component.js'
