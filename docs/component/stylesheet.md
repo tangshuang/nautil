@@ -4,7 +4,7 @@ In nautil.js, we praise css module, which is easy to implement cross-platform.
 
 ```js
 import { Section, Text, Component } from 'nautil'
-import Styles from './my-component.css'
+import * as Styles from './my-component.css'
 
 export default class MyComponent extends Component {
   render() {
@@ -103,7 +103,7 @@ class MyComponent extends Component {
 `css` is always used with CSS Modules together:
 
 ```js
-import SomeCss from 'some.css'
+import * as SomeCss from 'some.css'
 
 class MyComponent extends Component {
   static css = SomeCss
