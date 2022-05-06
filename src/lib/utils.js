@@ -248,6 +248,7 @@ export function revokeUrl(abs, url) {
 
 export function parseClassNames(classNames, cssRules) {
   let items = []
+
   if (isString(classNames)) {
     items = classNames.split(' ').map((className) => {
       if (cssRules[className]) {
@@ -266,15 +267,22 @@ export function parseClassNames(classNames, cssRules) {
   else if (isArray(classNames)) {
     items = classNames
       .map(item => isString(item) ? parseClassNames(item, cssRules) : item)
-      .filter(item => isString(item) || isObject(item))
-      .reduce((items, arr) => items.push(...arr), [])
+      .reduce((items, item) => {
+        if (isArray(item)) {
+          items.push(...item)
+        }
+        else {
+          items.push(item)
+        }
+        return items
+      }, [])
   }
 
   // return stylesheet with objects
   // only used when passed into `stylesheet` of internal components
   // i.e. <Section stylesheet={this.css('some-1 some-2')}></Section>
   if (items.some(item => isObject(item))) {
-    return items
+    return items.filter(item => isString(item) || isObject(item))
   }
   // return string class list
   // only used in DOM

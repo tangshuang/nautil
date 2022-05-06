@@ -337,19 +337,6 @@ export class Component extends PrimitiveComponent {
       }
     }
 
-    // import css and transform css rules
-    this.cssRules = decideby(() => {
-      if (!css) {
-        return {}
-      }
-      const rules = isFunction(css) ? css({
-        attrs: this.attrs,
-        className: this.className,
-        style: this.style,
-      }) : css
-      return { ...rules }
-    })
-
     // format stylesheet by using stylesheet, className, style props
     this.className = decideby(() => {
       const classNameQueue = [].concat(defaultStylesheet).concat(stylesheet).concat(className)
@@ -397,6 +384,19 @@ export class Component extends PrimitiveComponent {
         },
       })
     }
+
+    // import css and transform css rules
+    this.cssRules = decideby(() => {
+      if (!css) {
+        return {}
+      }
+      const rules = isFunction(css) ? css({
+        attrs: this.attrs,
+        className: this.className,
+        style: this.style,
+      }) : css
+      return { ...rules }
+    })
 
     // DROP: because we may remove static props when build
     // // make sure the handler can be called in component
@@ -515,7 +515,7 @@ export class Component extends PrimitiveComponent {
     this.onDigested()
   }
 
-  css(classNames) {
+  css(...classNames) {
     return parseClassNames(classNames, this.cssRules)
   }
 
