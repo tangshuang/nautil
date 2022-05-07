@@ -19,6 +19,7 @@
   - [Stylesheet](component/stylesheet.md)
   - [Lifecircle](component/lifecircle.md)
   - [Class or Functionn](component/class-or-function.md)
+  - [API](component/api.md)
 
 - Components
   - [If/ElseIf/Else](components/if-else.md)
