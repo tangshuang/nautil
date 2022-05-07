@@ -1,26 +1,24 @@
 import { Service } from '../core/service.js'
 
-const listenersKey = Symbol()
-
 export class EventService extends Service {
   constructor() {
     super()
 
-    this[listenersKey] = []
+    this.events = []
   }
 
   on(event, fn) {
-    this[listenersKey].push([event, fn])
+    this.events.push([event, fn])
     return this
   }
 
   once(event, fn) {
-    this[listenersKey].push([event, fn, true])
+    this.events.push([event, fn, true])
     return this
   }
 
   off(event, fn) {
-    this[listenersKey] = this[listenersKey].filter(item => item[0] === event && (!fn || fn === item[1]))
+    this.events = this.events.filter(item => item[0] === event && (!fn || fn === item[1]))
     return this
   }
 
@@ -30,7 +28,7 @@ export class EventService extends Service {
    * EventService is a message center, not a data post channel
    */
   emit(event) {
-    this[listenersKey].forEach((item) => {
+    this.events.forEach((item) => {
       if (event !== item[0]) {
         return
       }
@@ -41,5 +39,9 @@ export class EventService extends Service {
         this.off(event, fn)
       }
     })
+  }
+
+  hasEvent(event) {
+    return this.events.some((item) => item[0] === event)
   }
 }

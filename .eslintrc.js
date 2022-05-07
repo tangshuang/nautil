@@ -27,7 +27,9 @@ module.exports = {
   extends: "eslint:recommended",
   rules: {
     indent: ['error', 2],
-    semi: ['error', 'never'],
+    semi: ['error', 'never', {
+      beforeStatementContinuationChars: 'always',
+    }],
     'comma-dangle': ['error', 'always-multiline'],
     'object-curly-spacing': ['error', 'always'],
     'array-bracket-spacing': ['error', 'never'],
