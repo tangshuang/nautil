@@ -113,18 +113,19 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   children: ReactChildren
 
   css(classNames: string | string[]): string
+  hook(...fns: Function[]): Function
 
   subscribe(name: string, affect: (stream: Stream) => Stream): this
   unsubscribe(name: string, affect: (stream: Stream) => Stream): this
   dispatch(name: string, data: AnyObj): this
 
-  update(): Promise<undefined>
-  update(force: true): Promise<undefined>
-  update(value: AnyObj): Promise<undefined>
-  update(key: string, value: AnyObj): Promise<undefined>
-  update(fn: <T>(state: T) => (void | T)): Promise<undefined>
-  weakUpdate(): Promise<undefined>
-  forceUpdate(): Promise<undefined>
+  update(): Promise<void>
+  update(force: true): Promise<void>
+  update(value: AnyObj): Promise<void>
+  update(key: string, value: AnyObj): Promise<void>
+  update(fn: <T>(state: T) => (void | T)): Promise<void>
+  weakUpdate(): Promise<void>
+  forceUpdate(): Promise<void>
   nextTick(fn: () => void, ...args: any[]): void
 
   onInit(): void

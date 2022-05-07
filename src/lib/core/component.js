@@ -1,6 +1,7 @@
 import {
   isValidElement,
   Component as ReactComponent,
+  useRef,
 } from 'react'
 import {
   each,
@@ -35,24 +36,59 @@ export class PrimitiveComponent extends ReactComponent {
   constructor(props) {
     super(props)
 
+    this._hooks = []
+
     // render
     const render = this.render ? this.render.bind(this) : null
     const Render = this.Render ? this.Render.bind(this) : null
-    const proxyRender = () => {
-      const props = this.props
+    const RenderWrapper = (props) => {
+      const hooks = useRef([...this._hooks])
+      hooks.current.forEach((hook) => {
+        const [fns] = hook
+        const deps = fns.map((fn) => fn())
+        // eslint-disable-next-line no-param-reassign
+        hook[2] = deps
+      })
 
       let tree = null
 
       if (Render) {
         tree = <Render {...props} />
-      }
-      else {
+      } else {
         tree = render()
       }
 
       return tree
     }
+    const proxyRender = () => {
+      if (!Render && !this._hooks.length) {
+        return render()
+      }
+
+      const { props } = this
+      return <RenderWrapper {...props} />
+    }
     define(this, 'render', { value: proxyRender })
+  }
+
+  hook(...fns) {
+    const fn = fns.length > 1 ? fns.pop() : null
+    const hook = [fns, fn]
+    this._hooks.push(hook)
+    return (...args) => {
+      const [, fn, deps] = hook
+      if (!fn) {
+        return deps[0]
+      }
+
+      const out = fn(...deps)
+
+      if (typeof out === 'function') {
+        return out(...args)
+      }
+
+      return out
+    }
   }
 }
 
