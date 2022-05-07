@@ -1,4 +1,4 @@
-import { mixin } from 'ts-fns'
+import { mixin, throttle } from 'ts-fns'
 
 import SwipeSection from '../../lib/elements/swipe-section.jsx'
 import Section from '../../lib/elements/section.jsx'
@@ -58,7 +58,7 @@ mixin(SwipeSection, class {
     const { direction } = this.attrs
     const res = direction === 'right' ? moveX >= target
       : direction === 'left' ? -moveX >= target
-      : Math.abs(moveX) >= target
+        : Math.abs(moveX) >= target
     return res
   }
 
@@ -96,7 +96,7 @@ mixin(SwipeSection, class {
   }
 
   render() {
-    const { sensitivity, distance, direction, disabled, ...rest } = this.attrs
+    const { sensitivity: _sensitivity, distance: _distance, direction: _direction, disabled: _disabled, ...rest } = this.attrs
     return (
       <Section
         {...rest}

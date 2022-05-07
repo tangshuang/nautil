@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { query, setup } from 'algeb'
+import { useForceUpdate } from './force-update.js'
+import { useShallowLatest } from './shallow-latest.js'
 
 export function useDataSource(source, ...params) {
   const [data, update] = useState(source.value)
@@ -24,26 +26,26 @@ export function useDataSource(source, ...params) {
  * - data: 当前source的值
  * - fetch: 用于拉取数据的函数
  */
- export function useLazyDataSource(source, ...params) {
-  const forceUpdate = useForceUpdate();
-  const args = useShallowLatest(params);
-  const ref = useRef(source.value);
+export function useLazyDataSource(source, ...params) {
+  const forceUpdate = useForceUpdate()
+  const args = useShallowLatest(params)
+  const ref = useRef(source.value)
   const output = useMemo(() => {
     const fetch = (...sources) => {
       return new Promise((resolve, reject) => {
         const stop = setup(() => {
-          const [data, request] = query(source, ...params);
-          ref.current = data;
+          const [data, request] = query(source, ...params)
+          ref.current = data
           request(...sources).then((data) => {
-            resolve(data);
-            forceUpdate();
-          }).catch(reject);
-        });
+            resolve(data)
+            forceUpdate()
+          }).catch(reject)
+        })
         // 立即销毁不需要使用了
-        stop();
-      });
+        stop()
+      })
     }
-    return [ref.current, fetch];
-  }, [source, args]);
-  return output;
+    return [ref.current, fetch]
+  }, [source, args])
+  return output
 }

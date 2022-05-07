@@ -84,7 +84,7 @@ export function createHttp(App, props = {}, options = {}) {
 
     const replaceTemplateContent = (content, params) => {
       // use comment tag
-      let output = content.replace(/\<\!\-\-(.*?)\-\-\>/g, (match, key) => {
+      let output = content.replace(/<!--(.*?)-->/g, (match, key) => {
         const name = key.toLowerCase().trim()
         return params[name] ? params[name] : match
       })

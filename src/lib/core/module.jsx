@@ -10,13 +10,13 @@ export class ModuleBaseComponent extends Component {}
 
 const bootstrapperContext = createContext()
 export function createBootstrap(options) {
-  const { router, context = {}, i18n = {} } = options;
+  const { router, context = {}, i18n = {} } = options
 
   function Root(props) {
     const { children } = props
     const parent = useContext(bootstrapperContext)
     if (parent) {
-      throw new Error('You should must use createBootstrap for your root application component only once.');
+      throw new Error('You should must use createBootstrap for your root application component only once.')
     }
 
     const { Provider } = bootstrapperContext
@@ -145,7 +145,7 @@ export function importModule(options) {
               ...nav,
             }
           }
-          return nav;
+          return nav
         })
       }, [nav, abs])
       const navigators = useMemo(() => [...previous, ...navs], [navs, previous])

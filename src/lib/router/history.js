@@ -1,4 +1,4 @@
-import { parseUrl, parseSearch, resolveUrl, revokeUrl, paramsToUrl, EventBase, noop } from '../utils.js'
+import { parseUrl, parseSearch, resolveUrl, revokeUrl, paramsToUrl, EventBase } from '../utils.js'
 import { isInheritedOf } from 'ts-fns'
 import { Storage } from '../storage/storage.js'
 
@@ -60,12 +60,12 @@ export class History extends EventBase {
    * @returns {string} path like: root/child/sub
    */
   getUrl(abs, mode) {
-    const url = this.location.href;
-    return this.$parseUrl(url, abs, mode);
+    const url = this.location.href
+    return this.$parseUrl(url, abs, mode)
   }
   $parseUrl(url, abs, mode) {
-    const { base } = mode;
-    return revokeUrl(base, revokeUrl(abs, url));
+    const { base } = mode
+    return revokeUrl(base, revokeUrl(abs, url))
   }
 
   /**
@@ -152,6 +152,7 @@ class StorageHistory extends MemoHistory {
   init() {
     super.init()
 
+    // eslint-disable-next-line no-async-promise-executor
     this.$ready = new Promise(async (resolve) => {
       const { cursor = 0, stack = [] } = await Storage.getItem(HISTORY_KEY) || {}
       this.stack = stack

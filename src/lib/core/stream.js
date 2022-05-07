@@ -1,4 +1,6 @@
-export { Subject as Stream, Subject as default } from 'rxjs'
+import { Subject as Stream } from 'rxjs'
+
+export { Stream }
 
 export function createStream(fn) {
   const stream$ = new Stream()

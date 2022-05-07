@@ -28,7 +28,7 @@ export function useModelReactor(model, compute, ...args) {
     const hash = getObjectHash(deps)
 
     return { res, deps, hash }
-  }, [state, latest, latestArgs])
+  }, [latest, latestArgs])
 
   useEffect(() => {
     models.forEach((model, i) => {

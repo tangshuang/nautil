@@ -5,7 +5,7 @@ import {
   Binding,
 } from '../utils.js'
 import { useMemo, useState } from 'react'
-import { each, isObject } from 'ts-fns'
+import { each, isObject, assign } from 'ts-fns'
 import produce from 'immer'
 import { useShallowLatest } from './shallow-latest.js'
 import { useForceUpdate } from './force-update.js'

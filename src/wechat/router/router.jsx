@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 import { mixin } from 'ts-fns'
 import { Router } from '../../lib/router/router.jsx'
 import { History } from '../../lib/router/history.js'
-import { resolveUrl, revokeUrl, paramsToUrl } from '../../lib/utils.js'
+import { revokeUrl } from '../../lib/utils.js'
 
 class WechatHistory extends History {
   getUrl(abs, mode) {

@@ -15,8 +15,8 @@ export class Prepare extends Component {
     return ready
       ? (
         isFunction(render) ? render()
-        : isFunction(this.children) ? this.children()
-        : this.children
+          : isFunction(this.children) ? this.children()
+            : this.children
       )
       : createPlaceholderElement(pendding)
   }

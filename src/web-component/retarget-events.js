@@ -14,119 +14,119 @@ const reactEvents = [
   "onTouchCancel", "onTouchMove", "onTouchStart", "onTouchEnd",
   "onTransitionCancel", "onTransitionEnd",
   "onDrag", "onDragEnd", "onDragEnter", "onDragExit", "onDragLeave", "onDragOver", "onDragStart", "onDrop",
-];
+]
 
 const divergentNativeEvents = {
-    onDoubleClick: 'dblclick'
-};
+  onDoubleClick: 'dblclick',
+}
 
 const mimickedReactEvents = {
-    onInput: 'onChange',
-    onFocusOut: 'onBlur',
-    onSelectionChange: 'onSelect'
-};
+  onInput: 'onChange',
+  onFocusOut: 'onBlur',
+  onSelectionChange: 'onSelect',
+}
 
 const captureEvents = [
-    'scroll',
-    'focus',
-    'blur',
+  'scroll',
+  'focus',
+  'blur',
 ]
 
 export default function retargetEvents(shadowRoot) {
-    var removeEventListeners = [];
+  var removeEventListeners = []
 
-    reactEvents.forEach(function (reactEventName) {
+  reactEvents.forEach(function (reactEventName) {
 
-        var nativeEventName = getNativeEventName(reactEventName);
+    var nativeEventName = getNativeEventName(reactEventName)
 
-        function retargetEvent(event) {
+    function retargetEvent(event) {
 
-            var path = event.path || (event.composedPath && event.composedPath()) || composedPath(event.target);
+      var path = event.path || (event.composedPath && event.composedPath()) || composedPath(event.target)
 
-            for (var i = 0; i < path.length; i++) {
+      for (var i = 0; i < path.length; i++) {
 
-                var el = path[i];
-                var reactComponent = findReactComponent(el);
-                var props = findReactProps(reactComponent);
+        var el = path[i]
+        var reactComponent = findReactComponent(el)
+        var props = findReactProps(reactComponent)
 
-                if (reactComponent && props) {
-                    dispatchEvent(event, reactEventName, props);
-                }
-
-                if (reactComponent && props && mimickedReactEvents[reactEventName]) {
-                    dispatchEvent(event, mimickedReactEvents[reactEventName], props);
-                }
-
-                if (event.cancelBubble) {
-                    break;
-                }
-
-                if (el === shadowRoot) {
-                    break;
-                }
-            }
+        if (reactComponent && props) {
+          dispatchEvent(event, reactEventName, props)
         }
 
-        shadowRoot.addEventListener(nativeEventName, retargetEvent, {
-            capture: captureEvents.includes(nativeEventName),
-            passive: true,
-        });
+        if (reactComponent && props && mimickedReactEvents[reactEventName]) {
+          dispatchEvent(event, mimickedReactEvents[reactEventName], props)
+        }
 
-        removeEventListeners.push(function () {
-            shadowRoot.removeEventListener(nativeEventName, retargetEvent);
-        })
-    });
+        if (event.cancelBubble) {
+          break
+        }
 
-    return function () {
+        if (el === shadowRoot) {
+          break
+        }
+      }
+    }
 
-      removeEventListeners.forEach(function (removeEventListener) {
+    shadowRoot.addEventListener(nativeEventName, retargetEvent, {
+      capture: captureEvents.includes(nativeEventName),
+      passive: true,
+    })
 
-        removeEventListener();
-      });
-    };
-};
+    removeEventListeners.push(function () {
+      shadowRoot.removeEventListener(nativeEventName, retargetEvent)
+    })
+  })
+
+  return function () {
+
+    removeEventListeners.forEach(function (removeEventListener) {
+
+      removeEventListener()
+    })
+  }
+}
 
 function findReactComponent(item) {
-    for (var key in item) {
-        if (item.hasOwnProperty(key) && key.indexOf('_reactInternal') !== -1) {
-            return item[key];
-        }
+  for (var key in item) {
+    if (Object.prototype.hasOwnProperty.call(item, key) && key.indexOf('_reactInternal') !== -1) {
+      return item[key]
     }
+  }
 }
 
 function findReactProps(component) {
-    if (!component) return undefined;
-    if (component.memoizedProps) return component.memoizedProps; // 16 Fiber
-    if (component._currentElement && component._currentElement.props) return component._currentElement.props; // <=15
+  if (!component) return undefined
+  if (component.memoizedProps) return component.memoizedProps // 16 Fiber
+  if (component._currentElement && component._currentElement.props) return component._currentElement.props // <=15
 
 }
 
 function dispatchEvent(event, eventType, componentProps) {
-    event.persist = function() {
-        event.isPersistent = function(){ return true};
-    };
+  event.persist = function() {
+    event.isPersistent = function(){ return true}
+  }
 
-    if (componentProps[eventType]) {
-        componentProps[eventType](event);
-    }
+  if (componentProps[eventType]) {
+    componentProps[eventType](event)
+  }
 }
 
 function getNativeEventName(reactEventName) {
-    if (divergentNativeEvents[reactEventName]) {
-        return divergentNativeEvents[reactEventName];
-    }
-    return reactEventName.replace(/^on/, '').toLowerCase();
+  if (divergentNativeEvents[reactEventName]) {
+    return divergentNativeEvents[reactEventName]
+  }
+  return reactEventName.replace(/^on/, '').toLowerCase()
 }
 
 function composedPath(el) {
-  var path = [];
+  var path = []
   while (el) {
-    path.push(el);
+    path.push(el)
     if (el.tagName === 'HTML') {
-      path.push(document);
-      path.push(window);
-      return path;
+      path.push(document)
+      path.push(window)
+      return path
     }
-    el = el.parentElement;
+    el = el.parentElement
   }
 }

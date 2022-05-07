@@ -4,7 +4,7 @@ import { Style } from '../../lib/style/style.js'
 
 mixin(Button, class {
   render() {
-    const { type, ...attrs } = this.attrs
+    const { type: _type, ...attrs } = this.attrs
     return <button
       {...attrs}
 

@@ -1,5 +1,5 @@
 node_modules/
-/*.js
+/index.js
 /*.map
 /lib/
 /dom/

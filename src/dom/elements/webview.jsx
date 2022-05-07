@@ -1,4 +1,4 @@
-import { mixin } from 'ts-fns'
+import { mixin, isString } from 'ts-fns'
 import Webview from '../../lib/elements/webview.jsx'
 
 mixin(Webview, class {

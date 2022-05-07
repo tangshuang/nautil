@@ -94,7 +94,7 @@ const container = {
     }
 
     const findBy = (instance, selector) => {
-      const [_m, tag, _i, key, value] = selector.match(/(.+?)(\[(.+?)=(.+?)\])?/)
+      const [, tag, , key, value] = selector.match(/(.+?)(\[(.+?)=(.+?)\])?/)
 
       const find = (instance) => {
         if (!isObject(instance)) {
@@ -158,10 +158,10 @@ const HostConfig = {
   getPublicInstance(instance) {
     return instance
   },
-  getRootHostContext(container) {
+  getRootHostContext(_container) {
     return context
   },
-  getChildHostContext(parentHostContext, type, container) {
+  getChildHostContext(_parentHostContext, _type, _container) {
     return context
   },
 
@@ -190,7 +190,7 @@ const HostConfig = {
 
     return instance
   },
-  createTextInstance(text, container, context, fiber) {
+  createTextInstance(_text, _container, _context, _fiber) {
     // text is added in createInstance
   },
 
@@ -239,14 +239,14 @@ const HostConfig = {
     container.root = null
     container.data = null
   },
-  clearContainer(container) {},
+  clearContainer(_container) {},
   finalizeInitialChildren() {
     // return true
   },
-  commitMount(instance) {
+  commitMount(_instance) {
   },
 
-  prepareUpdate(instance, type, oldProps, newProps, container, context) {
+  prepareUpdate(instance, type, oldProps, newProps, container, _context) {
     const { children: oldChildren, ...oldAttrs } = oldProps
     const { children: newChildren, ...newAttrs } = newProps
 
@@ -291,9 +291,9 @@ const HostConfig = {
   shouldSetTextContent() {
     return false
   },
-  resetTextContent(instance) {},
+  resetTextContent(_instance) {},
 
-  prepareForCommit(container) {},
+  prepareForCommit(_container) {},
   resetAfterCommit(container) {
     if (notify) {
       notify.updated(container.data)
@@ -318,6 +318,7 @@ export function render(element, { mounted, updated, created }) {
 
 export function registerApp(register) {
   const options = register ? register(context) : {}
+  // eslint-disable-next-line no-undef
   App(options)
 }
 
@@ -325,6 +326,7 @@ export function registerPage(register, dataKey, Component, props) {
   const options = register ? register(context) : {}
   const behavior = dataKey && Component ? createBehavior(dataKey, Component, props) : null
   const behaviors = behavior ? [behavior] : []
+  // eslint-disable-next-line no-undef
   Page({
     ...options,
     behaviors: [...(options.behaviors || []), ...behaviors],
@@ -332,6 +334,7 @@ export function registerPage(register, dataKey, Component, props) {
 }
 
 export function createBehavior(dataKey, Component, props) {
+  // eslint-disable-next-line no-undef
   return Behavior({
     data: {
       [dataKey]: null,

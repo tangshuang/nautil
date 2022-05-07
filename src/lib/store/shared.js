@@ -1,5 +1,7 @@
 import { Component } from '../core/component.js'
 import { useStore as originUseStore, Consumer } from './consumer.jsx'
+import { isInstanceOf } from 'ts-fns'
+import { Store } from './store.js'
 
 export function applyStore(store) {
   const useStore = (watch) => originUseStore(store, watch)

@@ -109,10 +109,11 @@ const handlers = [
   'bindenterpictureinpicture',
   'bindleavepictureinpicture',
   'bindseekcomplete',
-  'bindmessage'
+  'bindmessage',
 ]
 handlers.forEach((name) => {
   componentConfig.methods[name] = createHandle(name)
 })
 
+// eslint-disable-next-line no-undef
 Component(componentConfig)

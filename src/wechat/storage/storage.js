@@ -1,15 +1,16 @@
+/* eslint-disable no-undef */
 import { mixin } from 'ts-fns'
 import { Storage } from '../../lib/storage/storage.js'
 
 mixin(Storage, class {
   static async getItem(key) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve,) => {
       wx.getStorage({
         key,
         success(res) {
           resolve(res.data)
         },
-        fail(error) {
+        fail() {
           resolve()
         },
       })

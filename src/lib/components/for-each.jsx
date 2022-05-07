@@ -28,7 +28,7 @@ export class For extends Component {
       const uniqueKey = unique ? (isFunction(unique) ? unique(data, i) : (data && typeof data === 'object' ? data[unique] : i)) : i
       const block = isFunction(render) ? render(data, i, uniqueKey)
         : isFunction(children) ? children(data, i, uniqueKey)
-        : Children.map(children, child => <Fragment key={uniqueKey}>{cloneElement(child)}</Fragment>)
+          : Children.map(children, child => <Fragment key={uniqueKey}>{cloneElement(child)}</Fragment>)
       blocks.push(block)
     }
     return blocks
@@ -57,12 +57,12 @@ export class Each extends Component {
       const uniqueKey = unique
         ? (
           isFunction(unique) ? unique(value, key)
-          : (value && typeof value === 'object' ? value[unique] : defaultKey)
+            : (value && typeof value === 'object' ? value[unique] : defaultKey)
         )
         : defaultKey
       const block = isFunction(render) ? render(value, key, uniqueKey)
         : isFunction(children) ? children(value, key, uniqueKey)
-        : Children.map(children, child => <Fragment key={uniqueKey}>{cloneElement(child)}</Fragment>)
+          : Children.map(children, child => <Fragment key={uniqueKey}>{cloneElement(child)}</Fragment>)
       blocks.push(block)
     })
 

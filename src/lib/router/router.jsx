@@ -1,11 +1,12 @@
-import { parseUrl, parseSearch, resolveUrl, noop } from '../utils.js'
+import { parseUrl, parseSearch, resolveUrl } from '../utils.js'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
 import { ModuleBaseComponent } from '../core/module.jsx'
+import { isInheritedOf } from 'ts-fns'
 
-const rootContext = createContext()
+export const rootContext = createContext()
 const absContext = createContext({
   abs: '',
   deep: [],
@@ -104,7 +105,7 @@ export class Router {
       return {
         path: '!',
         component: notFound ? notFound.component : () => null,
-        params: { ...routeParams, ...query }
+        params: { ...routeParams, ...query },
       }
     }
 
@@ -207,7 +208,7 @@ export class Router {
     return <C {...props} />
   }
 
-  static $createLink(data) {
+  static $createLink(_data) {
     throw new Error('[Nautil]: Router.$createLink should must be override.')
   }
 
@@ -433,7 +434,7 @@ export function useRouteLocation() {
  * 基于route提前加载目标模块代码
  * @returns
  */
- export function useRoutePrefetch() {
+export function useRoutePrefetch() {
   const { current } = useContext(routerContext)
 
   /**

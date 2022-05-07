@@ -76,7 +76,7 @@ mixin(SwipeSection, class {
     const { direction } = this.attrs
     const res = direction === 'right' ? moveX >= target
       : direction === 'left' ? -moveX >= target
-      : Math.abs(moveX) >= target
+        : Math.abs(moveX) >= target
     return res
   }
 
@@ -114,7 +114,7 @@ mixin(SwipeSection, class {
   }
 
   render() {
-    const { sensitivity, distance, direction, disabled, ...rest } = this.attrs
+    const { sensitivity: _sensitivity, distance: _distance, direction: _direction, disabled: _disabled, ...rest } = this.attrs
     return (
       <div {...rest} ref={this.dom}>{this.children}</div>
     )

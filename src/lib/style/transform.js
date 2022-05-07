@@ -60,7 +60,7 @@ export class Transform {
     else if (isString(value)) {
       const blocks = value.split(' ').filter(item => !!item)
       blocks.forEach((item) => {
-        const [name, x, y] = item.split(/[\(\,\)]/).map(item => item.trim())
+        const [name, x, y] = item.split(/[(,)]/).map(item => item.trim())
         rules[name] = y ? [x, y] : x
       })
     }

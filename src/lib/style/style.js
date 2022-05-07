@@ -53,11 +53,11 @@ export class Style {
     return rules
   }
 
-  static filter(key, value) {
+  static filter(_key, _value) {
     return true
   }
 
-  static convert(value, key) {
+  static convert(value, _key) {
     return value
   }
 

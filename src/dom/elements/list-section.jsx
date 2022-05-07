@@ -15,7 +15,7 @@ class ReactList extends Component {
   static defaultProps = {
     listItems: [],
     heightOfItem: 30,
-    maxItemsToRender: 50
+    maxItemsToRender: 50,
   }
   constructor(props) {
     super(props)

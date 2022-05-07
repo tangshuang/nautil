@@ -69,13 +69,13 @@ export function define(name, Component, cssText) {
           // ev.substr(2).replace(/^[A-Z]/, letter => letter.toLowerCase())
           [ev]: args => this.dispatchEvent(new CustomEvent(ev, args)),
         }), {})
-   }
+    }
     _getProps(attributes, propTypes = {}) {
-      return [ ...attributes ].filter(attr => attr.name !== 'style')
-         .map(attr => this._convertProp(attr.name, attr.value, propTypes))
-         .reduce((props, prop) => ({ ...props, [prop.name]: prop.value }), {})
-   }
-   _convertProp(attrName, attrValue, propTypes) {
+      return [...attributes].filter(attr => attr.name !== 'style')
+        .map(attr => this._convertProp(attr.name, attr.value, propTypes))
+        .reduce((props, prop) => ({ ...props, [prop.name]: prop.value }), {})
+    }
+    _convertProp(attrName, attrValue, propTypes) {
       const propName = Object.keys(propTypes).find(key => key.toLowerCase() == attrName)
       let value = attrValue
       if (attrValue === 'true' || attrValue === 'false') {
@@ -88,8 +88,8 @@ export function define(name, Component, cssText) {
         value = JSON.parse(attrValue)
       }
       return {
-         name: propName ? propName : attrName,
-         value,
+        name: propName ? propName : attrName,
+        value,
       }
     }
   }

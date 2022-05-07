@@ -10,7 +10,8 @@
     "build:cjs": "cross-env NODE_ENV=production babel src --out-dir . --config-file ./.build/babel.config.js --keep-file-extension --copy-files",
     "build:wechat": "copyfiles -f src/wechat/components/dynamic/* miniprogram_dist/wechat/components/dynamic && cross-env NODE_ENV=production webpack --config .build/webpack.wechat.config.js",
     "dev": "webpack-dev-server --config .examples/dev/webpack.config.js",
-    "postinstall": "node .scripts/files-for-wechat.js"
+    "postinstall": "node .scripts/files-for-wechat.js",
+    "eslint": "eslint src --ext js,jsx"
   },
   "repository": {
     "type": "git",
@@ -39,12 +40,15 @@
   },
   "optionalDependencies": {
     "@react-native-async-storage/async-storage": "^1.15.14",
+    "@react-navigation/native": "^6.0.10",
+    "@react-navigation/stack": "^6.2.1",
     "react-dom": "^17.0.2",
     "react-native": "^0.66.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.14.5",
+    "@babel/eslint-parser": "^7.17.0",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.14.5",
@@ -55,9 +59,13 @@
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "css-loader": "^4.3.0",
+    "eslint": "^8.15.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
     "glob-parent": "^6.0.2",
     "less": "^3.12.2",
     "less-loader": "^7.0.1",
+    "prettier-eslint": "^14.0.2",
     "react-reconciler": "^0.26.2",
     "rimraf": "^3.0.2",
     "scheduler": "^0.20.2",

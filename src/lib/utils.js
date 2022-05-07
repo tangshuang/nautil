@@ -222,14 +222,14 @@ export function parseSearch(search) {
 export function resolveUrl(dir, to) {
   const roots = (dir || '').split('/').filter(item => item)
   const blocks = (to || '').split('/').filter(item => item)
-  while (true) {
+  while (blocks.length) {
     const block = blocks[0]
     if (block === '..') {
       blocks.shift()
       roots.pop()
     }
     else if (block === '.') {
-      blocks.shift();
+      blocks.shift()
     }
     else {
       break

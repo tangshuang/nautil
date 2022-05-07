@@ -1,5 +1,5 @@
 import { LanguageDetector } from '../../lib/i18n/language-detector.js'
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native'
 
 LanguageDetector.getLang = () => {
   const deviceLanguage =

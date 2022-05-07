@@ -127,8 +127,8 @@ function TroubleMaker(props) {
     const promise = new Promise((r) => {
       resolve = r
     })
-    deferer.current = resolve;
-    throw promise;
+    deferer.current = resolve
+    throw promise
   } else if (deferer.current) {
     deferer.current()
     deferer.current = null

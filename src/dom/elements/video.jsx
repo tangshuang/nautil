@@ -1,4 +1,4 @@
-import { mixin } from 'ts-fns'
+import { mixin, isString } from 'ts-fns'
 import Video from '../../lib/elements/video.jsx'
 
 mixin(Video, class {

@@ -264,7 +264,7 @@ export class Animation extends Component {
 
   render() {
     const { show, style } = this.state
-    const { ease, duration, component, ...rest } = this.attrs
+    const { ease: _ease, duration: _duration, component, ...rest } = this.attrs
     delete rest.show
 
     const C = component ? component : Section

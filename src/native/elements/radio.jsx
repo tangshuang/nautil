@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 mixin(Radio, class {
   render() {
-    const { checked, ...rest } = this.attrs
+    const { checked, color, ...rest } = this.attrs
 
     const onChange = (e) => {
       this.$attrs.checked = !checked

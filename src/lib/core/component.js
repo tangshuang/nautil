@@ -606,7 +606,7 @@ export class Component extends PrimitiveComponent {
         const useProps = {
           ...nextProps,
           ...(props || {}),
-          stylesheet: [].concat(nextProps.stylesheet || []).concat(stylesheet || [])
+          stylesheet: [].concat(nextProps.stylesheet || []).concat(stylesheet || []),
         }
         if (deprecated) {
           each(deprecated, (key) => {

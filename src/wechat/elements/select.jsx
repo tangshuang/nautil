@@ -5,7 +5,7 @@ import { Style } from '../../lib/style/style.js'
 
 mixin(Select, class {
   render() {
-    const { inputRef, options, optionValueKey, optionTextKey, placeholder, ...attrs } = this.attrs
+    const { inputRef, options, optionValueKey, optionTextKey, placeholder, defaultValue, ...attrs } = this.attrs
     const value = 'value' in attrs ? attrs.value : 'defaultValue' in attrs ? defaultValue : ''
     const text = decideby(() => {
       if (value) {

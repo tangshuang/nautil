@@ -1,5 +1,5 @@
 const path = require('path')
-const babelConfig = require('./babel.config.js')
+const babelConfig = require('../babel.config.js')
 
 babelConfig.presets[0][1] = { modules: false }
 
