@@ -232,13 +232,43 @@ const { Outlet } = createRouteComponent('edit', ({ isRouteActive, inactiveRoute 
 When navigate to xxx/edit, `isRouteActive` will be true, so that the Modal is opened, when we invoke `inactiveRoute`, history.back() is invoked in fact, thus `isRouteActive` truns to be false, the Modal is closed.
 
 ```
-const { Outlet, useActiveRoute, Link } = createRouteComponent(path, Component: ComponentType<{ isRouteActive: boolean; inactiveRoute: () => void } & any>)
+const { Outlet, useActiveRoute, Link, useIsRouteActive } = createRouteComponent(path, Component: ComponentType<{ isRouteActive: boolean; inactiveRoute: () => void } & any>)
 ```
 
 - path: string
 - Component: ({ isRouteActive, inactiveRoute }) => JSX
   - isRouteActive: boolean，detect which match path
   - inactiveRoute: function, invoke to go back
+
 - Outlet
 - useActiveRoute: hook function, return a `activeRoute` function to renavigate to the path, like navigate to, receive `params` and `replace`, dont pass `to`
 - Link
+- useIsRouteActive: hook function, return a boolean to determine the active status
+
+## createRouteState
+
+In some cases, you want to use route to control some view like state do, `createRouteState` help you to create a state context by route.
+
+```js
+const { useMatch, useActive, useInactive } = createRouteState(['path1', 'path2'])
+
+function MyComponent() {
+  const match = useMatch()
+  const active = useActive()
+  const inactive = useInactive()
+
+  const isPath1 = match('path1')
+
+  const handleJump = () => {
+    active('path2')
+  }
+
+  const goBack = () => {
+    inactive()
+  }
+
+  // ...
+}
+```
+
+In most cases, you use `match` to determine whether the route is navigated to the path.

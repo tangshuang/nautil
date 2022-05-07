@@ -532,7 +532,18 @@ export declare function useRouteLocation(): {
 
 export declare function useRoutePrefetch(): (to: string) => void
 
-export declare function createRouteComponent(path: string, C: JSXComponent<{ isRouteActive: boolean, inactiveRoute: () => void } & AnyObj>)
+export declare function createRouteComponent(path: string, C: JSXComponent<{ isRouteActive: boolean, inactiveRoute: () => void } & AnyObj>): {
+  Outlet: ComponentType
+  Link: ComponentType
+  useActiveRoute: () => (params?: AnyObj, replace?: boolean) => void
+  useIsRouteAcitve: () => boolean
+}
+
+export declare function createRouteState(paths: string[]): {
+  useMatch: () => (path: string) => boolean
+  useActive: () => (path: string) => void
+  useInactive: () => () => void
+}
 
 export declare class Storage {
   static getItem(key: string): Promise<any>

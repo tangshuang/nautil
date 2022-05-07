@@ -500,5 +500,32 @@ export function createRouteComponent(path, C) {
     return <ThisLink {...props} to={path} />
   }
 
-  return { Outlet, useActiveRoute, Link }
+  function useIsRouteActive() {
+    const match = useMatch()
+    const isMatched = match(path)
+    return isMatched
+  }
+
+  return { Outlet, useActiveRoute, Link, useIsRouteActive }
+}
+
+export function createRouteState(paths) {
+  const { useMatch, useNavigate } = new Router({
+    routes: paths.map((path) => ({
+      path,
+      component: () => null,
+    })),
+  })
+
+  function useActive() {
+    const navigate = useNavigate()
+    return (path) => navigate(path)
+  }
+
+  function useInactive() {
+    const navigate = useNavigate()
+    return () => navigate(-1)
+  }
+
+  return { useMatch, useActive, useInactive }
 }

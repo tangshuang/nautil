@@ -124,5 +124,5 @@ export { I18n } from './lib/i18n/i18n.class.js'
 export { useI18n, useLanguage, useTranslate } from './lib/i18n/i18n.jsx'
 export { LanguageDetector } from './lib/i18n/language-detector.js'
 
-export { Router, Link, useRouteNavigate, useLocation, useHistoryListener, useRouteParams, useRouteMatch, useRouteLocation, useRoutePrefetch } from './lib/router/router.jsx'
+export { Router, Link, useRouteNavigate, useLocation, useHistoryListener, useRouteParams, useRouteMatch, useRouteLocation, useRoutePrefetch, createRouteComponent, createRouteState } from './lib/router/router.jsx'
 export { createBootstrap, createAsyncComponent, importModule, useModuleNavigator, useModuleContext, useModuleI18n } from './lib/core/module.jsx'
