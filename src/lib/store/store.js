@@ -13,14 +13,14 @@ export class Store {
 
     if (origin && typeof origin === 'object') {
       this.$state = createTwoWayBinding(this.state, (_, keyPath, value) => {
-        this.dispatch((state) => {
+        this.update((state) => {
           assign(state, keyPath, value)
         })
       })
     }
 
     // bind to store, so that we can destruct from store
-    this.dispatch = this.dispatch.bind(this)
+    this.update = this.update.bind(this)
     this.setState = this.setState.bind(this)
     this.getState = this.getState.bind(this)
   }
@@ -34,28 +34,33 @@ export class Store {
       }
     })
   }
+  dispatch(...args) {
+    this._subscribers.forEach((fn) => {
+      fn(...args)
+    })
+  }
   getState() {
     return this.state
   }
   resetState() {
-    this.dispatch(this._origin)
+    this.update(this._origin)
   }
   setState(state) {
-    this.dispatch(draft => {
+    this.update(draft => {
       if (!isObject(draft)) {
         return state
       }
       Object.assign(draft, state)
     })
   }
-  dispatch(update) {
+  update(updator) {
     const prev = this.state
-    const next = typeof update === 'function' ? produce(prev, update) : update
+    const next = typeof updator === 'function' ? produce(prev, updator) : updator
     this.state = next
 
     if (next && typeof next === 'object') {
       this.$state = createTwoWayBinding(this.state, (_, keyPath, value) => {
-        this.dispatch((state) => {
+        this.update((state) => {
           assign(state, keyPath, value)
         })
       })
@@ -64,9 +69,7 @@ export class Store {
       delete this.$state
     }
 
-    this._subscribers.forEach((fn) => {
-      fn(next, prev)
-    })
+    this.dispatch(prev, next)
   }
 }
 export default Store

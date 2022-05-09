@@ -35,7 +35,7 @@ const { state } = store
 
 ```js
 const $state = store.$state
-$state.age ++ // -> store.dispatch(state => state.age ++)
+$state.age ++ // -> store.update(state => state.age ++)
 ```
 
 ### resetState()
@@ -46,10 +46,10 @@ Restore initialize state as current state.
 
 Merge given `state` into current state.
 
-### dispatch(update)
+### update(updator)
 
 ```js
-store.dispatch(state => {
+store.update(state => {
   // use mutable action like vue.js
   state.body.hand = ...
   state.next.some = ...
@@ -65,14 +65,14 @@ const store = new Store()
 const { useStore, connect } = applyStore(store)
 
 function MyComponent() {
-  const { getState, setState, dispatch } = useStore()
+  const { getState, setState, update } = useStore()
   const state = getState()
 
   // ....
 
   setState({ some: 111 })
 
-  dispatch(state => {
+  update(state => {
     state.some = 222
   })
 }
