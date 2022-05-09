@@ -148,4 +148,13 @@ export class Controller extends SingleInstanceBase {
       this.observers.push(subscription)
     }
   }
+
+  disobserve(observer) {
+    const item = this.observers.find((item) => item.observer === observer)
+    if (!item) {
+      return
+    }
+
+    item.stop()
+  }
 }
