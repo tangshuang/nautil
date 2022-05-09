@@ -100,6 +100,12 @@ export class History extends EventBase {
       return to + search
     }
 
+    if (/^\.\.?\/[a-z]/.test(to)) {
+      const { pathname } = this.location
+      const url = resolveUrl(pathname, to)
+      return url + search
+    }
+
     const { base } = mode
     const root = resolveUrl(base, abs)
     const url = resolveUrl(root, to)
