@@ -127,6 +127,7 @@ export class Router {
       search,
       query,
       redirect: route.redirect,
+      exact: route.exact,
     }
   }
 
@@ -148,7 +149,7 @@ export class Router {
     const url = history.getUrl(abs, mode)
     const state = this.parseUrlToState(url)
 
-    const { component: C, path, params, redirect } = state
+    const { component: C, path, params, redirect, exact } = state
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
@@ -165,6 +166,7 @@ export class Router {
         url,
         path,
         params,
+        exact,
       }
     }, [url])
 
@@ -216,13 +218,13 @@ export class Router {
     throw new Error('[Nautil]: Router.$createLink should must be override.')
   }
 
-  static $createNavigate(history, abs, mode) {
+  static $createNavigate(history, getAbs, mode) {
     return (to, params, replace) => {
       if (typeof to === 'number') {
         to > 0 ? history.forword() : history.back()
         return
       }
-      history.setUrl(to, abs, mode, params, replace)
+      history.setUrl(to, getAbs(to, params), mode, params, replace)
     }
   }
 
@@ -319,11 +321,6 @@ export function useHistoryListener(fn, deps = []) {
   }, deps)
 }
 
-export function useHistoryBack() {
-  const { history } = useContext(rootContext)
-  return () => history.back()
-}
-
 export function Link(props) {
   const { to, replace, open, params, ...attrs } = props
 
@@ -334,10 +331,11 @@ export function Link(props) {
   const { abs } = useContext(absContext)
   const { abs: currentRouterAbs = abs } = useContext(routerContext)
 
-  const navigateTo = useRouteNavigate.call(this && this instanceof Router ? this : null)
-  const args = useShallowLatest(params)
+  const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
+  const navigateTo = Router.$createNavigate(history, getAbs, mode)
 
-  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs
+  const args = useShallowLatest(params)
+  const finalAbs = getAbs(to)
 
   const { href, navigate } = useMemo(() => {
     const href = typeof to === 'number' ? '#' : history.$makeUrl(to, finalAbs, mode, args)
@@ -356,9 +354,8 @@ export function useRouteNavigate() {
   const { abs } = useContext(absContext)
   const { abs: currentRouterAbs = abs } = useContext(routerContext)
 
-  const finalAbs = this && this instanceof Router ? abs : currentRouterAbs
-
-  return Router.$createNavigate(history, finalAbs, mode)
+  const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
+  return Router.$createNavigate(history, getAbs, mode)
 }
 
 export function useRouteParams() {
@@ -389,7 +386,7 @@ export function useRouteMatch() {
 
   const { abs } = useContext(absContext)
   const { history, mode } = useContext(rootContext)
-  const { path: routePath, url } = useContext(routeContext)
+  const { path: routePath, url, exact } = useContext(routeContext)
 
   let currentPath = null
   let currentUrl = ''
@@ -405,16 +402,20 @@ export function useRouteMatch() {
     currentUrl = url
   }
 
-  return (pattern, exact) => {
-    if (exact && pattern === currentUrl) {
+  return (pattern) => {
+    if (pattern === currentPath) {
       return true
     }
 
-    if (!exact && pattern === currentPath) {
+    if (pattern === '') {
+      return exact ? currentPath === '' : currentPath !== '!'
+    }
+
+    if (!exact && typeof pattern === 'string' && (currentPath + '/').indexOf(pattern) === 0) {
       return true
     }
 
-    if (pattern && pattern instanceof RegExp && pattern.test(currentPath)) {
+    if (pattern && pattern instanceof RegExp && pattern.test(currentUrl)) {
       return true
     }
 
@@ -526,27 +527,6 @@ export function createRouteComponent(path, C, exact) {
   }
 
   return { Outlet, useActiveRoute, Link, useIsRouteActive }
-}
-
-export function createRouteState(paths) {
-  const { useMatch, useNavigate } = new Router({
-    routes: paths.map((path) => ({
-      path,
-      component: () => null,
-    })),
-  })
-
-  function useActive() {
-    const navigate = useNavigate()
-    return (path) => navigate(path)
-  }
-
-  function useInactive() {
-    const navigate = useNavigate()
-    return () => navigate(-1)
-  }
-
-  return { useMatch, useActive, useInactive }
 }
 
 export function createRouteState(paths, exact) {

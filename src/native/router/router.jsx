@@ -36,7 +36,7 @@ mixin(Router, class {
     )
   }
 
-  static $createNavigate(history, abs, mode) {
+  static $createNavigate(history, getAbs, mode) {
     const navigation = useNavigation()
 
     return (to, params, replace) => {
@@ -47,7 +47,7 @@ mixin(Router, class {
         return
       }
 
-      const name = history.$makeUrl(to, abs, mode, params)
+      const name = history.$makeUrl(to, getAbs(to, params), mode, params)
       if (replace) {
         navigation.reset({
           index: 0,

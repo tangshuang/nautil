@@ -76,13 +76,16 @@ const router = new Router({
     - 'some/path' with certain path
     - 'any/:id' with params path
     - '' index path
-    - '!' path to fallback when not found, NOTICE if there is no '!', index path will be used as fallback
+    - '!' path to fallback when not found
   - component: ReactComponentType
   - redirect: boolean, redirect to when visit this path, if redirect is true, component will not work any more
+  - exact: boolean, whether to use the whole url to match current route, if true, only the same url match current route, if false, when the url is begining with path it match the current route
 
 The routes rules has priority with its order in the given array.
 
 `path` should be relative to current router context, for example `a/b` `some`, notice without `/` or `./` at the beginning.
+
+`exact` always works with '', because all paths is begin with '', so if you want the route exactly match '', set `exact` to be true.
 
 **Outlet**
 
@@ -128,7 +131,7 @@ A component to create a hyperlink to certain route and display its component.
 
 **cross modules**
 
-`navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `/abs/path` as `to`. Begining with `/` and absolute url path will trigger history change with absolute path.
+`navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `/abs/path` as `to`. Begining with `/` and absolute url path will trigger history change with absolute path. Begining with `./` will trigger history change by patch giving path at the current pathname tail.
 
 ## useRouteNavigate
 
@@ -156,7 +159,11 @@ Give a path or RegExp to check whether it match current route context.
 import { useRouteMatch } from 'nautil'
 
 const match = useRouteMatch()
-const bool = match('detail')
+const bool = match('detail', true)
+```
+
+```
+match(pattern: string | RegExp)
 ```
 
 ## useRouteParams
@@ -226,19 +233,25 @@ In some situation, you need to use routing to control a view but you do not want
 ```js
 const { Outlet } = createRouteComponent('edit', ({ isRouteActive, inactiveRoute }) => {
   return <TdesignModal visible={isRouteActive} onClose={() => inactiveRoute()}>xxx</TdesignModal>;
-})
+}, true)
 ```
 
 When navigate to xxx/edit, `isRouteActive` will be true, so that the Modal is opened, when we invoke `inactiveRoute`, history.back() is invoked in fact, thus `isRouteActive` truns to be false, the Modal is closed.
 
 ```
-const { Outlet, useActiveRoute, Link, useIsRouteActive } = createRouteComponent(path, Component: ComponentType<{ isRouteActive: boolean; inactiveRoute: () => void } & any>)
+const { Outlet, useActiveRoute, Link, useIsRouteActive } = createRouteComponent(path: string, Component: ComponentType<{ isRouteActive: boolean; inactiveRoute: () => void } & any>, exact?: boolean)
 ```
 
+Paramters:
+
 - path: string
-- Component: ({ isRouteActive, inactiveRoute }) => JSX
+- Component: ({ isRouteActive, inactiveRoute, routeParams }) => JSX
   - isRouteActive: boolean，detect which match path
   - inactiveRoute: function, invoke to go back
+  - routeParams: object, you can use 'some/:id' as path, and receive '{ id }'
+- exact: boolean, whether exact match path
+
+Returns:
 
 - Outlet
 - useActiveRoute: hook function, return a `activeRoute` function to renavigate to the path, like navigate to, receive `params` and `replace`, dont pass `to`
@@ -249,8 +262,16 @@ const { Outlet, useActiveRoute, Link, useIsRouteActive } = createRouteComponent(
 
 In some cases, you want to use route to control some view like state do, `createRouteState` help you to create a state context by route.
 
+```
+createRouteState(paths: string[], exact?: boolean)
+```
+
+- paths: array of paths
+- exact: whether exactly match path
+
+
 ```js
-const { useMatch, useActive, useInactive } = createRouteState(['path1', 'path2'])
+const { useMatch, useParams, useActive, useInactive } = createRouteState(['path1', 'path2'], true)
 
 function MyComponent() {
   const match = useMatch()
@@ -272,3 +293,35 @@ function MyComponent() {
 ```
 
 In most cases, you use `match` to determine whether the route is navigated to the path.
+
+## Route
+
+A component to create section by route.
+
+```
+<Route path render exact />
+```
+
+- path: string, the patch to match
+- render: params => JSX
+- exact: boolean whether to match exactly
+
+Example:
+
+```js
+function MyComponent() {
+  return (
+    <div>
+      <Link to="./article/123">article</Link>
+      <Route path="" exact render={() => {
+        return 'Home'
+      }} />
+      <Route path="article/:id" render={({ id }) => {
+        return id
+      }}>
+    </div>
+  )
+}
+```
+
+Use `Route` to render section by navigator.
