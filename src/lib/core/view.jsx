@@ -167,11 +167,7 @@ export class View extends Component {
 
   componentWillUnmount(...args) {
     this.observers.forEach(({ observer }) => {
-      observer.unsubscribe(this.weakUpdate)
-      // destroy single instances
-      if (isInstanceOf(observer, SingleInstanceBase)) {
-        observer.destroy()
-      }
+      this.disobserve(observer)
     })
     super.componentWillUnmount(...args)
   }
@@ -187,5 +183,19 @@ export class View extends Component {
     if (!this._isUnmounted) {
       this.observers.push({ observer, type: 'this' })
     }
+  }
+
+  disobserve(observer) {
+    const index = this.observers.findIndex(item => item.observer === observer)
+    if (index === -1) {
+      return
+    }
+
+    observer.unsubscribe(this.weakUpdate)
+    // destroy single instances
+    if (isInstanceOf(observer, SingleInstanceBase)) {
+      observer.destroy()
+    }
+    this.observers.splice(index, 1)
   }
 }

@@ -150,11 +150,13 @@ export class Controller extends SingleInstanceBase {
   }
 
   disobserve(observer) {
-    const item = this.observers.find((item) => item.observer === observer)
-    if (!item) {
+    const index = this.observers.findIndex((item) => item.observer === observer)
+    if (index === -1) {
       return
     }
 
+    const item = this.observers[index]
     item.stop()
+    this.observers.splice(index, 1)
   }
 }
