@@ -128,6 +128,7 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   forceUpdate(): Promise<void>
   nextTick(fn: () => void, ...args: any[]): void
 
+  init(): void
   onInit(): void
   onMounted(): void
   shouldUpdate(nextProps: T, nextState: AnyObj): boolean
