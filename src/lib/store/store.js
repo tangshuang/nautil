@@ -1,11 +1,10 @@
 import produce from 'immer'
-import { isObject, getConstructorOf, assign } from 'ts-fns'
+import { isObject, assign } from 'ts-fns'
 import { createTwoWayBinding } from '../utils.js'
 
 export class Store {
   constructor(initState) {
-    const Constructor = getConstructorOf(this)
-    const origin = initState ? initState : Constructor.initState ? Constructor.initState() : {}
+    const origin = initState ? initState : this.initState()
 
     this.state = origin
     this._subscribers = []
@@ -38,6 +37,10 @@ export class Store {
     this._subscribers.forEach((fn) => {
       fn(...args)
     })
+  }
+
+  initState() {
+    return {}
   }
   getState() {
     return this.state

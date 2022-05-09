@@ -361,17 +361,19 @@ export declare class ListSection extends Component {}
 export declare class ScrollSection extends Component {}
 export declare class SwipeSection extends Component {}
 
-export declare class Store {
-  constructor(initState: AnyObj)
+export declare class Store<T = any> {
+  constructor(initState: T)
 
-  state: AnyObj
+  state: T
+  $state?: T
+  initState(): T;
 
-  dispatch(update: AnyObj): void
-  dispatch(update: (prevState: AnyObj) => (AnyObj | void)): void
-  getState(): AnyObj
+  update(updator: any): void
+  update(updator: (prevState: T) => (any | void)): void
+  getState(): T
   resetState(): void
   setState(state: AnyObj): void
-  subscribe(callback: (next: AnyObj, prev: AnyObj) => void): void
+  subscribe(callback: (next: T, prev: T) => void): void
   unsubscribe(callback: Function): void
 }
 

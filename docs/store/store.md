@@ -80,11 +80,11 @@ function MyComponent() {
 
 Use `useStore` amoung different components.
 
-## static initState()
+## initState()
 
 ```js
 class MyStore extends Store {
-  static initState() {
+  initState() {
     return {
       name: 'tomy',
       age: 10,
