@@ -18,7 +18,7 @@ import {
 } from 'ts-fns'
 import { Ty, Rule, ifexist } from 'tyshemo'
 import produce from 'immer'
-import Stream from './stream.js'
+import { Stream } from './stream.js'
 
 import Style from '../style/style.js'
 import ClassName from '../style/classname.js'

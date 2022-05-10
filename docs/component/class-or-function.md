@@ -4,35 +4,7 @@
 
 Although we are try to support react completely, we had some difficulty to face. Remember the following rules:
 
-**1. (IMPORTANT) Polluted components can only be used inside class components!**
-
-If you want to use custom polluted components, you should use them in class components.
-
-```js
-import { Component, Text } from 'nautil'
-
-function MyComponent(props) {
-  return <Text>{props.test}</Text>
-}
-
-const CustomPollutedComponent = pollute(MyComponent, { test: 'ok' })
-
-
-// good
-class ParentComponent extends Component {
-  render() {
-    return <CustomPollutedComponent />
-  }
-}
-
-// bad
-function ParentComponent(props) {
-  // not working
-  return <CustomPollutedComponent />
-}
-```
-
-As you seen, if you use `CustomPollutedComponent` in a functional component, the polluting will not work.
+**1. Class components is much more strong than functional components!**
 
 **2. Two way binding only works for class components.**
 
@@ -98,16 +70,4 @@ class Some extends Component {
     return <Input $value={[value, setState]}>
   }
 }
-```
-
-## extend
-
-Create a new Component by using `extend` static method:
-
-```js
-const NewSomeComponent = SomeComponent.extend({
-  stylesheet: [], // merge this stylesheet to origin stylesheet
-  props: {}, // merge these props to origin props
-  deprecated: [], // delete props from these prop names
-})
 ```
