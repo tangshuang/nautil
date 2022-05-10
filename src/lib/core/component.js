@@ -120,9 +120,10 @@ export class Component extends PrimitiveComponent {
       }
       if (this.state) {
         $state = createTwoWayBinding(this.state, (value, keyPath) => {
-          this.update(keyPath, value)
-          // clear cache each time update
-          $state = null
+          this.update(keyPath, value).then(() => {
+            // clear cache each time update
+            $state = null
+          })
         })
         return $state
       }
