@@ -149,7 +149,7 @@ export class QueueService extends Service {
     // emit all items in queue once
     if (this.options.mode === 'parallel') {
       this.queue.forEach((item) => {
-        item.deferer = item.deferer || item.defer()
+        item.deferer = item.deferer || Promise.resolve().then(item.defer)
       })
     }
 

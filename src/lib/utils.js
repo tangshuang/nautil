@@ -1,4 +1,15 @@
-import { createProxy, isFunction, isObject, isEqual, isArray, isString, each, isInstanceOf, getConstructorOf } from 'ts-fns'
+import {
+  createProxy,
+  isFunction,
+  isObject,
+  isEqual,
+  isArray,
+  isString,
+  each,
+  isInstanceOf,
+  getConstructorOf,
+  parse,
+} from 'ts-fns'
 import { isValidElement } from 'react'
 import { Stream } from './core/stream.js'
 import {
@@ -7,25 +18,25 @@ import {
   Tupl,
   Any,
 } from 'tyshemo'
+import produce from 'immer'
 
 /**
  * noop
  */
 export function noop() {}
 
-/**
- * @param {object} data
- * @param {function} updator (data, key, value) => void
- * @param {boolean} [formalized] whether to generate formalized two-way-binding like [value, update]
- */
-export function createTwoWayBinding(data, updator, formalized) {
-  const proxy = createProxy(data, {
-    get(keyPath, value) {
-      return formalized ? [value, value => updator(data, keyPath, value)] : value
-    },
-    receive(keyPath, value) {
-      if (!formalized) {
-        updator(value, keyPath, data)
+export const createProxyHandler = (data, receive) => {
+  return {
+    receive(keyPath, value, fn, args) {
+      if (!fn) {
+        receive(keyPath, value)
+      }
+      else {
+        const arr = parse(data, keyPath)
+        const next = produce(arr, (arr) => {
+          arr[fn](...args)
+        })
+        receive(keyPath, next)
       }
     },
     writable() {
@@ -33,6 +44,25 @@ export function createTwoWayBinding(data, updator, formalized) {
     },
     disable(_, value) {
       return isValidElement(value) || isRef(value)
+    },
+  }
+}
+
+/**
+ * @param {object} data
+ * @param {function} updator (data, key, value) => void
+ * @param {boolean} [formalized] whether to generate formalized two-way-binding like [value, update]
+ */
+export function createTwoWayBinding(data, updator, formalized) {
+  const traps = createProxyHandler(data, (keyPath, value) => {
+    if (!formalized) {
+      updator(value, keyPath, data)
+    }
+  })
+  const proxy = createProxy(data, {
+    ...traps,
+    get(keyPath, value) {
+      return formalized ? [value, value => updator(value, keyPath, data)] : value
     },
   })
   return proxy

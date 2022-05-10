@@ -1,5 +1,4 @@
 import {
-  isValidElement,
   Component as ReactComponent,
   useRef,
 } from 'react'
@@ -24,12 +23,12 @@ import Style from '../style/style.js'
 import ClassName from '../style/classname.js'
 import {
   noop,
-  isRef,
   isShallowEqual,
   parseClassNames,
   createTwoWayBinding,
   Binding,
   Handling,
+  createProxyHandler,
 } from '../utils.js'
 
 export class PrimitiveComponent extends ReactComponent {
@@ -122,6 +121,8 @@ export class Component extends PrimitiveComponent {
       if (this.state) {
         $state = createTwoWayBinding(this.state, (value, keyPath) => {
           this.update(keyPath, value)
+          // clear cache each time update
+          $state = null
         })
         return $state
       }
@@ -390,32 +391,27 @@ export class Component extends PrimitiveComponent {
       // get original data (without proxied)
       this.attrs = finalAttrs
       // create two-way binding props
-      this.$attrs = createProxy(finalAttrs, {
-        receive(keyPath, value) {
-          const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
-          const root = chain.shift()
-          const bindKey = '$' + root
-          const bindData = bindingAttrs[bindKey]
-          if (bindData) {
-            const [current, update] = bindData
-            if (chain.length) {
-              const next = produce(current, data => {
-                assign(data, chain, value)
-              })
-              update(next, current)
-            }
-            else {
-              update(value, current)
-            }
-          }
-        },
-        writable() {
-          return false
-        },
-        disable(_, value) {
-          return isValidElement(value) || isRef(value)
-        },
+      const handlers = createProxyHandler(finalAttrs, (keyPath, value) => {
+        const chain = isArray(keyPath) ? [...keyPath] : makeKeyChain(keyPath)
+        const root = chain.shift()
+        const bindKey = '$' + root
+        const bindData = bindingAttrs[bindKey]
+        if (!bindData) {
+          return
+        }
+
+        const [current, update] = bindData
+        if (chain.length) {
+          const next = produce(current, data => {
+            assign(data, chain, value)
+          })
+          update(next, current)
+        }
+        else {
+          update(value, current)
+        }
       })
+      this.$attrs = createProxy(finalAttrs, handlers)
     }
 
     // import css and transform css rules

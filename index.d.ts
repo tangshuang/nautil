@@ -150,7 +150,7 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   static css: { [key: string]: AnyObj | string } | ((info: { attrs: AnyObj, style: object | undefined, className: string | undefined }) => { [key: string]: AnyObj | string })
 }
 
-export declare function createTwoWayBinding(data: AnyObj, update?: (next: AnyObj, keyPath: Array<string | symbol>, value: any) => void): Proxy
+export declare function createTwoWayBinding(data: AnyObj, updator?: (value: AnyObj, keyPath: Array<string | symbol>, data: any) => void, formalized?: boolean): Proxy
 
 export declare function isShallowEqual(obj1: any, obj2: any, isEqual: (obj1: any, obj2: any) => boolean): boolean
 
@@ -158,7 +158,7 @@ export declare function isRef(value: any): boolean
 
 export declare function noop(): void
 
-export declare function useTwoWayBinding(attrs: AnyObj): [AnyObj, Proxy]
+export declare function useTwoWayBinding(props: AnyObj, updator: (value: AnyObj, keyPath: Array<string | symbol>, data: any) => boolean, formalized?: boolean): Proxy
 
 export declare function useTwoWayBindingState(state: AnyObj): Proxy
 

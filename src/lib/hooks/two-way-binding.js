@@ -18,8 +18,8 @@ import { useForceUpdate } from './force-update.js'
 export function useTwoWayBinding(data, updator, formalized) {
   const forceUpdate = useForceUpdate()
   const obj = useShallowLatest(data)
-  const binding = useMemo(() => createTwoWayBinding(data, (data, keyPath, value) => {
-    if (updator(data, keyPath, value)) {
+  const binding = useMemo(() => createTwoWayBinding(data, (value, keyPath, data) => {
+    if (updator(value, keyPath, data)) {
       forceUpdate()
     }
   }, formalized), [obj])

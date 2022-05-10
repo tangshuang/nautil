@@ -11,7 +11,7 @@ export class Store {
     this._origin = origin
 
     if (origin && typeof origin === 'object') {
-      this.$state = createTwoWayBinding(this.state, (_, keyPath, value) => {
+      this.$state = createTwoWayBinding(this.state, (value, keyPath) => {
         this.update((state) => {
           assign(state, keyPath, value)
         })
@@ -62,7 +62,7 @@ export class Store {
     this.state = next
 
     if (next && typeof next === 'object') {
-      this.$state = createTwoWayBinding(this.state, (_, keyPath, value) => {
+      this.$state = createTwoWayBinding(this.state, (value, keyPath) => {
         this.update((state) => {
           assign(state, keyPath, value)
         })

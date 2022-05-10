@@ -35,7 +35,7 @@
     "immer": "^9.0.12",
     "react": "^17.0.2",
     "rxjs": "^7.5.5",
-    "ts-fns": "^10.8.3",
+    "ts-fns": "^10.8.5",
     "tyshemo": "^11.26.3"
   },
   "optionalDependencies": {
