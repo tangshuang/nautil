@@ -39,7 +39,7 @@ In previous code, we use `this.hook` to create a function which is passed to `on
 `this.hook` receive functions:
 
 ```
-this.hooks(fn1, fn2, fn3, action)
+this.hook(fn1, fn2, fn3, action)
 ```
 
 In `fn1` `fn2` `fn3` ... you can use hook functions to declare some state, they will be called when the component is being rendered and given back the results to `action` function.
@@ -79,7 +79,6 @@ class SomeComponent extends Component {
       <>
         <button onClick={this.weakUpdate}>weakUpdate</button>
         <button onClick={this.forceUpdate}>forceUpdate</button>
-        <button onClick={this.update}>update</button>
       </>
     )
   }
