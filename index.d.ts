@@ -74,9 +74,11 @@ export {
   AsyncGetter,
   MemoGetter,
   createMeta,
+
   meta,
   state,
   enhance,
+  layoff,
 } from 'tyshemo'
 
 export declare function produce<T>(fn: (data: T) => (T | void)): T
@@ -361,19 +363,19 @@ export declare class ListSection extends Component {}
 export declare class ScrollSection extends Component {}
 export declare class SwipeSection extends Component {}
 
-export declare class Store<T = any> {
-  constructor(initState: T)
+export declare class Store {
+  constructor(initState?: any)
 
-  state: T
-  $state?: T
-  initState(): T;
+  state: any
+  $state?: AnyObj
+  initState(): any
 
   update(updator: any): void
-  update(updator: (prevState: T) => (any | void)): void
-  getState(): T
+  update(updator: (prevState: any) => (any | void)): void
+  getState(): any
   resetState(): void
   setState(state: AnyObj): void
-  subscribe(callback: (next: T, prev: T) => void): void
+  subscribe(callback: (next: any, prev: any) => void): void
   unsubscribe(callback: Function): void
 }
 
