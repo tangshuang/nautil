@@ -202,7 +202,7 @@ interface AsyncProps extends AnyObj {
   await: () => Promise<any>
   then?: (data: any) => NautilElement
   cacth?: (error: Error) => NautilElement
-  pendding?: NautilElement
+  pending?: NautilElement
 }
 export declare class Async extends Component<AsyncProps> {}
 
@@ -668,7 +668,7 @@ interface IModuleOptions {
      */
     ready?: (props: AnyObj) => boolean
   }>
-  pendding?: () => NautilElement
+  pending?: () => NautilElement
   prefetch?: (props: any) => string[]
   /**
    * whether to use module's navigator

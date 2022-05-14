@@ -9,7 +9,7 @@ export class Async extends Component {
     await: new Enum([Function, Promise]),
     then: ifexist(Function),
     catch: Function,
-    pendding: ifexist(Any),
+    pending: ifexist(Any),
   }
   static defaultProps = {
     catch: noop,
@@ -38,12 +38,12 @@ export class Async extends Component {
     this._isUnmounted = true
   }
   render() {
-    const { pendding, then, catch: catchFn } = this.attrs
+    const { pending, then, catch: catchFn } = this.attrs
     const { status, data, error } = this.state
     const inside = (data) => isFunction(this.children) ? this.children(data) : this.children
 
     if (status === 'pending') {
-      return pendding ? createPlaceholderElement(pendding) : inside()
+      return pending ? createPlaceholderElement(pending) : inside()
     }
     else if (status === 'resolved') {
       return then ? then(data) : inside(data)
