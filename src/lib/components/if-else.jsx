@@ -42,7 +42,7 @@ export class ElseIf extends Component {
   }
 }
 
-export class RealIf extends Component {
+export class If extends Component {
   static props = {
     is: Boolean,
     render: ifexist(Function),
@@ -102,20 +102,16 @@ export class RealIf extends Component {
     }
 
     if (block.is) {
-      return create()
+      return (
+        <Suspense fallback={null}>
+          <TroubleMaker is={block.is} />
+          {create()}
+        </Suspense>
+      )
     }
 
     return null
   }
-}
-
-export function If(props) {
-  return (
-    <Suspense fallback={null}>
-      <TroubleMaker is={props.is} />
-      <RealIf {...props} />
-    </Suspense>
-  )
 }
 
 function TroubleMaker(props) {
