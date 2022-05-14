@@ -61,8 +61,6 @@
 
 - Store
   - [Store](store/store.md)
-  - [Provider](store/provider.md)
-  - [Consumer](store/consumer.md)
 
 - Stream
   - [Stream](https://rxjs.dev/guide/subject)

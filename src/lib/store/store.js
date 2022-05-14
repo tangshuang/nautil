@@ -23,9 +23,11 @@ export class Store {
     this.setState = this.setState.bind(this)
     this.getState = this.getState.bind(this)
   }
+
   subscribe(fn) {
     this._subscribers.push(fn)
   }
+
   unsubscribe(fn) {
     this._subscribers.forEach((item, i) => {
       if (item === fn) {
@@ -33,6 +35,7 @@ export class Store {
       }
     })
   }
+
   dispatch(...args) {
     this._subscribers.forEach((fn) => {
       fn(...args)
@@ -42,12 +45,15 @@ export class Store {
   initState() {
     return {}
   }
+
   getState() {
     return this.state
   }
+
   resetState() {
     this.update(this._origin)
   }
+
   setState(state) {
     this.update(draft => {
       if (!isObject(draft)) {
@@ -56,6 +62,7 @@ export class Store {
       Object.assign(draft, state)
     })
   }
+
   update(updator) {
     const prev = this.state
     const next = typeof updator === 'function' ? produce(prev, updator) : updator
@@ -75,4 +82,3 @@ export class Store {
     this.dispatch(prev, next)
   }
 }
-export default Store

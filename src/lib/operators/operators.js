@@ -10,7 +10,7 @@ import { isShallowEqual } from '../utils.js'
 
 export function observe(subscription, unsubscription) {
   return (C) => class extends Component {
-    render() {
+    onInit() {
       let subscribe = subscription
       let unsubscribe = unsubscription
       // use a special prop to observe
@@ -33,18 +33,22 @@ export function observe(subscription, unsubscription) {
       else if (subscription && typeof subscription === 'object' && subscription.watch && subscription.unwatch) {
         subscribe = (update) => {
           subscription.watch('*', update, true)
-          subscription.watch('!', update)
+          subscription.watch('!', update, true)
+          subscription.watch('recover', update)
         }
         unsubscribe = (update) => {
           subscription.unwatch('*', update)
           subscription.unwatch('!', update)
+          subscription.unwatch('recover', update)
         }
       }
 
+      this._observerSubscribe = subscribe
+      this._observerUnsubscribe = unsubscribe
+    }
+    render() {
       return (
-        <Observer subscribe={subscribe} unsubscribe={unsubscribe} dispatch={this.weakUpdate}>
-          <C {...this.props} />
-        </Observer>
+        <Observer subscribe={this._observerSubscribe} unsubscribe={this._observerUnsubscribe} render={() => <C {...this.props} />} />
       )
     }
   }

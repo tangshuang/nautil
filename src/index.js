@@ -31,6 +31,9 @@ export {
   Ty,
   Dict,
   Tupl,
+  /**
+   * @deprecated
+   */
   Tuple,
   List,
   Enum,
@@ -41,6 +44,7 @@ export {
 
   ifexist,
   nonable,
+
   Any,
   None,
   Numeric,
@@ -54,9 +58,11 @@ export {
   MemoGetter,
   createMeta,
   createMetaGroup,
+
   meta,
   state,
   enhance,
+  eject,
 } from 'tyshemo'
 
 export { Component } from './lib/core/component.js'
@@ -106,8 +112,7 @@ export { Webview } from './lib/elements/webview.jsx'
 export { Animation } from './lib/animate/animation.jsx'
 
 export { Store } from './lib/store/store.js'
-export { Provider } from './lib/store/provider.jsx'
-export { Consumer, connect, useStore } from './lib/store/consumer.jsx'
+export { Provider, Consumer, connect, useStore } from './lib/store/context.jsx'
 export { applyStore } from './lib/store/shared.js'
 
 export { Stream, createStream } from './lib/core/stream.js'

@@ -12,11 +12,11 @@ It is the power to make observer pattern work in your application.
 
 ```js
 <Observer
-  subscribe={dispatch => store.watch('*', dispatch)}
-  unsubscribe={dispatch => store.unwatch('*', dispatch)}
+  subscribe={dispatch => store.subscribe(dispatch)}
+  unsubscribe={dispatch => store.unsubscribe(dispatch)}
   dispatch={this.update}
 >
-  {() => <Text>{store.get('some')}</Text>}
+  {() => <Text>{store.state.some}</Text>}
 </Observer>
 ```
 

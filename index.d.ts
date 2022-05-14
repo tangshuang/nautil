@@ -430,26 +430,26 @@ export declare class Store {
   getState(): any
   resetState(): void
   setState(state: AnyObj): void
+
   subscribe(callback: (next: any, prev: any) => void): void
   unsubscribe(callback: Function): void
 }
 
 export declare class Provider extends Component<{ store: Store }> {}
 
-interface ConsumerProps extends AnyObj {
-  store: Store
-  map?: (store: Store) => AnyObj
+interface ConsumerProps<T = Store> extends AnyObj {
+  map?: (store: Store) => T
   watch?: string | string[]
-  render?: (data: AnyObj | Store) => NautilElement
+  render?: (data: T | Store) => NautilElement
 }
 export declare class Consumer extends Component<ConsumerProps> {}
 
 export declare function connect(mapToProps: (store: Store) => AnyObj, watch: string | string[]): ComponentGenerator
 
-export declare function useStore(store: Store, watch: string | string[]): Store
+export declare function useStore(watch: string | string[]): Store
 
 export declare function applyStore(store: Store): {
-  useStore: (store: Store, watch: string | string[]) => Store,
+  useStore: (watch: string | string[]) => Store,
   connect: (mapToProps: (store: Store) => AnyObj, watch: string | string[]) => ComponentGenerator,
 }
 

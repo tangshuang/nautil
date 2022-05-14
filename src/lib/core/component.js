@@ -57,6 +57,8 @@ export class PrimitiveComponent extends ReactComponent {
         tree = render()
       }
 
+      tree = this.onRender(tree)
+
       return tree
     }
     const proxyRender = () => {
@@ -86,21 +88,30 @@ export class PrimitiveComponent extends ReactComponent {
       return out
     }
   }
+
+  onRender(vdom) {
+    return vdom
+  }
 }
 
 export class Component extends PrimitiveComponent {
   constructor(props) {
     super(props)
 
-    this._schedulers = []
+    // for streams
+    this._triggers = []
 
+    // for nextTick
     this._tasksQueue = []
     this._tasksRunner = null
 
     this._isMounted = false
     this._isUnmounted = false
 
+    // for detectAffect
     this._effectors = null
+    // for shouldUpdate
+    this._factors = null
 
     define(this, 'update', { value: this.update.bind(this) })
     define(this, 'forceUpdate', { value: this.forceUpdate.bind(this) })
@@ -151,7 +162,7 @@ export class Component extends PrimitiveComponent {
 
   subscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._schedulers.push({
+    this._triggers.push({
       name: upperCaseName,
       affect,
     })
@@ -160,9 +171,9 @@ export class Component extends PrimitiveComponent {
 
   unsubscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._schedulers.forEach((item, i) => {
+    this._triggers.forEach((item, i) => {
       if (upperCaseName === item.name && (!affect || affect === item.affect)) {
-        this._schedulers.splice(i, 1)
+        this._triggers.splice(i, 1)
       }
     })
     return this
@@ -287,7 +298,7 @@ export class Component extends PrimitiveComponent {
     const Constructor = getConstructorOf(this)
     const { props: PropsTypes, defaultStylesheet, css } = Constructor
     const parsedProps = this.onParseProps(props)
-    const { children, stylesheet, style, className, ...attrs } = parsedProps
+    const { children = null, stylesheet, style, className, ...attrs } = parsedProps
 
     // normal attrs
     const finalAttrs = {}
@@ -440,7 +451,7 @@ export class Component extends PrimitiveComponent {
     // }
 
     const affect = (name, subject) => {
-      this._schedulers.forEach((item) => {
+      this._triggers.forEach((item) => {
         if (name === item.name) {
           subject = item.affect(subject) || subject
           if (process.env.NDOE_ENV !== 'production') {
@@ -572,8 +583,16 @@ export class Component extends PrimitiveComponent {
     this._runTasks()
   }
   shouldComponentUpdate(nextProps, ...args) {
-    const bool = this.shouldUpdate(nextProps, ...args)
-    if (!bool) {
+    const needUpdate = this.shouldUpdate(nextProps, ...args)
+    let isNeed = needUpdate
+
+    // if shouldUpdate return array, detect by equal
+    if (isArray(needUpdate)) {
+      isNeed = !isShallowEqual(this._factors, needUpdate)
+      this._factors = needUpdate
+    }
+
+    if (!isNeed) {
       this.onNotUpdate(nextProps, ...args)
       return false
     }
