@@ -8,6 +8,7 @@ It is the power to make observer pattern work in your application.
 - subscribe
 - unsubscribe
 - dispatch
+- render|children function
 
 ```js
 <Observer
@@ -15,7 +16,7 @@ It is the power to make observer pattern work in your application.
   unsubscribe={dispatch => store.unwatch('*', dispatch)}
   dispatch={this.update}
 >
-  <Text>{store.get('some')}</Text>
+  {() => <Text>{store.get('some')}</Text>}
 </Observer>
 ```
 
