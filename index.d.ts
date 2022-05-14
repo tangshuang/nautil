@@ -207,18 +207,72 @@ interface AsyncProps extends AnyObj {
 export declare class Async extends Component<AsyncProps> {}
 
 interface ForProps extends AnyObj {
+  /**
+   * from start, contains start
+   */
   start: number
+  /**
+   * to end, contains end
+   */
   end: number
   step?: number
+  /**
+   * map current number to be another value M
+   */
   map?: (i: number) => any
-  render?: (data: any) => NautilElement
+  /**
+   * function to use M and current number to generate a unique key (string);
+   * if it is a string, M should must be an object, unique key will use the prop value of M
+   */
+  unique?: string | ((data: any, i: number) => string)
+  /**
+   * @example
+   * <For start={1} end={5} render={i => <span>{i}</span>}
+   */
+  render?: (i: number) => NautilElement
+  /**
+   * @example
+   * const data = [
+   *   { id, title },
+   * ]
+   * <For
+   *  start={1}
+   *  end={10}
+   *  map={i => data[i]}
+   *  unique="id"
+   *  render={(item) => <span>{item.title}</span>}
+   * />
+   */
+  render?: (data: any, i?: number, key?: string) => NautilElement
 }
 export declare class For extends Component<ForProps> {}
 
 interface EachProps extends AnyObj {
   of: any[] | AnyObj
-  map?: (obj: any[] | AnyObj) => any[] | AnyObj
-  render?: (obj: any[] | AnyObj) => NautilElement
+  map?: (data: any[] | AnyObj) => any[] | AnyObj
+  render?: (data: any[] | AnyObj) => NautilElement
+
+  /**
+   * map data to be another value M
+   */
+   map?: (data: any[] | AnyObj) => any[] | AnyObj
+   /**
+    * function to use item or prop to generate a unique key (string);
+    * if it is a string, M should must be an object, unique key will use the prop value of M
+    */
+   unique?: string | ((value: any, key: number | string) => string)
+   /**
+    * @example
+    * const data = [
+    *   { id, title },
+    * ]
+    * <Each
+    *   of={data}
+    *   unique={(item, index) => item.id}
+    *   render={(item, index, key) => <span key={key}>{item.title}</span>}
+    * />
+    */
+   render?: (value: any, key?: number | string, uniqueKey?: string) => NautilElement
 }
 export declare class Each extends Component<EachProps> {}
 
