@@ -45,7 +45,7 @@ class SomeView extends View {
         </Section>
       )
     },
-    // this.reactive use evolve operator to controll rerenderer
+    // this.reactive use evolve decorator to controll rerenderer
     (props) => {
       const { order_count, price } = this.controller.someModel
       return { order_count, price }

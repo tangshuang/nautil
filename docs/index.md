@@ -50,17 +50,17 @@
   - [Video](elements/video.md)
   - [Webview](elements/webview.md)
 
-- operators
-  - [observe](operators/observe.md)
-  - [evolve](operators/evolve.md)
-  - [inject](operators/inject.md)
-  - [initialize](operators/initialize.md)
-  - [nest](operators/nest.md)
-  - [decorate](operators/decorate.md)
-  - [pipe](operators/pipe.md)
-
 - Store
   - [Store](store/store.md)
+
+- Decorators
+  - [observe](decorators/observe.md)
+  - [evolve](decorators/evolve.md)
+  - [inject](decorators/inject.md)
+  - [initialize](decorators/initialize.md)
+  - [nest](decorators/nest.md)
+  - [decorate](decorators/decorate.md)
+  - [pipe](decorators/pipe.md)
 
 - Stream
   - [Stream](https://rxjs.dev/guide/subject)

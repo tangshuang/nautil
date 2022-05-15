@@ -8,7 +8,7 @@
 
 ## 0.31.5 (May. 15, 2021)
 
-- add `evolve` operator
+- add `evolve` decorator
 - add `Controller.turn`
 
 ## 0.29.11 (Apr. 30, 2021)

@@ -77,8 +77,8 @@ export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
 export { useDataSource, useLazyDataSource } from './lib/hooks/data-source.js'
 
-export { observe, evolve, inject, initialize, nest, decorate } from './lib/operators/operators.js'
-export { pipe } from './lib/operators/combiners.js'
+export { observe, evolve, inject, initialize, nest, decorate } from './lib/decorators/decorators.js'
+export { pipe } from './lib/decorators/combiners.js'
 
 export { Async } from './lib/components/async.jsx'
 export { For, Each } from './lib/components/for-each.jsx'
