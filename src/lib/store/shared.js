@@ -1,5 +1,5 @@
 import { Component } from '../core/component.js'
-import { useLocalStore, Consumer } from './context.js'
+import { useLocalStore, Consumer } from './context.jsx'
 import { isInstanceOf } from 'ts-fns'
 import { Store } from './store.js'
 
