@@ -8,7 +8,7 @@ A little different from react, Nautil has its own lifecircle:
 - onInit
 - render
 - onRender
-- detectAffect
+- shouldAffect
 - onAffect
 - onMounted
 - onAffected
@@ -19,7 +19,7 @@ A little different from react, Nautil has its own lifecircle:
 - onDigested
 - render
 - onRender
-- detectAffect
+- shouldAffect
 - onAffect
 - onUpdated
 - onAffected
@@ -35,7 +35,7 @@ Details:
 - onInit: after this.$state generated
 - shouldUpdate: determine whether to rerender, should return boolean or an array, if return an array means affect when the array is shallow equal to previous, if not equal, to rerender
 - onRender: you have the chance to change the VDOM here, should return new VDOM
-- detectAffect: detect whether to affect, should must return an array or `true`, if `true` means going to affect, if return an array means affect when the array is shallow equal to previous
+- shouldAffect: detect whether to affect, should must return an array or `true`, if `true` means going to affect, if return an array means affect when the array is shallow equal to previous
 - onAffect: will be invoked before onMounted/onUpdated
 - onAffected: be invoked after onAffect and onMounted/onUpdated
 

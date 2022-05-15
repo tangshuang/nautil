@@ -5,7 +5,7 @@ import { pipe, observe, initialize } from 'nautil'
 
 const operate = pipe([
   observe(subscribe, unsubscribe),
-  initialize(SomeComponent, { i18n }),
+  initialize('i18n', I18nController, { i18n }),
 ])
 
 const WrappedComponent = operate(OriginalComponent)

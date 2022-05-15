@@ -108,7 +108,7 @@ export class Component extends PrimitiveComponent {
     this._isMounted = false
     this._isUnmounted = false
 
-    // for detectAffect
+    // for shouldAffect
     this._effectors = null
     // for shouldUpdate
     this._factors = null
@@ -561,7 +561,7 @@ export class Component extends PrimitiveComponent {
   }
 
   _affect(fn) {
-    const nextEffectors = this.detectAffect(this.props)
+    const nextEffectors = this.shouldAffect(this.props)
     if (nextEffectors === false) {
       fn()
       this._effectors = false
@@ -638,7 +638,7 @@ export class Component extends PrimitiveComponent {
   onUnmount() {}
   onCatch() {}
   onDigested() {}
-  detectAffect() {
+  shouldAffect() {
     return true
   }
   onAffect() {}

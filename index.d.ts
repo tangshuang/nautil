@@ -141,8 +141,13 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   onParseProps(props: T): AnyObj
   onDigested(): void
   onAffect(): void
-  detectAffect(props: T): any
+  shouldAffect(props: T): any
   onAffected(): void
+
+  /**
+   * @deprecated removed, use shouldAffect instead
+   */
+  detectAffect(): never
 
   static extend(props: OverrideProps | ((nextProps: AnyObj) => OverrideProps)): NautilComponent
   static props: AnyObj | (() => AnyObj)

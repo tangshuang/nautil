@@ -27,7 +27,7 @@ export class Provider extends Component {
   }
 }
 
-export class OConsumer extends Component {
+class LocalConsumer extends Component {
   static props = {
     store: Store,
     map: ifexist(Function),
@@ -59,7 +59,7 @@ export class OConsumer extends Component {
     this.store = null
   }
 
-  detectAffect() {
+  shouldAffect() {
     const { store } = this.attrs
     return [store]
   }
@@ -83,26 +83,29 @@ export class OConsumer extends Component {
 
 export class Consumer extends Component {
   static props = {
+    store: ifexist(Store),
     map: ifexist(Function),
     watch: ifexist(new Enum([String, new List([String])])),
     render: ifexist(Function),
   }
 
-  shouldUpdate() {
-    return false
-  }
-
   render() {
     const { Consumer } = storeContext
-    return <Consumer>{store => <OConsumer store={store} {...this.props} />}</Consumer>
+    const { store, ...attrs } = this.props
+
+    if (store) {
+      return <LocalConsumer store={store} {...attrs} />
+    }
+
+    return <Consumer>{store => <LocalConsumer store={store} {...attrs} />}</Consumer>
   }
 }
 
-export const connect = (mapToProps, watch) => C => {
+export const connect = (mapStoreToProps, watch) => C => {
   return class ConnectedComponent extends Component {
     render() {
       return (
-        <Consumer watch={watch} map={mapToProps} render={(data) => {
+        <Consumer watch={watch} map={mapStoreToProps} render={(data) => {
           const mapped = data && typeof data === 'object' ? (isInstanceOf(data, Store) ? data.getState() : data) : {}
           const props = { ...this.props, ...mapped }
           return <C {...props} />

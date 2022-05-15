@@ -109,11 +109,25 @@ function Some() {
 `connect` should must be used inside `Provider`.
 
 ```js
-const ConnectedComponent = connect(mapStoreToProps)(MyComponent)
+const ConnectedComponent = connect(mapStoreToProps, watch)(MyComponent)
 
 <Section>
   <ConnectedComponent />
 </Section>
+```
+
+`watch` is an string array, which provides keys to check whether changed. Use it when you want higher performance. For exmaple:
+
+```js
+const store = new Store({
+  a: 1,
+  b: 2,
+  c: 3,
+})
+
+// -------------------
+
+const SomeComponent = connect(mapStoreToProps, ['a', 'b'])(C)
 ```
 
 ## useStore
@@ -126,6 +140,12 @@ function MyComponent() {
   ...
 }
 ```
+
+```
+const store = useStore(watch?)
+```
+
+`watch` is the same as `connect`.
 
 ## applyStore
 
@@ -147,6 +167,8 @@ function MyComponent() {
     state.some = 222
   })
 }
+
+const SomeComponent = connect(mapStoreToProps)(OtherComponent)
 ```
 
 Use `useStore` amoung different components.
