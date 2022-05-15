@@ -18,3 +18,16 @@ const WrappedComponent = nest([
   </Language>
 </Provider>
 ```
+
+- options:
+  - Component
+  - props: object or function to return object
+
+```js
+import { nest } from 'nautil'
+
+const WrappedComponent = nest([
+  [Provider, (props) => ({ store })],
+  [Language, (props) => ({ i18n })],
+])(OriginalComponent)
+```

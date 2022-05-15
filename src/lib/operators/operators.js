@@ -6,7 +6,6 @@ import {
 
 import Component from '../core/component.js'
 import Observer from '../components/observer.jsx'
-import { isShallowEqual } from '../utils.js'
 
 export function observe(subscription, unsubscription) {
   return (C) => class extends Component {
@@ -34,12 +33,12 @@ export function observe(subscription, unsubscription) {
         subscribe = (update) => {
           subscription.watch('*', update, true)
           subscription.watch('!', update, true)
-          subscription.watch('recover', update)
+          subscription.on('recover', update)
         }
         unsubscribe = (update) => {
           subscription.unwatch('*', update)
           subscription.unwatch('!', update)
-          subscription.unwatch('recover', update)
+          subscription.on('recover', update)
         }
       }
 
@@ -54,16 +53,10 @@ export function observe(subscription, unsubscription) {
   }
 }
 
-export function evolve(collect) {
+export function evolve(shouldUpdate) {
   return (C) => class extends Component {
     shouldUpdate(nextProps) {
-      const current = this.current || collect(this.props)
-      const next = collect(nextProps)
-      this.current = next
-      return !isShallowEqual(current, next)
-    }
-    onUnmount() {
-      this.current = null
+      return shouldUpdate(nextProps)
     }
     render() {
       return <C {...this.props} />
@@ -176,7 +169,8 @@ export function nest(...args) {
           return
         }
 
-        const [Component, props] = item
+        const [Component, getProps] = item
+        const props = isFunction(getProps) ? getProps(this.props) : getProps
         finalContent = <Component {...props}>{finalContent}</Component>
       })
 
