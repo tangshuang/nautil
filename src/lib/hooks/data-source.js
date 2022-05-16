@@ -1,21 +1,22 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { query, setup } from 'algeb'
 import { useForceUpdate } from './force-update.js'
 import { useShallowLatest } from './shallow-latest.js'
 
 export function useDataSource(source, ...params) {
-  const [data, update] = useState(source.value)
-  const fn = useRef(null)
+  const ref = useRef([source.value, () => Promise.resolve(source.value)])
+  const forceUpdate = useForceUpdate()
+  const args = useShallowLatest(params)
 
   useEffect(() => {
-    return setup(function() {
-      const [some, fetchSome] = query(source, ...params)
-      update(some)
-      fn.current = fetchSome
+    const { stop } = setup(() => {
+      ref.current = query(source, ...args)
+      forceUpdate()
     })
-  }, [source, ...params])
+    return stop
+  }, [source, args])
 
-  return [data, (...sources) => fn.current && fn.current(...sources)]
+  return ref.current
 }
 
 /**
