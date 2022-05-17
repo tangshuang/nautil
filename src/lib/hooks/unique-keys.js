@@ -44,7 +44,7 @@ export function useUniqueKeys(items, shouldDeepEqual) {
       lastest.current = { items, keys: nextKeys }
       return nextKeys
     }
-  }, [items, shouldDeepEqual])
+  }, [items, shouldDeepEqual, items.length]) // items may keep the same array but invoke push/pop, so we use length to determine
 
   return keys
 }
