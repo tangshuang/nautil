@@ -1,5 +1,5 @@
 import { Service } from '../core/service.js'
-import { isString, isObject } from 'ts-fns'
+import { isString, isObject, isArray } from 'ts-fns'
 import { source, query, compose, setup, release, affect, select, apply, ref } from 'algeb'
 
 const subscribersKey = Symbol()
@@ -138,4 +138,9 @@ export class DataService extends Service {
   static ref(value) {
     return ref(value)
   }
+}
+
+
+export function isDataSource(source) {
+  return source && isObject(source) && source.type && isArray(source?.atoms) && 'value' in source
 }

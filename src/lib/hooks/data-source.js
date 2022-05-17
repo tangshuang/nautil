@@ -2,13 +2,17 @@ import { useEffect, useRef, useMemo } from 'react'
 import { query, setup } from 'algeb'
 import { useForceUpdate } from './force-update.js'
 import { useShallowLatest } from './shallow-latest.js'
+import { isDataSource } from '../services/data-service.js'
 
 export function useDataSource(source, ...params) {
-  const ref = useRef([source.value, () => Promise.resolve(source.value)])
+  const ref = useRef([source?.value, () => Promise.resolve(source?.value)])
   const forceUpdate = useForceUpdate()
   const args = useShallowLatest(params)
 
   useEffect(() => {
+    if (!isDataSource(source)) {
+      return
+    }
     const { stop } = setup(() => {
       ref.current = query(source, ...args)
       forceUpdate()
@@ -30,10 +34,14 @@ export function useDataSource(source, ...params) {
 export function useLazyDataSource(source, ...params) {
   const forceUpdate = useForceUpdate()
   const args = useShallowLatest(params)
-  const ref = useRef(source.value)
+  const ref = useRef(source?.value)
   const output = useMemo(() => {
     const fetch = (...sources) => {
       return new Promise((resolve, reject) => {
+        if (!isDataSource(source)) {
+          resolve(source?.value)
+          return
+        }
         const stop = setup(() => {
           const [data, request] = query(source, ...params)
           ref.current = data

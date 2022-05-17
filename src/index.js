@@ -117,7 +117,7 @@ export { applyStore } from './lib/store/shared.js'
 
 export { Stream, createStream } from './lib/core/stream.js'
 export { Service } from './lib/core/service.js'
-export { DataService } from './lib/services/data-service.js'
+export { DataService, isDataSource } from './lib/services/data-service.js'
 export { QueueService, SerialQueueService, ParallelQueueService, ShiftQueueService, SwitchQueueService } from './lib/services/queue-service.js'
 export { EventService } from './lib/services/event-service.js'
 export { Controller } from './lib/core/controller.js'
