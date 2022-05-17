@@ -1,6 +1,6 @@
 import { Service } from '../core/service.js'
-import { isString, isObject, isArray } from 'ts-fns'
-import { source, query, compose, setup, release, affect, select, apply, ref } from 'algeb'
+import { isString } from 'ts-fns'
+import { source, query, compose, setup, release, affect, select, apply, ref, isSource, request } from 'algeb'
 
 const subscribersKey = Symbol()
 
@@ -18,24 +18,27 @@ export class DataService extends Service {
     return compose(get)
   }
 
-  query(source, ...params) {
+  _parse(source) {
     if (isString(source)) {
       if (!this[source]) {
         throw new Error(`${source} is not in DataService`)
       }
       source = this[source]
-      if (!isObject(source) || source.type !== 1) {
+      if (!isSource(source)) {
         throw new Error(`${source} is not a data source`)
       }
     }
+    return source
+  }
 
-    const [data, renew] = query(source, ...params)
-    const act = (...args) => {
-      return renew(...args).then((value) => {
-        this._dispatch(source, params, value)
+  query(source, ...params) {
+    const src = this._parse(source)
+    const [data, renew] = query(src, ...params)
+    const act = (...args) =>
+      renew(...args).then((value) => {
+        this._dispatch(src, params, value)
         return value
       })
-    }
     return [data, act]
   }
 
@@ -45,8 +48,11 @@ export class DataService extends Service {
   }
 
   request(source, ...params) {
-    const [, renew] = this.query(source, ...params)
-    return renew()
+    const src = this._parse(source)
+    return request(src, ...params).then((value) => {
+      this._dispatch(src, params, value)
+      return value
+    })
   }
 
   subscribe(fn) {
@@ -111,8 +117,7 @@ export class DataService extends Service {
   }
 
   static request(source, ...params) {
-    const [, renew] = query(source, ...params)
-    return renew()
+    return request(source, ...params)
   }
 
   static setup(run) {
@@ -140,7 +145,6 @@ export class DataService extends Service {
   }
 }
 
-
 export function isDataSource(source) {
-  return source && isObject(source) && source.type && isArray(source?.atoms) && 'value' in source
+  return isSource(source)
 }
