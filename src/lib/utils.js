@@ -273,7 +273,10 @@ export function resolveUrl(dir, to) {
 export function revokeUrl(abs, url) {
   const href = abs ? url.replace(abs, '') : url
   // /a/b -> a/b
-  return href ? href.substring(1) : ''
+  if (href && href[0] === '/') {
+    return href.substring(1)
+  }
+  return href || ''
 }
 
 export function parseClassNames(classNames, cssRules) {

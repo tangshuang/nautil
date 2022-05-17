@@ -8,7 +8,7 @@ import { isInheritedOf } from 'ts-fns'
 
 export const rootContext = createContext()
 const absContext = createContext({
-  abs: '',
+  abs: '/',
   deep: [],
 })
 const routeContext = createContext({})
