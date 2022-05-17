@@ -188,3 +188,11 @@ const Mix = compose(function() {
   ...
 })
 ```
+
+## isDataSource
+
+```js
+import { isDataSource } from 'nautil'
+
+const bool = isDataSource(some)
+```

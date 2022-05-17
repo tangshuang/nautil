@@ -185,7 +185,7 @@ export declare function useForceUpdate(): Function
 
 export declare function useDataSource<T, U extends any[]>(source: Source<T, U>, ...params: U): [T, (...args: any[]) => Promise<T>]
 
-export declare function useLazyDataSource<T, U extends any[]>(source: Source<T, U>, ...params: U): [T, (...args: any[]) => Promise<T>]
+export declare function useLazyDataSource<T, U extends any[]>(source: Source<T, U>, ...params: U): [T, (...args: any[]) => Promise<T>, () => Promise<T>]
 
 export declare function observe(subscription: string | Function | { subscribe: Function }, unsubscription: string | Function | { unsubscribe: Function }): ComponentGenerator
 
@@ -530,6 +530,8 @@ export declare class DataService extends Service {
   static apply<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): [T, (...args: any[]) => Promise<T>]
   static ref<T>(value: T): { value: T }
 }
+
+export function isDataSource(source: any): boolean;
 
 export declare class QueueService extends Service {
   options(): AnyObj

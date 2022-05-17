@@ -35,6 +35,8 @@ export function useLazyDataSource(source, ...params) {
   const forceUpdate = useForceUpdate()
   const args = useShallowLatest(params)
   const ref = useRef(source?.value)
+  const inited = useRef(false)
+
   const output = useMemo(() => {
     const fetch = (...sources) => {
       return new Promise((resolve, reject) => {
@@ -54,7 +56,13 @@ export function useLazyDataSource(source, ...params) {
         stop()
       })
     }
-    return [ref.current, fetch]
+    const init = () => {
+      if (inited.current) {
+        return Promise.resolve(ref.current)
+      }
+      return fetch()
+    }
+    return [ref.current, fetch, init]
   }, [source, args])
   return output
 }
