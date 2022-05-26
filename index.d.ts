@@ -183,9 +183,9 @@ export declare function useShallowLatest(obj: any): any
 
 export declare function useForceUpdate(): Function
 
-export declare function useDataSource<T, U extends any[]>(source: Source<T, U>, ...params: U): [T, (...args: any[]) => Promise<T>]
+export declare function useDataSource<T, U extends any[]>(source: Source<T, U>, ...params: U): [T, (...args: any[]) => Promise<T>, boolean]
 
-export declare function useLazyDataSource<T, U extends any[]>(source: Source<T, U>, ...params: U): [T, (...args: any[]) => Promise<T>, () => Promise<T>]
+export declare function useLazyDataSource<T, U extends any[]>(source: Source<T, U>, ...params: U): [T, (...args: any[]) => Promise<T>, boolean]
 
 export declare function observe(subscription: string | Function | { subscribe: Function }, unsubscription: string | Function | { unsubscribe: Function }): ComponentGenerator
 
