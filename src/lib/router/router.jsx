@@ -128,6 +128,7 @@ export class Router {
       query,
       redirect: route.redirect,
       exact: route.exact,
+      route,
     }
   }
 
@@ -153,7 +154,7 @@ export class Router {
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
-      const newDeep = [...deep, path]
+      const newDeep = [...deep, { router: this, route: state.route, state }]
       return {
         abs: newAbs,
         deep: newDeep,
