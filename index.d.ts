@@ -552,14 +552,16 @@ export declare class ParallelQueueService extends QueueService {}
 export declare class ShiftQueueService extends QueueService {}
 export declare class SwitchQueueService extends QueueService {}
 
+type IRoute = {
+  path: string
+  component: JSXComponent
+} | {
+  path: string
+  redirect: boolean
+}
+
 export declare interface RouterOptions {
-  routes: Array<{
-    path: string
-    component: JSXComponent
-  } | {
-    path: string
-    redirect: boolean
-  }>
+  routes: Array<IRoute>
 }
 export declare class Router {
   constructor(options: RouterOptions)
@@ -592,7 +594,7 @@ export declare function useRouteMatch(): (pattern: string | RegExp) => boolean
 export declare function useRouteLocation(): {
   path: string
   abs: string
-  deep: string[]
+  deep: { router: Router, route: IRoute, state: any }[]
   params: AnyObj
 }
 
