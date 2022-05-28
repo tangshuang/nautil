@@ -91,9 +91,6 @@
   - [What is all the Module?](module/module.md)
   - [createBootstrap](module/create-bootstrap.md)
   - [importModule](module/import-module.md)
-  - [useModuleNavigator](module/use-module-navigator.md)
-  - [useModuleContext](module/use-module-context.md)
-  - [useModuleI18n](module/use-module-i18n.md)
 
 - Router
   - [Router](router/router.md)

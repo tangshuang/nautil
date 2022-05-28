@@ -1,6 +1,6 @@
 import { Component } from './component.js'
 import { createContext, useContext, useMemo, useEffect } from 'react'
-import { RouterRootProvider, useRouteLocation } from '../router/router.jsx'
+import { RouterRootProvider, useRouteLocation, useLocation } from '../router/router.jsx'
 import { I18nRootProvider } from '../i18n/i18n.jsx'
 import { Ty, ifexist } from 'tyshemo'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
@@ -47,6 +47,7 @@ export function createBootstrap(options) {
 const navigatorContext = createContext([])
 const contextContext = createContext({})
 const i18nContext = createContext()
+const paramsContext = createContext({})
 
 export function importModule(options) {
   const {
@@ -61,9 +62,10 @@ export function importModule(options) {
 
   let loadedComponent = null
   let loadedNavigator = null
-  let loadedContext = {}
+  let loadedContext = null
   let loadedReady = null
   let loadedI18n = null
+  let loadedParams = null
 
   class ModuleComponent extends ModuleBaseComponent {
     state = {
@@ -72,6 +74,7 @@ export function importModule(options) {
       context: loadedContext,
       ready: loadedReady,
       i18n: loadedI18n,
+      params: loadedParams,
     }
 
     prefetchLinks = []
@@ -87,13 +90,14 @@ export function importModule(options) {
         // 拉取组件
         Promise.resolve(typeof source === 'function' ? source(this.props) : source)
           .then((mod) => {
-            const { default: component, navigator, context, ready, i18n } = mod
+            const { default: component, navigator, context, ready, i18n, params } = mod
             loadedComponent = component
             loadedNavigator = navigator
             loadedContext = context
             loadedReady = ready
             loadedI18n = i18n
-            this.setState({ component, navigator, context, ready, i18n })
+            loadedParams = params
+            this.setState({ component, navigator, context, ready, i18n, params })
           })
         // 预加载
         if (prefetch && document) {
@@ -125,6 +129,7 @@ export function importModule(options) {
         context: useThisContext,
         ready: useThisReady,
         i18n: useThisI18n,
+        params: useThisParams,
       } = this.state
 
       // compute current module navigator
@@ -160,6 +165,18 @@ export function importModule(options) {
       const context = { ...rootContext, ...sharedContext, ...parentContext, ...thisContext }
       const ctx = useShallowLatest(context)
 
+      const paramsMapping = useThisParams(this.props)
+      const { deep } = useLocation()
+      const params = {}
+      const paramsKeys = Object.keys(paramsMapping)
+      paramsKeys.forEach((key) => {
+        const prop = paramsMapping[key]
+        deep.forEach(({ state }) => {
+          const fromParams = state.params || {}
+          params[prop === true ? key : prop] = fromParams[key]
+        })
+      })
+
       // deal with ready
       const ready = useThisReady && needReady ? useThisReady(this.props) : true
       if (!ready && !pending) {
@@ -172,12 +189,16 @@ export function importModule(options) {
       const { Provider: NavigatorProvider } = navigatorContext
       const { Provider: ContextProvider } = contextContext
       const { Provider: I18nProvider } = i18nContext
+      const { Provider: ParamsProvider } = paramsContext
+
       const LoadedComponent = component
 
       const render = () => (
         <ContextProvider value={ctx}>
           <I18nProvider value={i18n}>
-            <LoadedComponent {...this.props} />
+            <ParamsProvider value={params}>
+              <LoadedComponent {...this.props} />
+            </ParamsProvider>
           </I18nProvider>
         </ContextProvider>
       )
@@ -244,4 +265,9 @@ export function useModuleI18n() {
     }
   }, [i18n])
   return i18n
+}
+
+export function useModuleParams() {
+  const params = useContext(paramsContext)
+  return params
 }

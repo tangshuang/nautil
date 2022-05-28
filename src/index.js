@@ -151,4 +151,5 @@ export {
   useModuleNavigator,
   useModuleContext,
   useModuleI18n,
+  useModuleParams,
 } from './lib/core/module.jsx'

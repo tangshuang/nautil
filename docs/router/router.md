@@ -80,12 +80,62 @@ const router = new Router({
   - component: ReactComponentType
   - redirect: boolean, redirect to when visit this path, if redirect is true, component will not work any more
   - exact: boolean, whether to use the whole url to match current route, if true, only the same url match current route, if false, when the url is begining with path it match the current route
+  - params: an object to describe the params mapping
+  - props: an object ot describe the props mapping
 
 The routes rules has priority with its order in the given array.
 
 `path` should be relative to current router context, for example `a/b` `some`, notice without `/` or `./` at the beginning.
 
 `exact` always works with '', because all paths is begin with '', so if you want the route exactly match '', set `exact` to be true.
+
+`params` to mapping params to reference component which use `useRouteParams`:
+
+```js
+const router = new Router({
+  routes: [
+    {
+      path: 'articles/:id',
+      component: SomeComponent,
+      params: {
+        // id: true, // equal "id: 'id',"
+        id: 'articleId',
+      }
+    }
+  ]
+})
+
+function SomeComponent() {
+  const { articleId } = useRouteParams()
+}
+```
+
+`props` to mapping props to reference compoent when call `<Outlet>`:
+
+```js
+const { Outlet } = new Router({
+  routes: [
+    {
+      path: 'articles/:id',
+      component: SomeComponent,
+      props: {
+        // id: true, // equal "id: 'id',"
+        id: 'articleId',
+      }
+    }
+  ]
+})
+
+function SomeComponent(props) {
+  const { articleId } = props
+}
+
+export default function App() {
+  return <Outlet id="123" name="xxx" />
+}
+```
+
+In previous code, we pass `id` `name` to `<Outlet>`, however, the `SomeComponent` will only receive `articleId` which refer to `Outlet.id`.
 
 **Outlet**
 

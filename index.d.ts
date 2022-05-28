@@ -555,6 +555,13 @@ export declare class SwitchQueueService extends QueueService {}
 type IRoute = {
   path: string
   component: JSXComponent
+  exact?: boolean
+  params?: {
+    [key: string]: true | string
+  }
+  props?: {
+    [key: string]: true | string
+  }
 } | {
   path: string
   redirect: boolean
@@ -725,3 +732,5 @@ interface INavigator {
 export declare function useModuleNavigator(): INavigator[]
 
 export declare function useModuleI18n(): I18n
+
+export declare function useModuleParams(): AnyObj

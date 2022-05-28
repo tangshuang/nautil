@@ -13,6 +13,7 @@ const absContext = createContext({
 })
 const routeContext = createContext({})
 const routerContext = createContext({})
+const paramsContext = createContext({})
 
 export class Router {
   constructor(options) {
@@ -150,7 +151,16 @@ export class Router {
     const url = history.getUrl(abs, mode)
     const state = this.parseUrlToState(url)
 
-    const { component: C, path, params, redirect, exact } = state
+    const { component: C, path, params, redirect, exact, route } = state
+    const paramsMapping = route.params || {}
+    const propsMapping = route.props || {}
+
+    const finalProps = {}
+    const propsKeys = Object.keys(propsMapping)
+    propsKeys.forEach((key) => {
+      const prop = propsMapping[key]
+      finalProps[prop === true ? key : prop] = props[key]
+    })
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
@@ -183,6 +193,7 @@ export class Router {
     const { Provider: AbsProvider } = absContext
     const { Provider: RouteProvider } = routeContext
     const { Provider: RouterProvider } = routerContext
+    const { Provider: ParamsProvider } = paramsContext
 
     const navigate = this.useNavigate()
 
@@ -191,9 +202,19 @@ export class Router {
         return
       }
 
-      const redirectTo = typeof redirect === 'function' ? redirect(props) : redirect
+      const redirectTo = typeof redirect === 'function' ? redirect(finalProps) : redirect
       navigate(redirectTo, params, true)
     }, [redirect])
+
+    const passDownParams = useMemo(() => {
+      const passDown = {}
+      const keys = Object.keys(paramsMapping)
+      keys.forEach((key) => {
+        const prop = paramsMapping[key]
+        passDown[prop === true ? key : prop] = params[key]
+      })
+      return passDown
+    }, [url])
 
     if (redirect) {
       return null
@@ -203,7 +224,9 @@ export class Router {
       <AbsProvider value={absInfo}>
         <RouterProvider value={routerInfo}>
           <RouteProvider value={routeInfo}>
-            {this.render(C, props, { forceUpdate, url, history, abs, mode, path, params })}
+            <ParamsProvider value={passDownParams}>
+              {this.render(C, finalProps, { forceUpdate, url, history, abs, mode, path, params })}
+            </ParamsProvider>
           </RouteProvider>
         </RouterProvider>
       </AbsProvider>
@@ -366,18 +389,19 @@ export function useRouteParams() {
   const { abs } = useContext(absContext)
   const { history, mode } = useContext(rootContext)
   const { params: routeParams } = useContext(routeContext)
+  const inheritedParams = useContext(paramsContext)
 
   // top level use
   if (this && this instanceof Router) {
     const url = history.getUrl(abs, mode)
     const { params } = this.parseUrlToState(url)
-    return params
+    return { ...inheritedParams, ...params }
   }
   else if (routeParams) {
-    return routeParams
+    return { ...inheritedParams, ...routeParams }
   }
   else {
-    return {}
+    return { ...inheritedParams }
   }
 }
 
