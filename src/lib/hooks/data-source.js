@@ -31,7 +31,7 @@ export function useDataSource(source, ...params) {
       setLoading(true)
       clearTimeout(timer)
       timer = setTimeout(() => {
-        deferer.then(() => setLoading(false))
+        deferer.finally(() => setLoading(false))
       }, 0)
     })
     return stop
@@ -74,7 +74,7 @@ export function useLazyDataSource(source, ...params) {
       setLoading(true)
       clearTimeout(timer)
       timer = setTimeout(() => {
-        deferer.then(() => setLoading(false))
+        deferer.finally(() => setLoading(false))
       }, 0)
     })
     return stop
