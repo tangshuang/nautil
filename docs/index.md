@@ -106,6 +106,7 @@
   - [useModel](hooks/use-model.md)
   - [useController](hooks/use-controller.md)
   - [useDataSource](hooks/use-data-source.md)
+  - [useService](hooks/use-service.md)
 
 - Renderers
   - [DOM](renderers/dom.md)

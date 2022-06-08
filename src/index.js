@@ -76,6 +76,7 @@ export { useController, applyController } from './lib/hooks/controller.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
 export { useDataSource, useLazyDataSource } from './lib/hooks/data-source.js'
+export { useService } from './lib/hooks/service.js'
 
 export { observe, evolve, inject, initialize, nest, decorate } from './lib/decorators/decorators.js'
 export { pipe } from './lib/decorators/combiners.js'

@@ -169,15 +169,17 @@ export declare function useTwoWayBindingState(state: AnyObj): Proxy
 
 export declare function useUniqueKeys(items: any[]): string[]
 
-export declare function useModel(Model: new () => Model): Model
+export declare function useModel<T extends Model>(Model: new () => T): T
 
 export declare function useModelReactor<T>(models: Model | Model[], compute: (...args: any[]) => T, ...args: any[]): T
 
-export declare function useController(Controller: new () => Controller): Controller
+export declare function useController<T extends Controller>(Controller: new () => T): T
 
-export declare function applyController(Controller: new () => Controller): {
-  useController: () => Controller
+export declare function applyController<T extends Controller>(Controller: new () => T): {
+  useController: () => T
 }
+
+export declare function useService<T extends Service>(Serv: new () => T): T
 
 export declare function useShallowLatest(obj: any): any
 
