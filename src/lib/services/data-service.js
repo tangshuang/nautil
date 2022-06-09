@@ -1,6 +1,6 @@
 import { Service } from '../core/service.js'
 import { isString } from 'ts-fns'
-import { source, query, compose, setup, release, affect, select, apply, ref, isSource, request } from 'algeb'
+import { source, query, compose, setup, release, affect, select, apply, ref, isSource, request, action } from 'algeb'
 
 const subscribersKey = Symbol()
 
@@ -16,6 +16,10 @@ export class DataService extends Service {
 
   compose(get) {
     return compose(get)
+  }
+
+  action(act) {
+    return action(act)
   }
 
   _parse(source) {
@@ -105,6 +109,10 @@ export class DataService extends Service {
 
   static compose(get) {
     return compose(get)
+  }
+
+  static action(act) {
+    return action(act)
   }
 
   static query(source, ...params) {

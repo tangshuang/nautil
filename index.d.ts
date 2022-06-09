@@ -501,6 +501,8 @@ interface SourceRunner {
 export declare class DataService extends Service {
   source<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): Source<T, U>
   compose<T, U extends any[]>(get: (...args: U) => T): Source<T, U>
+  action<T, U extends any[]>(act: (...args: U) => any | Promise<any>): Source<T, U>
+
   query<T, U extends any[]>(source: Source<T, U> | string, ...params: U): [T, (...args: any[]) => Promise<T>]
   release(sources: any[] | any): void
 
@@ -519,6 +521,8 @@ export declare class DataService extends Service {
 
   static source<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): Source<T, U>
   static compose<T, U extends any[]>(get: (...args: U) => T): Source<T, U>
+  static action<T, U extends any[]>(act: (...args: U) => any | Promise<any>): Source<T, U>
+
   static query<T, U extends any[]>(source: Source<T, U> | string, ...params: U): [T, (...args: any[]) => Promise<T>]
   static release(sources: any[] | any): void
 
