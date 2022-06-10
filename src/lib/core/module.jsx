@@ -179,7 +179,7 @@ export function importModule(options) {
         }
       })
       if (paramsNotFound.length && process.env.NODE_ENV !== 'production') {
-        console.error(`模块为找到需要的参数：${paramsNotFound.join(',')}`)
+        console.error(`Module not found: ${paramsNotFound.join(',')}`)
       }
 
       // deal with ready
