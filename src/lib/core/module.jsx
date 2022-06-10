@@ -165,17 +165,26 @@ export function importModule(options) {
       const context = { ...rootContext, ...sharedContext, ...parentContext, ...thisContext }
       const ctx = useShallowLatest(context)
 
-      const paramsMapping = useThisParams(this.props)
+      const paramsMapping = useThisParams ? useThisParams(this.props) : {}
       const { deep } = useLocation()
       const params = {}
-      const paramsKeys = Object.keys(paramsMapping)
-      paramsKeys.forEach((key) => {
-        const prop = paramsMapping[key]
-        deep.forEach(({ state }) => {
-          const fromParams = state.params || {}
-          params[prop === true ? key : prop] = fromParams[key]
-        })
+      deep.forEach(({ state }) => {
+        const fromParams = state.params || {}
+        Object.assign(params, fromParams)
       })
+      const paramKeys = Object.keys(paramsMapping)
+      const paramsNotFound = []
+      paramKeys.forEach((key) => {
+        if (!(key in params)) {
+          paramsNotFound.push(key)
+        } else {
+          const prop = paramsMapping[key]
+          params[prop === true ? key : prop] = params[key]
+        }
+      })
+      if (paramsNotFound.length && process.env.NODE_ENV !== 'production') {
+        console.error(`模块为找到需要的参数：${paramsNotFound.join(',')}`)
+      }
 
       // deal with ready
       const ready = useThisReady && needReady ? useThisReady(this.props) : true

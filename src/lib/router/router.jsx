@@ -152,9 +152,8 @@ export class Router {
     const state = this.parseUrlToState(url)
 
     const { component: C, path, params, redirect, exact, route } = state
-    const paramsMapping = route.params || {}
-    const propsMapping = route.props || {}
 
+    const propsMapping = route.props || {}
     const finalProps = {}
     const propsKeys = Object.keys(propsMapping)
     propsKeys.forEach((key) => {
@@ -164,7 +163,7 @@ export class Router {
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
-      const newDeep = [...deep, { router: this, route: state.route, state }]
+      const newDeep = [...deep, { router: this, route, state }]
       return {
         abs: newAbs,
         deep: newDeep,
@@ -206,15 +205,13 @@ export class Router {
       navigate(redirectTo, params, true)
     }, [redirect])
 
-    const passDownParams = useMemo(() => {
-      const passDown = {}
-      const keys = Object.keys(paramsMapping)
-      keys.forEach((key) => {
-        const prop = paramsMapping[key]
-        passDown[prop === true ? key : prop] = params[key]
-      })
-      return passDown
-    }, [url])
+    const paramsMapping = route.params || {}
+    const passDownParams = {}
+    const keys = Object.keys(paramsMapping)
+    keys.forEach((key) => {
+      const prop = paramsMapping[key]
+      passDownParams[prop === true ? key : prop] = params[key]
+    })
 
     if (redirect) {
       return null
