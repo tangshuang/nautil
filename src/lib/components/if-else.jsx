@@ -19,7 +19,7 @@ import { ifexist } from 'tyshemo'
 import { isFunction } from 'ts-fns'
 import { Children, createElement, Fragment, Suspense, useRef } from 'react'
 
-import Component from '../core/component.js'
+import { Component } from '../core/component.js'
 
 export class Else extends Component {
   static props = {
@@ -104,8 +104,7 @@ export class If extends Component {
     if (block.is) {
       return (
         <Suspense fallback={null}>
-          <TroubleMaker is={block.is} />
-          {create()}
+          <TroubleMaker is={block.is} render={create} />
         </Suspense>
       )
     }
@@ -115,7 +114,7 @@ export class If extends Component {
 }
 
 function TroubleMaker(props) {
-  const { is } = props
+  const { is, render } = props
   const deferer = useRef()
 
   if (!is) {
@@ -125,12 +124,13 @@ function TroubleMaker(props) {
     })
     deferer.current = resolve
     throw promise
-  } else if (deferer.current) {
+  }
+  else if (deferer.current) {
     deferer.current()
     deferer.current = null
   }
 
-  return null
+  return render()
 }
 
 export default If
