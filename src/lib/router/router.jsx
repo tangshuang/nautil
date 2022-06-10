@@ -205,8 +205,9 @@ export class Router {
       navigate(redirectTo, params, true)
     }, [redirect])
 
+    const inheritedParams = useContext(paramsContext)
     const paramsMapping = route.params || {}
-    const passDownParams = {}
+    const passDownParams = { ...inheritedParams, ...params }
     const keys = Object.keys(paramsMapping)
     keys.forEach((key) => {
       const prop = paramsMapping[key]

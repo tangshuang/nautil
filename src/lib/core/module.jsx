@@ -1,6 +1,6 @@
 import { Component } from './component.js'
 import { createContext, useContext, useMemo, useEffect } from 'react'
-import { RouterRootProvider, useRouteLocation, useLocation } from '../router/router.jsx'
+import { RouterRootProvider, useRouteLocation, useRouteParams } from '../router/router.jsx'
 import { I18nRootProvider } from '../i18n/i18n.jsx'
 import { Ty, ifexist } from 'tyshemo'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
@@ -166,12 +166,8 @@ export function importModule(options) {
       const ctx = useShallowLatest(context)
 
       const paramsMapping = useThisParams ? useThisParams(this.props) : {}
-      const { deep } = useLocation()
-      const params = {}
-      deep.forEach(({ state }) => {
-        const fromParams = state.params || {}
-        Object.assign(params, fromParams)
-      })
+      const routeParams = useRouteParams()
+      const params = { ...routeParams }
       const paramKeys = Object.keys(paramsMapping)
       const paramsNotFound = []
       paramKeys.forEach((key) => {
