@@ -161,6 +161,8 @@ export function camelCase(str) {
 
 export class SingleInstanceBase {
   destroy() {
+    this.destructor?.()
+
     // destroy single instance
     const Constructor = getConstructorOf(this)
     if (Constructor.__instance === this) {
