@@ -90,7 +90,8 @@ export class History extends EventBase {
     return this.$discernUrl(to, abs, mode, params)
   }
   $discernUrl(to, abs, mode, params) {
-    const search = (params ? '?' + paramsToUrl(params) : '')
+    const urlByParams = params ? paramsToUrl(params) : ''
+    const search = (urlByParams ? '?' + urlByParams : '')
 
     if (/^[a-z]+:\/\//.test(to)) {
       return to + search

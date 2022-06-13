@@ -194,7 +194,7 @@ export class View extends Component {
     observer.unsubscribe(this.weakUpdate)
     // destroy single instances
     if (isInstanceOf(observer, SingleInstanceBase)) {
-      observer.destroy()
+      observer.destructor()
     }
     this.observers.splice(index, 1)
   }

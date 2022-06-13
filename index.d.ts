@@ -463,8 +463,6 @@ export declare function applyStore(store: Store): {
 export declare function createStream(fn: (stream: Stream) => Stream): Stream
 
 declare class SingleInstanceBase {
-  destroy(): void
-  static destroy(): void
 }
 
 export declare class Service extends SingleInstanceBase {

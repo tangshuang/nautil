@@ -86,6 +86,7 @@
   - [Service](services/service.md)
   - [DataService](services/data-service.md)
   - [QueueService](services/queue-service.md)
+  - [EventService](services/event-service.md)
 
 - Module
   - [What is all the Module?](module/module.md)

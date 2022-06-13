@@ -8,7 +8,7 @@ export function useController(Controller) {
     controller.subscribe(forceUpdate)
     return () => {
       controller.unsubscribe(forceUpdate)
-      controller.destroy()
+      controller.destructor()
     }
   }, [controller])
   return controller
@@ -33,7 +33,7 @@ export function applyController(Controller) {
         controller.unsubscribe(forceUpdate)
         setTimeout(() => {
           if (!count) {
-            controller.destroy()
+            controller.destructor()
             controller = null
           }
         }, 64)

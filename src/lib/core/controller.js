@@ -85,8 +85,8 @@ export class Controller extends SingleInstanceBase {
     })
   }
 
-  destroy() {
-    super.destroy()
+  destructor() {
+    super.destructor()
 
     // when controller is not active, clear all
     if (this.isDied) {

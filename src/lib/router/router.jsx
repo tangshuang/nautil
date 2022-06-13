@@ -522,38 +522,63 @@ export function createRouteComponent(path, C, exact) {
     ],
   })
 
+  let from = ''
+
   function Outlet(props) {
     const match = useMatch()
     const isRouteActive = match(path)
-    const navigate = useNavigate()
-    const inactiveRoute = () => {
-      navigate(-1)
-    }
+    const inactiveRoute = useInactiveRoute()
     const params = useParams()
 
     return <C {...props} isRouteActive={isRouteActive} inactiveRoute={inactiveRoute} routeParams={params} />
-  }
-
-  function useActiveRoute() {
-    const navigate = useNavigate()
-    return (params, replace) => navigate(path, params, replace)
   }
 
   function Link(props) {
     return <ThisLink {...props} to={path} />
   }
 
+  function useActiveRoute() {
+    const navigate = useNavigate()
+    const { history } = useContext(rootContext)
+    return (params, replace) => {
+      from = history.loaction.href
+      navigate(path, params, replace)
+    }
+  }
+
   function useIsRouteActive() {
     const match = useMatch()
+    const { history, mode } = useContext(rootContext)
+    const { abs } = useContext(absContext)
+
+    if (from && path.indexOf('./') === 0) {
+      const to = history.loaction.href
+      const fromUrl = history.$parseUrl(from, abs, mode)
+      const toUrl = history.$parseUrl(to, abs, mode)
+      if (toUrl === resolveUrl(fromUrl, path)) {
+        return true
+      }
+      return false
+    }
+
+
     const isMatched = match(path)
     return isMatched
   }
 
-  return { Outlet, useActiveRoute, Link, useIsRouteActive }
+  function useInactiveRoute() {
+    const navigate = useNavigate()
+    return () => {
+      navigate(-1)
+      from = ''
+    }
+  }
+
+  return { Outlet, useActiveRoute, useInactiveRoute, Link, useIsRouteActive }
 }
 
 export function createRouteState(paths, exact) {
-  const { useMatch, useParams, useNavigate } = new Router({
+  const { useMatch: useRouteMatch, useParams, useNavigate } = new Router({
     routes: paths.map((path) => ({
       path,
       component: () => null,
@@ -561,14 +586,43 @@ export function createRouteState(paths, exact) {
     })),
   })
 
+  const stack = []
+
   function useActive() {
     const navigate = useNavigate()
-    return (path, params, replace) => navigate(path, params, replace)
+    const { history } = useContext(rootContext)
+    return (path, params, replace) => {
+      stack.push(history.loaction.href)
+      navigate(path, params, replace)
+    }
   }
 
   function useInactive() {
     const navigate = useNavigate()
-    return () => navigate(-1)
+    return () => {
+      navigate(-1)
+      stack.pop()
+    }
+  }
+
+  function useMatch() {
+    const match = useRouteMatch()
+    const { history, mode } = useContext(rootContext)
+    const { abs } = useContext(absContext)
+
+    return (path) => {
+      if (stack.length && path.indexOf('./') === 0) {
+        const to = history.loaction.href
+        const fromUrl = history.$parseUrl(stack[0], abs, mode)
+        const toUrl = history.$parseUrl(to, abs, mode)
+        if (toUrl === resolveUrl(fromUrl, path)) {
+          return true
+        }
+        return false
+      }
+
+      return match(path)
+    }
   }
 
   return { useMatch, useParams, useActive, useInactive }

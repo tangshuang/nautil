@@ -17,7 +17,7 @@ export function useService(serv) {
 
   useEffect(
     () => () => {
-      service.destroy()
+      service.destructor()
     },
     [],
   )

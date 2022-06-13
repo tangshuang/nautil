@@ -160,13 +160,13 @@ export function camelCase(str) {
 }
 
 export class SingleInstanceBase {
-  destroy() {
-    this.destructor?.()
+  destructor() {
+    this.destroy?.()
 
     // destroy single instance
     const Constructor = getConstructorOf(this)
     if (Constructor.__instance === this) {
-      Constructor.destroy()
+      Constructor.destructor()
       this.isDied = Constructor.__instanced <= 0
     }
     else {
@@ -180,8 +180,8 @@ export class SingleInstanceBase {
           this[key] = null
         }
         // auto destroy refer objects, if it is a single instance, it will trigger its static destroy
-        else if (value && isFunction(value.destroy) && !value.destroy.length) {
-          value.destroy()
+        else if (value && isFunction(value.destructor) && !value.destructor.length) {
+          value.destructor()
           this[key] = null
         }
       })
@@ -212,7 +212,7 @@ export class SingleInstanceBase {
     }
   }
 
-  static destroy() {
+  static destructor() {
     const Constructor = this
 
     Constructor.__instanced = Constructor.__instanced || 0

@@ -1,29 +1,47 @@
-import { If, useState, useEffect, useRef } from 'nautil'
+import { Router, createBootstrap, Link } from 'nautil'
 
-export default function App() {
-  const [bool, setBool] = useState(false)
-  const data = useRef({})
+function Home() {
+  return <Link to="detail">go to detail</Link>
+}
 
-  useEffect(() => {
-    setTimeout(() => {
-      data.current = {
-        body: {
-          content: 'text',
-        },
-      }
-      setBool(true)
-    }, 3000)
-  }, [])
-
+function Detail() {
   return (
-    <If is={bool}>
-      {/* Content will not render when bool is not true */}
-      <Content data={data.current} />
-    </If>
+    <>
+      <Link to="">go to home</Link>
+      <Link to="./content">go to content</Link>
+    </>
   )
 }
 
-function Content(props) {
-  console.log('hint--->')
-  return props.data.body.content
+function Content() {
+  return 'content'
 }
+
+const { Outlet } = new Router({
+  routes: [
+    {
+      path: '',
+      redirect: 'home',
+    },
+    {
+      path: 'home',
+      component: Home,
+    },
+    {
+      path: 'detail',
+      component: Detail,
+    },
+  ],
+})
+
+const bootstrap = createBootstrap({
+  router: {
+    mode: '/',
+  },
+})
+
+function App() {
+  return <Outlet />
+}
+
+export default bootstrap(App)
