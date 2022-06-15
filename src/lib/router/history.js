@@ -90,21 +90,26 @@ export class History extends EventBase {
     return this.$discernUrl(to, abs, mode, params)
   }
   $discernUrl(to, abs, mode, params) {
-    const urlByParams = params ? paramsToUrl(params) : ''
-    const search = (urlByParams ? '?' + urlByParams : '')
+    const genedSearch = params ? paramsToUrl(params) : ''
+    const search = genedSearch ? `?${genedSearch}` : ''
 
-    if (/^[a-z]+:\/\//.test(to)) {
-      return to + search
-    }
-
-    if (/^\/[a-z]?/.test(to)) {
-      return to + search
+    // http://xxx.com/xxx | //xxx.com/xxx
+    if (/^[a-z]+:\/\//.test(to) || /^\/\//.test(to)) {
+      return to.indexOf('?') > -1 ? `${to}&${genedSearch}` : to + search
     }
 
     const { base } = mode
+
+    // /a/b/c
+    if (to[0] === '/') {
+      const root = resolveUrl(base, to.substring(1))
+      return root + search
+    }
+
     const root = resolveUrl(base, abs)
     const url = resolveUrl(root, to)
-    return url + search
+    const res = url + search
+    return res
   }
 
   replace(url) {
