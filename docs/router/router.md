@@ -15,6 +15,8 @@ const bootstrap = createBootstrap({
   router: {
     // only mode is needed
     mode: '/',
+    // optional
+    define: {},
   },
 })
 ```
@@ -53,6 +55,21 @@ The last 4 modes support passing base url, for example:
 - #?url=/web
 
 With this, your application will be visited by `/web/app/page1` which begin with `/web`.
+
+**define**
+
+`define` option in `createBootstrap` define global routes, so that you can use them in `usePermanentNavigate`.
+
+```
+define: {
+  SOME_ROUTE: '/path/:arg',
+}
+```
+
+```
+const navigate = usePermanentNavigate()
+navigate('SOME_ROUTE', { arg })
+```
 
 ## Router
 
@@ -375,3 +392,16 @@ function MyComponent() {
 ```
 
 Use `Route` to render section by navigator.
+
+## usePermanentNavigate
+
+Navigate to global route.
+
+```
+navigate(routeName: string, params: object, replace: boolean)
+```
+
+```js
+const navigate = usePermanentNavigate()
+navigate('SOME_ROUTE', { arg })
+```

@@ -143,6 +143,7 @@ export {
   createRouteComponent,
   createRouteState,
   Route,
+  usePermanentNavigate,
 } from './lib/router/router.jsx'
 
 export {

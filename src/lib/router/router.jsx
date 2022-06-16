@@ -639,3 +639,34 @@ export function Route(props) {
   const params = useParams()
   return match(path) ? render(params) : null
 }
+
+
+/**
+ * 基于全局注册的路由进行跳转
+ * @returns
+ */
+export function usePermanentNavigate() {
+  const { history, mode, define = {} } = useContext(rootContext)
+  return (name, params = {}, replace = false) => {
+    const args = { ...params }
+    const path = define[name]
+    if (!path) {
+      console.error(`Global route ${name} is not defined.`)
+      return
+    }
+
+    const items = path.split('/')
+    const res = items.map((item) => {
+      if (item[0] === ':') {
+        const key = item.substring(1)
+        if (params[key]) {
+          delete args[key]
+          return params[key]
+        }
+      }
+      return item
+    })
+    const pathStr = res.join('/')
+    history.setUrl(pathStr, '/', mode, args, replace)
+  }
+}

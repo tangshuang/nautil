@@ -627,6 +627,8 @@ export declare function createRouteState(paths: string[]): {
 
 export declare function Route(props: { path: string, exact?: boolean, render: (params?: AnyObj) => NautilElement }): NautilElement
 
+export declare function usePermanentNavigate(): (routeName: string, params: object, replace: boolean) => void
+
 export declare class Storage {
   static getItem(key: string): Promise<any>
   static setItem(key: string, value: any): Promise<undefined>
@@ -706,6 +708,9 @@ export declare function createAsyncComponent(fn: () => Promise<{ default: JSXCom
 interface BootstrapOptions {
   router: {
     mode: string
+    define?: {
+      [name: string]: string
+    }
   }
   i18n: {
     lang: string | AnyObj
