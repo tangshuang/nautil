@@ -196,9 +196,25 @@ A component to create a hyperlink to certain route and display its component.
 <Link to={`detail/${id}`} replace>Detail</Link>
 ```
 
+**back/forward**
+
+Set `to` to be number, for example -1, 1. `1` to go forward, `-1` to go back.
+
+```js
+<Link to={-1}>Back</Link>
+```
+
 **cross modules**
 
 `navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `/abs/path` as `to`. Begining with `/` and absolute url path will trigger history change with absolute path. Begining with `./` will trigger history change by patch giving path at the current pathname tail.
+
+**change search only**
+
+Set `to` to be `.` and give `params`.
+
+```js
+<Link to="." params={{ some: '1' }}>xxx</Link>
+```
 
 ## useRouteNavigate
 

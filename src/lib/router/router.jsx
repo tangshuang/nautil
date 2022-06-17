@@ -648,6 +648,11 @@ export function Route(props) {
 export function usePermanentNavigate() {
   const { history, mode, define = {} } = useContext(rootContext)
   return (name, params = {}, replace = false) => {
+    if (name === '.') {
+      history.setUrl('.', '/', mode, params, replace)
+      return
+    }
+
     const args = { ...params }
     const path = define[name]
     if (!path) {
