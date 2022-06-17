@@ -649,7 +649,7 @@ export function usePermanentNavigate() {
   const { history, mode, define = {} } = useContext(rootContext)
   return (name, params = {}, replace = false) => {
     if (name === '.') {
-      history.setUrl('.', '/', mode, params, replace)
+      history.setUrl('.', null, null, params, replace)
       return
     }
 

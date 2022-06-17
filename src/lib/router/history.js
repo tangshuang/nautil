@@ -86,18 +86,11 @@ export class History extends EventBase {
    * @param {*} params
    * @returns
    */
-  $makeSearchUrl(abs, mode, params = {}) {
-    const crrUrl = this.getUrl(abs, mode)
-    const i = crrUrl.indexOf('?')
-    const pathname = crrUrl.substring(0, i)
-    let query = params
-    if (i > -1) {
-      const search = crrUrl.substring(i)
-      query = parseSearch(search)
-      Object.assign(query, params)
-    }
-    const searchUrl = paramsToUrl(query)
-    const url = searchUrl ? pathname + '?' + searchUrl : pathname
+  $makeSearchUrl(params = {}) {
+    const { pathname, query } = this.location
+    const nextQuery = { ...query, ...params }
+    const nextSearch = paramsToUrl(nextQuery)
+    const url = nextSearch ? pathname + '?' + nextSearch : pathname
     return url
   }
   /**
@@ -109,7 +102,7 @@ export class History extends EventBase {
    */
   $makeUrl(to, abs, mode, params) {
     if (to === '.') {
-      return this.$makeSearchUrl(abs, mode, params)
+      return this.$makeSearchUrl(params)
     }
     return this.$discernUrl(to, abs, mode, params)
   }
