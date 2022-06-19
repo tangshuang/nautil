@@ -15,6 +15,8 @@ const bootstrap = createBootstrap({
   router: {
     // only mode is needed
     mode: '/',
+    // optional
+    define: {},
   },
 })
 ```
@@ -57,6 +59,21 @@ With this, your application will be visited by `/web/app/page1` which begin with
 **navigationContainer**
 
 When used in native, you can set navigationContainer to be `false` to disabled wrap your application in NavigationContainer, then import it from react-navigation to use it by yourself.
+
+**define**
+
+`define` option in `createBootstrap` define global routes, so that you can use them in `usePermanentNavigate`.
+
+```
+define: {
+  SOME_ROUTE: '/path/:arg',
+}
+```
+
+```
+const navigate = usePermanentNavigate()
+navigate('SOME_ROUTE', { arg })
+```
 
 ## Router
 
@@ -184,9 +201,25 @@ A component to create a hyperlink to certain route and display its component.
 <Link to={`detail/${id}`} replace>Detail</Link>
 ```
 
+**back/forward**
+
+Set `to` to be number, for example -1, 1. `1` to go forward, `-1` to go back.
+
+```js
+<Link to={-1}>Back</Link>
+```
+
 **cross modules**
 
 `navigate` and `Link` jump amount routes of current router. To jump to another module outside current router, you should pass `/abs/path` as `to`. Begining with `/` and absolute url path will trigger history change with absolute path. Begining with `./` will trigger history change by patch giving path at the current pathname tail.
+
+**change search only**
+
+Set `to` to be `.` and give `params`.
+
+```js
+<Link to="." params={{ some: '1' }}>xxx</Link>
+```
 
 ## useRouteNavigate
 
@@ -380,3 +413,16 @@ function MyComponent() {
 ```
 
 Use `Route` to render section by navigator.
+
+## usePermanentNavigate
+
+Navigate to global route.
+
+```
+navigate(routeName: string, params: object, replace: boolean)
+```
+
+```js
+const navigate = usePermanentNavigate()
+navigate('SOME_ROUTE', { arg })
+```

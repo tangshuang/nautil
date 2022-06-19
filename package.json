@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.48.6",
+  "version": "0.48.10",
   "description": "Enterprise Level Business System Frontend Framework",
   "main": "index.js",
   "miniprogram": "miniprogram_dist",
@@ -31,12 +31,12 @@
   "dependencies": {
     "@babel/runtime": "^7.16.7",
     "@types/react": "^17.0.11",
-    "algeb": "^1.5.0",
+    "algeb": "^1.5.2",
     "immer": "^9.0.12",
     "react": "^17.0.2",
     "rxjs": "^7.5.5",
     "ts-fns": "^10.9.1",
-    "tyshemo": "^12.2.1"
+    "tyshemo": "^12.3.2"
   },
   "optionalDependencies": {
     "@react-native-async-storage/async-storage": "^1.15.14",

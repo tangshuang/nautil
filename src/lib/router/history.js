@@ -80,6 +80,20 @@ export class History extends EventBase {
     return this[replace ? 'replace' : 'push'](url)
   }
   /**
+   * create new url only changing search query
+   * @param {*} abs
+   * @param {*} mode
+   * @param {*} params
+   * @returns
+   */
+  $makeSearchUrl(params = {}) {
+    const { pathname, query } = this.location
+    const nextQuery = { ...query, ...params }
+    const nextSearch = paramsToUrl(nextQuery)
+    const url = nextSearch ? pathname + '?' + nextSearch : pathname
+    return url
+  }
+  /**
    * create url to patch to history
    * @param {*} to
    * @param {*} abs
@@ -87,24 +101,32 @@ export class History extends EventBase {
    * @returns
    */
   $makeUrl(to, abs, mode, params) {
+    if (to === '.') {
+      return this.$makeSearchUrl(params)
+    }
     return this.$discernUrl(to, abs, mode, params)
   }
   $discernUrl(to, abs, mode, params) {
-    const urlByParams = params ? paramsToUrl(params) : ''
-    const search = (urlByParams ? '?' + urlByParams : '')
+    const genedSearch = params ? paramsToUrl(params) : ''
+    const search = genedSearch ? `?${genedSearch}` : ''
 
-    if (/^[a-z]+:\/\//.test(to)) {
-      return to + search
-    }
-
-    if (/^\/[a-z]?/.test(to)) {
-      return to + search
+    // http://xxx.com/xxx | //xxx.com/xxx
+    if (/^[a-z]+:\/\//.test(to) || /^\/\//.test(to)) {
+      return to.indexOf('?') > -1 ? `${to}&${genedSearch}` : to + search
     }
 
     const { base } = mode
+
+    // /a/b/c
+    if (to[0] === '/') {
+      const root = resolveUrl(base, to.substring(1))
+      return root + search
+    }
+
     const root = resolveUrl(base, abs)
     const url = resolveUrl(root, to)
-    return url + search
+    const res = url + search
+    return res
   }
 
   replace(url) {
