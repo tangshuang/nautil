@@ -8,12 +8,15 @@ const { Provider } = rootContext
 const Stack = createStackNavigator()
 
 mixin(Router, class {
-  static $createRootProvider(ctx, children) {
-    return (
-      <NavigationContainer>
-        <Provider value={ctx}>{children}</Provider>
-      </NavigationContainer>
-    )
+  static $createRootProvider(ctx, children, options) {
+    if (options.navigationContainer) {
+      return (
+        <NavigationContainer>
+          <Provider value={ctx}>{children}</Provider>
+        </NavigationContainer>
+      )
+    }
+    return <Provider value={ctx}>{children}</Provider>
   }
 
   static $createLink(data) {

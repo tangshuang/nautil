@@ -54,6 +54,10 @@ The last 4 modes support passing base url, for example:
 
 With this, your application will be visited by `/web/app/page1` which begin with `/web`.
 
+**navigationContainer**
+
+When used in native, you can set navigationContainer to be `false` to disabled wrap your application in NavigationContainer, then import it from react-navigation to use it by yourself.
+
 ## Router
 
 ```js
@@ -82,6 +86,7 @@ const router = new Router({
   - exact: boolean, whether to use the whole url to match current route, if true, only the same url match current route, if false, when the url is begining with path it match the current route
   - params: an object to describe the params mapping
   - props: an object ot describe the props mapping
+- transition: 'stack', in mobile (web or native) you can set this option to choose a navigate mode.
 
 The routes rules has priority with its order in the given array.
 

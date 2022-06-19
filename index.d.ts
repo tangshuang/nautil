@@ -572,6 +572,11 @@ type IRoute = {
 }
 
 export declare interface RouterOptions {
+  /**
+   * only works in mobile (web mobile or native mobile),
+   * if set 'stack', it will use Staci.Navigator in native
+   */
+  transition?: 'stack'
   routes: Array<IRoute>
 }
 export declare class Router {
@@ -706,6 +711,11 @@ export declare function createAsyncComponent(fn: () => Promise<{ default: JSXCom
 interface BootstrapOptions {
   router: {
     mode: string
+    /**
+     * only works in native platform, whether to use NavigationContainer to wrap in bootstrap,
+     * if you set false, you should must import { NavigationContainer } from 'react-nativation' to wrap your application
+     */
+    navigationContainer?: boolean
   }
   i18n: {
     lang: string | AnyObj

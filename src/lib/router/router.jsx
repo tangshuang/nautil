@@ -250,7 +250,14 @@ export class Router {
     }
   }
 
-  static $createRootProvider(ctx, children) {
+  /**
+   *
+   * @param {*} ctx generated context which should pass into rootContext
+   * @param {*} children
+   * @param {*} options options from createBootstap router option
+   * @returns
+   */
+  static $createRootProvider(ctx, children, _options) {
     const { Provider } = rootContext
     return <Provider value={ctx}>{children}</Provider>
   }
@@ -313,13 +320,8 @@ export function RouterRootProvider({ value, children }) {
     }
   }, [value])
 
-  const { Provider } = rootContext
 
-  return (
-    <Provider value={ctx}>
-      {children}
-    </Provider>
-  )
+  return Router.$createRootProvider(ctx, children, value)
 }
 
 export function useLocation() {
