@@ -56,10 +56,6 @@ The last 4 modes support passing base url, for example:
 
 With this, your application will be visited by `/web/app/page1` which begin with `/web`.
 
-**navigationContainer**
-
-When used in native, you can set navigationContainer to be `false` to disabled wrap your application in NavigationContainer, then import it from react-navigation to use it by yourself.
-
 **define**
 
 `define` option in `createBootstrap` define global routes, so that you can use them in `usePermanentNavigate`.
@@ -74,6 +70,12 @@ define: {
 const navigate = usePermanentNavigate()
 navigate('SOME_ROUTE', { arg })
 ```
+
+**ignoreNavigationContainer**
+
+When used in native, you can set ignoreNavigationContainer to be `true` to disabled wrap your application in NavigationContainer, then import it from react-navigation to use it by yourself.
+
+**rootScreenPath**
 
 ## Router
 

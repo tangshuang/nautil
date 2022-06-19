@@ -1,22 +1,29 @@
-import { mixin, isShallowEqual } from 'ts-fns'
+import { mixin } from 'ts-fns'
 import { Linking, TouchableOpacity } from 'react-native'
 import { Router, rootContext } from '../../lib/router/router.jsx'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
+import { useContext, useMemo } from 'react'
 
 const { Provider } = rootContext
 const Stack = createStackNavigator()
 
 mixin(Router, class {
   static $createRootProvider(ctx, children, options) {
-    if (options.navigationContainer) {
-      return (
-        <NavigationContainer>
-          <Provider value={ctx}>{children}</Provider>
-        </NavigationContainer>
-      )
+    const nextContext = useMemo(() => {
+      const nextContext = { ...ctx }
+      if (options.rootScreenPath) {
+        nextContext.roots = options.rootScreenPath
+      }
+    }, [ctx])
+    if (options.ignoreNavigationContainer) {
+      return <Provider value={nextContext}>{children}</Provider>
     }
-    return <Provider value={ctx}>{children}</Provider>
+    return (
+      <NavigationContainer>
+        <Provider value={nextContext}>{children}</Provider>
+      </NavigationContainer>
+    )
   }
 
   static $createLink(data) {
@@ -39,32 +46,55 @@ mixin(Router, class {
     )
   }
 
-  static $createNavigate(history, getAbs, mode) {
+  static $createNavigate(history, getAbs, mode, { deep, transition }) {
     const navigation = useNavigation()
+    const rootOptions = useContext(rootContext)
+    const { roots = [] } = rootOptions
 
     return (to, params, replace) => {
+      // change history first to trigger update
+      // notice all screen may be changed
       if (typeof to === 'number') {
         if (to < 0) {
-          navigation.goBack()
+          history.back()
         }
-        return
+      }
+      else {
+        history.setUrl(to, getAbs(to, params), mode, params, replace)
       }
 
-      const name = history.$makeUrl(to, getAbs(to, params), mode, params)
-      if (replace) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name }],
+      // transition to next screen
+      if (transition === 'stack') {
+        if (typeof to === 'number') {
+          if (to < 0) {
+            navigation.goBack()
+          }
+          return
+        }
+
+        const info = {}
+
+        let params = info
+        roots.forEach((name) => {
+          params.screen = name
+          params.params = {}
+          params = params.params
         })
-        return
+        deep.forEach(({ route }) => {
+          const { path } = route
+          params.screen = path
+          params.params = {}
+          params = params.params
+        })
+
+        if (replace) {
+          navigation.replace(info)
+          return
+        }
+
+        navigation.navigate(info)
       }
-
-      navigation.navigate(name, params)
     }
-  }
-
-  init() {
-    this.views = {}
   }
 
   render(component, props, context) {
@@ -77,21 +107,20 @@ mixin(Router, class {
     return <C {...props} />
   }
 
-  renderStack(C, props, { url, history, abs, mode, params }) {
-    const name = history.$makeUrl(url, abs, mode, params)
-
-    if (!this.views[name] || !isShallowEqual(this.views[name].props, props)) {
-      this.views[name] = {
-        screen: (
-          <Stack.Screen key={name} name={name}>
-            {() => <C {...props} />}
-          </Stack.Screen>
-        ),
-        props,
-      }
-    }
-
-    return <Stack.Navigator>{Object.keys(this.views).map((name) => this.views[name].screen)}</Stack.Navigator>
+  renderStack(C, props, { routes }) {
+    const items = routes.filter(item => item.component)
+    return (
+      <Stack.Navigator>
+        {items.map((item) => {
+          const { path, component: C } = item
+          return (
+            <Stack.Screen key={path} name={path}>
+              {() => <C {...props} />}
+            </Stack.Screen>
+          )
+        })}
+      </Stack.Navigator>
+    )
   }
 })
 

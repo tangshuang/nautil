@@ -713,14 +713,18 @@ export declare function createAsyncComponent(fn: () => Promise<{ default: JSXCom
 interface BootstrapOptions {
   router: {
     mode: string
+    define?: {
+      [name: string]: string
+    }
     /**
      * only works in native platform, whether to use NavigationContainer to wrap in bootstrap,
      * if you set false, you should must import { NavigationContainer } from 'react-nativation' to wrap your application
      */
-    navigationContainer?: boolean
-    define?: {
-      [name: string]: string
-    }
+     ignoreNavigationContainer?: boolean
+     /**
+      * only works in navtive platform, used in nested navigators, make navigate based on this navigators
+      */
+     rootScreenPath?: string[]
   }
   i18n: {
     lang: string | AnyObj

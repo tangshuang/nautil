@@ -163,7 +163,7 @@ export class Router {
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
-      const newDeep = [...deep, { router: this, route, state }]
+      const newDeep = [...deep, { abs: newAbs, router: this, route, state }]
       return {
         abs: newAbs,
         deep: newDeep,
@@ -223,7 +223,7 @@ export class Router {
         <RouterProvider value={routerInfo}>
           <RouteProvider value={routeInfo}>
             <ParamsProvider value={passDownParams}>
-              {this.render(C, finalProps, { forceUpdate, url, history, abs, mode, path, params })}
+              {this.render(C, finalProps, { forceUpdate, url, history, abs, mode, path, params, routes: this.routes })}
             </ParamsProvider>
           </RouteProvider>
         </RouterProvider>
@@ -240,7 +240,7 @@ export class Router {
     throw new Error('[Nautil]: Router.$createLink should must be override.')
   }
 
-  static $createNavigate(history, getAbs, mode) {
+  static $createNavigate(history, getAbs, mode, _otions) {
     return (to, params, replace) => {
       if (typeof to === 'number') {
         to > 0 ? history.forword() : history.back()
@@ -320,7 +320,6 @@ export function RouterRootProvider({ value, children }) {
     }
   }, [value])
 
-
   return Router.$createRootProvider(ctx, children, value)
 }
 
@@ -348,15 +347,12 @@ export function useHistoryListener(fn, deps = []) {
 export function Link(props) {
   const { to, replace, open, params, ...attrs } = props
 
-  const forceUpdate = useForceUpdate()
-  useHistoryListener(forceUpdate)
-
   const { history, mode } = useContext(rootContext)
   const { abs } = useContext(absContext)
   const { abs: currentRouterAbs = abs } = useContext(routerContext)
 
   const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
-  const navigateTo = Router.$createNavigate(history, getAbs, mode)
+  const navigateTo = useRouteNavigate.call(this)
 
   const args = useShallowLatest(params)
   const finalAbs = getAbs(to)
@@ -375,11 +371,12 @@ export function useRouteNavigate() {
   useHistoryListener(forceUpdate)
 
   const { history, mode } = useContext(rootContext)
-  const { abs } = useContext(absContext)
-  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+  const { abs, deep } = useContext(absContext)
+  const { abs: currentRouterAbs = abs, current } = useContext(routerContext)
+  const transition = current?.options.transition
 
   const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
-  return Router.$createNavigate(history, getAbs, mode)
+  return Router.$createNavigate(history, getAbs, mode, { transition, deep })
 }
 
 export function useRouteParams() {
