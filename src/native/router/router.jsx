@@ -6,7 +6,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { useContext, useMemo } from 'react'
 
 const { Provider } = rootContext
-const Stack = createStackNavigator()
 
 mixin(Router, class {
   static $createRootProvider(ctx, children, options) {
@@ -104,6 +103,10 @@ mixin(Router, class {
     }
   }
 
+  init() {
+    this.Stack = createStackNavigator(this.options.navigatorOptions)
+  }
+
   render(component, props, context) {
     if (this.options.transition === 'stack') {
       return this.renderStack(component, props, context)
@@ -117,9 +120,10 @@ mixin(Router, class {
   renderStack(_, props) {
     const { routes, options } = this
     const items = routes.filter((item) => item.component)
-    const navigatorOptions = options.navigatorOptions || {}
+    const navigatorProps = options.navigatorProps || {}
+    const { Stack } = this
     return (
-      <Stack.Navigator options={navigatorOptions}>
+      <Stack.Navigator {...navigatorProps}>
         {items.map((routeOptions) => {
           const { name, path = name, component: Comp, screenOptions = {} } = routeOptions
           return (

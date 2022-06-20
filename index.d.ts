@@ -595,9 +595,13 @@ export type RouterOptions = {
    */
   transition?: 'stack'
   /**
-   * works for Stack.Navigator
+   * works for createStackNavigator
    */
   navigatorOptions?: AnyObj
+  /**
+   * works for Stack.Navigator
+   */
+  navigatorProps?: AnyObj
   /**
    * only works in navtive platform, used in nested navigators, make navigate based on this navigators
    */
