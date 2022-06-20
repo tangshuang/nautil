@@ -584,7 +584,7 @@ export type RouteOptions = {
   screenOptions?: AnyObj
 } | {
   path: string
-  redirect: boolean
+  redirect: string
 }
 
 export type RouterOptions = {
