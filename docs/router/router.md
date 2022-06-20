@@ -101,7 +101,8 @@ const router = new Router({
     - '' index path
     - '!' path to fallback when not found
   - component: ReactComponentType
-  - redirect: boolean, redirect to when visit this path, if redirect is true, component will not work any more
+  - redirect: string, redirect to when visit this path, if redirect is true, component will not work any more
+  - default: boolean, when there is no { path: '' } in routes, use this route as { path: '', redirect: thisRoute }
   - exact: boolean, whether to use the whole url to match current route, if true, only the same url match current route, if false, when the url is begining with path it match the current route
   - params: an object to describe the params mapping
   - props: an object ot describe the props mapping

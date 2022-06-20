@@ -71,14 +71,20 @@ export class Router {
     let route
     let index
     let notFound
+    let defaultRoute
+    let redirect
     for (let i = 0, len = routes.length; i < len; i++) {
       const item = routes[i]
-      const { path, exact } = item
+      const { name, path = name, exact } = item
 
       if (path === '') {
         index = item
       } else if (path === '!') {
         notFound = item
+      }
+
+      if (item.default) {
+        defaultRoute = item
       }
 
       // index route
@@ -99,6 +105,12 @@ export class Router {
       }
     }
 
+    // use defualt route as index
+    if (!route && pathname === '' && defaultRoute) {
+      route = defaultRoute
+      redirect = defaultRoute.path || defaultRoute.name
+    }
+
     // not found and has no notFound item, we use index as fallback
     if (!route && index && !index.exact) {
       route = index
@@ -107,10 +119,18 @@ export class Router {
     // not found
     if (!route) {
       const routeParams = notFound?.params || {}
-      return {
+      const route = notFound || {
         path: '!',
         component: notFound ? notFound.component : () => null,
+      }
+      return {
+        ...route,
         params: { ...routeParams, ...query },
+        url,
+        pathname,
+        search,
+        query,
+        route,
       }
     }
 
@@ -127,7 +147,7 @@ export class Router {
       pathname,
       search,
       query,
-      redirect: route.redirect,
+      redirect: redirect ? redirect : route.redirect,
       exact: route.exact,
       route,
     }
@@ -373,7 +393,8 @@ export function useRouteNavigate() {
   const { history, mode } = useContext(rootContext)
   const { abs, deep } = useContext(absContext)
   const { abs: currentRouterAbs = abs, current } = useContext(routerContext)
-  const transition = current?.options.transition
+  const router = this && this instanceof Router ? this : current
+  const transition = router?.options.transition
 
   const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
   return Router.$createNavigate(history, getAbs, mode, { transition, deep })

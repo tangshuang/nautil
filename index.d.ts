@@ -556,9 +556,10 @@ export declare class ParallelQueueService extends QueueService {}
 export declare class ShiftQueueService extends QueueService {}
 export declare class SwitchQueueService extends QueueService {}
 
-type IRoute = {
+export type RouteOptions = {
   path: string
   component: JSXComponent
+  default?: boolean
   exact?: boolean
   params?: {
     [key: string]: true | string
@@ -567,17 +568,40 @@ type IRoute = {
     [key: string]: true | string
   }
 } | {
+  name: string
+  component: JSXComponent
+  default?: boolean
+  exact?: boolean
+  params?: {
+    [key: string]: true | string
+  }
+  props?: {
+    [key: string]: true | string
+  }
+  /**
+   * works for Stack.Screen
+   */
+  screenOptions?: AnyObj
+} | {
   path: string
   redirect: boolean
 }
 
-export declare interface RouterOptions {
+export type RouterOptions = {
+  routes: Array<RouteOptions>
   /**
    * only works in mobile (web mobile or native mobile),
    * if set 'stack', it will use Staci.Navigator in native
    */
   transition?: 'stack'
-  routes: Array<IRoute>
+  /**
+   * works for Stack.Navigator
+   */
+  navigatorOptions?: AnyObj
+  /**
+   * only works in navtive platform, used in nested navigators, make navigate based on this navigators
+   */
+  baseScreenPath?: string[]
 }
 export declare class Router {
   constructor(options: RouterOptions)
@@ -610,7 +634,7 @@ export declare function useRouteMatch(): (pattern: string | RegExp) => boolean
 export declare function useRouteLocation(): {
   path: string
   abs: string
-  deep: { router: Router, route: IRoute, state: any }[]
+  deep: { router: Router, route: RouteOptions, state: any }[]
   params: AnyObj
 }
 
@@ -725,6 +749,10 @@ interface BootstrapOptions {
       * only works in navtive platform, used in nested navigators, make navigate based on this navigators
       */
      rootScreenPath?: string[]
+     /**
+      * works for NavigationContainer
+      */
+     navigationContainerProps?: AnyObj
   }
   i18n: {
     lang: string | AnyObj
