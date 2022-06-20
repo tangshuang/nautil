@@ -79,7 +79,7 @@ mixin(Router, class {
         ;[...rootScreenPath, ...baseScreenPath].forEach((name) => {
           navParams.screen = name
           navParams.params = {}
-          navParams = params.params
+          navParams = navParams.params
         })
         const deepPath = deep.map(({ route }) => route.path || route.name)
         if (!inHost) {
@@ -89,8 +89,10 @@ mixin(Router, class {
           const { path } = route
           navParams.screen = path
           navParams.params = {}
-          navParams = params.params
+          navParams = navParams.params
         })
+
+        navParams.screen = to
 
         if (replace) {
           navigation.replace(info.screen, info.params)
