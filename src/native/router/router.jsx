@@ -19,8 +19,9 @@ mixin(Router, class {
     if (options.ignoreNavigationContainer) {
       return <Provider value={nextContext}>{children}</Provider>
     }
+    const props = options.navigationContainerProps || {}
     return (
-      <NavigationContainer>
+      <NavigationContainer {...props}>
         <Provider value={nextContext}>{children}</Provider>
       </NavigationContainer>
     )
@@ -46,10 +47,10 @@ mixin(Router, class {
     )
   }
 
-  static $createNavigate(history, getAbs, mode, { deep, transition }) {
+  static $createNavigate(history, getAbs, mode, { deep, router, inHost }) {
+    const { transition, baseScreenPath = [] } = router.options
     const navigation = useNavigation()
-    const rootOptions = useContext(rootContext)
-    const { roots = [] } = rootOptions
+    const { options: { rootScreenPath = [] } } = useContext(rootContext)
 
     return (to, params, replace) => {
       // change history first to trigger update
@@ -75,12 +76,16 @@ mixin(Router, class {
         const info = {}
 
         let params = info
-        roots.forEach((name) => {
+        ;[...rootScreenPath, ...baseScreenPath].forEach((name) => {
           params.screen = name
           params.params = {}
           params = params.params
         })
-        deep.forEach(({ route }) => {
+        const deepPath = deep.map(({ route }) => route.path || route.name)
+        if (!inHost) {
+          deepPath.pop() // remove the tail
+        }
+        deepPath.forEach(({ route }) => {
           const { path } = route
           params.screen = path
           params.params = {}
@@ -88,11 +93,11 @@ mixin(Router, class {
         })
 
         if (replace) {
-          navigation.replace(info)
+          navigation.replace(info.screen, info.params)
           return
         }
 
-        navigation.navigate(info)
+        navigation.navigate(info.screen, info.params)
       }
     }
   }
@@ -107,14 +112,16 @@ mixin(Router, class {
     return <C {...props} />
   }
 
-  renderStack(C, props, { routes }) {
+  renderStack(C, props) {
+    const { routes, options } = this
     const items = routes.filter(item => item.component)
+    const navigatorOptions = options.navigatorOptions || {}
     return (
-      <Stack.Navigator>
-        {items.map((item) => {
-          const { path, component: C } = item
+      <Stack.Navigator options={navigatorOptions}>
+        {items.map((routeOptions) => {
+          const { name, path = name, component: C, screenOptions = {} } = routeOptions
           return (
-            <Stack.Screen key={path} name={path}>
+            <Stack.Screen key={path} name={path} options={screenOptions}>
               {() => <C {...props} />}
             </Stack.Screen>
           )

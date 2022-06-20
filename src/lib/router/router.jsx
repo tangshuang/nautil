@@ -243,7 +243,7 @@ export class Router {
         <RouterProvider value={routerInfo}>
           <RouteProvider value={routeInfo}>
             <ParamsProvider value={passDownParams}>
-              {this.render(C, finalProps, { forceUpdate, url, history, abs, mode, path, params, routes: this.routes })}
+              {this.render(C, finalProps, { forceUpdate, url, history, abs, mode, path, params })}
             </ParamsProvider>
           </RouteProvider>
         </RouterProvider>
@@ -337,6 +337,7 @@ export function RouterRootProvider({ value, children }) {
         query,
         base,
       },
+      options: value,
     }
   }, [value])
 
@@ -393,11 +394,11 @@ export function useRouteNavigate() {
   const { history, mode } = useContext(rootContext)
   const { abs, deep } = useContext(absContext)
   const { abs: currentRouterAbs = abs, current } = useContext(routerContext)
-  const router = this && this instanceof Router ? this : current
-  const transition = router?.options.transition
+  const inHost = this && this instanceof Router
+  const router = inHost ? this : current
 
-  const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
-  return Router.$createNavigate(history, getAbs, mode, { transition, deep })
+  const getAbs = (to) => inHost || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
+  return Router.$createNavigate(history, getAbs, mode, { deep, router, inHost })
 }
 
 export function useRouteParams() {

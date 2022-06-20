@@ -71,12 +71,6 @@ const navigate = usePermanentNavigate()
 navigate('SOME_ROUTE', { arg })
 ```
 
-**ignoreNavigationContainer**
-
-When used in native, you can set ignoreNavigationContainer to be `true` to disabled wrap your application in NavigationContainer, then import it from react-navigation to use it by yourself.
-
-**rootScreenPath**
-
 ## Router
 
 ```js
@@ -429,3 +423,70 @@ navigate(routeName: string, params: object, replace: boolean)
 const navigate = usePermanentNavigate()
 navigate('SOME_ROUTE', { arg })
 ```
+
+## Use router in native
+
+When you use router in native evironment, you may provide more options.
+
+```
+createBootstrap({
+  router: {
+    ignoreNavigationContainer: boolean
+    navigationContainerProps: object
+    rootScreenPath: string[]
+  }
+})
+```
+
+```
+new Router({
+  transition: 'stack'
+  navigatorOptions: object
+  baseScreenPath: string[]
+
+  routes: [
+    {
+      name: string // when in native, you do not need to pass path, use name instead, name should be \w+
+      screenOptions: object
+    }
+  ]
+})
+```
+
+**ignoreNavigationContainer**
+
+When used in native, you can set ignoreNavigationContainer to be `true` to disabled wrap your application in NavigationContainer, then import it from react-navigation to use it by yourself.
+
+**navigationContainerProps**
+
+Pass `props` to NavigationContainer.
+
+**rootScreenPath**
+
+Make the whole app with screen path prefix, for example:
+
+```
+navigate('myRoute') // in fact visit { screen: ...rootScreenPath, params: { screen: 'myRoute' } }
+```
+
+**transition**
+
+When set `stack`, it will use react-navigation to render, if not set, router will not use react-navigation, and act like normal react component switch.
+
+And **NOTICE** if not set, the following options will not working.
+
+**navigatorOptions**
+
+Pass `options` prop to Stack.Navigator.
+
+**baseScreenPath**
+
+Like navigationContainerProps, works on Stack.Navigator.
+
+**name**
+
+When in native, we do not need path, we can use `name` option in route.
+
+**screenOptions**
+
+Like navigatorOptions, pass `options` prop to Stack.Screen.
