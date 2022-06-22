@@ -270,6 +270,32 @@ export class Router {
     }
   }
 
+  static $createPermanentNavigate(getPath, { history, mode }) {
+    return (name, params = {}, replace = false) => {
+      const path = getPath(name)
+
+      if (path === '.') {
+        history.setUrl('.', null, null, params, replace)
+        return
+      }
+
+      const args = { ...params }
+      const items = path.split('/')
+      const res = items.map((item) => {
+        if (item[0] === ':') {
+          const key = item.substring(1)
+          if (params[key]) {
+            delete args[key]
+            return params[key]
+          }
+        }
+        return item
+      })
+      const pathStr = res.join('/')
+      history.setUrl(pathStr, '/', mode, args, replace)
+    }
+  }
+
   /**
    *
    * @param {*} ctx generated context which should pass into rootContext
@@ -669,31 +695,18 @@ export function Route(props) {
 export function usePermanentNavigate() {
   const { history, mode, options = {} } = useContext(rootContext)
   const { define = {} } = options
-  return (name, params = {}, replace = false) => {
+  const getPath = (name) => {
     if (name === '.') {
-      history.setUrl('.', null, null, params, replace)
-      return
+      return name
     }
 
-    const args = { ...params }
     const path = define[name]
     if (!path) {
       console.error(`Global route ${name} is not defined.`)
       return
     }
 
-    const items = path.split('/')
-    const res = items.map((item) => {
-      if (item[0] === ':') {
-        const key = item.substring(1)
-        if (params[key]) {
-          delete args[key]
-          return params[key]
-        }
-      }
-      return item
-    })
-    const pathStr = res.join('/')
-    history.setUrl(pathStr, '/', mode, args, replace)
+    return path
   }
+  return Router.$createPermanentNavigate(getPath, { history, mode })
 }

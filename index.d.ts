@@ -742,7 +742,11 @@ interface BootstrapOptions {
   router: {
     mode: string
     define?: {
-      [name: string]: string
+      /**
+       * only string supported in web,
+       * only string[] supported in native
+       */
+      [name: string]: string | string[]
     }
     /**
      * only works in native platform, whether to use NavigationContainer to wrap in bootstrap,

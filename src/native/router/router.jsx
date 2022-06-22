@@ -1,4 +1,4 @@
-import { mixin } from 'ts-fns'
+import { mixin, isArray } from 'ts-fns'
 import { Linking, TouchableOpacity } from 'react-native'
 import { Router, rootContext } from '../../lib/router/router.jsx'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
@@ -102,6 +102,48 @@ mixin(Router, class {
 
         navigation.navigate(info.screen, info.params)
       }
+    }
+  }
+
+  static $createPermanentNavigate(getPath, { history, mode }) {
+    const navigation = useNavigation()
+    return (name, params = {}, replace = false) => {
+      const path = getPath(name)
+
+      if (path === '.') {
+        history.setUrl('.', null, null, params, replace)
+        return
+      }
+
+      const args = { ...params }
+      const items = isArray(path) ? path : path.split('/').filter(Boolean)
+      const res = items.map((item) => {
+        if (item[0] === ':') {
+          const key = item.substring(1)
+          if (params[key]) {
+            delete args[key]
+            return params[key]
+          }
+        }
+        return item
+      })
+      const pathStr = res.join('/')
+      history.setUrl(pathStr, '/', mode, args, replace)
+
+      const info = {}
+      let navParams = info
+      items.forEach((name) => {
+        navParams.screen = name
+        navParams.params = {}
+        navParams = navParams.params
+      })
+
+      if (replace) {
+        navigation.replace(info.screen, info.params)
+        return
+      }
+
+      navigation.navigate(info.screen, info.params)
     }
   }
 
