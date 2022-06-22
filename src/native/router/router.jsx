@@ -48,7 +48,7 @@ mixin(Router, class {
   }
 
   static $createNavigate(history, getAbs, mode, { deep, router, inHost }) {
-    const { transition, baseScreenPath = [] } = router.options
+    const { transition } = router.options
     const navigation = useNavigation()
     const {  options: { rootScreenPath = [] } } = useContext(rootContext)
 
@@ -73,20 +73,22 @@ mixin(Router, class {
         }
 
         const info = {}
+        const nested = [...rootScreenPath]
 
-        let navParams = info
-        ;[...rootScreenPath, ...baseScreenPath].forEach((name) => {
-          navParams.screen = name
-          navParams.params = {}
-          navParams = navParams.params
-        })
-        const deepPath = deep.map(({ route }) => route.path || route.name)
+        const deepPath = [...deep]
         if (!inHost) {
           deepPath.pop() // remove the tail
         }
-        deepPath.forEach(({ route }) => {
+        deepPath.forEach(({ route, router }) => {
+          const { baseScreenPath = [] } = router
           const { path } = route
-          navParams.screen = path
+          nested.push(...baseScreenPath)
+          nested.push(path)
+        })
+
+        let navParams = info
+        nested.forEach((name) => {
+          navParams.screen = name
           navParams.params = {}
           navParams = navParams.params
         })
