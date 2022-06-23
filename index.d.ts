@@ -470,6 +470,8 @@ declare class PrimitiveBase {
 
   new<T extends this>(): T
   static instance<T extends PrimitiveBase>(): T
+
+  static implement<T extends PrimitiveBase>(protos: any): T
 }
 
 export declare class Service extends PrimitiveBase {
