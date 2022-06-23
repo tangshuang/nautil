@@ -14,6 +14,8 @@ import {
   isEmpty,
   define,
   decideby,
+  mixin,
+  isObject,
 } from 'ts-fns'
 import { Ty, Rule, ifexist } from 'tyshemo'
 import produce from 'immer'
@@ -118,7 +120,6 @@ export class Component extends PrimitiveComponent {
     define(this, 'weakUpdate', { value: this.weakUpdate.bind(this) })
 
     this.__init()
-
     // state should be declare here
     this.init()
 
@@ -149,6 +150,13 @@ export class Component extends PrimitiveComponent {
       },
     })
 
+    this.__inited = true
+    each(this, (value, key) => {
+      if (isObject(value) && value.$$type === 'offer' && value.fn) {
+        this[key] = value.fn()
+      }
+    })
+
     this.onInit()
   }
 
@@ -158,6 +166,13 @@ export class Component extends PrimitiveComponent {
 
   init() {
     // should be override
+  }
+
+  offer(fn) {
+    if (!this.__inited) {
+      return { $$type: 'offer', fn }
+    }
+    return fn()
   }
 
   subscribe(name, affect) {
@@ -666,5 +681,11 @@ export class Component extends PrimitiveComponent {
       }
     }
   }
+
+  static implement(protos) {
+    mixin(this, protos)
+    return this
+  }
 }
+
 export default Component

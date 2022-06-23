@@ -462,15 +462,21 @@ export declare function applyStore(store: Store): {
 
 export declare function createStream(fn: (stream: Stream) => Stream): Stream
 
-declare class SingleInstanceBase {
+declare class PrimitiveBase {
+  init(): void
+  destroy(): void
+
+  offer<T>(getter: () => T): T
+
+  new<T extends this>(): T
+  static instance<T extends PrimitiveBase>(): T
 }
 
-export declare class Service extends SingleInstanceBase {
-  new<T extends Service = this>(): T
-  static instance<T extends Service = Service>(): T
+export declare class Service extends PrimitiveBase {
+  static instance<T extends Service>(): T
 }
 
-export declare class Controller extends SingleInstanceBase {
+export declare class Controller extends PrimitiveBase {
   subscribe(fn: Function): void
   unsubcribe(fn: Function): void
 
@@ -478,8 +484,7 @@ export declare class Controller extends SingleInstanceBase {
     stop: Function,
   }
 
-  new<T extends Controller = this>(): T
-  static instance<T extends Controller = Controller>(): T
+  static instance<T extends Controller>(): T
 }
 
 export declare class View extends Component {
@@ -533,6 +538,8 @@ export declare class DataService extends Service {
   static select(compute: Function, deps: any[]): any
   static apply<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): [T, (...args: any[]) => Promise<T>]
   static ref<T>(value: T): { value: T }
+
+  static instance<T extends DataService>(): T
 }
 
 export function isDataSource(source: any): boolean;
@@ -549,6 +556,8 @@ export declare class QueueService extends Service {
 
   on(type: string, fn: (err: Error) => void): this
   off(type: string, fn: (err: Error) => void): this
+
+  static instance<T extends QueueService>(): T
 }
 
 export declare class SerialQueueService extends QueueService {}

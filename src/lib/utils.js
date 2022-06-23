@@ -9,6 +9,7 @@ import {
   isInstanceOf,
   getConstructorOf,
   parse,
+  mixin,
 } from 'ts-fns'
 import { isValidElement } from 'react'
 import { Stream } from './core/stream.js'
@@ -159,9 +160,26 @@ export function camelCase(str) {
   return text
 }
 
-export class SingleInstanceBase {
+export class PrimitiveBase {
+  constructor() {
+    this.__init()
+    this.init()
+    this.__inited = true
+    each(this, (value, key) => {
+      if (isObject(value) && value.$$type === 'offer' && value.fn) {
+        this[key] = value.fn()
+      }
+    })
+  }
+
+  __init() {}
+
+  init() {}
+
+  destroy() {}
+
   destructor() {
-    this.destroy?.()
+    this.destroy()
 
     // destroy single instance
     const Constructor = getConstructorOf(this)
@@ -191,6 +209,13 @@ export class SingleInstanceBase {
   new() {
     const Constructor = getConstructorOf(this)
     return new Constructor()
+  }
+
+  offer(fn) {
+    if (!this.__inited) {
+      return { $$type: 'offer', fn }
+    }
+    return fn()
   }
 
   static instance() {
@@ -224,6 +249,11 @@ export class SingleInstanceBase {
         Constructor.__instance = null
       }, 32)
     }
+  }
+
+  static implement(protos) {
+    mixin(this, protos)
+    return this
   }
 }
 

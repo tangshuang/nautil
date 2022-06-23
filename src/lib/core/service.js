@@ -1,12 +1,10 @@
 import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
 import { Stream } from './stream.js'
 import { Model } from 'tyshemo'
-import { SingleInstanceBase } from '../utils.js'
+import { PrimitiveBase } from '../utils.js'
 
-export class Service extends SingleInstanceBase {
-  constructor() {
-    super()
-
+export class Service extends PrimitiveBase {
+  __init() {
     const Constructor = getConstructorOf(this)
     const streams = []
     each(Constructor, (_, key) => {
@@ -25,9 +23,6 @@ export class Service extends SingleInstanceBase {
     }, true)
     // register all streams at last, so that you can call this.stream$ directly in each function.
     streams.forEach(([stream$, fn]) => fn.call(this, stream$))
-    this.init()
   }
-
-  init() {}
 }
 export default Service

@@ -4,7 +4,7 @@ import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObje
 import { Stream } from './stream.js'
 import { Service } from './service.js'
 import { DataService } from '../services/data-service.js'
-import { SingleInstanceBase } from '../utils.js'
+import { PrimitiveBase } from '../utils.js'
 
 /**
  * class SomeController extends Constroller {
@@ -15,10 +15,8 @@ import { SingleInstanceBase } from '../utils.js'
  *   }
  * }
  */
-export class Controller extends SingleInstanceBase {
-  constructor() {
-    super()
-
+export class Controller extends PrimitiveBase {
+  __init() {
     this.observers = []
     this.emitters = []
 
@@ -58,12 +56,7 @@ export class Controller extends SingleInstanceBase {
 
     // start
     this.observers.forEach(({ start }) => start())
-
-    // developers should must extends Controller and overwrite `init` method to initailize
-    this.init()
   }
-
-  init() {}
 
   subscribe(fn) {
     if (this.isDied) {

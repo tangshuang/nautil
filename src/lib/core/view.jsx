@@ -8,7 +8,7 @@ import { Controller } from './controller.js'
 import { Service } from './service.js'
 import { DataService } from '../services/data-service.js'
 import { Model } from 'tyshemo'
-import { SingleInstanceBase } from '../utils.js'
+import { PrimitiveBase } from '../utils.js'
 
 /**
  * class SomeView extends View {
@@ -193,7 +193,7 @@ export class View extends Component {
 
     observer.unsubscribe(this.weakUpdate)
     // destroy single instances
-    if (isInstanceOf(observer, SingleInstanceBase)) {
+    if (isInstanceOf(observer, PrimitiveBase)) {
       observer.destructor()
     }
     this.observers.splice(index, 1)
