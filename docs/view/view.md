@@ -2,6 +2,8 @@
 
 A View is a super Component which is reactive for Controller, Model, and streams. Why we need a super Component? Because we need to combine all parts together. In a View, you can do what you do in a Component, and you can also combine with Controller so that the View will rerender when Controller trigger something.
 
+- alias: `Container` in order to avoid conflict with `View` from react-native.
+
 ## Usage
 
 ```js
