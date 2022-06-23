@@ -19,6 +19,7 @@ export class Controller extends PrimitiveBase {
   __init() {
     this.observers = []
     this.emitters = []
+    this.dispatch = this.dispatch.bind(this)
 
     const Constructor = getConstructorOf(this)
     const streams = []
@@ -72,7 +73,7 @@ export class Controller extends PrimitiveBase {
     this.emitters = this.emitters.filter(item => item !== fn)
   }
 
-  dispatch = () => {
+  dispatch() {
     this.emitters.forEach((fn) => {
       fn()
     })
