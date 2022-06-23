@@ -122,7 +122,7 @@ export { DataService, isDataSource } from './lib/services/data-service.js'
 export { QueueService, SerialQueueService, ParallelQueueService, ShiftQueueService, SwitchQueueService } from './lib/services/queue-service.js'
 export { EventService } from './lib/services/event-service.js'
 export { Controller } from './lib/core/controller.js'
-export { View } from './lib/core/view.jsx'
+export { View, View as Container } from './lib/core/view.jsx'
 
 export { Storage } from './lib/storage/storage.js'
 

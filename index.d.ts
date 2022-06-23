@@ -493,6 +493,11 @@ export declare class View extends Component {
   reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent
 }
 
+/**
+ * @alias View
+ */
+export type Container = View
+
 interface Source<T, U> {
   value: T
   params: U
