@@ -129,6 +129,7 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   weakUpdate(): Promise<void>
   forceUpdate(): Promise<void>
   nextTick(fn: () => void, ...args: any[]): void
+  nextTick(delay: number, fn: () => void, ...args: any[]): void
 
   init(): void
   onInit(): void

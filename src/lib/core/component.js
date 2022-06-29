@@ -273,8 +273,14 @@ export class Component extends PrimitiveComponent {
     })
   }
 
-  nextTick(fn, ...args) {
-    this._tasksQueue.push({ fn, args })
+  nextTick(...params) {
+    const [delay, fn, ...args] = params
+    if (typeof delay === 'number') {
+      this._tasksQueue.push({ delay, fn, args })
+    } else {
+      args.unshift(fn)
+      this._tasksQueue.push({ fn: delay, args })
+    }
   }
 
   _runTasks() {
@@ -291,7 +297,14 @@ export class Component extends PrimitiveComponent {
           return
         }
 
-        const { fn, args } = this._tasksQueue.shift()
+        const { delay, fn, args } = this._tasksQueue.shift()
+
+        if (delay) {
+          setTimeout(() => fn(...args), delay)
+          consume()
+          return
+        }
+
         fn(...args)
 
         const now = Date.now()
