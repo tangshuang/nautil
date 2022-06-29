@@ -186,7 +186,7 @@ export class View extends Component {
   }
 
   disobserve(observer) {
-    const index = this.observers.findIndex(item => item.observer === observer)
+    const index = this.observers.findIndex(item => item === observer)
     if (index === -1) {
       return
     }
