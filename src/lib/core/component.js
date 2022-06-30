@@ -71,7 +71,7 @@ export class PrimitiveComponent extends ReactComponent {
       const { props } = this
       return <RenderWrapper {...props} />
     }
-    define(this, 'render', { value: proxyRender })
+    define(this, 'render', { value: proxyRender, configurable: true })
   }
 
   hook(...fns) {
@@ -123,8 +123,6 @@ export class Component extends PrimitiveComponent {
     // state should be declare here
     this.init()
 
-    this._digest(props)
-
     let $state = null
     define(this, '$state', () => {
       if ($state) {
@@ -157,7 +155,13 @@ export class Component extends PrimitiveComponent {
       }
     })
 
-    this.onInit()
+    const render = this.render.bind(this)
+    const toRender = () => {
+      this._digest(props)
+      this.onInit()
+      return render()
+    }
+    define(this, 'render', { value: toRender })
   }
 
   __init() {
