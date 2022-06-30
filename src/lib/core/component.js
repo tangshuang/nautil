@@ -469,7 +469,7 @@ export class Component extends PrimitiveComponent {
         attrs: this.attrs,
         className: this.className,
         style: this.style,
-      }) : css
+      }, this) : css
       return { ...rules }
     })
 

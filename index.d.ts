@@ -153,7 +153,7 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   static extend(props: OverrideProps | ((nextProps: AnyObj) => OverrideProps)): NautilComponent
   static props: AnyObj | (() => AnyObj)
   static defaultStylesheet: string[] | AnyObj[]
-  static css: { [key: string]: AnyObj | string } | ((info: { attrs: AnyObj, style: object | undefined, className: string | undefined }) => { [key: string]: AnyObj | string })
+  static css: { [key: string]: AnyObj | string } | ((info: { attrs: AnyObj, style: object | undefined, className: string | undefined }, instance: Component) => { [key: string]: AnyObj | string })
 }
 
 export declare function createTwoWayBinding(data: AnyObj, updator?: (value: AnyObj, keyPath: Array<string | symbol>, data: any) => void, formalized?: boolean): Proxy
