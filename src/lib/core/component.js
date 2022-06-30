@@ -158,7 +158,9 @@ export class Component extends PrimitiveComponent {
     const render = this.render.bind(this)
     const toRender = () => {
       this._digest(props)
-      this.onInit()
+      if (!this._isMounted && !this._isUnmounted) {
+        this.onInit()
+      }
       return render()
     }
     define(this, 'render', { value: toRender })
