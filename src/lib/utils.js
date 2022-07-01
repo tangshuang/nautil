@@ -332,6 +332,7 @@ export function parseClassNames(classNames, cssRules) {
   else if (isArray(classNames)) {
     items = classNames
       .map(item => isString(item) ? parseClassNames(item, cssRules) : item)
+      .filter((item) => item && (isString(item) || typeof item === 'object'))
       .reduce((items, item) => {
         if (isArray(item)) {
           items.push(...item)
