@@ -315,7 +315,7 @@ export function parseClassNames(classNames, cssRules) {
   let items = []
 
   if (isString(classNames)) {
-    items = classNames.split(' ').map((className) => {
+    items = classNames.split(' ').filter(Boolean).map((className) => {
       if (cssRules[className]) {
         return cssRules[className]
       }

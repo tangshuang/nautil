@@ -591,6 +591,9 @@ export class Component extends PrimitiveComponent {
   }
 
   css(...classNames) {
+    if (classNames.length === 1 && isArray(classNames[0])) {
+      classNames = classNames[0];
+    }
     return parseClassNames(classNames, this.cssRules)
   }
 
