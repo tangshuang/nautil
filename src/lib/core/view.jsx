@@ -166,10 +166,15 @@ export class View extends Component {
   }
 
   componentWillUnmount(...args) {
-    this.observers.forEach(({ observer }) => {
-      this.disobserve(observer)
-    })
     super.componentWillUnmount(...args)
+    this.observers.forEach(({ observer }) => {
+      observer.unsubscribe(this.weakUpdate)
+      // destroy single instances
+      if (isInstanceOf(observer, PrimitiveBase)) {
+        observer.destructor()
+      }
+    })
+    this.observers.length = 1
   }
 
   /**

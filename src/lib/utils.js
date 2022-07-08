@@ -179,8 +179,6 @@ export class PrimitiveBase {
   destroy() {}
 
   destructor() {
-    this.destroy()
-
     // destroy single instance
     const Constructor = getConstructorOf(this)
     if (Constructor.__instance === this) {
@@ -190,6 +188,8 @@ export class PrimitiveBase {
     else {
       this.isDied = true
     }
+
+    this.destroy()
 
     if (this.isDied) {
       each(this, (value, key) => {
