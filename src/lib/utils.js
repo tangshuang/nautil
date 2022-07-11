@@ -405,3 +405,34 @@ export const StyleSheet = new Enum([
   Object,
   new List([String, Object]),
 ])
+
+
+export function findInfoByMapping(data, mapping = {}) {
+  const keys = Object.keys(mapping)
+  const found = {}
+  const notFound = []
+
+  keys.forEach((key) => {
+    const fromKey = mapping[key]
+    let flag = false
+    // 支持多个，从多个里面找一个
+    if (isArray(fromKey)) {
+      for (let i = 0, len = fromKey.length; i < len; i++) {
+        const mayBe = fromKey[i]
+        if (mayBe in data) {
+          found[key] = data[mayBe]
+          flag = true
+          break
+        }
+      }
+    } else if (isString(fromKey)) {
+      found[key] = data[fromKey]
+      flag = true
+    }
+    if (!flag) {
+      notFound.push(key)
+    }
+  })
+
+  return { found, notFound }
+}

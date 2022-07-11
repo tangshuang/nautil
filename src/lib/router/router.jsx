@@ -1,4 +1,4 @@
-import { parseUrl, parseSearch, resolveUrl } from '../utils.js'
+import { parseUrl, parseSearch, resolveUrl, findInfoByMapping } from '../utils.js'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
@@ -118,14 +118,13 @@ export class Router {
 
     // not found
     if (!route) {
-      const routeParams = notFound?.params || {}
       const route = notFound || {
         path: '!',
         component: notFound ? notFound.component : () => null,
       }
       return {
         ...route,
-        params: { ...routeParams, ...query },
+        params: { ...query },
         url,
         pathname,
         search,
@@ -134,9 +133,8 @@ export class Router {
       }
     }
 
-    const routeParams = route.params || {}
     // route params have higher priority then search query
-    const combineParams = { ...routeParams, ...query, ...params }
+    const combineParams = { ...query, ...params }
     const path = blocks.join('/')
 
     return {
@@ -173,13 +171,10 @@ export class Router {
 
     const { component: C, path, params, redirect, exact, route } = state
 
-    const propsMapping = route.props || {}
-    const finalProps = {}
-    const propsKeys = Object.keys(propsMapping)
-    propsKeys.forEach((key) => {
-      const prop = propsMapping[key]
-      finalProps[prop === true ? key : prop] = props[key]
-    })
+    const { found: finalProps, notFound: propsNotFound } = findInfoByMapping(props, route.props)
+    if (propsNotFound.length && process.env.NODE_ENV !== 'production') {
+      console.error(`Route ${abs}:${path} component not found required props: ${propsNotFound.join(',')}`)
+    }
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
@@ -226,15 +221,14 @@ export class Router {
     }, [redirect])
 
     const inheritedParams = useContext(paramsContext)
-    const paramsMapping = route.params || {}
-    const passDownParams = { ...inheritedParams, ...params }
-    const keys = Object.keys(paramsMapping)
-    keys.forEach((key) => {
-      const prop = paramsMapping[key]
-      passDownParams[prop === true ? key : prop] = params[key]
-    })
+    const basicParams = { ...params, ...inheritedParams }
+    const { found: paramsFound, notFound: paramsNotFound } = findInfoByMapping(basicParams, route.params)
+    const passDownParams = { ...basicParams, ...paramsFound }
+    if (paramsNotFound.length && process.env.NODE_ENV !== 'production') {
+      console.error(`Route ${abs}:${path} component not found required params: ${paramsNotFound.join(',')}`)
+    }
 
-    if (redirect) {
+    if (redirect && !C) {
       return null
     }
 

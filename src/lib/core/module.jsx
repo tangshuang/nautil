@@ -1,10 +1,11 @@
 import { Component } from './component.js'
-import { createContext, useContext, useMemo, useEffect } from 'react'
+import { createContext, useContext, useMemo, useEffect, useRef } from 'react'
 import { RouterRootProvider, useRouteLocation, useRouteParams } from '../router/router.jsx'
 import { I18nRootProvider } from '../i18n/i18n.jsx'
 import { Ty, ifexist } from 'tyshemo'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
 import { useForceUpdate } from '../hooks/force-update.js'
+import { findInfoByMapping } from '../utils.js'
 
 export class ModuleBaseComponent extends Component {}
 
@@ -124,20 +125,28 @@ export function importModule(options) {
 
     Within = () => {
       const {
-        navigator: useThisNavigator,
         component,
+        navigator: useThisNavigator,
         context: useThisContext,
         ready: useThisReady,
         i18n: useThisI18n,
         params: useThisParams,
       } = this.state
 
+      const info = useRef({
+        navigator: [],
+        context: {},
+        params: {},
+        props: this.props,
+      })
+      info.current.props = this.props
+
       // compute current module navigator
       const previousNaivgators = useContext(navigatorContext)
       const previous = useShallowLatest(previousNaivgators)
       const { abs } = useRouteLocation()
-      const navigator = useThisNavigator ? useThisNavigator(this.props) : null
-      const nav = useShallowLatest(navigator)
+      const navi = useThisNavigator ? useThisNavigator(info.current) : null
+      const nav = useShallowLatest(navi)
       const navs = useMemo(() => {
         if (!nav) {
           return []
@@ -153,37 +162,32 @@ export function importModule(options) {
           return nav
         })
       }, [nav, abs])
-      const navigators = useMemo(() => [...previous, ...navs], [navs, previous])
+      const navigator = useMemo(() => [...previous, ...navs], [navs, previous])
+      info.current.navigator = navigator
 
       // get i18n
-      const i18n = useThisI18n ? useThisI18n(this.props) : null
+      const i18n = useThisI18n ? useThisI18n(info.current) : null
+      info.i18n = i18n
 
-      // compute current module context
-      const rootContext = useContext(bootstrapperContext)
-      const thisContext = useThisContext ? useThisContext(this.props) : {}
-      const parentContext = useContext(contextContext)
-      const context = { ...rootContext, ...sharedContext, ...parentContext, ...thisContext }
-      const ctx = useShallowLatest(context)
-
-      const paramsMapping = useThisParams ? useThisParams(this.props) : {}
+      const paramsMapping = useThisParams ? useThisParams(info.current) : {}
       const routeParams = useRouteParams()
-      const params = { ...routeParams }
-      const paramKeys = Object.keys(paramsMapping)
-      const paramsNotFound = []
-      paramKeys.forEach((key) => {
-        if (!(key in params)) {
-          paramsNotFound.push(key)
-        } else {
-          const prop = paramsMapping[key]
-          params[prop === true ? key : prop] = params[key]
-        }
-      })
+      const { found: paramsFound, notFound: paramsNotFound } = findInfoByMapping(routeParams, paramsMapping)
+      const params = { ...routeParams, ...paramsFound }
       if (paramsNotFound.length && process.env.NODE_ENV !== 'production') {
         console.error(`Module not found: ${paramsNotFound.join(',')}`)
       }
+      info.current.params = params
+
+      // compute current module context
+      const rootContext = useContext(bootstrapperContext)
+      const thisContext = useThisContext ? useThisContext(info.current) : {}
+      const parentContext = useContext(contextContext)
+      const context = { ...rootContext, ...sharedContext, ...parentContext, ...thisContext }
+      const ctx = useShallowLatest(context)
+      info.current.context = ctx
 
       // deal with ready
-      const ready = useThisReady && needReady ? useThisReady(this.props) : true
+      const ready = useThisReady && needReady ? useThisReady(info.current) : true
       if (!ready && !pending) {
         return null
       }
@@ -213,7 +217,7 @@ export function importModule(options) {
       }
 
       return (
-        <NavigatorProvider value={navigators}>
+        <NavigatorProvider value={navigator}>
           {render()}
         </NavigatorProvider>
       )

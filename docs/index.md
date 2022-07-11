@@ -92,9 +92,7 @@
   - [What is all the Module?](module/module.md)
   - [createBootstrap](module/create-bootstrap.md)
   - [importModule](module/import-module.md)
-
-- Router
-  - [Router](router/router.md)
+  - [Router](module/router.md)
 
 - I18n
   - [I18n](i18n/i18n.md)
