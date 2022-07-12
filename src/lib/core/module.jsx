@@ -144,7 +144,7 @@ export function importModule(options) {
       // compute current module navigator
       const previousNaivgators = useContext(navigatorContext)
       const previous = useShallowLatest(previousNaivgators)
-      const { abs } = useRouteLocation()
+      const { abs, deep } = useRouteLocation()
       const navi = useThisNavigator ? useThisNavigator(info.current) : null
       const nav = useShallowLatest(navi)
       const navs = useMemo(() => {
@@ -174,7 +174,7 @@ export function importModule(options) {
       const { found: paramsFound, notFound: paramsNotFound } = findInfoByMapping(routeParams, paramsMapping)
       const params = { ...routeParams, ...paramsFound }
       if (paramsNotFound.length && process.env.NODE_ENV !== 'production') {
-        console.error(`Module not found: ${paramsNotFound.join(',')}`)
+        console.error(`Module ${deep.map(item => item.path).join(':')} not found params: ${paramsNotFound.join(',')}`)
       }
       info.current.params = params
 

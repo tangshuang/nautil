@@ -178,7 +178,7 @@ export class Router {
 
     const absInfo = useMemo(() => {
       const newAbs = resolveUrl(abs, path)
-      const newDeep = [...deep, { abs: newAbs, router: this, route, state }]
+      const newDeep = [...deep, { url, path, abs: newAbs, router: this, route, state }]
       return {
         abs: newAbs,
         deep: newDeep,
