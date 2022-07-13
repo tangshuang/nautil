@@ -76,7 +76,7 @@ export class History extends EventBase {
    * @param {*} mode
    */
   setUrl(to, abs, mode, params, replace) {
-    const url = this.$makeUrl(to, abs, mode, params)
+    const url = this.makeUrl(to, abs, mode, params)
     return this[replace ? 'replace' : 'push'](url)
   }
   /**
@@ -100,7 +100,7 @@ export class History extends EventBase {
    * @param {*} mode
    * @returns
    */
-  $makeUrl(to, abs, mode, params) {
+  makeUrl(to, abs, mode, params) {
     if (to === '.') {
       return this.$makeSearchUrl(params)
     }

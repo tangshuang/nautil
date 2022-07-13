@@ -129,7 +129,7 @@ class BrowserHistory extends History {
     return create(path)
   }
 
-  $makeUrl(to, abs, mode, params) {
+  makeUrl(to, abs, mode, params) {
     const { type, query } = mode
 
     const url = this.$discernUrl(to, abs, mode, params)

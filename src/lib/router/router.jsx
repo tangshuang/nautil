@@ -399,7 +399,7 @@ export function Link(props) {
   const finalAbs = getAbs(to)
 
   const { href, navigate } = useMemo(() => {
-    const href = typeof to === 'number' ? '#' : history.$makeUrl(to, finalAbs, mode, args)
+    const href = typeof to === 'number' ? '#' : history.makeUrl(to, finalAbs, mode, args)
     const navigate = () => navigateTo(to, args, replace)
     return { href, navigate }
   }, [to, args, mode, replace, finalAbs, history])

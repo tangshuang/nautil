@@ -18,7 +18,7 @@ class WechatHistory extends History {
     return revokeUrl(root, url)
   }
   setUrl(to, abs, mode, params, replace) {
-    const url = this.$makeUrl(to, abs, mode, params)
+    const url = this.makeUrl(to, abs, mode, params)
     if (replace) {
       wx.redirectTo({
         path: url,
@@ -30,7 +30,7 @@ class WechatHistory extends History {
       })
     }
   }
-  $makeUrl(to, abs, mode, params) {
+  makeUrl(to, abs, mode, params) {
     const { query } = mode
 
     const url = this.$discernUrl(to, abs, mode, params)
