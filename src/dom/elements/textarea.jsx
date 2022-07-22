@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
-import Textarea from '../../lib/elements/textarea.jsx'
+import { Textarea } from '../../lib/elements/textarea.jsx'
 
-mixin(Textarea, class {
+Textarea.implement(class {
   render() {
     const { line, placeholder, value, ...rest } = this.attrs
 

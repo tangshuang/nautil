@@ -1,8 +1,7 @@
-import { mixin } from 'ts-fns'
 import { TextInput } from 'react-native'
-import Textarea from '../../lib/elements/textarea.jsx'
+import { Textarea } from '../../lib/elements/textarea.jsx'
 
-mixin(Textarea, class {
+Textarea.implement(class {
   render() {
     const { line, placeholder, value, readOnly, disabled, ...rest } = this.attrs
     const editable = !readOnly && !disabled

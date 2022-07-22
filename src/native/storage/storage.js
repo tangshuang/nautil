@@ -1,6 +1,6 @@
 import { mixin } from 'ts-fns'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Storage from '../../lib/storage/storage.js'
+import { Storage } from '../../lib/storage/storage.js'
 
 mixin(Storage, class {
   static async getItem(key) {

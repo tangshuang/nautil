@@ -1,5 +1,5 @@
 import { isString, mixin, isNumeric } from 'ts-fns'
-import Style from '../../lib/style/style.js'
+import { Style } from '../../lib/style/style.js'
 import { StyleSheet, PixelRatio, Dimensions } from 'react-native'
 
 const { create } = Style

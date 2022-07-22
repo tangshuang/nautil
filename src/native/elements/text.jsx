@@ -1,8 +1,7 @@
-import { mixin } from 'ts-fns'
 import { Text as NativeText } from 'react-native'
-import Text from '../../lib/elements/text.jsx'
+import { Text } from '../../lib/elements/text.jsx'
 
-mixin(Text, class {
+Text.implement(class {
   render() {
     return (
       <NativeText

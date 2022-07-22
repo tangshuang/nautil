@@ -1,8 +1,7 @@
-import { mixin } from 'ts-fns'
-import Select from '../../lib/elements/select.jsx'
+import { Select } from '../../lib/elements/select.jsx'
 import { isRef } from '../../lib/utils.js'
 
-mixin(Select, class {
+Select.implement(class {
   render() {
     const { inputRef, options, optionValueKey, optionTextKey, ...attrs } = this.attrs
 

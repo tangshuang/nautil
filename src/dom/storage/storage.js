@@ -1,5 +1,5 @@
 import { mixin } from 'ts-fns'
-import Storage from '../../lib/storage/storage.js'
+import { Storage } from '../../lib/storage/storage.js'
 
 mixin(Storage, class {
   async getItem(key) {

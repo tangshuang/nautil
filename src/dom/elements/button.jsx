@@ -1,9 +1,8 @@
-import { mixin } from 'ts-fns'
-import Button from '../../lib/elements/button.jsx'
+import { Button } from '../../lib/elements/button.jsx'
 
 const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
 
-mixin(Button, class {
+Button.implement(class {
   render() {
     return <button
       {...this.attrs}

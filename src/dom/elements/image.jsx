@@ -1,7 +1,7 @@
-import { mixin, isString } from 'ts-fns'
-import Image from '../../lib/elements/image.jsx'
+import { isString } from 'ts-fns'
+import { Image } from '../../lib/elements/image.jsx'
 
-mixin(Image, class {
+Image.implement(class {
   render() {
     const { source, width, height, maxWidth, maxHeight, ...rest } = this.attrs
     const style = { width, height, maxWidth, maxHeight, ...this.style }

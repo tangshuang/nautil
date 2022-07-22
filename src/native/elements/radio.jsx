@@ -1,8 +1,7 @@
-import { mixin } from 'ts-fns'
-import Radio from '../../lib/elements/radio.jsx'
+import { Radio } from '../../lib/elements/radio.jsx'
 import { View } from 'react-native'
 
-mixin(Radio, class {
+Radio.implement(class {
   render() {
     const { checked, color, ...rest } = this.attrs
 

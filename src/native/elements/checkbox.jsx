@@ -1,8 +1,7 @@
-import { mixin } from 'ts-fns'
 import { View } from 'react-native'
-import Checkbox from '../../lib/elements/checkbox.jsx'
+import { Checkbox } from '../../lib/elements/checkbox.jsx'
 
-mixin(Checkbox, class {
+Checkbox.implement(class {
   render() {
     const { checked, ...rest } = this.attrs
     const { color = '#888888' } = this.style

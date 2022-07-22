@@ -1,9 +1,9 @@
 import { Children } from 'react'
-import { mixin, isString } from 'ts-fns'
+import { isString } from 'ts-fns'
 import { Image as NativeImage, ImageBackground } from 'react-native'
-import Image from '../../lib/elements/image.jsx'
+import { Image } from '../../lib/elements/image.jsx'
 
-mixin(Image, class {
+Image.implement(class {
   render() {
     const { source, width, height, maxWidth, maxHeight, ...rest } = this.attrs
     const styles = { ...this.style, width, height, maxWidth, maxHeight }

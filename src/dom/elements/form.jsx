@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
-import Form from '../../lib/elements/form.jsx'
+import { Form } from '../../lib/elements/form.jsx'
 
-mixin(Form, class {
+Form.implement(class {
   render() {
     return <form
       {...this.attrs}

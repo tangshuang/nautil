@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
-import Radio from '../../lib/elements/radio.jsx'
+import { Radio } from '../../lib/elements/radio.jsx'
 
-mixin(Radio, class {
+Radio.implement(class {
   render() {
     const { checked, ...rest } = this.attrs
 

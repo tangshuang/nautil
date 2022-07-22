@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
-import Input from '../../lib/elements/input.jsx'
+import { Input } from '../../lib/elements/input.jsx'
 
-mixin(Input, class {
+Input.implement(class {
   render() {
     const { type, ...rest } = this.attrs
 

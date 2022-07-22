@@ -1,8 +1,7 @@
 import { Picker } from 'react-native'
-import { mixin } from 'ts-fns'
-import Select from '../../lib/elements/select.jsx'
+import { Select } from '../../lib/elements/select.jsx'
 
-mixin(Select, class {
+Select.implement(class {
   render() {
     const { value, placeholder, options, readOnly, disabled, ...rest } = this.attrs
     const enabled = !readOnly && !disabled

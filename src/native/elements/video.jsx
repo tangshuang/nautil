@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
-import Video from '../../lib/elements/video.jsx'
+import { Video } from '../../lib/elements/video.jsx'
 
-mixin(Video, class {
+Video.implement(class {
   render() {
     // TODO
   }

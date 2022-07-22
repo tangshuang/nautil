@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
-import Checkbox from '../../lib/elements/checkbox.jsx'
+import { Checkbox } from '../../lib/elements/checkbox.jsx'
 
-mixin(Checkbox, class {
+Checkbox.implement(class {
   render() {
     const { checked, ...rest } = this.attrs
 

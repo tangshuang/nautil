@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
 import { SectionList, Dimensions } from 'react-native'
 
-import ScrollSection from '../../lib/elements/scroll-section.jsx'
+import { ScrollSection } from '../../lib/elements/scroll-section.jsx'
 
 const {
   DOWN,
@@ -14,7 +13,7 @@ const {
   FINISH,
 } = ScrollSection
 
-mixin(ScrollSection, class {
+ScrollSection.implement(class {
   init() {
     this.state = {
       status: DEACTIVATE,

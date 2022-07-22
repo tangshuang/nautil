@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom'
+import { render as reactRender, unmountComponentAtNode } from 'react-dom'
 import { createElement } from 'react'
 
 export function mount(el, Component, props = {}) {
@@ -10,7 +10,7 @@ export function unmount(el) {
     el = document.querySelector(el)
   }
 
-  return ReactDOM.unmountComponentAtNode(el)
+  return unmountComponentAtNode(el)
 }
 
 export function update(...args) {
@@ -22,5 +22,5 @@ export function render(el, vdom) {
     el = document.querySelector(el)
   }
 
-  return ReactDOM.render(vdom, el)
+  return reactRender(vdom, el)
 }

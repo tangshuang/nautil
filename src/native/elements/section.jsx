@@ -1,14 +1,13 @@
 import { Children } from 'react'
-import { mixin } from 'ts-fns'
 import { View } from 'react-native'
-import Section from '../../lib/elements/section.jsx'
-import Text from '../../lib/elements/text.jsx'
+import { Section } from '../../lib/elements/section.jsx'
+import { Text } from '../../lib/elements/text.jsx'
 
 let activePath = []
 let activeNode = null
 let capturePath = []
 
-mixin(Section, class {
+Section.implement(class {
   onMouted() {
     this.__mounted = true
   }

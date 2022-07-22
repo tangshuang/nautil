@@ -1,7 +1,6 @@
-import { mixin } from 'ts-fns'
-import Line from '../../lib/elements/line.jsx'
+import { Line } from '../../lib/elements/line.jsx'
 
-mixin(Line, class {
+Line.implement(class {
   render() {
     const { width, thick, color, ...rest } = this.attrs
     const styles = { display: 'block', borderBottom: `${thick}px solid ${color}`, width, height: 0, ...this.style }

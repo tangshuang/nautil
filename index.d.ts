@@ -105,11 +105,11 @@ type JSXComponent<T> = NautilComponent<T> | ComponentType<T> // all allowed comp
 type ComponentGenerator<T> = (C: JSXComponent) => NautilComponent<T> | ComponentClass<T>
 export type NautilElement = ReactElement | ReactNode | ReactChild | ReactChildren | null | undefined
 
-export declare class Component<T = AnyObj> extends ReactComponent<T> {
-  $state: Proxy
-  $attrs: Proxy
-  state: AnyObj
-  attrs: AnyObj
+export declare class Component<P = AnyObj, S = AnyObj> extends ReactComponent<P, S> {
+  $state: S
+  $attrs: P
+  attrs: Readonly<P>
+
   style: AnyObj
   className: string | undefined
   children: ReactChildren
@@ -124,8 +124,8 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   update(): Promise<void>
   update(force: true): Promise<void>
   update(value: AnyObj): Promise<void>
-  update(key: string, value: AnyObj): Promise<void>
-  update(fn: <T>(state: T) => (void | T)): Promise<void>
+  update(key: keyof S, value: any): Promise<void>
+  update(fn: <K extends keyof S>(state: Pick<S, K>) => (void | Pick<S, K>)): Promise<void>
   weakUpdate(): Promise<void>
   forceUpdate(): Promise<void>
   nextTick(fn: () => void, ...args: any[]): void
@@ -134,15 +134,14 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   init(): void
   onInit(): void
   onMounted(): void
-  shouldUpdate(nextProps: T, nextState: AnyObj): boolean
-  onNotUpdate(nextProps: T, nextState: AnyObj): void
-  onUpdated(prevProps: T, prevState: AnyObj): void
+  shouldUpdate(nextProps: P, nextState: AnyObj): boolean
+  onNotUpdate(nextProps: P, nextState: AnyObj): void
+  onUpdated(prevProps: P, prevState: AnyObj): void
   onUnmount(): void
   onCatch(error: ErrorInfo): void
-  onParseProps(props: T): AnyObj
+  onParseProps(props: P): AnyObj
   onDigested(): void
-
-  shouldAffect(props: T): any
+  shouldAffect(props: P): any
   onAffect(): void
   onAffected(): void
   /**

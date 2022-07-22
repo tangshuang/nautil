@@ -1,10 +1,9 @@
 import { createRef } from 'react'
-import { mixin } from 'ts-fns'
-import Section from '../../lib/elements/section.jsx'
+import { Section } from '../../lib/elements/section.jsx'
 
 const isTouchable = (typeof document !== 'undefined' && 'ontouchmove' in document)
 
-mixin(Section, class {
+Section.implement(class {
   init() {
     this._ref = createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)

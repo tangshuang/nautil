@@ -1,9 +1,8 @@
-import { mixin } from 'ts-fns'
-import ListSection from '../../lib/elements/list-section.jsx'
-import Section from '../../lib/elements/section.jsx'
+import { ListSection } from '../../lib/elements/list-section.jsx'
+import { Section } from '../../lib/elements/section.jsx'
 import { FlatList } from 'react-native'
 
-mixin(ListSection, class {
+ListSection.implement(class {
   render() {
     const { itemRender, data, itemKey, itemStyle = {} } = this.attrs
     return (

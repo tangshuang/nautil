@@ -1,7 +1,7 @@
-import { mixin, isString } from 'ts-fns'
-import Webview from '../../lib/elements/webview.jsx'
+import { isString } from 'ts-fns'
+import { Webview } from '../../lib/elements/webview.jsx'
 
-mixin(Webview, class {
+Webview.implement(class {
   render() {
     const { source, width, height, ...rest } = this.attrs
     const style = { width, height, ...this.style }

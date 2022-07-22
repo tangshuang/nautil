@@ -1,5 +1,4 @@
-import { mixin } from 'ts-fns'
-import ListSection from '../../lib/elements/list-section.jsx'
+import { ListSection } from '../../lib/elements/list-section.jsx'
 import { Component } from '../../lib/core/component.js'
 import { ifexist } from 'tyshemo'
 
@@ -75,7 +74,7 @@ class ReactList extends Component {
   }
 }
 
-mixin(ListSection, class {
+ListSection.implement(class {
   render() {
     const { itemRender, data, itemKey, itemStyle = {} } = this.attrs
     const renderItem = (index) => {

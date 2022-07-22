@@ -1,8 +1,7 @@
-import { mixin } from 'ts-fns'
 import { TextInput } from 'react-native'
 import Input from '../../lib/elements/input.jsx'
 
-mixin(Input, class {
+Input.implement(class {
   render() {
     const { type, placeholder, value, readOnly, disabled, ...rest } = this.attrs
     const editable = !readOnly && !disabled

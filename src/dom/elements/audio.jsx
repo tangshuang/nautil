@@ -1,7 +1,7 @@
-import { isString, mixin } from 'ts-fns'
-import Audio from '../../lib/elements/audio.jsx'
+import { isString } from 'ts-fns'
+import { Audio } from '../../lib/elements/audio.jsx'
 
-mixin(Audio, class {
+Audio.implement(class {
   render() {
     const { source, width, height, ...rest } = this.attrs
     const style = { width, height, ...this.style }

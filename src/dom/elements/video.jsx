@@ -1,7 +1,7 @@
-import { mixin, isString } from 'ts-fns'
-import Video from '../../lib/elements/video.jsx'
+import { isString } from 'ts-fns'
+import { Video } from '../../lib/elements/video.jsx'
 
-mixin(Video, class {
+Video.implement(class {
   render() {
     const { source, width, height, ...rest } = this.attrs
     const style = { width, height, ...this.style }
