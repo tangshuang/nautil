@@ -94,7 +94,7 @@ interface Constructor<T> {
   new (...args: T[])
 }
 
-interface OverrideProps {
+interface OverrideInfo {
   stylesheet?: string[] | AnyObj[]
   props?: AnyObj
   deprecated?: string[]
@@ -141,18 +141,20 @@ export declare class Component<T = AnyObj> extends ReactComponent<T> {
   onCatch(error: ErrorInfo): void
   onParseProps(props: T): AnyObj
   onDigested(): void
-  onAffect(): void
-  shouldAffect(props: T): any
-  onAffected(): void
 
+  shouldAffect(props: T): any
+  onAffect(): void
+  onAffected(): void
   /**
    * @deprecated removed, use shouldAffect instead
    */
   detectAffect(): never
 
-  static extend(props: OverrideProps | ((nextProps: AnyObj) => OverrideProps)): NautilComponent
-  static props: AnyObj | (() => AnyObj)
+  static extend<T extends NautilComponent>(override: OverrideInfo | ((nextProps: AnyObj) => OverrideInfo)): T
+  static implement<T extends NautilComponent>(protos: any): T
+
   static defaultStylesheet: string[] | AnyObj[]
+  static props: AnyObj | (() => AnyObj)
   static css: { [key: string]: AnyObj | string } | ((info: { attrs: AnyObj, style: object | undefined, className: string | undefined }, instance: Component) => { [key: string]: AnyObj | string })
 }
 

@@ -592,7 +592,7 @@ export class Component extends PrimitiveComponent {
 
   css(...classNames) {
     if (classNames.length === 1 && isArray(classNames[0])) {
-      classNames = classNames[0];
+      classNames = classNames[0]
     }
     return parseClassNames(classNames, this.cssRules)
   }
@@ -684,11 +684,11 @@ export class Component extends PrimitiveComponent {
     return props
   }
 
-  static extend(overrideProps) {
+  static extend(override) {
     const Constructor = this
     return class extends Constructor {
       _digest(nextProps) {
-        const { stylesheet, props, deprecated } = isFunction(overrideProps) ? overrideProps(nextProps) : overrideProps
+        const { stylesheet, props, deprecated } = isFunction(override) ? override(nextProps) : override
         const useProps = {
           ...nextProps,
           ...(props || {}),
