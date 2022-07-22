@@ -156,6 +156,7 @@ export class Controller extends PrimitiveBase {
       }
       this.observers.push(subscription)
     }
+    return observer
   }
 
   disobserve(observer) {

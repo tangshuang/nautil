@@ -188,6 +188,7 @@ export class View extends Component {
     if (!this._isUnmounted) {
       this.observers.push({ observer, type: 'this' })
     }
+    return observer
   }
 
   disobserve(observer) {
