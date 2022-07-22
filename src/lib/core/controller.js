@@ -46,6 +46,10 @@ export class Controller extends PrimitiveBase {
         this[key] = new Item()
         this.observe(this[key])
       }
+      else if (Item && isInheritedOf(Item, Controller)) {
+        this[key] = Item.instance()
+        this.observe(this[key])
+      }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
         this[key] = stream$
@@ -110,6 +114,17 @@ export class Controller extends PrimitiveBase {
           observer.unwatch('*', this.dispatch)
           observer.unwatch('!', this.dispatch)
           observer.off('recover', this.dispatch)
+        },
+        observer,
+      }
+      this.observers.push(subscription)
+    }
+    else if (isInstanceOf(observer, Controller)) {
+      const subscription = {
+        start: () => observer.subscribe(this.dispatch),
+        stop: () => {
+          observer.unsubscribe(this.dispatch)
+          observer.destructor()
         },
         observer,
       }
