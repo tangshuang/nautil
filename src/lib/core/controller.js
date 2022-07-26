@@ -4,7 +4,7 @@ import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObje
 import { Stream } from './stream.js'
 import { Service } from './service.js'
 import { DataService } from '../services/data-service.js'
-import { PrimitiveBase } from '../utils.js'
+import { PrimitiveBase, ofChainStatic } from '../utils.js'
 
 /**
  * class SomeController extends Constroller {
@@ -23,7 +23,8 @@ export class Controller extends PrimitiveBase {
 
     const Constructor = getConstructorOf(this)
     const streams = []
-    each(Constructor, (_, key) => {
+    const staticProperties = ofChainStatic(Constructor, Controller)
+    each(staticProperties, (_, key) => {
       const Item = Constructor[key]
       if (Item && isInheritedOf(Item, DataService)) {
         const ins = Item.instance()

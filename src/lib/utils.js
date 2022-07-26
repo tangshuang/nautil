@@ -10,6 +10,9 @@ import {
   getConstructorOf,
   parse,
   mixin,
+  isConstructor,
+  isInheritedOf,
+  define,
 } from 'ts-fns'
 import { isValidElement } from 'react'
 import { Stream } from './core/stream.js'
@@ -435,4 +438,41 @@ export function findInfoByMapping(data, mapping = {}) {
   })
 
   return { found, notFound }
+}
+
+export function ofChainStatic(fromConstructor, topConstructor) {
+  const properties = {}
+  const push = (target) => {
+    // if it is not a Constructor
+    if (!isConstructor(target)) {
+      // eslint-disable-next-line no-param-reassign
+      target = getConstructorOf(target)
+    }
+
+    if (target === topConstructor) {
+      return
+    }
+
+    each(
+      target,
+      (descriptor, key) => {
+        if (!Object.getOwnPropertyDescriptor(properties, key)) {
+          const prop = key.indexOf('$_') === 0 ? key.substring(2) : key
+          if (prop.indexOf('_') === 0) {
+            return
+          }
+          define(properties, prop, descriptor)
+        }
+      },
+      true,
+    )
+
+    // to parent
+    const Parent = getConstructorOf(target.prototype)
+    if (isInheritedOf(Parent, topConstructor)) {
+      push(target.prototype)
+    }
+  }
+  push(fromConstructor)
+  return properties
 }

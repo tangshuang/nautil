@@ -8,17 +8,17 @@ import { Controller } from './controller.js'
 import { Service } from './service.js'
 import { DataService } from '../services/data-service.js'
 import { Model } from 'tyshemo'
-import { PrimitiveBase } from '../utils.js'
+import { PrimitiveBase, ofChainStatic } from '../utils.js'
 
 /**
  * class SomeView extends View {
  *   controller = new SomeController()
  *
- *   VoteButton(props) {
+ *   VoteButton = (props) => {
  *     return <Button onHit={this.controller.vote$}>Vote</Button>
  *   }
  *
- *   VoteCount(props) {
+ *   VoteCount = (props) => {
  *     return <Text>{this.controller.vote.count}</Text>
  *   }
  * }
@@ -30,7 +30,8 @@ export class View extends Component {
 
     const Constructor = getConstructorOf(this)
     const streams = []
-    each(Constructor, (_, key) => {
+    const staticProperties = ofChainStatic(Constructor, View)
+    each(staticProperties, (_, key) => {
       const Item = Constructor[key]
       if (Item && isInheritedOf(Item, DataService)) {
         this[key] = Item.instance()
