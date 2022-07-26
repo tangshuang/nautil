@@ -1,9 +1,16 @@
 import { useForceUpdate } from './force-update.js'
 import { useMemo, useEffect } from 'react'
+import { View } from '../core/view'
+import { isInheritedOf } from 'ts-fns'
 
-export function useController(Controller) {
+export function useController(Controller, Persistent) {
   const forceUpdate = useForceUpdate()
-  const controller = useMemo(() => new Controller(), [Controller])
+  const controller = useMemo(() => {
+    if (Persistent && typeof Persistent === 'function' && isInheritedOf(Persistent, View) && Object.values(Persistent).some(item => item === Controller)) {
+      return Controller.instance()
+    }
+    return new Controller()
+  }, [Controller, Persistent])
   useEffect(() => {
     controller.subscribe(forceUpdate)
     return () => {

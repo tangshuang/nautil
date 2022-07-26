@@ -10,6 +10,8 @@ import { DataService } from '../services/data-service.js'
 import { Model } from 'tyshemo'
 import { PrimitiveBase, ofChainStatic } from '../utils.js'
 
+const Persistent = Symbol()
+
 /**
  * class SomeView extends View {
  *   controller = new SomeController()
@@ -63,8 +65,16 @@ export class View extends Component {
         observers.push({ observer: this[key] })
       }
       else if (Item && isInheritedOf(Item, Controller)) {
-        this[key] = Item.instance()
-        observers.push({ observer: this[key] })
+        if (Constructor[Persistent]) {
+          this[key] = Item.instance()
+          observers.push({ observer: this[key] })
+          Constructor[Persistent] = this[key]
+        }
+        else {
+          const ctrl = new Item()
+          ctrl.subscribe(this.weakUpdate)
+          this[key] = ctrl
+        }
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
@@ -204,5 +214,22 @@ export class View extends Component {
       observer.destructor()
     }
     this.observers.splice(index, 1)
+  }
+
+  /**
+   * create a View which use Controller single instance.
+   * @param {*} Controller
+   * @returns
+   * @examples
+   * const SomePersistentView = SomeView.Persist()
+   * function SomeComponent() {
+   *    const controller = useController(SomeController, SomePersistentView)
+   *   return <SomePersistentView />
+   * }
+   */
+  static Persist() {
+    return class extends this {
+      static [Persistent] = true
+    }
   }
 }

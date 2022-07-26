@@ -101,3 +101,36 @@ class SomeView extends View {
   }
 }
 ```
+
+## Persist
+
+In some cases, you may want to share Controller amoung some View, you can referer the same Controller and open Persistent mode:
+
+```js
+class SomeController extends Controller {}
+
+// extends View.Persist()
+class AaView extends View.Persist() {
+  static controller = SomeController
+}
+
+// invoke Persist() on component
+class BbViewBase extends View {
+  static controller = SomeController
+}
+const BbView = BbViewBase.Persist()
+
+function Wrapper() {
+  // useController to read controller from a Persistent component
+  const controller = useController(SomeController, AaView)
+
+  return (
+    <>
+      <AaView />
+      <BbView />
+    </>
+  )
+}
+```
+
+In the previous code, `controller` inside `AaView`, `BbView`, `Wrapper` is the same one which is initialized from `SomeController.instance()`. Even other Persist View which use `SomeController` will share the same one. With single instance, you can make it more easy to share controllers amoung views.

@@ -47,10 +47,6 @@ export class Controller extends PrimitiveBase {
         this[key] = new Item()
         this.observe(this[key])
       }
-      else if (Item && isInheritedOf(Item, Controller)) {
-        this[key] = Item.instance()
-        this.observe(this[key])
-      }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
         this[key] = stream$
