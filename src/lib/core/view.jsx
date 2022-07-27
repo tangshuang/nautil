@@ -10,6 +10,7 @@ import { DataService } from '../services/data-service.js'
 import { Model } from 'tyshemo'
 import { PrimitiveBase, ofChainStatic } from '../utils.js'
 
+const PersistentInit = Symbol()
 const PersistentContext = createContext([])
 
 /**
@@ -65,8 +66,8 @@ export class View extends Component {
         observers.push({ observer: this[key] })
       }
       else if (Item && isInheritedOf(Item, Controller)) {
-        if (this.context.length) {
-          const items = flatArray(this.context)
+        let foundItem = null
+        const patchCtrl = (items) => {
           const item = items.find((item) => item.Ctrl === Item)
           if (item) {
             const { ctrl } = item
@@ -77,10 +78,22 @@ export class View extends Component {
               this[key] = ctrl
               item.ctrl = ctrl
             }
+            foundItem = item
           } else {
             this[key] = new Item()
           }
-        } else {
+        }
+        // inherit from upper components
+        if (this.context.length) {
+          const items = flatArray(this.context)
+          patchCtrl(items)
+        }
+        // self is top
+        else if (Constructor[PersistentInit]) {
+          patchCtrl(Constructor[PersistentInit])
+        }
+        // only use this controller
+        else {
           this[key] = new Item()
         }
         observers.push({
@@ -89,6 +102,10 @@ export class View extends Component {
           },
           unsubscribe: (dispatch) => {
             this[key].unsubscribe(dispatch)
+            // free Controller instance
+            if (foundItem) {
+              foundItem.ctrl = null
+            }
           },
         })
       }
@@ -244,7 +261,9 @@ export class View extends Component {
    * }
    */
   static Persist(Controllers) {
+    const initContext = Controllers.map((Ctrl) => ({ Ctrl }))
     return class extends this {
+      static [PersistentInit] = initContext
       __init() {
         super.__init()
         const render = this.render.bind(this)
@@ -253,19 +272,18 @@ export class View extends Component {
           return (
             <Consumer>
               {(context) => {
-                const items = flatArray(context)
-                const next = []
-                Controllers.forEach((Ctrl) => {
-                  if (!items.some((item) => item.Ctrl === Ctrl)) {
-                    next.push({ Ctrl })
-                  }
-                })
-                const passdown = []
+                let passdown = []
                 if (!context.length) {
-                  context.push(next)
-                  passdown.push(next)
+                  passdown = [initContext]
                 } else {
-                  passdown.push(...context, next)
+                  const items = flatArray(context)
+                  const next = []
+                  Controllers.forEach((Ctrl) => {
+                    if (!items.some((item) => item.Ctrl === Ctrl)) {
+                      next.push({ Ctrl })
+                    }
+                  })
+                  passdown = [...context, next]
                 }
                 return <Provider value={passdown}>{render()}</Provider>
               }}
