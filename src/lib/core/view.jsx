@@ -1,6 +1,6 @@
-import { memo, Component as ReactComponent } from 'react'
+import { memo, Component as ReactComponent, createContext } from 'react'
 import { Store } from '../store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, flatArray, define } from 'ts-fns'
 import { Component } from './component.js'
 import { Stream } from './stream.js'
 import { evolve } from '../decorators/decorators.js'
@@ -10,7 +10,7 @@ import { DataService } from '../services/data-service.js'
 import { Model } from 'tyshemo'
 import { PrimitiveBase, ofChainStatic } from '../utils.js'
 
-const Persistent = Symbol()
+const PersistentContext = createContext([])
 
 /**
  * class SomeView extends View {
@@ -65,16 +65,32 @@ export class View extends Component {
         observers.push({ observer: this[key] })
       }
       else if (Item && isInheritedOf(Item, Controller)) {
-        if (Constructor[Persistent]) {
-          this[key] = Item.instance()
-          observers.push({ observer: this[key] })
-          Constructor[Persistent] = this[key]
+        if (this.context.length) {
+          const items = flatArray(this.context)
+          const item = items.find((item) => item.Ctrl === Item)
+          if (item) {
+            const { ctrl } = item
+            if (ctrl) {
+              this[key] = ctrl
+            } else {
+              const ctrl = new Item()
+              this[key] = ctrl
+              item.ctrl = ctrl
+            }
+          } else {
+            this[key] = new Item()
+          }
+        } else {
+          this[key] = new Item()
         }
-        else {
-          const ctrl = new Item()
-          ctrl.subscribe(this.weakUpdate)
-          this[key] = ctrl
-        }
+        observers.push({
+          subscribe: (dispatch) => {
+            this[key].subscribe(dispatch)
+          },
+          unsubscribe: (dispatch) => {
+            this[key].unsubscribe(dispatch)
+          },
+        })
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
@@ -144,16 +160,16 @@ export class View extends Component {
     const observers = this.observers
     class G extends Component {
       onMounted() {
-        observers.forEach(({ observer }) => {
-          if (observer.type === 'this') {
+        observers.forEach(({ observer, type }) => {
+          if (type === 'this') {
             return
           }
           observer.subscribe(this.weakUpdate)
         })
       }
       onUnmount() {
-        observers.forEach(({ observer }) => {
-          if (observer.type === 'this') {
+        observers.forEach(({ observer, type }) => {
+          if (type === 'this') {
             return
           }
           observer.unsubscribe(this.weakUpdate)
@@ -203,7 +219,7 @@ export class View extends Component {
   }
 
   disobserve(observer) {
-    const index = this.observers.findIndex(item => item === observer)
+    const index = this.observers.findIndex(item => item.observer === observer)
     if (index === -1) {
       return
     }
@@ -227,9 +243,37 @@ export class View extends Component {
    *   return <SomePersistentView />
    * }
    */
-  static Persist() {
+  static Persist(Controllers) {
     return class extends this {
-      static [Persistent] = true
+      __init() {
+        super.__init()
+        const render = this.render.bind(this)
+        const persisRender = () => {
+          const { Provider, Consumer } = PersistentContext
+          return (
+            <Consumer>
+              {(context) => {
+                const items = flatArray(context)
+                const next = []
+                Controllers.forEach((Ctrl) => {
+                  if (!items.some((item) => item.Ctrl === Ctrl)) {
+                    next.push({ Ctrl })
+                  }
+                })
+                const passdown = []
+                if (!context.length) {
+                  context.push(next)
+                  passdown.push(next)
+                } else {
+                  passdown.push(...context, next)
+                }
+                return <Provider value={passdown}>{render()}</Provider>
+              }}
+            </Consumer>
+          )
+        }
+        define(this, 'render', { value: persisRender, configurable: true })
+      }
     }
   }
 }

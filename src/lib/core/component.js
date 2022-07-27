@@ -100,8 +100,10 @@ export class Component extends PrimitiveComponent {
   constructor(props) {
     super(props)
 
+    this.init()
+
     // for streams
-    this._triggers = []
+    this._schedulers = []
 
     // for nextTick
     this._tasksQueue = []
@@ -115,13 +117,11 @@ export class Component extends PrimitiveComponent {
     // for shouldUpdate
     this._factors = null
 
+    this._cssRules = {}
+
     define(this, 'update', { value: this.update.bind(this) })
     define(this, 'forceUpdate', { value: this.forceUpdate.bind(this) })
     define(this, 'weakUpdate', { value: this.weakUpdate.bind(this) })
-
-    this.__init()
-    // state should be declare here
-    this.init()
 
     let $state = null
     define(this, '$state', () => {
@@ -148,27 +148,30 @@ export class Component extends PrimitiveComponent {
       },
     })
 
-    this.__inited = true
-    each(this, (value, key) => {
-      if (isObject(value) && value.$$type === 'offer' && value.fn) {
-        this[key] = value.fn()
-      }
-    })
-
     const render = this.render.bind(this)
     const toRender = () => {
       if (!this._isMounted && !this._isUnmounted) {
+        this.__provide()
         this._digest(props)
         this.onInit()
       }
       return render()
     }
     define(this, 'render', { value: toRender })
+
+    each(this, (value, key) => {
+      if (isObject(value) && value.$$type === 'offer' && value.fn) {
+        this[key] = value.fn()
+      }
+    })
+
+    this.__init()
+    this.__inited = true
   }
 
-  __init() {
-    // should be override
-  }
+  __init() {}
+
+  __provide() {}
 
   init() {
     // should be override
@@ -183,7 +186,7 @@ export class Component extends PrimitiveComponent {
 
   subscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._triggers.push({
+    this._schedulers.push({
       name: upperCaseName,
       affect,
     })
@@ -192,9 +195,9 @@ export class Component extends PrimitiveComponent {
 
   unsubscribe(name, affect) {
     const upperCaseName = name.replace(name[0], name[0].toUpperCase())
-    this._triggers.forEach((item, i) => {
+    this._schedulers.forEach((item, i) => {
       if (upperCaseName === item.name && (!affect || affect === item.affect)) {
-        this._triggers.splice(i, 1)
+        this._schedulers.splice(i, 1)
       }
     })
     return this
@@ -461,7 +464,7 @@ export class Component extends PrimitiveComponent {
     }
 
     // import css and transform css rules
-    this.cssRules = decideby(() => {
+    this._cssRules = decideby(() => {
       if (!css) {
         return {}
       }
@@ -485,7 +488,7 @@ export class Component extends PrimitiveComponent {
     // }
 
     const affect = (name, subject) => {
-      this._triggers.forEach((item) => {
+      this._schedulers.forEach((item) => {
         if (name === item.name) {
           subject = item.affect(subject) || subject
           if (process.env.NDOE_ENV !== 'production') {
@@ -594,7 +597,7 @@ export class Component extends PrimitiveComponent {
     if (classNames.length === 1 && isArray(classNames[0])) {
       classNames = classNames[0]
     }
-    return parseClassNames(classNames, this.cssRules)
+    return parseClassNames(classNames, this._cssRules)
   }
 
   _affect(fn) {

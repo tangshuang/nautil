@@ -108,29 +108,29 @@ In some cases, you may want to share Controller amoung some View, you can refere
 
 ```js
 class SomeController extends Controller {}
+```
 
-// extends View.Persist()
-class AaView extends View.Persist() {
+```js
+class AaView extends View {
   static controller = SomeController
 }
 
 // invoke Persist() on component
-class BbViewBase extends View {
+class BbView extends View.Persist([
+  SomeController,
+]) {
   static controller = SomeController
-}
-const BbView = BbViewBase.Persist()
 
-function Wrapper() {
-  // useController to read controller from a Persistent component
-  const controller = useController(SomeController, AaView)
+  handleSubmit = () => {
+    // here, this.controller refer to BbView.controller and AaView.controller, they are the same reference
+    // in case of this, you can read controller without any deep ref
+    this.controller.validate()
+  }
 
-  return (
-    <>
-      <AaView />
-      <BbView />
-    </>
-  )
+  render() {
+    return <AaView />
+  }
 }
 ```
 
-In the previous code, `controller` inside `AaView`, `BbView`, `Wrapper` is the same one which is initialized from `SomeController.instance()`. Even other Persist View which use `SomeController` will share the same one. With single instance, you can make it more easy to share controllers amoung views.
+The `Persist`'s params is a Controller array which will be shared inside the view. It means even some deep View use these Controllers, they are share the same instance.
