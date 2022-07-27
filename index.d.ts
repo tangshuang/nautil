@@ -175,7 +175,7 @@ export declare function useModel<T extends Model>(Model: new () => T): T
 
 export declare function useModelReactor<T>(models: Model | Model[], compute: (...args: any[]) => T, ...args: any[]): T
 
-export declare function useController<T extends Controller>(Controller: new () => T): T
+export declare function useController<T extends Controller>(Controller: new () => T, Persistent?: new (...args: any[]) => View): T
 
 export declare function applyController<T extends Controller>(Controller: new () => T): {
   useController: () => T
@@ -491,8 +491,9 @@ export declare class Controller extends PrimitiveBase {
   static instance<T extends Controller>(): T
 }
 
-export declare class View extends Component {
+export declare class View<P = AnyObj, S = AnyObj> extends Component<P, S> {
   reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent
+  static Persist(): new (...args: any[]) => View
 }
 
 /**
