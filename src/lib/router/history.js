@@ -101,12 +101,13 @@ export class History extends EventBase {
    * @returns
    */
   makeUrl(to, abs, mode, params) {
-    if (to === '.') {
-      return this.$makeSearchUrl(params)
-    }
     return this.$discernUrl(to, abs, mode, params)
   }
   $discernUrl(to, abs, mode, params) {
+    if (to === '.') {
+      return this.$makeSearchUrl(params)
+    }
+
     const genedSearch = params ? paramsToUrl(params) : ''
     const search = genedSearch ? `?${genedSearch}` : ''
 

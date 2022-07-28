@@ -1,5 +1,5 @@
 import { parseUrl, parseSearch, resolveUrl, findInfoByMapping } from '../utils.js'
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
@@ -385,16 +385,30 @@ export function useHistoryListener(fn, deps = []) {
   }, deps)
 }
 
-const createGetAbs = (inHost, routeAbs, routerAbs) => (to) => inHost || (typeof to === 'string' && /^\.\.?\//.test(to)) ? routeAbs : routerAbs
+const createGetAbs = (inHost, abs, routerAbs, routeAbs, routeUrl) => (to) => {
+  if (/^\.\.?\//.test(to)) {
+    return [routeAbs, routeUrl].filter(Boolean).join('/')
+  }
+  if (inHost) {
+    return abs
+  }
+  return routerAbs
+}
+
+const useGetAbs = (inHost) => {
+  const { abs } = useContext(absContext)
+  const { abs: currentRouterAbs = abs } = useContext(routerContext)
+  const { abs: routeAbs, url } = useContext(routeContext)
+  const getAbs = createGetAbs(inHost, abs, currentRouterAbs, routeAbs, url)
+  return getAbs
+}
 
 export function Link(props) {
   const { to, replace, open, params, ...attrs } = props
 
   const { history, mode } = useContext(rootContext)
-  const { abs } = useContext(absContext)
-  const { abs: currentRouterAbs = abs } = useContext(routerContext)
 
-  const getAbs = createGetAbs(this && this instanceof Router, abs, currentRouterAbs)
+  const getAbs = useGetAbs(this && this instanceof Router)
   const navigateTo = useRouteNavigate.call(this)
 
   const args = useShallowLatest(params)
@@ -414,12 +428,14 @@ export function useRouteNavigate() {
   useHistoryListener(forceUpdate)
 
   const { history, mode } = useContext(rootContext)
-  const { abs, deep } = useContext(absContext)
-  const { abs: currentRouterAbs = abs, current } = useContext(routerContext)
+  const { deep } = useContext(absContext)
+  const { current } = useContext(routerContext)
+
   const inHost = this && this instanceof Router
   const router = inHost ? this : current
 
-  const getAbs = createGetAbs(inHost, abs, currentRouterAbs)
+  const getAbs = useGetAbs(inHost)
+
   return Router.$createNavigate(history, getAbs, mode, { deep, router, inHost })
 }
 
@@ -554,11 +570,19 @@ export function useRouteState(path, exact) {
   if (path === '' && exact) {
     isActive = routePath === routeUrl
   } else {
-    isActive = match(new RegExp(createSafeExp(path)))
+    const reg = new RegExp(createSafeExp(path))
+    isActive = reg.test(routeUrl)
   }
 
-  const makeActive = () => navigate(to)
-  const makeInactive = () => navigate(routePath, params)
+  const backUrl = routeUrl.replace(`/${path}`, '')
+
+  const makeActive = () => {
+    if (!isActive) {
+      navigate(to)
+    }
+  }
+  const makeInactive = () => navigate(backUrl, params, true)
+
   return [isActive, makeActive, makeInactive]
 }
 
@@ -569,29 +593,39 @@ export function Route(props) {
 }
 
 export function createRouteComponent(path, create, exact) {
-  function useActiveComponent() {
-    const navigate = useRouteNavigate()
-    return () => navigate(`./${path}`)
-  }
-
-  function useInactiveComponent() {
-    const navigate = useRouteNavigate()
-    const { path: routePath, params } = useContext(routeContext)
-    return () => navigate(routePath, params)
-  }
-
   function useIsComponentActive() {
-    const match = useRouteMatch()
+    const forceUpdate = useForceUpdate()
+    useHistoryListener(forceUpdate)
+
     let isActive = false
 
     const { path: routePath, url: routeUrl } = useContext(routeContext)
     if (path === '' && exact) {
       isActive = routePath === routeUrl
     } else {
-      isActive = match(new RegExp(createSafeExp(path)))
+      const reg = new RegExp(createSafeExp(path))
+      isActive = reg.test(routeUrl)
     }
 
     return isActive
+  }
+
+
+  function useActiveComponent() {
+    const isActive = useIsComponentActive()
+    const navigate = useRouteNavigate()
+    return () => {
+      if (!isActive) {
+        navigate(`./${path}`)
+      }
+    }
+  }
+
+  function useInactiveComponent() {
+    const navigate = useRouteNavigate()
+    const { params, url } = useContext(routeContext)
+    const backUrl = url.replace(`/${path}`, '')
+    return () => navigate(backUrl, params)
   }
 
   function Link(props) {
