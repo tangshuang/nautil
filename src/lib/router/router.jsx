@@ -493,13 +493,14 @@ export function useRouteLocation() {
   const forceUpdate = useForceUpdate()
   useHistoryListener(forceUpdate)
 
-  const { path, params } = useContext(routeContext)
+  const { path, params, url } = useContext(routeContext)
   const { abs, deep } = useContext(absContext)
   const { history, mode } = useContext(rootContext)
 
   const loc = {
     abs,
     deep,
+    url,
     path,
     params,
   }
@@ -542,145 +543,67 @@ export function useRoutePrefetch() {
   }
 }
 
-/**
- * 基于路由快速获取一个拥有isRouteActive的组件，从而可以根据路由来实现一些特定效果
- * @param path
- * @param C
- * @param exact
- * @returns
- */
-export function createRouteComponent(path, C, exact) {
-  const {
-    useMatch,
-    useNavigate,
-    useParams,
-    Link: ThisLink,
-  } = new Router({
-    routes: [
-      {
-        path,
-        component: () => null,
-        exact,
-      },
-    ],
-  })
+export function useRouteState(path, exact) {
+  const navigate = useRouteNavigate()
+  const match = useRouteMatch()
+  const to = `./${path}`
 
-  let from = ''
+  let isActive = false
 
-  function Outlet(props) {
-    const match = useMatch()
-    const isRouteActive = match(path)
-    const inactiveRoute = useInactiveRoute()
-    const params = useParams()
-
-    return <C {...props} isRouteActive={isRouteActive} inactiveRoute={inactiveRoute} routeParams={params} />
+  const { path: routePath, url: routeUrl, params } = useContext(routeContext)
+  if (path === '' && exact) {
+    isActive = routePath === routeUrl
+  } else {
+    isActive = match(new RegExp(createSafeExp(path)))
   }
 
-  function Link(props) {
-    return <ThisLink {...props} to={path} />
-  }
-
-  function useActiveRoute() {
-    const navigate = useNavigate()
-    const { history } = useContext(rootContext)
-    return (params, replace) => {
-      from = history.loaction.href
-      navigate(path, params, replace)
-    }
-  }
-
-  function useIsRouteActive() {
-    const match = useMatch()
-    const { history, mode } = useContext(rootContext)
-    const { abs } = useContext(absContext)
-
-    if (from && path.indexOf('./') === 0) {
-      const to = history.loaction.href
-      const fromUrl = history.$parseUrl(from, abs, mode)
-      const toUrl = history.$parseUrl(to, abs, mode)
-      if (toUrl === resolveUrl(fromUrl, path)) {
-        return true
-      }
-      return false
-    }
-
-
-    const isMatched = match(path)
-    return isMatched
-  }
-
-  function useInactiveRoute() {
-    const navigate = useNavigate()
-    return () => {
-      navigate(-1)
-      from = ''
-    }
-  }
-
-  return { Outlet, useActiveRoute, useInactiveRoute, Link, useIsRouteActive }
-}
-
-export function createRouteState(paths, exact) {
-  const { useMatch: useRouteMatch, useParams, useNavigate } = new Router({
-    routes: paths.map((path) => ({
-      path,
-      component: () => null,
-      exact,
-    })),
-  })
-
-  const stack = []
-
-  function useActive() {
-    const navigate = useNavigate()
-    const { history } = useContext(rootContext)
-    return (path, params, replace) => {
-      stack.push(history.loaction.href)
-      navigate(path, params, replace)
-    }
-  }
-
-  function useInactive() {
-    const navigate = useNavigate()
-    return () => {
-      navigate(-1)
-      stack.pop()
-    }
-  }
-
-  function useMatch() {
-    const match = useRouteMatch()
-    const { history, mode } = useContext(rootContext)
-    const { abs } = useContext(absContext)
-
-    return (path) => {
-      if (stack.length && path.indexOf('./') === 0) {
-        const to = history.loaction.href
-        const fromUrl = history.$parseUrl(stack[0], abs, mode)
-        const toUrl = history.$parseUrl(to, abs, mode)
-        if (toUrl === resolveUrl(fromUrl, path)) {
-          return true
-        }
-        return false
-      }
-
-      return match(path)
-    }
-  }
-
-  return { useMatch, useParams, useActive, useInactive }
+  const makeActive = () => navigate(to)
+  const makeInactive = () => navigate(routePath, params)
+  return [isActive, makeActive, makeInactive]
 }
 
 export function Route(props) {
-  const { path, exact, render } = props
+  const { path, exact, render, ...attrs } = props
+  const [isActive] = useRouteState(path, exact)
+  return isActive ? render(attrs) : null
+}
 
-  const { useMatch, useParams } = useMemo(() => {
-    const { useMatch, useParams } = createRouteState([path], exact)
-    return { useMatch, useParams }
-  }, [path])
-  const match = useMatch()
-  const params = useParams()
-  return match(path) ? render(params) : null
+export function createRouteComponent(path, create, exact) {
+  function useActiveComponent() {
+    const navigate = useRouteNavigate()
+    return () => navigate(`./${path}`)
+  }
+
+  function useInactiveComponent() {
+    const navigate = useRouteNavigate()
+    const { path: routePath, params } = useContext(routeContext)
+    return () => navigate(routePath, params)
+  }
+
+  function useIsComponentActive() {
+    const match = useRouteMatch()
+    let isActive = false
+
+    const { path: routePath, url: routeUrl } = useContext(routeContext)
+    if (path === '' && exact) {
+      isActive = routePath === routeUrl
+    } else {
+      isActive = match(new RegExp(createSafeExp(path)))
+    }
+
+    return isActive
+  }
+
+  function Link(props) {
+    return <Link {...props} to={`./${path}`} />
+  }
+
+  const C = create({ useInactiveComponent, useActiveComponent, Link, useIsComponentActive })
+  function Component(props) {
+    return <C {...props} />
+  }
+
+  return { useInactiveComponent, useActiveComponent, Link, useIsComponentActive, Component }
 }
 
 

@@ -636,7 +636,7 @@ export declare type Link = FunctionComponent<{
   replace: boolean
   open: boolean
   params: AnyObj
-} & HTMLLinkElement>
+} & AnyObj>
 
 export declare function useRouteNavigate(): (target: string, replace: boolean) => void
 
@@ -663,21 +663,34 @@ export declare function useRouteLocation(): {
 
 export declare function useRoutePrefetch(): (to: string) => void
 
-export declare function createRouteComponent(path: string, C: JSXComponent<{ isRouteActive?: boolean, inactiveRoute?: () => void, routeParams?: AnyObj } & AnyObj>): {
-  Outlet: ComponentType
-  Link: ComponentType
-  useActiveRoute: () => (params?: AnyObj, replace?: boolean) => void
-  useIsRouteAcitve: () => boolean
-}
-
-export declare function createRouteState(paths: string[]): {
-  useMatch: () => (path: string) => boolean
-  useParams: () => AnyObj
-  useActive: () => (path: string) => void
-  useInactive: () => () => void
-}
+export declare function useRouteState(path: string, exact?: boolean): [boolean, () => void, () => void]
 
 export declare function Route(props: { path: string, exact?: boolean, render: (params?: AnyObj) => NautilElement }): NautilElement
+
+export declare function createRouteComponent<T = any>(
+  path: string,
+  create: (context: {
+    useInactiveComponent: () => () => void;
+    useActiveComponent: () => () => void;
+    useIsComponentActive: () => boolean;
+    Link: NautilComponent<{
+      replace: boolean
+      open: boolean
+      params: AnyObj
+    } & AnyObj>;
+  }) => NautilComponent<T>,
+  exact?: boolean,
+): {
+  useInactiveComponent: () => () => void;
+  useActiveComponent: () => () => void;
+  useIsComponentActive: () => boolean;
+  Link: NautilComponent<{
+    replace: boolean
+    open: boolean
+    params: AnyObj
+  } & AnyObj>;
+  Component: NautilComponent<T>;
+}
 
 export declare function usePermanentNavigate(): (routeName: string, params: object, replace: boolean) => void
 

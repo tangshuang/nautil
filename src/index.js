@@ -141,7 +141,7 @@ export {
   useRouteLocation,
   useRoutePrefetch,
   createRouteComponent,
-  createRouteState,
+  useRouteState,
   Route,
   usePermanentNavigate,
 } from './lib/router/router.jsx'
