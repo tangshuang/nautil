@@ -392,7 +392,7 @@ export function Link(props) {
   const { abs } = useContext(absContext)
   const { abs: currentRouterAbs = abs } = useContext(routerContext)
 
-  const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
+  const getAbs = (to) => (this && this instanceof Router) || (typeof to === 'string' && /^\.\.?\//.test(to)) ? abs : currentRouterAbs
   const navigateTo = useRouteNavigate.call(this)
 
   const args = useShallowLatest(params)
@@ -417,7 +417,7 @@ export function useRouteNavigate() {
   const inHost = this && this instanceof Router
   const router = inHost ? this : current
 
-  const getAbs = (to) => inHost || (typeof to === 'string' && /^\.\.?\/[a-z]/.test(to)) ? abs : currentRouterAbs
+  const getAbs = (to) => inHost || (typeof to === 'string' && /^\.\.?\//.test(to)) ? abs : currentRouterAbs
   return Router.$createNavigate(history, getAbs, mode, { deep, router, inHost })
 }
 
