@@ -230,7 +230,7 @@ interface ForProps extends AnyObj {
    */
   map?: (i: number) => any
   /**
-   * function to use M and current number to generate a unique key (string);
+   * function to use M and current number to generate a unique key (string)
    * if it is a string, M should must be an object, unique key will use the prop value of M
    */
   unique?: string | ((data: any, i: number) => string)
@@ -266,7 +266,7 @@ interface EachProps extends AnyObj {
    */
    map?: (data: any[] | AnyObj) => any[] | AnyObj
    /**
-    * function to use item or prop to generate a unique key (string);
+    * function to use item or prop to generate a unique key (string)
     * if it is a string, M should must be an object, unique key will use the prop value of M
     */
    unique?: string | ((value: any, key: number | string) => string)
@@ -552,7 +552,7 @@ export declare class DataService extends Service {
   static instance<T extends DataService>(): T
 }
 
-export function isDataSource(source: any): boolean;
+export function isDataSource(source: any): boolean
 
 export declare class QueueService extends Service {
   options(): AnyObj
@@ -663,33 +663,39 @@ export declare function useRouteLocation(): {
 
 export declare function useRoutePrefetch(): (to: string) => void
 
-export declare function useRouteState(path: string, exact?: boolean): [boolean, () => void, () => void]
+export declare function useRouteState(path: string, exact?: boolean): {
+  isActive: () => boolean
+  setActive: (params?: AnyObj) => void
+  setInactive: () => void
+}
 
 export declare function Route(props: { path: string, exact?: boolean, render: (params?: AnyObj) => NautilElement }): NautilElement
 
 export declare function createRouteComponent<T = any>(
   path: string,
   create: (context: {
-    useInactiveComponent: () => () => void;
-    useActiveComponent: () => () => void;
-    useIsComponentActive: () => boolean;
+    useInactiveComponent: () => () => void
+    useActiveComponent: () => (params?: AnyObj) => void
+    useIsComponentActive: () => boolean
+    useComponentParams: () => AnyObj
     Link: NautilComponent<{
       replace: boolean
       open: boolean
       params: AnyObj
-    } & AnyObj>;
+    } & AnyObj>
   }) => NautilComponent<T>,
   exact?: boolean,
 ): {
-  useInactiveComponent: () => () => void;
-  useActiveComponent: () => () => void;
-  useIsComponentActive: () => boolean;
+  useInactiveComponent: () => () => void
+  useActiveComponent: () => (params?: AnyObj) => void
+  useIsComponentActive: () => boolean
+  useComponentParams: () => AnyObj
   Link: NautilComponent<{
     replace: boolean
     open: boolean
     params: AnyObj
-  } & AnyObj>;
-  Component: NautilComponent<T>;
+  } & AnyObj>
+  Component: NautilComponent<T>
 }
 
 export declare function usePermanentNavigate(): (routeName: string, params: object, replace: boolean) => void

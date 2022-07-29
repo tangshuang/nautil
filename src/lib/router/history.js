@@ -108,24 +108,37 @@ export class History extends EventBase {
       return this.$makeSearchUrl(params)
     }
 
-    const genedSearch = params ? paramsToUrl(params) : ''
+    const query = params ? { ...params } : {}
+    const chain = to.split('/')
+    chain.forEach((text, i) => {
+      if (text.indexOf(':') === 0) {
+        const key = text.substring(1)
+        if (query[key]) {
+          chain[i] = query[key]
+          delete query[key]
+        }
+      }
+    })
+    const nextTo = chain.join('/')
+
+    const genedSearch = isEmpty(query) ? '' : paramsToUrl(query)
     const search = genedSearch ? `?${genedSearch}` : ''
 
     // http://xxx.com/xxx | //xxx.com/xxx
-    if (/^[a-z]+:\/\//.test(to) || /^\/\//.test(to)) {
-      return to.indexOf('?') > -1 ? `${to}&${genedSearch}` : to + search
+    if (/^[a-z]+:\/\//.test(nextTo) || /^\/\//.test(nextTo)) {
+      return nextTo.indexOf('?') > -1 ? `${nextTo}&${genedSearch}` : nextTo + search
     }
 
     const { base } = mode
 
     // /a/b/c
-    if (to[0] === '/') {
-      const root = resolveUrl(base, to.substring(1))
+    if (nextTo[0] === '/') {
+      const root = resolveUrl(base, nextTo.substring(1))
       return root + search
     }
 
     const root = resolveUrl(base, abs)
-    const url = resolveUrl(root, to)
+    const url = resolveUrl(root, nextTo)
     const res = url + search
     return res
   }

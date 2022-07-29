@@ -561,83 +561,133 @@ export function useRoutePrefetch() {
 
 export function useRouteState(path, exact) {
   const navigate = useRouteNavigate()
-  const match = useRouteMatch()
-  const to = `./${path}`
-
-  let isActive = false
-
+  const [prefix, ...rests] = path.split(/\/(?=:)/)
+  const suffix = rests.join('/')
   const { path: routePath, url: routeUrl, params } = useContext(routeContext)
-  if (path === '' && exact) {
-    isActive = routePath === routeUrl
-  } else {
-    const reg = new RegExp(createSafeExp(path))
-    isActive = reg.test(routeUrl)
+
+  const isActive = () => {
+    // 直接""表示不跟随任何url段，但此时必须注意，如果exact为false的时候，表示永远匹配上了
+    if (path === '' && exact) {
+      return routePath === routeUrl
+    }
+    const isEnd = new RegExp(`${createSafeExp(`/${prefix}`)}$`).test(routeUrl)
+    if (routeUrl.indexOf(`/${prefix}/`) === -1 && !isEnd) {
+      return false
+    }
+    if (!suffix) {
+      return true
+    }
+    if (isEnd) {
+      return false
+    }
+
+    const matchedUrl = routeUrl.split(`/${prefix}/`).pop()
+
+    const urlBlocks = matchedUrl.split('/')
+    const pathBlocks = suffix.split('/')
+
+    if (exact && urlBlocks.length !== pathBlocks.length) {
+      return false
+    }
+
+    if (urlBlocks.length < pathBlocks.length) {
+      return false
+    }
+
+    for (let i = 0, len = pathBlocks.length; i < len; i++) {
+      const urlBlock = urlBlocks[i]
+      const pathBlock = pathBlocks[i]
+
+      if (pathBlock[0] === ':') {
+        if (urlBlock === undefined) {
+          return false
+        }
+      } else if (urlBlock !== pathBlock) {
+        return false
+      }
+    }
+
+    return true
   }
 
-  const backUrl = routeUrl.replace(`/${path}`, '')
-
-  const makeActive = () => {
+  const setActive = (params) => {
+    // 注意，同一时间只能打开一个，即使参数不一样
+    // 参数变化时，应该先关闭已经打开的，再使用新参数打开
     if (!isActive) {
-      navigate(to)
+      navigate(`./${path}`, params)
     }
   }
-  const makeInactive = () => navigate(backUrl, params, true)
+  const setInactive = () => {
+    const backUrl = routeUrl.split(`/${prefix}`).shift()
+    navigate(backUrl, params, true)
+  }
 
-  return [isActive, makeActive, makeInactive]
+  return { isActive, setActive, setInactive }
 }
 
 export function Route(props) {
   const { path, exact, render, ...attrs } = props
-  const [isActive] = useRouteState(path, exact)
-  return isActive ? render(attrs) : null
+  const { isActive } = useRouteState(path, exact)
+  return isActive() ? render(attrs) : null
 }
 
 export function createRouteComponent(path, create, exact) {
   function useIsComponentActive() {
-    const forceUpdate = useForceUpdate()
-    useHistoryListener(forceUpdate)
-
-    let isActive = false
-
-    const { path: routePath, url: routeUrl } = useContext(routeContext)
-    if (path === '' && exact) {
-      isActive = routePath === routeUrl
-    } else {
-      const reg = new RegExp(createSafeExp(path))
-      isActive = reg.test(routeUrl)
-    }
-
-    return isActive
+    const { isActive } = useRouteState(path, exact)
+    return isActive()
   }
 
-
   function useActiveComponent() {
-    const isActive = useIsComponentActive()
-    const navigate = useRouteNavigate()
-    return () => {
-      if (!isActive) {
-        navigate(`./${path}`)
-      }
-    }
+    const { setActive } = useRouteState(path, exact)
+    return setActive
   }
 
   function useInactiveComponent() {
-    const navigate = useRouteNavigate()
-    const { params, url } = useContext(routeContext)
-    const backUrl = url.replace(`/${path}`, '')
-    return () => navigate(backUrl, params)
+    const { setInactive } = useRouteState(path, exact)
+    return setInactive
+  }
+
+  function useComponentParams() {
+    const isActive = useIsComponentActive()
+    const { url } = useContext(routeContext)
+
+    if (!isActive) {
+      return {}
+    }
+
+    const [prefix, ...rests] = path.split(/\/(?=:)/)
+    const suffix = rests.join('/')
+
+    if (!suffix) {
+      return {}
+    }
+
+    const foundUrl = url.split(`/${prefix}/`).pop()
+
+    const params = {}
+    const urlBlocks = foundUrl.split('/')
+    const pathBlocks = suffix.split('/')
+    for (let i = 0, len = pathBlocks.length; i < len; i++) {
+      const urlBlock = urlBlocks[i]
+      const pathBlock = pathBlocks[i]
+      if (pathBlock[0] === ':') {
+        const key = pathBlock.substring(1)
+        params[key] = urlBlock
+      }
+    }
+    return params
   }
 
   function Link(props) {
     return <Link {...props} to={`./${path}`} />
   }
 
-  const C = create({ useInactiveComponent, useActiveComponent, Link, useIsComponentActive })
+  const C = create({ useInactiveComponent, useActiveComponent, Link, useIsComponentActive, useComponentParams })
   function Component(props) {
     return <C {...props} />
   }
 
-  return { useInactiveComponent, useActiveComponent, Link, useIsComponentActive, Component }
+  return { useInactiveComponent, useActiveComponent, Link, useIsComponentActive, Component, useComponentParams }
 }
 
 
