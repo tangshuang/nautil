@@ -468,11 +468,12 @@ export class Component extends PrimitiveComponent {
       if (!css) {
         return {}
       }
-      const rules = isFunction(css) ? css({
+      const rules = isFunction(css) ? css.call(this, {
         attrs: this.attrs,
         className: this.className,
         style: this.style,
-      }, this) : css
+        props: this.props,
+      }) : css
       return { ...rules }
     })
 
