@@ -66,7 +66,6 @@ export class View extends Component {
         observers.push({ observer: this[key] })
       }
       else if (Item && isInheritedOf(Item, Controller)) {
-        let foundItem = null
         const patchCtrl = (items) => {
           const item = items.find((item) => item.Ctrl === Item)
           if (item) {
@@ -78,8 +77,8 @@ export class View extends Component {
               this[key] = ctrl
               item.ctrl = ctrl
             }
-            foundItem = item
-          } else {
+          }
+          else {
             this[key] = new Item()
           }
         }
@@ -102,10 +101,6 @@ export class View extends Component {
           },
           unsubscribe: (dispatch) => {
             this[key].unsubscribe(dispatch)
-            // free Controller instance
-            if (foundItem) {
-              foundItem.ctrl = null
-            }
           },
         })
       }
@@ -291,6 +286,12 @@ export class View extends Component {
           )
         }
         define(this, 'render', { value: persisRender, configurable: true })
+      }
+      componentWillUnmount() {
+        super.componentWillUnmount()
+        initContext.forEach((item) => {
+          item.ctrl = null
+        })
       }
     }
   }
