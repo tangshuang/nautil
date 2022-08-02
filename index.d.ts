@@ -493,7 +493,7 @@ export declare class Controller extends PrimitiveBase {
 
 export declare class View<P = AnyObj, S = AnyObj> extends Component<P, S> {
   reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent
-  static Persist(Ctrls: (new () => Controller)[]): new (...args: any[]) => View
+  static Persist<T extends View>(Cons: (new () => Controller|Store)[]): new (...args: any[]) => T
 }
 
 /**

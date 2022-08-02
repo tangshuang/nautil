@@ -31,6 +31,24 @@ export class View extends Component {
     const components = []
     const observers = []
 
+    const patchIns = (key, Con, items) => {
+      const item = items.find((item) => item.Con === Con)
+      if (item) {
+        const { ins } = item
+        if (ins) {
+          this[key] = ins
+        }
+        else {
+          const ins = new Con()
+          this[key] = ins
+          item.ins = ins
+        }
+      }
+      else {
+        this[key] = new Con()
+      }
+    }
+
     const Constructor = getConstructorOf(this)
     const streams = []
     const staticProperties = ofChainStatic(Constructor, View)
@@ -61,48 +79,21 @@ export class View extends Component {
         }
         observers.push({ observer })
       }
-      else if (Item && (Item === Store || isInheritedOf(Item, Store))) {
-        this[key] = new Item()
-        observers.push({ observer: this[key] })
-      }
-      else if (Item && isInheritedOf(Item, Controller)) {
-        const patchCtrl = (items) => {
-          const item = items.find((item) => item.Ctrl === Item)
-          if (item) {
-            const { ctrl } = item
-            if (ctrl) {
-              this[key] = ctrl
-            } else {
-              const ctrl = new Item()
-              this[key] = ctrl
-              item.ctrl = ctrl
-            }
-          }
-          else {
-            this[key] = new Item()
-          }
-        }
+      else if (Item && (isInheritedOf(Item, Controller) || Item === Store || isInheritedOf(Item, Store))) {
         // inherit from upper components
         if (this.context.length) {
           const items = flatArray(this.context)
-          patchCtrl(items)
+          patchIns(key, Item, items)
         }
         // self is top
         else if (Constructor[PersistentInit]) {
-          patchCtrl(Constructor[PersistentInit])
+          patchIns(key, Item, Constructor[PersistentInit])
         }
         // only use this controller
         else {
           this[key] = new Item()
         }
-        observers.push({
-          subscribe: (dispatch) => {
-            this[key].subscribe(dispatch)
-          },
-          unsubscribe: (dispatch) => {
-            this[key].unsubscribe(dispatch)
-          },
-        })
+        observers.push({ observer: this[key] })
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
@@ -246,7 +237,7 @@ export class View extends Component {
 
   /**
    * create a View which use Controller single instance.
-   * @param {*} Controller
+   * @param {Array<Controller|Store>} Cons
    * @returns
    * @examples
    * const SomePersistentView = SomeView.Persist()
@@ -255,8 +246,8 @@ export class View extends Component {
    *   return <SomePersistentView />
    * }
    */
-  static Persist(Controllers) {
-    const initContext = Controllers.map((Ctrl) => ({ Ctrl }))
+  static Persist(Cons) {
+    const initContext = Cons.map((Con) => ({ Con }))
     return class extends this {
       static [PersistentInit] = initContext
       __init() {
@@ -273,9 +264,9 @@ export class View extends Component {
                 } else {
                   const items = flatArray(context)
                   const next = []
-                  Controllers.forEach((Ctrl) => {
-                    if (!items.some((item) => item.Ctrl === Ctrl)) {
-                      next.push({ Ctrl })
+                  Cons.forEach((Con) => {
+                    if (!items.some((item) => item.Con === Con)) {
+                      next.push({ Con })
                     }
                   })
                   passdown = [...context, next]
@@ -290,7 +281,7 @@ export class View extends Component {
       componentWillUnmount() {
         super.componentWillUnmount()
         initContext.forEach((item) => {
-          item.ctrl = null
+          item.ins = null
         })
       }
     }
