@@ -1,6 +1,6 @@
 {
   "name": "nautil",
-  "version": "0.51.3",
+  "version": "0.51.4",
   "description": "Enterprise Level Business System Frontend Framework",
   "main": "index.js",
   "miniprogram": "miniprogram_dist",
