@@ -149,8 +149,8 @@ export declare class Component<P = AnyObj, S = AnyObj> extends ReactComponent<P,
    */
   detectAffect(): never
 
-  static extend<T extends NautilComponent>(override: OverrideInfo | ((nextProps: AnyObj) => OverrideInfo)): T
-  static implement<T extends NautilComponent>(protos: any): T
+  static extend<T>(this: Constructor<T>, override: OverrideInfo | ((nextProps: AnyObj) => OverrideInfo)): Component & T
+  static implement<T>(this: Constructor<T>, protos: any): Component & T
 
   static defaultStylesheet: string[] | AnyObj[]
   static props: AnyObj | (() => AnyObj)
@@ -471,13 +471,12 @@ declare class PrimitiveBase {
   offer<T>(getter: () => T): T
 
   new<T extends this>(): T
-  static instance<T extends PrimitiveBase>(): T
 
-  static implement<T extends PrimitiveBase>(protos: any): T
+  static instance<T>(this: Constructor<T>): PrimitiveBase & T
+  static implement<T>(this: Constructor<T>, protos: any): PrimitiveBase & T
 }
 
 export declare class Service extends PrimitiveBase {
-  static instance<T extends Service>(): T
 }
 
 export declare class Controller extends PrimitiveBase {
@@ -487,13 +486,11 @@ export declare class Controller extends PrimitiveBase {
   observe(observer: Store | Model | Function): {
     stop: Function,
   }
-
-  static instance<T extends Controller>(): T
 }
 
 export declare class View<P = AnyObj, S = AnyObj> extends Component<P, S> {
   reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent
-  static Persist<T extends View>(Cons: (new () => Controller|Store)[]): new (...args: any[]) => T
+  static Persist<T extends View>(this: Constructor<T>, Cons: (new () => Controller|Store)[]): View & Constructor<T>
 }
 
 /**
@@ -548,8 +545,6 @@ export declare class DataService extends Service {
   static select(compute: Function, deps: any[]): any
   static apply<T, U extends any[]>(get: (...args: U) => T | Promise<T>, value: T): [T, (...args: any[]) => Promise<T>]
   static ref<T>(value: T): { value: T }
-
-  static instance<T extends DataService>(): T
 }
 
 export function isDataSource(source: any): boolean
@@ -566,8 +561,6 @@ export declare class QueueService extends Service {
 
   on(type: string, fn: (err: Error) => void): this
   off(type: string, fn: (err: Error) => void): this
-
-  static instance<T extends QueueService>(): T
 }
 
 export declare class SerialQueueService extends QueueService {}

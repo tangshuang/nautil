@@ -284,6 +284,11 @@ export class View extends Component {
           item.ins = null
         })
       }
+      static Persist(Cons) {
+        const initContext = Cons.map((Con) => ({ Con, ins: null }))
+        this[PersistentInit] = [...this[PersistentInit], ...initContext]
+        return this
+      }
     }
   }
 }
