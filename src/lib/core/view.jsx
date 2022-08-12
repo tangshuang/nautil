@@ -37,15 +37,17 @@ export class View extends Component {
         const { ins } = item
         if (ins) {
           this[key] = ins
-        }
-        else {
+        } else {
           const ins = new Con()
           this[key] = ins
           item.ins = ins
         }
-      }
-      else {
+        observers.push({ observer: this[key], type: 'shared' })
+        this[key].__shared = this[key].__shared || 0
+        this[key].__shared += 1
+      } else {
         this[key] = new Con()
+        observers.push({ observer: this[key] })
       }
     }
 
@@ -92,8 +94,8 @@ export class View extends Component {
         // only use this controller
         else {
           this[key] = new Item()
+          observers.push({ observer: this[key] })
         }
-        observers.push({ observer: this[key] })
       }
       else if (isFunction(Item) && key[key.length - 1] === '$') {
         const stream$ = new Stream()
@@ -112,6 +114,14 @@ export class View extends Component {
 
     // subscribe to observers
     // should must before components registering
+    /**
+     * {
+     *   observer: the given observer
+     *   type?: 'this'
+     *    - this: only works for current view, not for subviews or reactive views, will not be triggered when subviews change
+     *    - shared: works for several views, will not be descontructed when this view unmount only if all destoryed
+     * }
+     */
     this.observers = observers
 
     // register all streams at last, so that you can call this.stream$ directly in each function.
@@ -197,14 +207,25 @@ export class View extends Component {
 
   componentWillUnmount(...args) {
     super.componentWillUnmount(...args)
-    this.observers.forEach(({ observer }) => {
+    this.observers.forEach(({ observer, type }) => {
       observer.unsubscribe(this.weakUpdate)
+      if (type === 'shared') {
+        if (observer.__shared) {
+          // eslint-disable-next-line no-param-reassign
+          observer.__shared -= 1
+          if (!observer.__shared && isInstanceOf(observer, PrimitiveBase)) {
+            observer.destructor()
+          }
+        } else if (isInstanceOf(observer, PrimitiveBase)) {
+          observer.destructor()
+        }
+      }
       // destroy single instances
-      if (isInstanceOf(observer, PrimitiveBase)) {
+      else if (isInstanceOf(observer, PrimitiveBase)) {
         observer.destructor()
       }
     })
-    this.observers.length = 1
+    this.observers.length = 0
   }
 
   /**

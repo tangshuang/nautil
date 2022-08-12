@@ -169,8 +169,8 @@ export class PrimitiveBase {
     this.init()
     this.__inited = true
     each(this, (value, key) => {
-      if (isObject(value) && value.$$type === 'offer' && value.fn) {
-        this[key] = value.fn()
+      if (isObject(value) && value.$$type === 'offer' && value.getter) {
+        this[key] = value.getter()
       }
     })
   }
@@ -181,14 +181,48 @@ export class PrimitiveBase {
 
   destroy() {}
 
+  offer(getter) {
+    if (!this.__inited) {
+      // @ts-ignore
+      return { $$type: 'offer', getter }
+    }
+    return getter()
+  }
+
+  destructor() {
+    this.destroy()
+    each(this, (value, key) => {
+      if (isInstanceOf(value, Stream)) {
+        value.complete()
+        this[key] = null
+      }
+      // auto destroy refer objects, if it is a single instance, it will trigger its static destroy
+      else if (value && isInstanceOf(value, PrimitiveBase)) {
+        value.destructor()
+        this[key] = null
+      }
+    })
+  }
+
+  new() {
+    const Constructor = getConstructorOf(this)
+    return new Constructor()
+  }
+
+  static implement(protos) {
+    mixin(this, protos)
+    return this
+  }
+}
+
+export class SingleInstance extends PrimitiveBase {
   destructor() {
     // destroy single instance
     const Constructor = getConstructorOf(this)
     if (Constructor.__instance === this) {
       Constructor.destructor()
       this.isDied = Constructor.__instanced <= 0
-    }
-    else {
+    } else {
       this.isDied = true
     }
 
@@ -209,42 +243,40 @@ export class PrimitiveBase {
     }
   }
 
-  new() {
-    const Constructor = getConstructorOf(this)
-    return new Constructor()
-  }
-
-  offer(fn) {
-    if (!this.__inited) {
-      return { $$type: 'offer', fn }
-    }
-    return fn()
-  }
-
   static instance() {
     const Constructor = this
 
+    // @ts-ignore
     Constructor.__instanced = Constructor.__instanced || 0
-    Constructor.__instanced ++
+    // @ts-ignore
+    // eslint-disable-next-line no-plusplus
+    Constructor.__instanced++
 
+    // @ts-ignore
     if (Constructor.__instance) {
+      // @ts-ignore
       return Constructor.__instance
     }
-    else {
-      if (Constructor.__instanceDefer) {
-        clearTimeout(Constructor.__instanceDefer)
-      }
-      const instance = new Constructor()
-      Constructor.__instance = instance
-      return instance
+
+    // @ts-ignore
+    if (Constructor.__instanceDefer) {
+      // @ts-ignore
+      clearTimeout(Constructor.__instanceDefer)
     }
+    const instance = new Constructor()
+    // @ts-ignore
+    Constructor.__instance = instance
+    return instance
   }
 
   static destructor() {
     const Constructor = this
 
     Constructor.__instanced = Constructor.__instanced || 0
-    Constructor.__instanced --
+    if (Constructor.__instanced) {
+      // eslint-disable-next-line no-plusplus
+      Constructor.__instanced--
+    }
 
     if (Constructor.__instance && Constructor.__instanced <= 0) {
       // delay delete, because we may create a instance in a short time
@@ -252,11 +284,6 @@ export class PrimitiveBase {
         Constructor.__instance = null
       }, 32)
     }
-  }
-
-  static implement(protos) {
-    mixin(this, protos)
-    return this
   }
 }
 

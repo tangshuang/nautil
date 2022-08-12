@@ -61,16 +61,10 @@ export class Controller extends PrimitiveBase {
   }
 
   subscribe(fn) {
-    if (this.isDied) {
-      return
-    }
     this.emitters.push(fn)
   }
 
   unsubscribe(fn) {
-    if (this.isDied) {
-      return
-    }
     this.emitters = this.emitters.filter(item => item !== fn)
   }
 
@@ -82,13 +76,10 @@ export class Controller extends PrimitiveBase {
 
   destructor() {
     super.destructor()
-
     // when controller is not active, clear all
-    if (this.isDied) {
-      this.observers?.forEach(({ stop }) => stop())
-      this.observers = null
-      this.emitters = null
-    }
+    this.observers?.forEach(({ stop }) => stop())
+    this.observers = null
+    this.emitters = null
   }
 
   observe(observer) {
@@ -111,17 +102,6 @@ export class Controller extends PrimitiveBase {
           observer.unwatch('*', this.dispatch)
           observer.unwatch('!', this.dispatch)
           observer.off('recover', this.dispatch)
-        },
-        observer,
-      }
-      this.observers.push(subscription)
-    }
-    else if (isInstanceOf(observer, Controller)) {
-      const subscription = {
-        start: () => observer.subscribe(this.dispatch),
-        stop: () => {
-          observer.unsubscribe(this.dispatch)
-          observer.destructor()
         },
         observer,
       }

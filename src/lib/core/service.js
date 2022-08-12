@@ -1,9 +1,9 @@
 import { each, getConstructorOf, isInheritedOf, isFunction } from 'ts-fns'
 import { Stream } from './stream.js'
 import { Model } from 'tyshemo'
-import { PrimitiveBase } from '../utils.js'
+import { SingleInstance } from '../utils.js'
 
-export class Service extends PrimitiveBase {
+export class Service extends SingleInstance {
   __init() {
     const Constructor = getConstructorOf(this)
     const streams = []
