@@ -4,8 +4,24 @@ import { Router, rootContext } from '../../lib/router/router.jsx'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { useContext, useMemo } from 'react'
+import { MemoHistory, StorageHistory } from '../../lib/router/history.js'
 
 const { Provider } = rootContext
+
+class NativeHistoryOverride {
+  open(url) {
+    Linking.canOpenURL(url)
+      .then(() => {
+        Linking.openURL(url)
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+  }
+}
+
+mixin(MemoHistory, NativeHistoryOverride)
+mixin(StorageHistory, NativeHistoryOverride)
 
 mixin(Router, class {
   static $createRootProvider(ctx, children, options) {

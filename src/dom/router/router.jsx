@@ -95,6 +95,9 @@ class BrowserHistory extends History {
     const next = { prev, url }
     window.history.replaceState(next, null, url)
   }
+  open(url) {
+    window.open(url)
+  }
 
   $parseUrl(url, abs, mode) {
     const { type, query, base } = mode

@@ -1,10 +1,10 @@
 import { parseUrl, parseSearch, resolveUrl, findInfoByMapping } from '../utils.js'
-import { createContext, useContext, useEffect, useMemo, useRef } from 'react'
+import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useForceUpdate } from '../hooks/force-update.js'
 import { History } from './history.js'
 import { useShallowLatest } from '../hooks/shallow-latest.js'
 import { ModuleBaseComponent } from '../core/module.jsx'
-import { isInheritedOf } from 'ts-fns'
+import { isInheritedOf, createSafeExp, isFunction } from 'ts-fns'
 
 export const rootContext = createContext()
 const absContext = createContext({
@@ -255,21 +255,26 @@ export class Router {
   }
 
   static $createNavigate(history, getAbs, mode, _otions) {
-    return (to, params, replace) => {
+    return (to, params, type) => {
       if (typeof to === 'number') {
         to > 0 ? history.forword() : history.back()
         return
       }
-      history.setUrl(to, getAbs(to, params), mode, params, replace)
+      history.setUrl(to, getAbs(to, params), mode, params, type)
     }
   }
 
   static $createPermanentNavigate(getPath, { history, mode }) {
-    return (name, params = {}, replace = false) => {
+    return (name, params = {}, type) => {
       const path = getPath(name)
 
       if (path === '.') {
-        history.setUrl('.', null, null, params, replace)
+        history.setUrl('.', null, null, params, type)
+        return
+      }
+
+      if (isFunction(path)) {
+        path(params, type)
         return
       }
 
@@ -286,7 +291,7 @@ export class Router {
         return item
       })
       const pathStr = res.join('/')
-      history.setUrl(pathStr, '/', mode, args, replace)
+      history.setUrl(pathStr, '/', mode, args, type)
     }
   }
 
@@ -416,7 +421,7 @@ export function Link(props) {
 
   const { href, navigate } = useMemo(() => {
     const href = typeof to === 'number' ? '#' : history.makeUrl(to, finalAbs, mode, args)
-    const navigate = () => navigateTo(to, args, replace)
+    const navigate = () => navigateTo(to, args, open ? 'open' : replace ? true : false)
     return { href, navigate }
   }, [to, args, mode, replace, finalAbs, history])
 

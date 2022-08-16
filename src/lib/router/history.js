@@ -1,5 +1,5 @@
 import { parseUrl, parseSearch, resolveUrl, revokeUrl, paramsToUrl, EventBase } from '../utils.js'
-import { isInheritedOf } from 'ts-fns'
+import { isInheritedOf, isEmpty } from 'ts-fns'
 import { Storage } from '../storage/storage.js'
 
 const HISTORY_CLASSES = {}
@@ -71,13 +71,24 @@ export class History extends EventBase {
   /**
    * url change work
    * @param {*} to
-   * @param {*} replace
+   * @param {*} type enter type, `push` as default, can be `true` `false` `replace` `open`
    * @param {*} abs
    * @param {*} mode
    */
-  setUrl(to, abs, mode, params, replace) {
+  setUrl(to, abs, mode, params, type) {
     const url = this.makeUrl(to, abs, mode, params)
-    return this[replace ? 'replace' : 'push'](url)
+
+    if (type === 'open') {
+      this.open(url)
+      return
+    }
+
+    if (type === true || type === 'replace') {
+      this.replace(url)
+      return
+    }
+
+    return this.push(url)
   }
   /**
    * create new url only changing search query
@@ -168,6 +179,10 @@ export class History extends EventBase {
     }
   }
 
+  open(_url) {
+    throw new Error('History.open should be overrided.')
+  }
+
   static createHistory(type) {
     const HistoryClass = HISTORY_CLASSES[type] || HISTORY_CLASSES[Object.keys(HISTORY_CLASSES)[0]]
     return new HistoryClass()
@@ -181,11 +196,11 @@ export class History extends EventBase {
   }
 }
 
-class MemoHistory extends History {}
+export class MemoHistory extends History {}
 
 const HISTORY_KEY = 'Nautil:history'
 
-class StorageHistory extends MemoHistory {
+export class StorageHistory extends MemoHistory {
   init() {
     super.init()
 

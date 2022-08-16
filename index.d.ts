@@ -631,7 +631,7 @@ export declare type Link = FunctionComponent<{
   params: AnyObj
 } & AnyObj>
 
-export declare function useRouteNavigate(): (target: string, replace: boolean) => void
+export declare function useRouteNavigate(): (target: string, params: AnyObj, type?: boolean | 'replace' | 'open') => void
 
 export declare function useLocation(): {
   pathname: string
