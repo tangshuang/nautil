@@ -1,6 +1,6 @@
 import { memo, Component as ReactComponent, createContext } from 'react'
 import { Store } from '../store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, flatArray, define } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, flatArray, define, uniqueArray } from 'ts-fns'
 import { Component } from './component.js'
 import { Stream } from './stream.js'
 import { evolve } from '../decorators/decorators.js'
@@ -302,12 +302,14 @@ export class View extends Component {
       componentWillUnmount() {
         super.componentWillUnmount()
         initContext.forEach((item) => {
-          item.ins = null
+          if (!item.ins.__shared) {
+            item.ins = null
+          }
         })
       }
       static Persist(Cons) {
         const initContext = Cons.map((Con) => ({ Con, ins: null }))
-        this[PersistentInit] = [...this[PersistentInit], ...initContext]
+        this[PersistentInit] = uniqueArray([...this[PersistentInit], ...initContext])
         return this
       }
     }
