@@ -1,5 +1,5 @@
 import { enumerate, ifexist } from 'tyshemo'
-import { each, isFunction, isArray } from 'ts-fns'
+import { each, isFunction, isArray, decideby } from 'ts-fns'
 import { cloneElement, Children, Fragment } from 'react'
 
 import { Component } from '../core/component.js'
@@ -26,10 +26,20 @@ export class For extends Component {
     for (let i = start; i <= end; i += step) {
       const data = map ? map(i) : i
       const uniqueKey = unique ? (isFunction(unique) ? unique(data, i) : (data && typeof data === 'object' ? data[unique] : i)) : i
-      const block = isFunction(render) ? render(data, i, uniqueKey)
-        : isFunction(children) ? children(data, i, uniqueKey)
-          : Children.map(children, child => cloneElement(child))
-      blocks.push(<Fragment key={uniqueKey}>{block}</Fragment>)
+      const block = decideby(() => {
+        if (isFunction(render)) {
+          return render(data, i, uniqueKey)
+        }
+        if (isFunction(children)) {
+          return children(data, i, uniqueKey)
+        }
+        return <Fragment key={uniqueKey}>{Children.map(children, (child) => cloneElement(child))}</Fragment>
+      })
+      if (block.key) {
+        blocks.push(block)
+      } else {
+        blocks.push(<Fragment key={uniqueKey}>{block}</Fragment>)
+      }
     }
     return blocks
   }
@@ -60,10 +70,20 @@ export class Each extends Component {
             : (value && typeof value === 'object' ? value[unique] : defaultKey)
         )
         : defaultKey
-      const block = isFunction(render) ? render(value, key, uniqueKey)
-        : isFunction(children) ? children(value, key, uniqueKey)
-          : Children.map(children, child => cloneElement(child))
-      blocks.push(<Fragment key={uniqueKey}>{block}</Fragment>)
+      const block = decideby(() => {
+        if (isFunction(render)) {
+          return render(value, key, uniqueKey)
+        }
+        if (isFunction(children)) {
+          return children(value, key, uniqueKey)
+        }
+        return <Fragment key={uniqueKey}>{Children.map(children, (child) => cloneElement(child))}</Fragment>
+      })
+      if (block.key) {
+        blocks.push(block)
+      } else {
+        blocks.push(<Fragment key={uniqueKey}>{block}</Fragment>)
+      }
     })
 
     return blocks

@@ -252,7 +252,7 @@ interface ForProps<T = any> extends AnyObj {
    *  render={(item) => <span>{item.title}</span>}
    * />
    */
-  render?: (data: T, i?: number) => NautilElement
+  render?: (data: T, i?: number, uniqueKey: string) => NautilElement
 }
 export declare class For extends Component<ForProps> {}
 
@@ -278,7 +278,7 @@ interface EachProps<T = any> extends AnyObj {
     *   render={(item, index, key) => <span key={key}>{item.title}</span>}
     * />
     */
-   render?: (value: T, key?: number | string) => NautilElement
+   render?: (value: T, key?: number | string, uniqueKey: string) => NautilElement
 }
 export declare class Each extends Component<EachProps> {}
 
