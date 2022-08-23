@@ -35,6 +35,9 @@ export class For extends Component {
         }
         return <Fragment key={uniqueKey}>{Children.map(children, (child) => cloneElement(child))}</Fragment>
       })
+      if (!block) {
+        return
+      }
       if (block.key) {
         blocks.push(block)
       } else {
@@ -79,6 +82,9 @@ export class Each extends Component {
         }
         return <Fragment key={uniqueKey}>{Children.map(children, (child) => cloneElement(child))}</Fragment>
       })
+      if (!block) {
+        return
+      }
       if (block.key) {
         blocks.push(block)
       } else {
