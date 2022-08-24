@@ -226,6 +226,14 @@ export class View extends Component {
       }
     })
     this.observers.length = 0
+
+    // free those shared instances which is not alive
+    const items = flatArray(this.context)
+    items.forEach((item) => {
+      if (!item.ins.__shared) {
+        item.ins = null
+      }
+    })
   }
 
   /**
