@@ -290,6 +290,10 @@ export class Component extends PrimitiveComponent {
       args.unshift(fn)
       this._tasksQueue.push({ fn: delay, args })
     }
+    setTimeout(
+      () => this._runTasks(),
+      typeof delay === 'number' ? delay + 10 : 60,
+    )
   }
 
   _runTasks() {
