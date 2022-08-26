@@ -1,6 +1,6 @@
 import { memo, Component as ReactComponent, createContext } from 'react'
 import { Store } from '../store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, flatArray, define, uniqueArray } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, define, uniqueArray } from 'ts-fns'
 import { Component } from './component.js'
 import { Stream } from './stream.js'
 import { evolve } from '../decorators/decorators.js'
@@ -10,8 +10,8 @@ import { DataService } from '../services/data-service.js'
 import { Model } from 'tyshemo'
 import { PrimitiveBase, ofChainStatic } from '../utils.js'
 
-const PersistentInit = Symbol()
-const PersistentContext = createContext([])
+const PersistentItems = Symbol()
+const PersistentContext = createContext({ presists: [] })
 
 /**
  * class SomeView extends View {
@@ -27,6 +27,10 @@ const PersistentContext = createContext([])
  * }
  */
 export class View extends Component {
+  static get contextType() {
+    return PersistentContext
+  }
+
   __init() {
     const components = []
     const observers = []
@@ -43,8 +47,6 @@ export class View extends Component {
           item.ins = ins
         }
         observers.push({ observer: this[key], type: 'shared' })
-        this[key].__shared = this[key].__shared || 0
-        this[key].__shared += 1
       } else {
         this[key] = new Con()
         observers.push({ observer: this[key] })
@@ -83,13 +85,12 @@ export class View extends Component {
       }
       else if (Item && (isInheritedOf(Item, Controller) || Item === Store || isInheritedOf(Item, Store))) {
         // inherit from upper components
-        if (this.context.length) {
-          const items = flatArray(this.context)
-          patchIns(key, Item, items)
+        if (this.context?.presists?.length) {
+          patchIns(key, Item, this.context.presists)
         }
         // self is top
-        else if (Constructor[PersistentInit]) {
-          patchIns(key, Item, Constructor[PersistentInit])
+        else if (Constructor[PersistentItems]) {
+          patchIns(key, Item, Constructor[PersistentItems])
         }
         // only use this controller
         else {
@@ -205,35 +206,16 @@ export class View extends Component {
     super.componentDidMount(...args)
   }
 
-  componentWillUnmount(...args) {
-    super.componentWillUnmount(...args)
+  componentWillUnmount() {
+    super.componentWillUnmount()
     this.observers.forEach(({ observer, type }) => {
       observer.unsubscribe(this.weakUpdate)
-      if (type === 'shared') {
-        if (observer.__shared) {
-          // eslint-disable-next-line no-param-reassign
-          observer.__shared -= 1
-          if (!observer.__shared && isInstanceOf(observer, PrimitiveBase)) {
-            observer.destructor()
-          }
-        } else if (isInstanceOf(observer, PrimitiveBase)) {
-          observer.destructor()
-        }
-      }
       // destroy single instances
-      else if (isInstanceOf(observer, PrimitiveBase)) {
+      if (isInstanceOf(observer, PrimitiveBase) && type !== 'shared') {
         observer.destructor()
       }
     })
     this.observers.length = 0
-
-    // free those shared instances which is not alive
-    const items = flatArray(this.context)
-    items.forEach((item) => {
-      if (!item.ins.__shared) {
-        item.ins = null
-      }
-    })
   }
 
   /**
@@ -266,7 +248,7 @@ export class View extends Component {
 
   /**
    * create a View which use Controller single instance.
-   * @param {Array<Controller|Store>} Cons
+   * @param {*} Controller
    * @returns
    * @examples
    * const SomePersistentView = SomeView.Persist()
@@ -278,7 +260,7 @@ export class View extends Component {
   static Persist(Cons) {
     const initContext = Cons.map((Con) => ({ Con }))
     return class extends this {
-      static [PersistentInit] = initContext
+      static [PersistentItems] = initContext
       __init() {
         super.__init()
         const render = this.render.bind(this)
@@ -287,20 +269,20 @@ export class View extends Component {
           return (
             <Consumer>
               {(context) => {
-                let passdown = []
-                if (!context.length) {
-                  passdown = [initContext]
+                let presists = []
+                if (!context.presists.length) {
+                  presists = initContext
                 } else {
-                  const items = flatArray(context)
-                  const next = []
+                  const items = (context.presists || []).map((item) => Object.create(item))
                   Cons.forEach((Con) => {
-                    if (!items.some((item) => item.Con === Con)) {
-                      next.push({ Con })
+                    if (items.some((item) => item.Con === Con)) {
+                      return
                     }
+                    items.push({ Con })
                   })
-                  passdown = [...context, next]
+                  presists = items
                 }
-                return <Provider value={passdown}>{render()}</Provider>
+                return <Provider value={{ ...context, presists }}>{render()}</Provider>
               }}
             </Consumer>
           )
@@ -308,16 +290,29 @@ export class View extends Component {
         define(this, 'render', { value: persisRender, configurable: true })
       }
       componentWillUnmount() {
-        super.componentWillUnmount()
-        initContext.forEach((item) => {
-          if (!item.ins.__shared) {
-            item.ins = null
+        // must before super.componentWillUnmount
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        [...this.context.presists, ...initContext].forEach((item) => {
+          const { ins } = item
+          // eslint-disable-next-line no-param-reassign
+          delete item.ins
+          // ins is now not in prototype chain, destruct it to free memory
+          if (!item.ins && isInstanceOf(ins, PrimitiveBase)) {
+            ins.destructor()
           }
         })
+        super.componentWillUnmount()
       }
+
+      /**
+       * override
+       * @param this
+       * @param Cons
+       * @returns
+       */
       static Persist(Cons) {
         const initContext = Cons.map((Con) => ({ Con, ins: null }))
-        this[PersistentInit] = uniqueArray([...this[PersistentInit], ...initContext])
+        this[PersistentItems] = uniqueArray([...this[PersistentItems], ...initContext])
         return this
       }
     }
