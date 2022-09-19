@@ -95,7 +95,7 @@ export class Controller extends PrimitiveBase {
       const subscription = {
         start: () => {
           observer.watch('*', this.dispatch, true)
-          observer.watch('!', this.dispatch)
+          observer.watch('!', this.dispatch, true)
           observer.on('recover', this.dispatch)
         },
         stop: () => {
