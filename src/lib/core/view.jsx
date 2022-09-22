@@ -272,6 +272,7 @@ export class View extends Component {
                 let presists = []
                 if (!context.presists.length) {
                   presists = initContext
+                  context.presists = initContext
                 } else {
                   const items = (context.presists || []).map((item) => Object.create(item))
                   Cons.forEach((Con) => {
@@ -292,7 +293,7 @@ export class View extends Component {
       componentWillUnmount() {
         // must before super.componentWillUnmount
         // eslint-disable-next-line no-unsafe-optional-chaining
-        [...this.context.presists, ...initContext].forEach((item) => {
+        [...(this.context?.presists || []), ...initContext].forEach((item) => {
           const { ins } = item
           // eslint-disable-next-line no-param-reassign
           delete item.ins
