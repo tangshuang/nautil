@@ -455,9 +455,18 @@ export function findInfoByMapping(data, mapping = {}) {
           break
         }
       }
-    } else if (isString(fromKey)) {
-      found[key] = data[fromKey]
-      flag = true
+    }
+    else if (isString(fromKey)) {
+      if (fromKey in data) {
+        found[key] = data[fromKey]
+        flag = true
+      }
+    }
+    else if (fromKey === true) {
+      if (key in data) {
+        found[key] = data[key]
+        flag = true
+      }
     }
     if (!flag) {
       notFound.push(key)
