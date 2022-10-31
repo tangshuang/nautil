@@ -115,6 +115,10 @@ export declare class Component<P = AnyObj, S = AnyObj> extends ReactComponent<P,
   children: ReactChildren
 
   css(classNames: string | string[]): string
+  
+  hook<T>(getter: () => T): () => T
+  hook<T, R>(hook: () => T, getter: (arg: T) => R): () => R
+  hook<T, R extends (...args: any[]) => void, G extends (arg: T) => R>(hook: () => T, getter: G): R
   hook(...fns: Function[]): Function
 
   subscribe(name: string, affect: (stream: Stream) => Stream): this
