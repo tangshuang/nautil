@@ -78,15 +78,9 @@ export class PrimitiveComponent extends ReactComponent {
     const fn = fns.length > 1 ? fns.pop() : null
     const hook = [fns, fn]
     this._hooks.push(hook)
-    return (...args) => {
+    return () => {
       const [, fn, res] = hook
-
       const out = fn ? fn(...res) : res[0]
-
-      if (typeof out === 'function') {
-        return out(...args)
-      }
-
       return out
     }
   }
