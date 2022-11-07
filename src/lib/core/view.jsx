@@ -263,6 +263,8 @@ export class View extends Component {
       static [PersistentItems] = initContext
       __init() {
         super.__init()
+        const Constrcutor = getConstructorOf(this)
+        const initContext = Constrcutor[PersistentItems]
         const render = this.render.bind(this)
         const persisRender = () => {
           const { Provider, Consumer } = PersistentContext
@@ -291,6 +293,8 @@ export class View extends Component {
         define(this, 'render', { value: persisRender, configurable: true })
       }
       componentWillUnmount() {
+        const Constrcutor = getConstructorOf(this);
+        const initContext = Constrcutor[PersistentItems];
         // must before super.componentWillUnmount
         // eslint-disable-next-line no-unsafe-optional-chaining
         [...(this.context?.presists || []), ...initContext].forEach((item) => {
@@ -312,7 +316,7 @@ export class View extends Component {
        * @returns
        */
       static Persist(Cons) {
-        const initContext = Cons.map((Con) => ({ Con, ins: null }))
+        const initContext = Cons.map((Con) => ({ Con }))
         this[PersistentItems] = uniqueArray([...this[PersistentItems], ...initContext])
         return this
       }
