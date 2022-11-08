@@ -144,8 +144,8 @@ export class View extends Component {
    *
    * @param {*} component
    * @param {function|array} collect
-   * function: collect passed into evovle;
-   * array: data sources which to subscribe;
+   * function: collect passed into evovle
+   * array: data sources which to subscribe
    * @returns
    * @example
    *
@@ -257,34 +257,47 @@ export class View extends Component {
    *   return <SomePersistentView />
    * }
    */
-  static Persist(Cons) {
-    const initContext = Cons.map((Con) => ({ Con }))
+   static Persist(Cons) {
+    const patchedPersistentItems = this[PersistentItems] || []
+    const initPersistentItems = [...patchedPersistentItems]
+    Cons.forEach((Con) => {
+      if (initPersistentItems.some((item) => item.Con === Con)) {
+        return
+      }
+      initPersistentItems.push({ Con })
+    })
+
+    // @ts-ignore
     return class extends this {
-      static [PersistentItems] = initContext
+      static [PersistentItems] = initPersistentItems
+
       __init() {
         super.__init()
         const Constrcutor = getConstructorOf(this)
-        const initContext = Constrcutor[PersistentItems]
+        const patchedPersistentItems = Constrcutor[PersistentItems]
+
         const render = this.render.bind(this)
         const persisRender = () => {
           const { Provider, Consumer } = PersistentContext
           return (
             <Consumer>
               {(context) => {
-                let presists = []
-                if (!context.presists.length) {
-                  presists = initContext
-                  context.presists = initContext
-                } else {
-                  const items = (context.presists || []).map((item) => Object.create(item))
-                  Cons.forEach((Con) => {
-                    if (items.some((item) => item.Con === Con)) {
-                      return
-                    }
-                    items.push({ Con })
-                  })
-                  presists = items
+                const hasPresists = !context.presists?.length
+                const presists = (context.presists || []).map((item) => Object.create(item))
+
+                patchedPersistentItems.forEach((item) => {
+                  const { Con } = item
+                  if (presists.some((item) => item.Con === Con)) {
+                    return
+                  }
+                  presists.push(item)
+                })
+
+                if (!hasPresists) {
+                  // eslint-disable-next-line no-param-reassign
+                  context.presists = presists
                 }
+
                 return <Provider value={{ ...context, presists }}>{render()}</Provider>
               }}
             </Consumer>
@@ -292,33 +305,22 @@ export class View extends Component {
         }
         define(this, 'render', { value: persisRender, configurable: true })
       }
+
       componentWillUnmount() {
-        const Constrcutor = getConstructorOf(this);
-        const initContext = Constrcutor[PersistentItems];
-        // must before super.componentWillUnmount
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        [...(this.context?.presists || []), ...initContext].forEach((item) => {
+        const Constrcutor = getConstructorOf(this)
+        const patchedPersistentItems = Constrcutor[PersistentItems]
+        // 必须先执行，然后再进入上面的componentWillUnmount
+        const items = [...(this.context?.presists || []), ...patchedPersistentItems]
+        items.forEach((item) => {
           const { ins } = item
           // eslint-disable-next-line no-param-reassign
           delete item.ins
-          // ins is now not in prototype chain, destruct it to free memory
+          // 如果正好从原型链上删除拉实例，那么该实例要执行destructor来销毁一些监听逻辑，释放内存
           if (!item.ins && isInstanceOf(ins, PrimitiveBase)) {
             ins.destructor()
           }
         })
         super.componentWillUnmount()
-      }
-
-      /**
-       * override
-       * @param this
-       * @param Cons
-       * @returns
-       */
-      static Persist(Cons) {
-        const initContext = Cons.map((Con) => ({ Con }))
-        this[PersistentItems] = uniqueArray([...this[PersistentItems], ...initContext])
-        return this
       }
     }
   }
