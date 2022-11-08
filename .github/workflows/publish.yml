@@ -17,7 +17,7 @@ jobs:
       - run: npm set config loglevel=info
       - run: npx can-npm-publish
       - name: Install
-        run: npm ci
+        run: npm i
       - name: Publish
         ## prepublishOnly has done build and test tasks
         uses: JS-DevTools/npm-publish@v1
