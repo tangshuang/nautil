@@ -79,10 +79,14 @@ class BrowserHistory extends History {
     window.history.forward()
   }
   push(url) {
-    if (window.location.href === url) {
+    const { href, origin } = window.location
+    const path = href.replace(origin, '')
+    const { state } = window.history
+
+    if (href === url || path === url || (state && state.prev?.url === url)) {
       return
     }
-    const { state } = window.history
+
     const next = { prev: state, url }
     window.history.pushState(next, null, url)
   }
