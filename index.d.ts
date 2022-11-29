@@ -115,7 +115,7 @@ export declare class Component<P = AnyObj, S = AnyObj> extends ReactComponent<P,
   children: ReactChildren
 
   css(classNames: string | string[]): string
-  
+
   hook<T>(getter: () => T): () => T
   hook<T, R>(hook: () => T, getter: (arg: T) => R): () => R
   hook<T, R extends (...args: any[]) => void, G extends (arg: T) => R>(hook: () => T, getter: G): R
@@ -602,6 +602,7 @@ export type RouteOptions = {
 
 export type RouterOptions = {
   routes: Array<RouteOptions>
+  mapping?: BootstrapOptions['router']['mapping']
   /**
    * only works in mobile (web mobile or native mobile),
    * if set 'stack', it will use Staci.Navigator in native
@@ -773,7 +774,7 @@ export declare function createAsyncComponent(fn: () => Promise<{ default: JSXCom
 interface BootstrapOptions {
   router: {
     mode: string
-    define?: {
+    mapping?: {
       /**
        * only string supported in web,
        * only string[] supported in native

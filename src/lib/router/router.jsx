@@ -14,6 +14,7 @@ const absContext = createContext({
 const routeContext = createContext({})
 const routerContext = createContext({})
 const paramsContext = createContext({})
+const mappingContext = createContext([])
 
 export class Router {
   constructor(options) {
@@ -204,10 +205,24 @@ export class Router {
       }
     }, [abs])
 
+    const { mapping = {} } = this.options
+    const parentMapping = useContext(mappingContext) || []
+    const mapInfo = useMemo(
+      () => [
+        {
+          abs: routerInfo.abs,
+          mapping,
+        },
+        ...parentMapping,
+      ],
+      [parentMapping, routerInfo],
+    )
+
     const { Provider: AbsProvider } = absContext
     const { Provider: RouteProvider } = routeContext
     const { Provider: RouterProvider } = routerContext
     const { Provider: ParamsProvider } = paramsContext
+    const { Provider: MappingProvider } = mappingContext
 
     const navigate = this.useNavigate()
 
@@ -237,7 +252,9 @@ export class Router {
         <RouterProvider value={routerInfo}>
           <RouteProvider value={routeInfo}>
             <ParamsProvider value={passDownParams}>
-              {this.render(C, finalProps, { forceUpdate, url, history, abs, mode, path, params })}
+              <MappingProvider value={mapInfo}>
+                {this.render(C, finalProps, { forceUpdate, url, history, abs, mode, path, params })}
+              </MappingProvider>
             </ParamsProvider>
           </RouteProvider>
         </RouterProvider>
@@ -366,7 +383,19 @@ export function RouterRootProvider({ value, children }) {
     }
   }, [value])
 
-  return Router.$createRootProvider(ctx, children, value)
+  const { Provider } = mappingContext
+  const map = useMemo(() => {
+    const { options } = ctx
+    const { mapping } = options
+    return [
+      {
+        router: null,
+        mapping,
+      },
+    ]
+  }, [ctx])
+
+  return <Provider value={map}>{Router.$createRootProvider(ctx, children, value)}</Provider>
 }
 
 export function useLocation() {
@@ -695,26 +724,39 @@ export function createRouteComponent(path, create, exact) {
   return { useInactiveComponent, useActiveComponent, Link, useIsComponentActive, Component, useComponentParams }
 }
 
-
-/**
- * 基于全局注册的路由进行跳转
- * @returns
- */
-export function usePermanentNavigate() {
-  const { history, mode, options = {} } = useContext(rootContext)
-  const { define = {} } = options
+function usePermanentGetPath() {
+  const mapping = useContext(mappingContext)
   const getPath = (name) => {
     if (name === '.') {
       return name
     }
 
-    const path = define[name]
-    if (!path) {
-      console.error(`Global route ${name} is not defined.`)
+    const item = mapping.find((item) => item.mapping?.[name])
+    if (!item) {
+      console.error(`Global route ${name} not defined.`)
       return
     }
 
+    const { abs } = item
+    const nav = item.mapping[name]
+    const path = resolveUrl(abs, nav)
     return path
   }
+  return getPath
+}
+
+export function usePermanentNavigate() {
+  const { history, mode } = useContext(rootContext)
+  const getPath = usePermanentGetPath()
   return Router.$createPermanentNavigate(getPath, { history, mode })
+}
+
+export function usePermanentLink() {
+  const getPath = usePermanentGetPath()
+  return Router.$createPermanentLink(getPath)
+}
+
+export function useHistory() {
+  const { history } = useContext(rootContext)
+  return history
 }
