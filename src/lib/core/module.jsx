@@ -139,31 +139,8 @@ export function importModule(options) {
         params: {},
         props: this.props,
       })
-      info.current.props = this.props
 
-      // compute current module navigator
-      const previousNaivgators = useContext(navigatorContext)
-      const previous = useShallowLatest(previousNaivgators)
       const { abs, deep } = useRouteLocation()
-      const navi = useThisNavigator ? useThisNavigator(info.current) : null
-      const nav = useShallowLatest(navi)
-      const navs = useMemo(() => {
-        if (!nav) {
-          return []
-        }
-        const navs = [].concat(nav)
-        return navs.map((nav) => {
-          if (typeof nav.path === 'undefined') {
-            return {
-              path: abs || '/',
-              ...nav,
-            }
-          }
-          return nav
-        })
-      }, [nav, abs])
-      const navigator = useMemo(() => [...previous, ...navs], [navs, previous])
-      info.current.navigator = navigator
 
       // get i18n
       const i18n = useThisI18n ? useThisI18n(info.current) : null
@@ -185,6 +162,29 @@ export function importModule(options) {
       const context = { ...rootContext, ...sharedContext, ...parentContext, ...thisContext }
       const ctx = useShallowLatest(context)
       info.current.context = ctx
+
+      // compute current module navigator
+      const previousNaivgators = useContext(navigatorContext)
+      const previous = useShallowLatest(previousNaivgators)
+      const navi = useThisNavigator ? useThisNavigator(info.current) : null
+      const nav = useShallowLatest(navi)
+      const navs = useMemo(() => {
+        if (!nav) {
+          return []
+        }
+        const navs = [].concat(nav)
+        return navs.map((nav) => {
+          if (typeof nav.path === 'undefined') {
+            return {
+              path: abs || '/',
+              ...nav,
+            }
+          }
+          return nav
+        })
+      }, [nav, abs])
+      const navigator = useMemo(() => [...previous, ...navs], [navs, previous])
+      info.current.navigator = navigator
 
       // deal with ready
       const ready = useThisReady && needReady ? useThisReady(info.current) : true
