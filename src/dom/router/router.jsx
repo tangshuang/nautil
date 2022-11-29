@@ -83,7 +83,7 @@ class BrowserHistory extends History {
     const path = href.replace(origin, '')
     const { state } = window.history
 
-    if (href === url || path === url || (state && state.prev?.url === url)) {
+    if (href === url || path === url || (state && state?.url === url)) {
       return
     }
 
