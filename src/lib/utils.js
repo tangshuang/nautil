@@ -23,6 +23,7 @@ import {
   Any,
 } from 'tyshemo'
 import produce from 'immer'
+import { isSource } from 'algeb'
 
 /**
  * noop
@@ -47,7 +48,7 @@ export const createProxyHandler = (data, receive) => {
       return false
     },
     disable(_, value) {
-      return isValidElement(value) || isRef(value)
+      return isValidElement(value) || isRef(value) || isSource(value)
     },
   }
 }
