@@ -1,6 +1,6 @@
 import { memo, Component as ReactComponent, createContext } from 'react'
 import { Store } from '../store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, define, uniqueArray } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, define } from 'ts-fns'
 import { Component } from './component.js'
 import { Stream } from './stream.js'
 import { evolve } from '../decorators/decorators.js'
@@ -220,9 +220,25 @@ export class View extends Component {
 
   /**
    * observe actions only works for current component, not for inner component
-   * @param {*} observer
+   * @param source Model, Controller, DataService, Store or any other which has `subscribe` and `unsubscribe`
    */
-  observe(observer) {
+  observe(source) {
+    let observer = source
+    if (isInstanceOf(source, Model)) {
+      observer = {
+        subscribe: (dispatch) => {
+          source.watch('*', dispatch, true)
+          source.watch('!', dispatch, true)
+          source.on('recover', dispatch, true)
+        },
+        unsubscribe: (dispatch) => {
+          source.unwatch('*', dispatch)
+          source.unwatch('!', dispatch)
+          source.off('recover', dispatch)
+        },
+      }
+    }
+
     if (this._isMounted) {
       observer.subscribe(this.weakUpdate)
     }
@@ -257,7 +273,7 @@ export class View extends Component {
    *   return <SomePersistentView />
    * }
    */
-   static Persist(Cons) {
+  static Persist(Cons) {
     const patchedPersistentItems = this[PersistentItems] || []
     const initPersistentItems = [...patchedPersistentItems]
     Cons.forEach((Con) => {
