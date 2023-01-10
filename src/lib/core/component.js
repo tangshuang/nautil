@@ -145,22 +145,23 @@ export class Component extends PrimitiveComponent {
     const render = this.render.bind(this)
     const toRender = () => {
       if (!this._isMounted && !this._isUnmounted) {
+        // provide
         this.__provide()
         this._digest(props)
         this.onInit()
+        // offer
+        this.__inited = true
+        each(this, (value, key) => {
+          if (isObject(value) && value.$$type === 'offer' && value.fn) {
+            this[key] = value.fn()
+          }
+        })
       }
       return render()
     }
     define(this, 'render', { value: toRender })
 
-    each(this, (value, key) => {
-      if (isObject(value) && value.$$type === 'offer' && value.fn) {
-        this[key] = value.fn()
-      }
-    })
-
     this.__init()
-    this.__inited = true
   }
 
   __init() {}
