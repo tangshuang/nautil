@@ -71,11 +71,10 @@ export { createTwoWayBinding, isShallowEqual, isRef, noop } from './lib/utils.js
 
 export { useTwoWayBinding, useTwoWayBindingState, useTwoWayBindingAttrs } from './lib/hooks/two-way-binding.js'
 export { useUniqueKeys } from './lib/hooks/unique-keys.js'
-export { useModel, useModelReactor } from './lib/hooks/model.js'
+export { useModel } from './lib/hooks/model.js'
 export { useController, applyController } from './lib/hooks/controller.js'
 export { useShallowLatest } from './lib/hooks/shallow-latest.js'
 export { useForceUpdate } from './lib/hooks/force-update.js'
-export { useDataSource, useLazyDataSource } from './lib/hooks/data-source.js'
 export { useService } from './lib/hooks/service.js'
 
 export { observe, evolve, inject, initialize, nest, decorate } from './lib/decorators/decorators.js'
@@ -118,7 +117,7 @@ export { applyStore } from './lib/store/shared.js'
 
 export { Stream, createStream } from './lib/core/stream.js'
 export { Service } from './lib/core/service.js'
-export { DataService, isDataSource } from './lib/services/data-service.js'
+export { DataService, isDataSource, useDataSource } from './lib/services/data-service.js'
 export { QueueService, SerialQueueService, ParallelQueueService, ShiftQueueService, SwitchQueueService } from './lib/services/queue-service.js'
 export { EventService } from './lib/services/event-service.js'
 export { Controller } from './lib/core/controller.js'

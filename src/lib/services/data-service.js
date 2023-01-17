@@ -1,6 +1,7 @@
 import { Service } from '../core/service.js'
 import { isString } from 'ts-fns'
 import { source, query, compose, setup, release, affect, select, apply, ref, isSource, request, action } from 'algeb'
+import { useSource } from 'algeb/react'
 
 const subscribersKey = Symbol()
 
@@ -153,6 +154,7 @@ export class DataService extends Service {
   }
 }
 
-export function isDataSource(source) {
-  return isSource(source)
+export {
+  isSource as isDataSource,
+  useSource as useDataSource,
 }
