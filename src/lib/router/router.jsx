@@ -728,10 +728,27 @@ function usePermanentGetPath() {
   const mapping = useContext(mappingContext)
   const getPath = (name) => {
     if (name === '.') {
-      return name
+      return '.'
     }
 
-    const item = mapping.find((item) => item.mapping?.[name])
+    // use '..' or '../..' to go up to upper router path
+    if (/[.|/]+/.test(name)) {
+      const items = name.split('/')
+      if (items[0] === '.') {
+        if (items.length === 1) {
+          return '.'
+        }
+        items.shift()
+      }
+      const count = items.length
+      const target = mapping[count]
+      if (!target) {
+        return '/'
+      }
+      return target.abs || '/'
+    }
+
+    const item = mapping.find((item) => typeof item.mapping?.[name] !== 'undefined')
     if (!item) {
       console.error(`Global route ${name} not defined.`)
       return
