@@ -473,6 +473,23 @@ export function useRouteNavigate() {
   return Router.$createNavigate(history, getAbs, mode, { deep, router, inHost })
 }
 
+export function useRouteBack() {
+  const navigate = useRouteNavigate()
+  const history = useHistory()
+  return (fallback) => {
+    // * @param fallback 当history中没有可以再回退的上一个页面时，会以fallback作为目标，避免点击后没有任何效果
+    if (!history.stack?.length) {
+      if (fallback) {
+        navigate(fallback)
+      } else {
+        navigate('/')
+      }
+      return
+    }
+    navigate(-1)
+  }
+}
+
 export function useRouteParams() {
   const forceUpdate = useForceUpdate()
   useHistoryListener(forceUpdate)

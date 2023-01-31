@@ -133,7 +133,7 @@ export {
   Router,
   Link,
   useRouteNavigate,
-  useLocation,
+  useRouteBack,
   useHistoryListener,
   useRouteParams,
   useRouteMatch,
@@ -143,6 +143,7 @@ export {
   useRouteState,
   Route,
   usePermanentNavigate,
+  useLocation,
 } from './lib/router/router.jsx'
 
 export {
