@@ -1,6 +1,6 @@
 import { memo, Component as ReactComponent, createContext } from 'react'
 import { Store } from '../store/store.js'
-import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, define } from 'ts-fns'
+import { each, getConstructorOf, isInheritedOf, isFunction, isInstanceOf, isObject, define, mixin } from 'ts-fns'
 import { Component } from './component.js'
 import { Stream } from './stream.js'
 import { evolve } from '../decorators/decorators.js'
@@ -337,6 +337,47 @@ export class View extends Component {
           }
         })
         super.componentWillUnmount()
+      }
+    }
+  }
+
+  /**
+   * Declare two insertion of some same logic:
+   *
+    abstract class A extends View {
+      say() {}
+      run() {}
+    }
+
+    abstract class B extends View {
+      say() {}
+      cry() {}
+    }
+
+    // Define a C which can use public methods inside A | B
+    // however, notice that you can only declare method in C, could not declare property members
+    class C extends View.Embed<A | B>() {}
+
+    // Now define a D which is firstly inherit A and then inherit C
+    // It means D has both A and C abilities
+    class D extends C.implement(A) {}
+
+    const d = new D();
+    d.say();
+
+  * In the previous example, we have a UI component C which is usually keep same UI but may depends on different logics,
+  * two views A and B provide the logics, which can be inherited by D.
+  * As this, we have the ability to define UI firstly and declare logics by View later and give different View in different situation
+  * @returns
+  */
+  static Embed() {
+    // @ts-ignore
+    return class EmbeddedView {
+      static Adopt(Proto) {
+        class Sub extends Proto {}
+        mixin(Sub, this)
+        // @ts-ignore
+        return Sub
       }
     }
   }

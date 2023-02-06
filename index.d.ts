@@ -90,9 +90,8 @@ export declare class Stream {
 
 type AnyObj = { [key: string]: any }
 type Proxy = AnyObj
-interface Constructor<T> {
-  new (...args: T[])
-}
+type ConstructorOf<T> = new (...args: any[]) => T
+type AbstractConstructorOf<T> = abstract new (...args: any[]) => T
 
 interface OverrideInfo {
   stylesheet?: string[] | AnyObj[]
@@ -153,8 +152,8 @@ export declare class Component<P = AnyObj, S = AnyObj> extends ReactComponent<P,
    */
   detectAffect(): never
 
-  static extend<T>(this: Constructor<T>, override: OverrideInfo | ((nextProps: AnyObj) => OverrideInfo)): Component & T
-  static implement<T>(this: Constructor<T>, protos: any): Component & T
+  static extend<T>(this: ConstructorOf<T>, override: OverrideInfo | ((nextProps: AnyObj) => OverrideInfo)): Component & T
+  static implement<T>(this: ConstructorOf<T>, protos: any): Component & T
 
   static defaultStylesheet: string[] | AnyObj[]
   static props: AnyObj | (() => AnyObj)
@@ -201,7 +200,7 @@ export declare function pollute(component: NautilComponent, pollute: AnyObj | ((
 
 export declare function decorate(HOC: JSXComponent, fields: string[], renderProp?: string): ComponentGenerator
 
-export declare function initialize<T>(prop: string, Constructor: Constructor<T>, ...args: T[]): ComponentGenerator
+export declare function initialize<T>(prop: string, ConstructorOf: ConstructorOf<T>, ...args: T[]): ComponentGenerator
 
 export declare function nest(...args: [JSXComponent, AnyObj][]): ComponentGenerator
 
@@ -470,8 +469,8 @@ declare class PrimitiveBase {
 
   new<T extends this>(): T
 
-  static instance<T>(this: Constructor<T>): PrimitiveBase & T
-  static implement<T>(this: Constructor<T>, protos: any): PrimitiveBase & T
+  static instance<T>(this: ConstructorOf<T>): PrimitiveBase & T
+  static implement<T>(this: ConstructorOf<T>, protos: any): PrimitiveBase & T
 }
 
 export declare class Service extends PrimitiveBase {
@@ -488,7 +487,17 @@ export declare class Controller extends PrimitiveBase {
 
 export declare class View<P = AnyObj, S = AnyObj> extends Component<P, S> {
   reactive(component: JSXComponent | Function, collect?: (nextprops: AnyObj) => AnyObj): NautilComponent
-  static Persist<T extends View>(this: Constructor<T>, Cons: (new () => Controller|Store)[]): View & Constructor<T>
+  static Embed<T extends View>(): {
+      Adopt<THIS, V extends ConstructorOf<View> | AbstractConstructorOf<View>>(
+        this: ConstructorOf<THIS>,
+        Proto: V,
+      ): V extends abstract new (props: infer P) => View
+        ? new (...args: any[]) => View<P>
+        : V extends new (props: infer Q) => View
+        ? new (...args: any[]) => View<Q>
+        : never;
+    } & (new (...args: any[]) => View & T[keyof T]) & typeof View
+  static Persist<T extends View>(this: ConstructorOf<T>, Cons: (new () => Controller|Store)[]): View & ConstructorOf<T>
 }
 
 /**
