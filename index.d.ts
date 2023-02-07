@@ -496,7 +496,7 @@ export declare class View<P = AnyObj, S = AnyObj> extends Component<P, S> {
         : V extends new (props: infer Q) => View
         ? new (...args: any[]) => View<Q>
         : never;
-    } & (new (...args: any[]) => View & T[keyof T]) & typeof View
+    } & (new (...args: any[]) => View & Omit<T[keyof T], keyof View>) & typeof View
   static Persist<T extends View>(this: ConstructorOf<T>, Cons: (new () => Controller|Store)[]): View & ConstructorOf<T>
 }
 
