@@ -1,6 +1,7 @@
 import {
   Component as ReactComponent,
   useRef,
+  useMemo,
 } from 'react'
 import {
   each,
@@ -39,9 +40,24 @@ export class PrimitiveComponent extends ReactComponent {
 
     this._hooks = []
 
-    // render
     const render = this.render ? this.render.bind(this) : null
     const Render = this.Render ? this.Render.bind(this) : null
+
+    const hooks = this.$$hooks
+    if (hooks) {
+      hooks.forEach((hook) => {
+        const { name, type, fn } = hook
+        if (type === 'getter') {
+          const getter = fn.bind(this)
+          const get = this.hook(getter)
+          define(this, name, { get, configurable: true, enumerable: true })
+        } else if (type === 'handler') {
+          const handler = fn.bind(this)
+          this[name] = this.hook(handler, (res) => () => res)
+        }
+      })
+    }
+
     const RenderWrapper = (props) => {
       const hooks = useRef([...this._hooks])
       hooks.current.forEach((hook) => {
@@ -87,6 +103,105 @@ export class PrimitiveComponent extends ReactComponent {
 
   onRender(vdom) {
     return vdom
+  }
+
+  /**
+   * use this.hook to run the given computed property or method member,
+   * you can use hook functions inside,
+   * however, methods should have no parameters
+   * @returns
+   * @example
+   *
+   * @Component.hook()
+   * get financings() {
+   *   const [data] = useDataSource(this.service.financings, this.props.projectId)
+   *   return data
+   * }
+   *
+   * @Component.hook()
+   * get handleGo() {
+   *   const navigate = useRouteNavigate()
+   *   return (id) => navigate(id)
+   * }
+   *
+   * @Component.hook()
+   * recoverData() { // NOTICE: without parameters
+   *   const [data] = useDataSource(this.service.financings, this.props.projectId)
+   *   useEffect(() => {
+   *     this.model.fromJSON(data)
+   *   }, [data])
+   * }
+   */
+  static hook() {
+    return (protos, key, descriptor) => {
+      if (!protos.$$hooks) {
+        // eslint-disable-next-line no-param-reassign
+        protos.$$hooks = []
+      }
+
+      const { value, get } = descriptor
+      if (get) {
+        protos.$$hooks.push({
+          name: key,
+          type: 'getter',
+          fn: get,
+        })
+      } else if (typeof value === 'function') {
+        protos.$$hooks.push({
+          name: key,
+          type: 'handler',
+          fn: value,
+        })
+      }
+    }
+  }
+
+  /**
+   * use React.memo to cache
+   * @returns
+   * @example
+   * // cache computed property value,
+   * // will only compute once
+   * @Component.memo()
+   * get handleClick() {
+   *   return () => null
+   * }
+   *
+   * // cache method,
+   * // is almost like `this.handleClick = this.handleClick.bind(this)`
+   * @Component.memo()
+   * handleClick() {
+   * }
+   */
+  static memo() {
+    return (protos, key, descriptor) => {
+      if (!protos.$$hooks) {
+        // eslint-disable-next-line no-param-reassign
+        protos.$$hooks = []
+      }
+
+      const { value, get } = descriptor
+      if (get) {
+        protos.$$hooks.push({
+          name: key,
+          type: 'getter',
+          fn() {
+            const getter = useMemo(() => get.bind(this), [])
+            const ref = useMemo(getter, [])
+            return ref
+          },
+        })
+      } else if (typeof value === 'function') {
+        protos.$$hooks.push({
+          name: key,
+          type: 'getter',
+          fn() {
+            const ref = useMemo(() => value.bind(this), [])
+            return ref
+          },
+        })
+      }
+    }
   }
 }
 

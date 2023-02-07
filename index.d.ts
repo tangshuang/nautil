@@ -158,6 +158,9 @@ export declare class Component<P = AnyObj, S = AnyObj> extends ReactComponent<P,
   static defaultStylesheet: string[] | AnyObj[]
   static props: AnyObj | (() => AnyObj)
   static css: { [key: string]: AnyObj | string } | ((info: { attrs: AnyObj, style: object | undefined, className: string | undefined }, instance: Component) => { [key: string]: AnyObj | string })
+
+  static hook(): PropertyDecorator
+  static memo(): PropertyDecorator
 }
 
 export declare function createTwoWayBinding(data: AnyObj, updator?: (value: AnyObj, keyPath: Array<string | symbol>, data: any) => void, formalized?: boolean): Proxy

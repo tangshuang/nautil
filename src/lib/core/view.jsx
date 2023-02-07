@@ -371,12 +371,11 @@ export class View extends Component {
   * @returns
   */
   static Embed() {
-    // @ts-ignore
     return class EmbeddedView {
       static Adopt(Proto) {
         class Sub extends Proto {}
         mixin(Sub, this)
-        // @ts-ignore
+        Sub.prototype.$$hooks = this.prototype.$$hooks
         return Sub
       }
     }
