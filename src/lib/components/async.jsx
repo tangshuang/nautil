@@ -43,7 +43,7 @@ export class Async extends Component {
     const inside = (data) => isFunction(this.children) ? this.children(data) : this.children
 
     if (status === 'pending') {
-      return pending ? createPlaceholderElement(pending) : inside()
+      return pending ? createPlaceholderElement(pending) : null
     }
     else if (status === 'resolved') {
       return then ? then(data) : inside(data)
