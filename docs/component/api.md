@@ -68,6 +68,70 @@ getSome = this.hook(() => useSomeHook())
 
 When you run `this.getSome()`, you will get the first function's output.
 
+## Component#hook
+
+Nautil provides two special Component static method as property decorators, they are `Component#hook` and `Component#memo`.
+
+```js
+class MyComponent extends Component {
+  static props = {
+    id: String,
+  }
+
+  /**
+   * make this.data works with hooks
+   */
+  @Component.hook()
+  get data() {
+    const data = useDataSource(mySource, this.props.id)
+    return data
+  }
+
+  /**
+   * make this.handleGoDetail works with hooks
+   */
+  @Component.hook()
+  get handleGoDetail() {
+    const navigate = useRouteNavigate()
+    return (id) => {
+      navigate(id)
+    }
+  }
+
+  /**
+   * run the function with hooks directly when render, without any affects to current component
+   */
+  @Component.hook()
+  autoWatchChange() {
+    useEffect(() => {
+      // ...
+    }, [])
+  }
+
+  /**
+   * make this.handleClickNext can be used as handler directly
+   * <a click={this.handleClickNext}>
+   */
+  @Component.memo()
+  handleClickNext() {
+    this.setState({ step: this.state.step + 1 })
+  }
+
+  /**
+   * only read once
+   */
+  @Component.memo()
+  get total() {
+    return localStorage.getItem('total')
+  }
+
+  render() {
+    const { data } = this
+
+  }
+}
+```
+
 ## weakUpdate/forceUpdate/update
 
 There are 3 sepcial methods on component, so that you can easily trigger the update of the component.
